@@ -19,6 +19,7 @@ import { logout } from './_actions/logout';
 import { CartLink } from './cart';
 import { HeaderFragment } from './fragment';
 import { QuickSearch } from './quick-search';
+import Home from '~/app/[locale]/(default)/page';
 
 interface Props {
   cart: ReactNode;
@@ -54,6 +55,13 @@ export const Header = async ({ cart }: Props) => {
       })),
     })),
   }));
+
+  //adding unique home link
+  links.unshift({
+    label: 'home',
+    href: '/',
+    groups: [],
+  });
 
   return (
     <ComponentsHeader
