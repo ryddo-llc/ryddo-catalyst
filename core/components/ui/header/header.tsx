@@ -75,7 +75,7 @@ const Header = ({
             link.groups && link.groups.length > 0 ? (
               <NavigationMenuPrimitive.Item key={link.href}>
                 <NavigationMenuPrimitive.Trigger className="group/button flex items-center font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20">
-                  <CustomLink className="p-3 font-semibold" href={link.href}>
+                  <CustomLink className="p-3 font-extrabold" href={link.href}>
                     {link.label}
                   </CustomLink>
                   <ChevronDown
@@ -111,7 +111,7 @@ const Header = ({
             ) : (
               <NavigationMenuPrimitive.Item key={link.href}>
                 <NavigationMenuPrimitive.Link asChild>
-                  <CustomLink className="p-3 font-semibold" href={link.href}>
+                  <CustomLink className="p-3 font-extrabold" href={link.href}>
                     {link.label}
                   </CustomLink>
                 </NavigationMenuPrimitive.Link>
@@ -123,9 +123,9 @@ const Header = ({
         <NavigationMenuPrimitive.Viewport className="absolute start-0 top-full z-50 w-full bg-white pb-12 pt-6 shadow-xl duration-200 animate-in slide-in-from-top-5" />
       </NavigationMenuPrimitive.Root>
 
-      <div className="flex items-center gap-2 lg:gap-4">
+      <div className="flex items-center gap-1 lg:gap-1">
         {search}
-        <nav className="flex gap-2 lg:gap-4">
+        <nav className="flex gap-1 lg:gap-1">
           {account}
           {cart}
         </nav>
