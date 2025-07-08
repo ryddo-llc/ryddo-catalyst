@@ -7,12 +7,21 @@ import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
-const withNextIntl = createNextIntlPlugin();
+const withNextIntl = createNextIntlPlugin({
+  experimental: {
+    createMessagesDeclaration: './messages/en.json',
+  },
+});
 
-const LocaleQuery = graphql(`
-  query LocaleQuery {
+const SettingsQuery = graphql(`
+  query SettingsQuery {
     site {
       settings {
+        url {
+          vanityUrl
+          cdnUrl
+          checkoutUrl
+        }
         locales {
           code
           isDefault
@@ -22,23 +31,70 @@ const LocaleQuery = graphql(`
   }
 `);
 
+async function writeSettingsToBuildConfig() {
+  const { data } = await client.fetch({ document: SettingsQuery });
+
+  const cdnEnvHostnames = process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME;
+
+  const cdnUrls = (
+    cdnEnvHostnames
+      ? cdnEnvHostnames.split(',').map((s) => s.trim())
+      : [data.site.settings?.url.cdnUrl]
+  ).filter((url): url is string => !!url);
+
+  if (!cdnUrls.length) {
+    throw new Error(
+      'No CDN URLs found. Please ensure that NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME is set correctly.',
+    );
+  }
+
+  return await writeBuildConfig({
+    locales: data.site.settings?.locales,
+    urls: {
+      ...data.site.settings?.url,
+      cdnUrls,
+    },
+  });
+}
+
 export default async (): Promise<NextConfig> => {
+  const settings = await writeSettingsToBuildConfig();
+
   let nextConfig: NextConfig = {
     reactStrictMode: true,
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
+      ppr: 'incremental',
     },
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
     },
     eslint: {
       ignoreDuringBuilds: !!process.env.CI,
-      dirs: ['app', 'client', 'components', 'lib', 'middlewares'],
+      dirs: [
+        'app',
+        'auth',
+        'build-config',
+        'client',
+        'components',
+        'data-transformers',
+        'i18n',
+        'lib',
+        'middlewares',
+        'scripts',
+        'tests',
+        'vibes',
+      ],
     },
     // default URL generation in BigCommerce uses trailing slash
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
     // eslint-disable-next-line @typescript-eslint/require-await
     async headers() {
+      const cdnLinks = settings.urls.cdnUrls.map((url) => ({
+        key: 'Link',
+        value: `<https://${url}>; rel=preconnect`,
+      }));
+
       return [
         {
           source: '/(.*)',
@@ -47,10 +103,7 @@ export default async (): Promise<NextConfig> => {
               key: 'Content-Security-Policy',
               value: cspHeader.replace(/\n/g, ''),
             },
-            {
-              key: 'Link',
-              value: `<https://${process.env.BIGCOMMERCE_CDN_HOSTNAME ?? 'cdn11.bigcommerce.com'}>; rel=preconnect`,
-            },
+            ...cdnLinks,
           ],
         },
       ];
@@ -66,13 +119,5 @@ export default async (): Promise<NextConfig> => {
     nextConfig = withBundleAnalyzer(nextConfig);
   }
 
-  await writeLocaleToBuildConfig();
-
   return nextConfig;
 };
-
-async function writeLocaleToBuildConfig() {
-  const { data } = await client.fetch({ document: LocaleQuery });
-
-  await writeBuildConfig({ locales: data.site.settings?.locales });
-}

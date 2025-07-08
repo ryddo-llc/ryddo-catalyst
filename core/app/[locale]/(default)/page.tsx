@@ -1,37 +1,16 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
+import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
-import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
-import { Slideshow } from '~/components/slideshow';
+import { Subscribe } from '~/components/subscribe';
+import { productCardTransformer } from '~/data-transformers/product-card-transformer';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
-const HomePageQuery = graphql(
-  `
-    query HomePageQuery {
-      site {
-        newestProducts(first: 12) {
-          edges {
-            node {
-              ...ProductCardCarouselFragment
-            }
-          }
-        }
-        featuredProducts(first: 12) {
-          edges {
-            node {
-              ...ProductCardCarouselFragment
-            }
-          }
-        }
-      }
-    }
-  `,
-  [ProductCardCarouselFragment],
-);
+import { Slideshow } from './_components/slideshow';
+import { getPageData } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -43,37 +22,56 @@ export default async function Home({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
-  const customerAccessToken = await getSessionCustomerAccessToken();
+  const format = await getFormatter();
 
-  const { data } = await client.fetch({
-    document: HomePageQuery,
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  const streamablePageData = Streamable.from(async () => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const currencyCode = await getPreferredCurrencyCode();
+
+    return getPageData(currencyCode, customerAccessToken);
   });
 
-  const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
-  const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
+  const streamableFeaturedProducts = Streamable.from(async () => {
+    const data = await streamablePageData;
+
+    const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
+
+    return productCardTransformer(featuredProducts, format);
+  });
+
+  const streamableNewestProducts = Streamable.from(async () => {
+    const data = await streamablePageData;
+
+    const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
+
+    return productCardTransformer(newestProducts, format);
+  });
 
   return (
     <>
       <Slideshow />
 
-      <div className="my-10">
-        <ProductCardCarousel
-          products={featuredProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.featuredProducts')}
-        />
-        <ProductCardCarousel
-          products={newestProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.newestProducts')}
-        />
-      </div>
+      <FeaturedProductList
+        cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
+        description={t('FeaturedProducts.description')}
+        emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
+        emptyStateTitle={t('FeaturedProducts.emptyStateTitle')}
+        products={streamableFeaturedProducts}
+        title={t('FeaturedProducts.title')}
+      />
+
+      <FeaturedProductCarousel
+        cta={{ label: t('NewestProducts.cta'), href: '/shop-all/?sort=newest' }}
+        description={t('NewestProducts.description')}
+        emptyStateSubtitle={t('NewestProducts.emptyStateSubtitle')}
+        emptyStateTitle={t('NewestProducts.emptyStateTitle')}
+        nextLabel={t('NewestProducts.nextProducts')}
+        previousLabel={t('NewestProducts.previousProducts')}
+        products={streamableNewestProducts}
+        title={t('NewestProducts.title')}
+      />
+
+      <Subscribe />
     </>
   );
 }
-
-export const runtime = 'edge';
