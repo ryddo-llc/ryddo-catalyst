@@ -93,6 +93,8 @@ export const Header = async () => {
         }))
     : [];
 
+  let slicedTree: any[] = [];
+
   const streamableLinks = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -102,8 +104,13 @@ export const Header = async () => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-    const slicedTree = categoryTree.slice(0, 5);
-
+    const slicedTree = categoryTree.slice(0, 6);
+    //  adding unique home link
+    slicedTree.unshift({
+      name: 'home',
+      path: '/',
+      children: [],
+    });
     return slicedTree.map(({ name, path, children }) => ({
       label: name,
       href: path,
@@ -135,13 +142,6 @@ export const Header = async () => {
     const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
 
     return currencyCode ?? defaultCurrency?.id;
-  });
-
-  //  adding unique home link
-  slicedTree.unshift({
-    label: 'home',
-    href: '/',
-    groups: [],
   });
 
   return (
