@@ -40,7 +40,7 @@ export const Header = async ({ cart }: Props) => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  const categoryTree = data.categoryTree.slice(0, 6);
+  const categoryTree = data.categoryTree.slice(0, 5);
 
   const links = categoryTree.map(({ name, path, children }) => ({
     label: name,
@@ -54,6 +54,13 @@ export const Header = async ({ cart }: Props) => {
       })),
     })),
   }));
+
+  //  adding unique home link
+  links.unshift({
+    label: 'home',
+    href: '/',
+    groups: [],
+  });
 
   return (
     <ComponentsHeader

@@ -11,7 +11,7 @@ const config = {
         transparent: 'transparent',
         current: 'currentColor',
         black: '#000000',
-        primary: '#053FB0',
+        primary: '#F92F7B',
         secondary: '#3071EF',
         white: '#FFFFFF',
         error: {
