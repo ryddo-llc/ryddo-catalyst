@@ -3,9 +3,10 @@
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { ChevronDown } from 'lucide-react';
 import { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
+
 import { Image } from '~/components/image';
 import { Link as CustomLink } from '~/components/link';
+import { usePathname } from '~/i18n/routing';
 import { cn } from '~/lib/utils';
 
 import { type Locale, LocaleSwitcher } from './locale-switcher';

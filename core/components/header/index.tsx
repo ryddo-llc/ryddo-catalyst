@@ -55,7 +55,7 @@ export const Header = async ({ cart }: Props) => {
     })),
   }));
 
-  //adding unique home link
+  //  adding unique home link
   links.unshift({
     label: 'home',
     href: '/',
