@@ -2,7 +2,6 @@
 
 import { useLocale } from 'next-intl';
 import { ComponentPropsWithRef, ComponentRef, forwardRef, useReducer } from 'react';
-
 import { cn } from '~/lib/utils';
 
 import { Link as NavLink, useRouter } from '../../i18n/routing';
@@ -60,7 +59,7 @@ export const Link = forwardRef<ComponentRef<'a'>, Props>(
     return (
       <NavLink
         className={cn(
-          'hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20',
+          `hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20`,
           className,
         )}
         href={href}
