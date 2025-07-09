@@ -12,6 +12,7 @@ const config = {
     '@bigcommerce/catalyst/prettier',
   ],
   rules: {
+    'prettier/prettier': 'off',
     '@typescript-eslint/naming-convention': 'off',
     '@next/next/no-html-link-for-pages': 'off',
     'import/dynamic-import-chunkname': 'off',
@@ -20,6 +21,7 @@ const config = {
     '@typescript-eslint/no-unsafe-enum-comparison': 'off',
     '@typescript-eslint/no-restricted-imports': [
       'error',
+
       {
         paths: [
           {
