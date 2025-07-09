@@ -41,4 +41,9 @@
   /* Sub-links */
   --nav-sub-link-text: hsl(var(--contrast-400));
   --nav-sub-link-text-hover: #333333;
+
+  /* Banner */
+
+  --banner-text: #ffffff;
+  --banner-close-icon: #ffffff;
 }
