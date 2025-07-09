@@ -343,16 +343,16 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
                       <li>
-                        <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                        <span className="bg-contrast-100 block h-4 w-10 rounded-md" />
                       </li>
                       <li>
-                        <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                        <span className="bg-contrast-100 block h-4 w-14 rounded-md" />
                       </li>
                       <li>
-                        <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                        <span className="bg-contrast-100 block h-4 w-24 rounded-md" />
                       </li>
                       <li>
-                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                        <span className="bg-contrast-100 block h-4 w-16 rounded-md" />
                       </li>
                     </ul>
                   }
@@ -360,7 +360,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 >
                   {(links) =>
                     links.map((item, i) => (
-                      <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5" key={i}>
+                      <ul className="flex flex-col p-2 @4xl:gap-4 @4xl:p-5" key={i}>
                         {item.label !== '' && (
                           <li>
                             <Link
@@ -466,16 +466,16 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             fallback={
               <ul className="flex min-h-[41px] animate-pulse flex-row items-center @4xl:gap-6 @4xl:p-2.5">
                 <li>
-                  <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-10 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-14 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-24 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-16 rounded-md" />
                 </li>
               </ul>
             }
@@ -486,7 +486,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 <NavigationMenu.Item key={i} value={i.toString()}>
                   <NavigationMenu.Trigger asChild>
                     <Link
-                      className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
+                      className="text-md hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] hover:underline hover:underline-offset-4 focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
                       href={item.href}
                     >
                       {item.label}
@@ -580,7 +580,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             <ShoppingBag size={20} strokeWidth={1} />
             <Stream
               fallback={
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-contrast-100 text-xs text-background" />
+                <span className="bg-contrast-100 text-background absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full text-xs" />
               }
               value={streamableCartCount}
             >

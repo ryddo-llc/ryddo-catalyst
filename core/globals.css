@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --primary: 96 100% 68%;
+  --primary: 333 93% 58%;
   --accent: 96 100% 88%;
   --background: 0 0% 100%;
   --foreground: 0 0% 7%;
@@ -29,4 +29,16 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Main navigation links */
+  --nav-link-text: #333333;
+  --nav-link-text-hover: hsl(var(--primary));
+
+  /* Mobile links */
+  --nav-mobile-link-text: #333333;
+  --nav-mobile-link-text-hover: hsl(var(--primary));
+
+  /* Sub-links */
+  --nav-sub-link-text: hsl(var(--contrast-400));
+  --nav-sub-link-text-hover: #333333;
 }
