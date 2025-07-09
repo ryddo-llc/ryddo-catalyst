@@ -41,6 +41,7 @@ export const Banner = forwardRef(
 
     useEffect(() => {
       //change this to true, if we want the user to get rid of the banner
+
       const hidden = localStorage.getItem(`${id}-hidden-banner`) === 'false';
 
       setBanner({ dismissed: hidden, initialized: true });
