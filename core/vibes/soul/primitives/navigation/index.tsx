@@ -343,16 +343,16 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
                       <li>
-                        <span className="bg-contrast-100 block h-4 w-10 rounded-md" />
+                        <span className="lock·h-4·w-10·rounded-md·bg-contrast-100" />
                       </li>
                       <li>
-                        <span className="bg-contrast-100 block h-4 w-14 rounded-md" />
+                        <span className="lock·h-4·w-14·rounded-md·bg-contrast-100" />
                       </li>
                       <li>
-                        <span className="bg-contrast-100 block h-4 w-24 rounded-md" />
+                        <span className="lock·h-4·w-24·rounded-md·bg-contrast-100" />
                       </li>
                       <li>
-                        <span className="bg-contrast-100 block h-4 w-16 rounded-md" />
+                        <span className="lock·h-4·w-16·rounded-md·bg-contrast-100" />
                       </li>
                     </ul>
                   }

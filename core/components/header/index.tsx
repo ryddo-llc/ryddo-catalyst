@@ -93,8 +93,6 @@ export const Header = async () => {
         }))
     : [];
 
-  let slicedTree: any[] = [];
-
   const streamableLinks = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -106,11 +104,13 @@ export const Header = async () => {
    */
     const slicedTree = categoryTree.slice(0, 6);
     //  adding unique home link
+
     slicedTree.unshift({
       name: 'home',
       path: '/',
       children: [],
     });
+
     return slicedTree.map(({ name, path, children }) => ({
       label: name,
       href: path,
@@ -146,6 +146,12 @@ export const Header = async () => {
 
   return (
     <HeaderSection
+      banner={{
+        id: 'Banner',
+        className: 'compact-banner',
+        children:
+          'Get free gear with an E-Bike or Scooter purchase + free shipping on orders over $150 *',
+      }}
       navigation={{
         accountHref: '/login',
         accountLabel: t('Icons.account'),
@@ -168,12 +174,6 @@ export const Header = async () => {
         activeCurrencyId: streamableActiveCurrencyId,
         currencyAction: switchCurrency,
         switchCurrencyLabel: t('SwitchCurrency.label'),
-      }}
-      banner={{
-        id: 'Banner',
-        className: 'compact-banner',
-        children:
-          'Get free gear with an E-Bike or Scooter purchase + free shipping on orders over $150 *',
       }}
     />
   );
