@@ -169,6 +169,12 @@ export const Header = async () => {
         currencyAction: switchCurrency,
         switchCurrencyLabel: t('SwitchCurrency.label'),
       }}
+      banner={{
+        id: 'Banner',
+        className: 'compact-banner',
+        children:
+          'Get free gear with an E-Bike or Scooter purchase + free shipping on orders over $150 *',
+      }}
     />
   );
 };

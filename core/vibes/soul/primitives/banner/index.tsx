@@ -63,7 +63,7 @@ export const Banner = forwardRef(
         id="announcement-bar"
         ref={ref}
       >
-        <div className="p-3 pr-12 text-sm text-[var(--banner-text,hsl(var(--foreground)))] @xl:px-12 @xl:text-center @xl:text-base">
+        <div className="p-1 pr-12 text-sm text-[var(--banner-text,hsl(var(--foreground)))] @xl:px-12 @xl:text-center @xl:text-base">
           {children}
         </div>
 
