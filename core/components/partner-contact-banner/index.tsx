@@ -30,7 +30,7 @@ export default function PartnersContactBar() {
       <div className="xl:px-18 flex h-12 items-center justify-center border-b border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] sm:h-14 sm:px-6 md:h-16 md:px-10 lg:border-b-0 lg:border-r lg:px-12">
         <Link
           href={'/'}
-          className="h-auto p-0 text-center text-white hover:bg-transparent hover:text-white"
+          className="h-auto whitespace-nowrap p-0 text-center text-white hover:bg-transparent hover:text-white"
         >
           <span className="hidden sm:inline">Sign up for Free ryddo adventures</span>
           <span className="sm:hidden">Free adventures</span>
