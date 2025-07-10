@@ -63,9 +63,6 @@ export default async (): Promise<NextConfig> => {
   let nextConfig: NextConfig = {
     reactStrictMode: true,
 
-    // Use standalone for Netlify
-    output: 'standalone',
-
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
