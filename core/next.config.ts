@@ -39,7 +39,7 @@ async function writeSettingsToBuildConfig() {
   const cdnUrls = (
     cdnEnvHostnames
       ? cdnEnvHostnames.split(',').map((s) => s.trim())
-      : [(data as any).site.settings?.url.cdnUrl]
+      : [data.site.settings?.url.cdnUrl]
   ).filter((url): url is string => !!url);
 
   if (!cdnUrls.length) {
@@ -49,9 +49,9 @@ async function writeSettingsToBuildConfig() {
   }
 
   return await writeBuildConfig({
-    locales: (data as any).site.settings?.locales,
+    locales: data.site.settings?.locales,
     urls: {
-      ...(data as any).site.settings?.url,
+      ...data.site.settings?.url,
       cdnUrls,
     },
   });
@@ -62,10 +62,7 @@ export default async (): Promise<NextConfig> => {
 
   let nextConfig: NextConfig = {
     reactStrictMode: true,
-
-    // Use standalone for Netlify
-    output: 'standalone',
-
+    trailingSlash: true,
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
