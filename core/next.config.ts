@@ -39,7 +39,7 @@ async function writeSettingsToBuildConfig() {
   const cdnUrls = (
     cdnEnvHostnames
       ? cdnEnvHostnames.split(',').map((s) => s.trim())
-      : [data.site.settings?.url.cdnUrl]
+      : [(data as any).site.settings?.url.cdnUrl]
   ).filter((url): url is string => !!url);
 
   if (!cdnUrls.length) {
@@ -49,9 +49,9 @@ async function writeSettingsToBuildConfig() {
   }
 
   return await writeBuildConfig({
-    locales: data.site.settings?.locales,
+    locales: (data as any).site.settings?.locales,
     urls: {
-      ...data.site.settings?.url,
+      ...(data as any).site.settings?.url,
       cdnUrls,
     },
   });
