@@ -4,9 +4,6 @@ import { ReactNode } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Link } from '~/components/link';
-import InfoSection from './info-section';
-import ContactSection from './contact-section';
-import Copyright from './copyright';
 
 interface Link {
   href: string;
@@ -26,6 +23,9 @@ interface SocialMediaLink {
 export interface FooterProps {
   sections: Streamable<Section[]>;
   socialMediaLinks?: Streamable<SocialMediaLink[]>;
+  infoSection?: ReactNode;
+  contactSection?: ReactNode;
+  copyright?: ReactNode;
   className?: string;
 }
 
@@ -54,6 +54,9 @@ export interface FooterProps {
 export const Footer = ({
   sections: streamableSections,
   socialMediaLinks: streamableSocialMediaLinks,
+  infoSection,
+  contactSection,
+  copyright,
   className,
 }: FooterProps) => {
   return (
@@ -65,8 +68,8 @@ export const Footer = ({
     >
       <div className="mx-auto max-w-screen-2xl px-6 py-6 @xl:px-10 @xl:py-10 @4xl:px-16 @4xl:py-12">
         <div className="flex flex-col justify-between gap-x-20 gap-y-12 xl:flex-row">
-          <div className="flex flex-col gap-4 text-center sm:text-left xl:w-1/4 xl:gap-6">
-            <InfoSection />
+                  <div className="flex flex-col gap-4 text-center sm:text-left xl:w-1/4 xl:gap-6">
+          {infoSection}
 
             {/* Social Media Links */}
             <Stream fallback={<SocialMediaLinksSkeleton />} value={streamableSocialMediaLinks}>
@@ -127,7 +130,7 @@ export const Footer = ({
                       </div>
                     ))}
 
-                    <ContactSection />
+                    {contactSection}
 
                   </div>
                 );
@@ -136,7 +139,7 @@ export const Footer = ({
           </Stream>
         </div>
 
-        <Copyright />
+        {copyright}
 
 
       </div>

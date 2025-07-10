@@ -1,4 +1,4 @@
-
+// import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client'; // Commented out as not currently used
 import {
   SiFacebook,
   SiInstagram,
@@ -11,15 +11,16 @@ import { cache, JSX } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Footer as FooterSection } from '@/vibes/soul/sections/footer';
-import { GetLinksAndSectionsQuery } from '~/app/[locale]/(default)/page-data';
+import { GetLinksAndSectionsQuery, LayoutQuery } from '~/app/[locale]/(default)/page-data';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
-import { FooterSectionsFragment } from './fragment';
-
-
+import { FooterFragment, FooterSectionsFragment } from './fragment';
+import InfoSection from './info-section';
+import ContactSection from './contact-section';
+import Copyright from './copyright';
 
 const socialIcons: Record<string, { icon: JSX.Element }> = {
   Facebook: { icon: <SiFacebook title="Facebook" /> },
@@ -43,13 +44,26 @@ const getFooterSections = cache(async (customerAccessToken?: string) => {
   return readFragment(FooterSectionsFragment, response).site;
 });
 
+const getFooterData = cache(async () => {
+  const { data: response } = await client.fetch({
+    document: LayoutQuery,
+    fetchOptions: { next: { revalidate } },
+  });
 
+  return readFragment(FooterFragment, response).site;
+});
 
 export const Footer = async () => {
   const t = await getTranslations('Components.Footer');
 
-  // For now, using empty social media links - can be configured later
-  const socialMediaLinks: { href: string; icon: JSX.Element }[] = [];
+  const data = await getFooterData();
+
+  const socialMediaLinks = data.settings?.socialMediaLinks
+    .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))
+    .map((socialMediaLink) => ({
+      href: socialMediaLink.url,
+      icon: socialIcons[socialMediaLink.name]?.icon,
+    }));
 
   const streamableSections = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
@@ -80,6 +94,9 @@ export const Footer = async () => {
     <FooterSection
       sections={streamableSections}
       socialMediaLinks={socialMediaLinks}
+      infoSection={<InfoSection />}
+      contactSection={<ContactSection />}
+      copyright={<Copyright />}
     />
   );
 };

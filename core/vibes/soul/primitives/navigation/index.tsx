@@ -466,16 +466,16 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             fallback={
               <ul className="flex min-h-[41px] animate-pulse flex-row items-center @4xl:gap-6 @4xl:p-2.5">
                 <li>
-                  <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-10 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-14 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-24 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-16 rounded-md" />
                 </li>
               </ul>
             }
@@ -580,7 +580,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             <ShoppingBag size={20} strokeWidth={1} />
             <Stream
               fallback={
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-contrast-100 text-xs text-background" />
+                <span className="bg-contrast-100 text-background absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full text-xs" />
               }
               value={streamableCartCount}
             >
