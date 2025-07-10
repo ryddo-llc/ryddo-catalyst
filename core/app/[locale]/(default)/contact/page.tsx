@@ -88,10 +88,10 @@ export default async function ContactPage({ params }: Props) {
             
             <h2 className="text-2xl font-semibold mb-4">Follow Us</h2>
             <div className="flex space-x-4">
-              <a href="https://instagram.com/ryddo" className="text-pink-500 hover:text-pink-600">
+              <a className="text-pink-500 hover:text-pink-600" href="https://instagram.com/ryddo">
                 Instagram
               </a>
-              <a href="https://facebook.com/ryddo" className="text-pink-500 hover:text-pink-600">
+              <a className="text-pink-500 hover:text-pink-600" href="https://facebook.com/ryddo">
                 Facebook
               </a>
             </div>

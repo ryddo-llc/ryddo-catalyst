@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 
 interface Props {
@@ -42,16 +43,16 @@ export default async function MyAccountPage({ params }: Props) {
           <div>
             <h2 className="text-2xl font-semibold mb-4">Quick Links</h2>
             <div className="space-y-2">
-              <ButtonLink href="/account/orders" variant="secondary" className="w-full justify-start">
+              <ButtonLink className="w-full justify-start" href="/account/orders" variant="secondary">
                 View Orders
               </ButtonLink>
-              <ButtonLink href="/account/wishlists" variant="secondary" className="w-full justify-start">
+              <ButtonLink className="w-full justify-start" href="/account/wishlists" variant="secondary">
                 My Wishlists
               </ButtonLink>
-              <ButtonLink href="/account/addresses" variant="secondary" className="w-full justify-start">
+              <ButtonLink className="w-full justify-start" href="/account/addresses" variant="secondary">
                 Addresses
               </ButtonLink>
-              <ButtonLink href="/account/settings" variant="secondary" className="w-full justify-start">
+              <ButtonLink className="w-full justify-start" href="/account/settings" variant="secondary">
                 Account Settings
               </ButtonLink>
             </div>

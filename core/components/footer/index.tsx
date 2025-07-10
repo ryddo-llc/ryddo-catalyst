@@ -17,10 +17,10 @@ import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
-import { FooterFragment, FooterSectionsFragment } from './fragment';
-import InfoSection from './info-section';
 import ContactSection from './contact-section';
 import Copyright from './copyright';
+import { FooterFragment, FooterSectionsFragment } from './fragment';
+import InfoSection from './info-section';
 
 const socialIcons: Record<string, { icon: JSX.Element }> = {
   Facebook: { icon: <SiFacebook title="Facebook" /> },
@@ -92,11 +92,11 @@ export const Footer = async () => {
 
   return (
     <FooterSection
-      sections={streamableSections}
-      socialMediaLinks={socialMediaLinks}
-      infoSection={<InfoSection />}
       contactSection={<ContactSection />}
       copyright={<Copyright />}
+      infoSection={<InfoSection />}
+      sections={streamableSections}
+      socialMediaLinks={socialMediaLinks}
     />
   );
 };

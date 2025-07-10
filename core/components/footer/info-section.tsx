@@ -1,7 +1,8 @@
 import React from 'react';
-import { FaCcVisa, FaCcMastercard } from 'react-icons/fa';
+import { FaCcMastercard, FaCcVisa } from 'react-icons/fa';
 import { FiArrowRight } from 'react-icons/fi';
-import Link from 'next/link';
+
+import { Link } from '~/components/link';
 
 export default function InfoSection() {
   return (
