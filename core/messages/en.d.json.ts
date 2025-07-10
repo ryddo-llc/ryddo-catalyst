@@ -463,8 +463,10 @@ declare const messages: {
       "contactUs": "Contact Us",
       "socialMediaLinks": "Social media links",
       "categories": "Categories",
+      "shop": "Shop",
       "brands": "Brands",
-      "navigate": "Navigate"
+      "navigate": "Navigate",
+      "explore": "Explore"
     },
     "Subscribe": {
       "title": "Sign up for our newsletter",

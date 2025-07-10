@@ -2,14 +2,11 @@ import { clsx } from 'clsx';
 import { ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Logo } from '@/vibes/soul/primitives/logo';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Link } from '~/components/link';
-
-interface Image {
-  src: string;
-  alt: string;
-}
+import InfoSection from './info-section';
+import ContactSection from './contact-section';
+import Copyright from './copyright';
 
 interface Link {
   href: string;
@@ -26,24 +23,10 @@ interface SocialMediaLink {
   icon: ReactNode;
 }
 
-interface ContactInformation {
-  address?: string;
-  phone?: string;
-}
-
 export interface FooterProps {
-  logo: Streamable<string | Image>;
   sections: Streamable<Section[]>;
-  copyright?: Streamable<string>;
-  contactInformation?: Streamable<ContactInformation>;
-  paymentIcons?: Streamable<ReactNode[]>;
   socialMediaLinks?: Streamable<SocialMediaLink[]>;
-  contactTitle?: string;
   className?: string;
-  logoHref?: string;
-  logoLabel?: string;
-  logoWidth?: number;
-  logoHeight?: number;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -69,18 +52,9 @@ export interface FooterProps {
  * ```
  */
 export const Footer = ({
-  logo,
   sections: streamableSections,
-  contactTitle = 'Contact Us',
-  contactInformation: streamableContactInformation,
-  paymentIcons: streamablePaymentIcons,
   socialMediaLinks: streamableSocialMediaLinks,
-  copyright: streamableCopyright,
   className,
-  logoHref = '#',
-  logoLabel = 'Home',
-  logoWidth = 200,
-  logoHeight = 40,
 }: FooterProps) => {
   return (
     <footer
@@ -89,49 +63,17 @@ export const Footer = ({
         className,
       )}
     >
-      <div className="mx-auto max-w-screen-2xl px-4 py-6 @xl:px-6 @xl:py-10 @4xl:px-8 @4xl:py-12">
-        <div className="flex flex-col justify-between gap-x-16 gap-y-12 @3xl:flex-row">
-          <div className="flex flex-col gap-4 @3xl:w-1/3 @3xl:gap-6">
-            {/* Logo Information */}
-            <div className="flex items-center justify-start self-stretch">
-              <Logo
-                className="flex"
-                height={logoHeight}
-                href={logoHref}
-                label={logoLabel}
-                logo={logo}
-                width={logoWidth}
-              />
-            </div>
-
-            {/* Contact Information */}
-            <Stream fallback={<FooterContactSkeleton />} value={streamableContactInformation}>
-              {(contactInformation) => {
-                if (contactInformation?.address != null || contactInformation?.phone != null) {
-                  return (
-                    <div className="mb-4 text-lg font-medium @lg:text-xl">
-                      <h3 className="text-[var(--footer-contact-title,hsl(var(--contrast-500)))]">
-                        {contactTitle}
-                      </h3>
-                      <div className="text-[var(--footer-contact-text,hsl(var(--foreground)))]">
-                        {contactInformation.address != null &&
-                          contactInformation.address !== '' && <p>{contactInformation.address}</p>}
-                        {contactInformation.phone != null && contactInformation.phone !== '' && (
-                          <p>{contactInformation.phone}</p>
-                        )}
-                      </div>
-                    </div>
-                  );
-                }
-              }}
-            </Stream>
+      <div className="mx-auto max-w-screen-2xl px-6 py-6 @xl:px-10 @xl:py-10 @4xl:px-16 @4xl:py-12">
+        <div className="flex flex-col justify-between gap-x-20 gap-y-12 xl:flex-row">
+          <div className="flex flex-col gap-4 text-center sm:text-left xl:w-1/4 xl:gap-6">
+            <InfoSection />
 
             {/* Social Media Links */}
             <Stream fallback={<SocialMediaLinksSkeleton />} value={streamableSocialMediaLinks}>
               {(socialMediaLinks) => {
                 if (socialMediaLinks != null) {
                   return (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center sm:justify-start gap-3">
                       {socialMediaLinks.map(({ href, icon }, i) => {
                         return (
                           <Link
@@ -157,11 +99,11 @@ export const Footer = ({
                 return (
                   <div
                     className={clsx(
-                      'grid max-w-5xl grid-cols-1 gap-y-8 @sm:grid-cols-2 @xl:gap-y-10 @2xl:grid-cols-3 @6xl:[grid-template-columns:_repeat(auto-fill,_minmax(220px,_1fr))]',
+                      'grid grid-cols-1 gap-y-8 text-center sm:grid-cols-3 sm:text-left md:gap-x-2 lg:gap-x-6 xl:gap-y-10 justify-items-center sm:justify-items-start flex-1 mx-4',
                     )}
                   >
                     {sections.map(({ title, links }, i) => (
-                      <div className="pr-8" key={i}>
+                      <div className="pr-2" key={i}>
                         {title != null && (
                           <span className="mb-3 block font-semibold text-[var(--footer-section-title,hsl(var(--foreground)))]">
                             {title}
@@ -184,6 +126,9 @@ export const Footer = ({
                         </ul>
                       </div>
                     ))}
+
+                    <ContactSection />
+
                   </div>
                 );
               }
@@ -191,46 +136,13 @@ export const Footer = ({
           </Stream>
         </div>
 
-        <div className="flex flex-col-reverse items-start gap-y-8 pt-16 @3xl:flex-row @3xl:items-center @3xl:pt-20">
-          {/* Copyright */}
-          <Stream fallback={<CopyrightSkeleton />} value={streamableCopyright}>
-            {(copyright) => {
-              if (copyright != null) {
-                return (
-                  <p className="flex-1 text-sm text-[var(--footer-copyright,hsl(var(--contrast-500)))]">
-                    {copyright}
-                  </p>
-                );
-              }
-            }}
-          </Stream>
+        <Copyright />
 
-          {/* Payment Icons */}
-          <Stream fallback={<PaymentIconsSkeleton />} value={streamablePaymentIcons}>
-            {(paymentIcons) => {
-              if (paymentIcons != null) {
-                return <div className="flex flex-wrap gap-2">{paymentIcons}</div>;
-              }
-            }}
-          </Stream>
-        </div>
+
       </div>
     </footer>
   );
 };
-
-function FooterContactSkeleton() {
-  return (
-    <Skeleton.Root
-      className="mb-4 text-lg group-has-[[data-pending]]/footer:animate-pulse @lg:text-xl"
-      pending
-    >
-      <Skeleton.Text characterCount={10} className="rounded" data-pending />
-      <Skeleton.Text characterCount={15} className="rounded" data-pending />
-      <Skeleton.Text characterCount={12} className="rounded" data-pending />
-    </Skeleton.Root>
-  );
-}
 
 function SocialMediaLinksSkeleton() {
   return (
@@ -274,26 +186,6 @@ function FooterColumnSkeleton() {
   );
 }
 
-function CopyrightSkeleton() {
-  return (
-    <Skeleton.Root
-      className="flex-1 text-sm @container-normal group-has-[[data-pending]]/footer:animate-pulse"
-      pending
-    >
-      <Skeleton.Text characterCount={40} className="rounded" data-pending />
-    </Skeleton.Root>
-  );
-}
 
-function PaymentIconsSkeleton() {
-  return (
-    <Skeleton.Root
-      className="flex flex-wrap gap-2 @container-normal group-has-[[data-pending]]/footer:animate-pulse"
-      pending
-    >
-      {Array.from({ length: 6 }).map((_, idx) => (
-        <Skeleton.Box className="h-6 w-[2.1875rem] rounded" data-pending key={idx} />
-      ))}
-    </Skeleton.Root>
-  );
-}
+
+
