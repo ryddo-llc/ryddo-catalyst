@@ -1,5 +1,5 @@
-import { Link } from '~/components/link';
 import React from 'react';
+
 import {
   FaEnvelope,
   FaFacebook,
@@ -8,10 +8,8 @@ import {
   FaPhone,
 } from 'react-icons/fa';
 
-type ContactInfopTypes = {
-  type: string;
-  value: string;
-};
+import { Link } from '~/components/link';
+
 export default function ContactSection() {
 
   return (
