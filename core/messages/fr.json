@@ -458,8 +458,10 @@
             "contactUs": "Nous contacter",
             "socialMediaLinks": "Lien vers les médias sociaux",
             "categories": "Catégories",
+            "shop": "Boutique",
             "brands": "Marques",
-            "navigate": "Parcourir"
+            "navigate": "Parcourir",
+            "explore": "Explorer"
         },
         "Subscribe": {
             "title": "Abonnez-vous à notre newsletter",

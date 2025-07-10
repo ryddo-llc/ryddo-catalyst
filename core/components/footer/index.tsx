@@ -1,4 +1,4 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+// import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client'; // Commented out as not currently used
 import {
   SiFacebook,
   SiInstagram,
@@ -16,24 +16,11 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { logoTransformer } from '~/data-transformers/logo-transformer';
 
+import ContactSection from './contact-section';
+import Copyright from './copyright';
 import { FooterFragment, FooterSectionsFragment } from './fragment';
-import { AmazonIcon } from './payment-icons/amazon';
-import { AmericanExpressIcon } from './payment-icons/american-express';
-import { ApplePayIcon } from './payment-icons/apple-pay';
-import { MastercardIcon } from './payment-icons/mastercard';
-import { PayPalIcon } from './payment-icons/paypal';
-import { VisaIcon } from './payment-icons/visa';
-
-const paymentIcons = [
-  <AmazonIcon key="amazon" />,
-  <AmericanExpressIcon key="americanExpress" />,
-  <ApplePayIcon key="apple" />,
-  <MastercardIcon key="mastercard" />,
-  <PayPalIcon key="paypal" />,
-  <VisaIcon key="visa" />,
-];
+import InfoSection from './info-section';
 
 const socialIcons: Record<string, { icon: JSX.Element }> = {
   Facebook: { icon: <SiFacebook title="Facebook" /> },
@@ -71,17 +58,6 @@ export const Footer = async () => {
 
   const data = await getFooterData();
 
-  const logo = data.settings ? logoTransformer(data.settings) : '';
-
-  const copyright = `© ${new Date().getFullYear()} ${data.settings?.storeName} – Powered by BigCommerce`;
-
-  const contactInformation = data.settings?.contact
-    ? {
-        address: data.settings.contact.address,
-        phone: data.settings.contact.phone,
-      }
-    : undefined;
-
   const socialMediaLinks = data.settings?.socialMediaLinks
     .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))
     .map((socialMediaLink) => ({
@@ -96,38 +72,29 @@ export const Footer = async () => {
 
     return [
       {
-        title: t('categories'),
+        title: t('shop'),
         links: sectionsData.categoryTree.map((category) => ({
           label: category.name,
           href: category.path,
         })),
       },
       {
-        title: t('brands'),
-        links: removeEdgesAndNodes(sectionsData.brands).map((brand) => ({
-          label: brand.name,
-          href: brand.path,
-        })),
-      },
-      {
-        title: t('navigate'),
-        links: removeEdgesAndNodes(sectionsData.content.pages).map((page) => ({
-          label: page.name,
-          href: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
-        })),
+        title: t('explore'),
+        links: [
+          { label: 'About', href: '/about' },
+          { label: 'Terms & Conditions', href: '/terms&conditions' },
+          { label: 'My Account', href: '/account' },
+          { label: 'Contact Us', href: '/contact' },
+        ],
       },
     ];
   });
 
   return (
     <FooterSection
-      contactInformation={contactInformation}
-      contactTitle={t('contactUs')}
-      copyright={copyright}
-      logo={logo}
-      logoHref="/"
-      logoLabel={t('home')}
-      paymentIcons={paymentIcons}
+      contactSection={<ContactSection />}
+      copyright={<Copyright />}
+      infoSection={<InfoSection />}
       sections={streamableSections}
       socialMediaLinks={socialMediaLinks}
     />
