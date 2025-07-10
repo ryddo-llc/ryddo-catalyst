@@ -62,7 +62,7 @@ export default async (): Promise<NextConfig> => {
 
   let nextConfig: NextConfig = {
     reactStrictMode: true,
-    trailingSlash: true,
+
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
