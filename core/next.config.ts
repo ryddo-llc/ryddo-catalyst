@@ -62,6 +62,10 @@ export default async (): Promise<NextConfig> => {
 
   let nextConfig: NextConfig = {
     reactStrictMode: true,
+
+    // Use standalone for Netlify
+    output: 'standalone',
+
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
@@ -86,6 +90,7 @@ export default async (): Promise<NextConfig> => {
         'vibes',
       ],
     },
+
     // default URL generation in BigCommerce uses trailing slash
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
     // eslint-disable-next-line @typescript-eslint/require-await
