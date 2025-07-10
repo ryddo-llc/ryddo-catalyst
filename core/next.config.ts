@@ -86,6 +86,21 @@ export default async (): Promise<NextConfig> => {
         'vibes',
       ],
     },
+
+    // Add this to handle dynamic routes properly
+    async generateBuildId() {
+      return 'catalyst-build';
+    },
+
+    // Skip static generation for user-specific routes
+    async rewrites() {
+      return {
+        beforeFiles: [],
+        afterFiles: [],
+        fallback: [],
+      };
+    },
+    
     // default URL generation in BigCommerce uses trailing slash
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
     // eslint-disable-next-line @typescript-eslint/require-await
