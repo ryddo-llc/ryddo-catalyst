@@ -474,6 +474,18 @@ declare const messages: {
       "description": "Stay up to date with the latest news and offers from our store.",
       "success": "Thank you for your interest! Newsletter feature is coming soon!"
     }
+  },
+  "About": {
+    "title": "About Us"
+  },
+  "Contact": {
+    "title": "Contact Us"
+  },
+  "Terms": {
+    "title": "Terms & Conditions"
+  },
+  "MyAccount": {
+    "title": "My Account"
   }
 };
 export default messages;

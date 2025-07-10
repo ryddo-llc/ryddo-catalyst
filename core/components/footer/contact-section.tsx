@@ -1,11 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  FaInstagram,
-  FaFacebook,
-  FaPhone,
   FaEnvelope,
+  FaFacebook,
+  FaInstagram,
   FaMapMarkerAlt,
+  FaPhone,
 } from 'react-icons/fa';
 
 type ContactInfopTypes = {

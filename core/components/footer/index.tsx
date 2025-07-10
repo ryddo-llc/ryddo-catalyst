@@ -82,8 +82,8 @@ export const Footer = async () => {
         title: t('explore'),
         links: [
           { label: 'About', href: '/about' },
-          { label: 'Terms & Conditions', href: '/terms-conditions' },
-          { label: 'My Account', href: '/my-account' },
+          { label: 'Terms & Conditions', href: '/terms&conditions' },
+          { label: 'My Account', href: '/account' },
           { label: 'Contact Us', href: '/contact' },
         ],
       },
