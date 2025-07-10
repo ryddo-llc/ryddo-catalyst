@@ -1,5 +1,5 @@
+import { Link } from '~/components/link';
 import React from 'react';
-import Link from 'next/link';
 import {
   FaEnvelope,
   FaFacebook,
@@ -13,14 +13,7 @@ type ContactInfopTypes = {
   value: string;
 };
 export default function ContactSection() {
-  const contactInfo: ContactInfopTypes[] = [
-    { type: 'phone', value: '(323) 676-7433' },
-    { type: 'email', value: 'info@ryddo.com' },
-    {
-      type: 'address',
-      value: '787 S Alameda St., Unit 120, Los Angeles, CA 90021',
-    },
-  ];
+
   return (
     <div className="pr-2">
       <span className="mb-3 block font-semibold text-[var(--footer-section-title,hsl(var(--foreground)))]">
