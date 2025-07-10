@@ -17,7 +17,7 @@ export default function ContactSection() {
     { type: 'phone', value: '(323) 676-7433' },
     { type: 'email', value: 'info@ryddo.com' },
     {
-      type: 'adress',
+      type: 'address',
       value: '787 S Alameda St., Unit 120, Los Angeles, CA 90021',
     },
   ];
