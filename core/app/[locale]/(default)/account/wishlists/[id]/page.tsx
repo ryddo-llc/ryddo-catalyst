@@ -20,9 +20,6 @@ import { WishlistActions, WishlistActionsSkeleton } from './_components/wishlist
 import { WishlistAnalyticsProvider } from './_components/wishlist-analytics-provider';
 import { getCustomerWishlist } from './page-data';
 
-// Force dynamic rendering to prevent build-time static generation
-export const dynamic = 'force-dynamic';
-
 interface Props {
   params: Promise<{ locale: string; id: string }>;
   searchParams: Promise<SearchParams>;

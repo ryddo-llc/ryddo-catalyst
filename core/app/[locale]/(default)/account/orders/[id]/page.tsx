@@ -7,9 +7,6 @@ import { orderDetailsTransformer } from '~/data-transformers/order-details-trans
 
 import { getCustomerOrderDetails } from './page-data';
 
-// Force dynamic rendering to prevent build-time static generation
-export const dynamic = 'force-dynamic';
-
 interface Props {
   params: Promise<{
     id: string;
