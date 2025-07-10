@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react';
 
 import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
+import PartnersContactBar from '~/components/partner-contact-banner';
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
@@ -20,6 +21,7 @@ export default async function DefaultLayout({ params, children }: Props) {
       <main>{children}</main>
 
       <Footer />
+      <PartnersContactBar />
     </>
   );
 }
