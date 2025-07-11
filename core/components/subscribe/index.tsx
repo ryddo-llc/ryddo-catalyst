@@ -11,8 +11,14 @@ export const Subscribe = () => {
     <SubscribeSection
       action={subscribe}
       description={t('description')}
-      placeholder={t('placeholder')}
+      namePlaceholder={t('namePlaceholder')}
+      emailPlaceholder={t('emailPlaceholder')}
+      submitLabel={t('submitLabel')}
       title={t('title')}
+      image={{
+        src: '/images/backgrounds/newsletter-background.svg',
+        alt: 'Newsletter background with palm trees and mountains'
+      }}
     />
   );
 };
