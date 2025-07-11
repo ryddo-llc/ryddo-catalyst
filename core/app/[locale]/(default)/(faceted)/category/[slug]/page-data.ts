@@ -1,5 +1,6 @@
 import { cache } from 'react';
 
+import { PageHeaderFragment } from '@/vibes/soul/sections/page-header/fragment';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -13,6 +14,7 @@ const CategoryPageQuery = graphql(
           entityId
           name
           ...BreadcrumbsFragment
+          ...PageHeaderFragment
           seo {
             pageTitle
             metaDescription
@@ -44,7 +46,7 @@ const CategoryPageQuery = graphql(
       }
     }
   `,
-  [BreadcrumbsCategoryFragment],
+  [BreadcrumbsCategoryFragment, PageHeaderFragment],
 );
 
 export const getCategoryPageData = cache(async (entityId: number, customerAccessToken?: string) => {
