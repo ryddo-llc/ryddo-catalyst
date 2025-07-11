@@ -51,27 +51,31 @@ export function NewsletterForm({
     >
       <div className="flex flex-col space-y-5 px-2 sm:px-8">
         <div className="flex flex-col justify-center sm:flex-row gap-4">
-          <input
-            {...getInputProps(fields.name, { type: 'text' })}
-            className={clsx(
-              'w-full sm:w-80 h-11 pl-5 pr-5 relative bg-white rounded-[10px] border-gray-200 py-1 px-1 transition-all duration-200 ease-in-out',
-              'text-neutral-500 text-sm font-semibold placeholder:text-neutral-400',
-              'focus:outline-none focus:ring-2 focus:ring-pink-500',
-              fields.name.errors && 'border-red-500 focus:border-red-500 focus:ring-red-500',
-            )}
-            placeholder={namePlaceholder}
-          />
+          {fields.name && (
+            <input
+              {...getInputProps(fields.name, { type: 'text' })}
+              className={clsx(
+                'w-full sm:w-80 h-11 pl-5 pr-5 relative bg-white rounded-[10px] border-gray-200 py-1 px-1 transition-all duration-200 ease-in-out',
+                'text-neutral-500 text-sm font-semibold placeholder:text-neutral-400',
+                'focus:outline-none focus:ring-2 focus:ring-pink-500',
+                fields.name?.errors && 'border-red-500 focus:border-red-500 focus:ring-red-500',
+              )}
+              placeholder={namePlaceholder}
+            />
+          )}
           
-          <input
-            {...getInputProps(fields.email, { type: 'email' })}
-            className={clsx(
-              'w-full sm:w-80 h-11 pl-5 pr-5 relative bg-white rounded-[10px] border-gray-200 py-1 px-1 transition-all duration-200 ease-in-out',
-              'text-neutral-500 text-sm font-semibold placeholder:text-neutral-400',
-              'focus:outline-none focus:ring-2 focus:ring-pink-500',
-              fields.email.errors && 'border-red-500 focus:border-red-500 focus:ring-red-500',
-            )}
-            placeholder={emailPlaceholder}
-          />
+          {fields.email && (
+            <input
+              {...getInputProps(fields.email, { type: 'email' })}
+              className={clsx(
+                'w-full sm:w-80 h-11 pl-5 pr-5 relative bg-white rounded-[10px] border-gray-200 py-1 px-1 transition-all duration-200 ease-in-out',
+                'text-neutral-500 text-sm font-semibold placeholder:text-neutral-400',
+                'focus:outline-none focus:ring-2 focus:ring-pink-500',
+                fields.email?.errors && 'border-red-500 focus:border-red-500 focus:ring-red-500',
+              )}
+              placeholder={emailPlaceholder}
+            />
+          )}
         </div>
 
         <button
@@ -86,10 +90,10 @@ export function NewsletterForm({
           {isPending ? 'Subscribing...' : submitLabel}
         </button>
 
-        {fields.name.errors && (
+        {fields.name?.errors && (
           <p className="text-red-500 text-center">{fields.name.errors[0]}</p>
         )}
-        {fields.email.errors && (
+        {fields.email?.errors && (
           <p className="text-red-500 text-center">{fields.email.errors[0]}</p>
         )}
       </div>
