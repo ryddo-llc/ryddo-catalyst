@@ -469,10 +469,12 @@ declare const messages: {
       "explore": "Explore"
     },
     "Subscribe": {
-      "title": "Sign up for our newsletter",
-      "placeholder": "Enter your email",
-      "description": "Stay up to date with the latest news and offers from our store.",
-      "success": "Thank you for your interest! Newsletter feature is coming soon!"
+      "title": "Let's stay in touch",
+      "namePlaceholder": "name",
+      "emailPlaceholder": "email",
+      "submitLabel": "subscribe",
+      "description": "Sign up for our newsletter and receive special offers and discounts.",
+      "success": "Thanks for subscribing! We'll be in touch soon."
     }
   },
   "About": {
