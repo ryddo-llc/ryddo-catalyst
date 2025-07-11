@@ -1,5 +1,4 @@
 import { SubmissionResult } from '@conform-to/react';
-import { clsx } from 'clsx';
 
 import { NewsletterForm } from '@/vibes/soul/primitives/newsletter-form';
 import { Image } from '~/components/image';
@@ -8,20 +7,20 @@ type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State
 
 export function Subscribe({
   action,
-  image,
-  title,
   description,
-  namePlaceholder,
   emailPlaceholder,
+  image,
+  namePlaceholder,
   submitLabel,
+  title,
 }: {
   action: Action<{ lastResult: SubmissionResult | null; successMessage?: string }, FormData>;
-  image?: { src: string; alt: string };
-  title: string;
   description?: string;
-  namePlaceholder?: string;
   emailPlaceholder?: string;
+  image?: { src: string; alt: string };
+  namePlaceholder?: string;
   submitLabel?: string;
+  title: string;
 }) {
   return (
     <section className="w-full min-h-[70vh] md:min-h-[50vh] overflow-hidden relative flex items-center bg-gradient-to-br from-blue-50 to-indigo-100">

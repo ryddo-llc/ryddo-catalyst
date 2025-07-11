@@ -1,6 +1,6 @@
 'use client';
 
-import { getFormProps, getInputProps, useForm } from '@conform-to/react';
+import { getFormProps, getInputProps, useForm, SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { useActionState } from 'react';
@@ -16,7 +16,7 @@ export function NewsletterForm({
   emailPlaceholder = 'Email',
   submitLabel = 'Subscribe',
 }: {
-  action: Action<{ lastResult: any; successMessage?: string }, FormData>;
+  action: Action<{ lastResult: SubmissionResult | null; successMessage?: string }, FormData>;
   className?: string;
   namePlaceholder?: string;
   emailPlaceholder?: string;
@@ -25,7 +25,7 @@ export function NewsletterForm({
   const [state, formAction, isPending] = useActionState(action, { lastResult: null });
 
   const [form, fields] = useForm({
-    lastResult: state?.lastResult,
+    lastResult: state.lastResult,
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
@@ -33,7 +33,7 @@ export function NewsletterForm({
     shouldRevalidate: 'onInput',
   });
 
-  if (state?.successMessage) {
+  if (state.successMessage) {
     return (
       <div className={clsx('text-center py-6 text-green-600 font-medium', className)}>
         Thanks for subscribing! We'll be in touch soon.
