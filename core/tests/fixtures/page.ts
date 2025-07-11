@@ -104,7 +104,6 @@ export async function toHaveURL(
     pass,
     name: assertionName,
     expected: url,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     actual: matcherResult?.actual,
   };
 }
