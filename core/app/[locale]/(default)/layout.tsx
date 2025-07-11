@@ -15,7 +15,7 @@ export default async function DefaultLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="max-w-screen-8xl flex min-h-screen flex-col">
+    <div className="max-w-screen-8xl flex flex-col">
       <Header />
 
       <main className="flex-grow">{children}</main>

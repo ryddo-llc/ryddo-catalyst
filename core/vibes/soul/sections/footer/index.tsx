@@ -62,21 +62,21 @@ export const Footer = ({
   return (
     <footer
       className={clsx(
-        'group/footer border-b-4 border-t border-b-[var(--footer-border-bottom,hsl(var(--primary)))] border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
+        'group/footer border-b-4 border-t border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
         className,
       )}
     >
       <div className="mx-auto max-w-screen-2xl px-6 py-6 @xl:px-10 @xl:py-10 @4xl:px-16 @4xl:py-12">
         <div className="flex flex-col justify-between gap-x-20 gap-y-12 xl:flex-row">
-                  <div className="flex flex-col gap-4 text-center sm:text-left xl:w-1/4 xl:gap-6">
-          {infoSection}
+          <div className="flex flex-col gap-4 text-center sm:text-left xl:w-1/4 xl:gap-6">
+            {infoSection}
 
             {/* Social Media Links */}
             <Stream fallback={<SocialMediaLinksSkeleton />} value={streamableSocialMediaLinks}>
               {(socialMediaLinks) => {
                 if (socialMediaLinks != null) {
                   return (
-                    <div className="flex items-center justify-center sm:justify-start gap-3">
+                    <div className="flex items-center justify-center gap-3 sm:justify-start">
                       {socialMediaLinks.map(({ href, icon }, i) => {
                         return (
                           <Link
@@ -102,7 +102,7 @@ export const Footer = ({
                 return (
                   <div
                     className={clsx(
-                      'grid grid-cols-1 gap-y-8 text-center sm:grid-cols-3 sm:text-left md:gap-x-2 lg:gap-x-6 xl:gap-y-10 justify-items-center sm:justify-items-start flex-1 mx-4',
+                      'mx-4 grid flex-1 grid-cols-1 justify-items-center gap-y-8 text-center sm:grid-cols-3 sm:justify-items-start sm:text-left md:gap-x-2 lg:gap-x-6 xl:gap-y-10',
                     )}
                   >
                     {sections.map(({ title, links }, i) => (
@@ -131,7 +131,6 @@ export const Footer = ({
                     ))}
 
                     {contactSection}
-
                   </div>
                 );
               }
@@ -140,8 +139,6 @@ export const Footer = ({
         </div>
 
         {copyright}
-
-
       </div>
     </footer>
   );
@@ -188,7 +185,3 @@ function FooterColumnSkeleton() {
     </ul>
   );
 }
-
-
-
-
