@@ -1,5 +1,6 @@
 'use client';
 
+import { clsx } from 'clsx';
 import { forwardRef, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
 
@@ -38,11 +39,14 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
       <div ref={ref}>
         {banner && <Banner ref={setBannerElement} {...banner} />}
         <Headroom
+          onPin={() => setIsFloating(true)}
           onUnfix={() => setIsFloating(false)}
-          onUnpin={() => setIsFloating(true)}
           pinStart={bannerHeight}
         >
-          <div className="p-2">
+          <div className={clsx(
+            'p-2',
+            !isFloating && 'border-b border-solid border-b-[#DBDBDB]'
+          )}>
             <Navigation {...navigation} isFloating={isFloating} />
           </div>
         </Headroom>

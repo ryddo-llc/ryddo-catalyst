@@ -1,0 +1,74 @@
+name: 🧩 Component Development
+description: Specific component development task
+title: '[Component]: '
+labels: ['component', 'development']
+body:
+  - type: input
+    id: component-name
+    attributes:
+      label: Component Name
+      description: What's the component called?
+      placeholder: ProductCard, CheckoutButton, SearchFilters
+    validations:
+      required: true
+  - type: dropdown
+    id: component-type
+    attributes:
+      label: Component Type
+      default: 'UI Component'
+      options:
+        - UI Component
+        - Page Component
+        - Layout Component
+        - Hook/Utility
+        - API Integration
+        - Form Component
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: functionality
+    attributes:
+      label: Functionality
+      description: What should this component do?
+      placeholder: |
+        - Display product information
+        - Handle add to cart
+        - Show loading states
+        - Handle errors
+    validations:
+      required: true
+  - type: textarea
+    id: props-api
+    attributes:
+      label: Props/API
+      description: What props should this component accept?
+      placeholder: |
+        interface Props {
+          product: Product;
+          onAddToCart: (id: string) => void;
+          loading?: boolean;
+        }
+  - type: textarea
+    id: design-specs
+    attributes:
+      label: Design Specifications
+      description: Link to designs or describe styling requirements
+      placeholder: |
+        - Follow existing design system
+        - Use Tailwind classes
+        - Mobile-first responsive
+        - Design link: [URL]
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Development Checklist
+      options:
+        - label: Create component structure
+        - label: Add TypeScript types
+        - label: Implement functionality
+        - label: Add proper styling
+        - label: Handle loading/error states
+        - label: Make responsive
+        - label: Add to Storybook (if applicable)
+        - label: Test on different devices

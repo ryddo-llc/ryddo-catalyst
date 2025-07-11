@@ -1,0 +1,72 @@
+name: 🐛 Bug Report
+description: Report a bug or technical issue
+title: '[Bug]: '
+labels: ['bug', 'needs-investigation']
+assignees:
+  - frontend-triag
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component/Area
+      options:
+        - Product Components
+        - Cart/Checkout
+        - Search/Filters
+        - Navigation
+        - Forms
+        - API Integration
+        - BigCommerce Connection
+        - UI/Styling
+        - Performance
+        - Authentication
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What's the issue?
+      placeholder: Component X is not rendering correctly when...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Navigate to...
+        2. Click on...
+        3. Expected: ...
+        4. Actual: ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        - Branch: main/feature-branch
+        - Browser: Chrome/Firefox/Safari
+        - Device: Desktop/Mobile
+        - URL: https://ryddo-catalyst.vercel.app/...
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Critical - Site broken
+        - High - Major functionality affected
+        - Medium - Minor functionality issue
+        - Low - Cosmetic/Nice to have
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Console errors, screenshots, or other relevant info
+      render: text

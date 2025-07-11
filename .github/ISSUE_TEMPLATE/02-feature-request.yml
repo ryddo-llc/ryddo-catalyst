@@ -1,0 +1,72 @@
+name: ✨ New Feature/Component
+description: Request a new feature or component to be built
+title: '[Feature]: '
+labels: ['enhancement', 'needs-spec']
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: What type of work is this?
+      options:
+        - New Component
+        - New Page
+        - Feature Enhancement
+        - API Integration
+        - Performance Improvement
+        - Refactoring
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: What needs to be built?
+      placeholder: We need a new component that...
+    validations:
+      required: true
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: What are the technical requirements?
+      placeholder: |
+        - Must integrate with BigCommerce API
+        - Should be responsive
+        - Needs to handle loading states
+        - Should match existing design system
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How do we know this is done?
+      placeholder: |
+        - [ ] Component renders correctly
+        - [ ] Handles error states
+        - [ ] Mobile responsive
+        - [ ] Matches design specs
+        - [ ] Has proper TypeScript types
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Critical - Blocking other work
+        - High - Important for next release
+        - Medium - Nice to have soon
+        - Low - Future consideration
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Design links, references, dependencies, etc.
+      placeholder: |
+        - Design: [link]
+        - Related issues: #123
+        - Dependencies: Need API endpoint first
