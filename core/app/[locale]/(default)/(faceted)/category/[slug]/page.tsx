@@ -7,6 +7,7 @@ import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
+import { PageHeader } from '@/vibes/soul/sections/page-header';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -240,6 +241,17 @@ export default async function Category(props: Props) {
 
   return (
     <>
+      <PageHeader
+        backgroundImage={category.defaultImage
+          ? { 
+              src: category.defaultImage.url, 
+              alt: category.defaultImage.altText || category.name 
+            }
+          : null
+        }
+        title={category.name}
+      />
+
       <ProductsListSection
         breadcrumbs={breadcrumbs}
         compareLabel={t('Compare.compare')}
