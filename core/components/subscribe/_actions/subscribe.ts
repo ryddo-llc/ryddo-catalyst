@@ -12,7 +12,7 @@ export const subscribe = async (
 ) => {
   const t = await getTranslations('Components.Subscribe');
 
-  const submission = parseWithZod(formData, { schema });
+  const submission = parseWithZod(formData, { schema: newsletterSchema });
 
   if (submission.status !== 'success') {
     return { lastResult: submission.reply() };

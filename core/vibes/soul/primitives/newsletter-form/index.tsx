@@ -12,15 +12,15 @@ type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State
 export function NewsletterForm({
   action,
   className,
-  namePlaceholder = 'Name',
   emailPlaceholder = 'Email',
+  namePlaceholder = 'Name',
   submitLabel = 'Subscribe',
   successMessage = 'Thanks for subscribing! We\'ll be in touch soon.',
 }: {
   action: Action<{ lastResult: SubmissionResult | null; successMessage?: string }, FormData>;
   className?: string;
-  namePlaceholder?: string;
   emailPlaceholder?: string;
+  namePlaceholder?: string;
   submitLabel?: string;
   successMessage?: string;
 }) {
@@ -31,8 +31,8 @@ export function NewsletterForm({
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: newsletterSchema });
     },
-    shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
+    shouldValidate: 'onBlur',
   });
 
   if (state.successMessage) {

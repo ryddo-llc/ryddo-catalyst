@@ -31,12 +31,12 @@ export function Subscribe({
             alt={image.alt}
             className="object-cover"
             fill
+            priority
             sizes="100vw"
             src={image.src}
             style={{
               objectPosition: 'center 40%',
             }}
-            priority
           />
         </div>
       )}
@@ -59,7 +59,7 @@ export function Subscribe({
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center p-4 pt-12 pb-12 md:p-10 md:pt-14 md:pb-14" role="region" aria-label="Newsletter subscription">
+        <div aria-label="Newsletter subscription" className="relative z-10 flex flex-col items-center justify-center p-4 pt-12 pb-12 md:p-10 md:pt-14 md:pb-14" role="region">
           <div className="text-center mb-6">
             <h2 className="text-3xl md:text-5xl font-extrabold leading-[48px] text-gray-800 mb-2" id="newsletter-title">
               {title}
@@ -76,8 +76,8 @@ export function Subscribe({
             <NewsletterForm 
               action={action} 
               className="w-full" 
-              namePlaceholder={namePlaceholder}
               emailPlaceholder={emailPlaceholder}
+              namePlaceholder={namePlaceholder}
               submitLabel={submitLabel}
             />
           </div>
