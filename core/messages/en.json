@@ -2,20 +2,20 @@
   "Home": {
     "Slideshow": {
       "Slide01": {
-        "title": "Fresh finds for every occasion",
-        "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
+        "title": "Performance e-scooters",
+        "description": "Book a test ride at our LA location",
         "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
-        "cta": "Shop Now"
+        "cta": "Book Test Rides"
       },
       "Slide02": {
-        "title": "Discover what's new",
+        "title": "Dealer & Servicing",
         "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
         "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
         "cta": "Shop Now"
       },
       "Slide03": {
-        "title": "Something for everyone",
-        "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
+        "title": "Premium e-motorbikes",
+        "description": "Only THE very best electric rides.",
         "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
         "cta": "Shop Now"
       }
