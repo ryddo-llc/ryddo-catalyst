@@ -4,7 +4,14 @@ import { Subscribe as SubscribeSection } from '@/vibes/soul/sections/subscribe';
 
 import { subscribe } from './_actions/subscribe';
 
-export const Subscribe = () => {
+interface SubscribeProps {
+  image?: {
+  src: string;
+  alt: string;
+  };
+}
+
+export const Subscribe = ({ image }: SubscribeProps = {}) => {
   const t = useTranslations('Components.Subscribe');
 
   return (
@@ -13,8 +20,8 @@ export const Subscribe = () => {
       description={t('description')}
       emailPlaceholder={t('emailPlaceholder')}
       image={{
-        src: '/images/backgrounds/newsletter-background.svg',
-        alt: 'Newsletter background with palm trees and mountains'
+        src: image?.src || '/images/backgrounds/newsletter-background.svg',
+        alt: image?.alt || 'Newsletter background with palm trees and mountains'
       }}
       namePlaceholder={t('namePlaceholder')}
       submitLabel={t('submitLabel')}

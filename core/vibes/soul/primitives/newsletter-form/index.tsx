@@ -5,7 +5,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { useActionState } from 'react';
 
-import { schema } from './schema';
+import { newsletterSchema } from './schema';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -15,19 +15,21 @@ export function NewsletterForm({
   namePlaceholder = 'Name',
   emailPlaceholder = 'Email',
   submitLabel = 'Subscribe',
+  successMessage = 'Thanks for subscribing! We\'ll be in touch soon.',
 }: {
   action: Action<{ lastResult: SubmissionResult | null; successMessage?: string }, FormData>;
   className?: string;
   namePlaceholder?: string;
   emailPlaceholder?: string;
   submitLabel?: string;
+  successMessage?: string;
 }) {
   const [state, formAction, isPending] = useActionState(action, { lastResult: null });
 
   const [form, fields] = useForm({
     lastResult: state.lastResult,
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
+      return parseWithZod(formData, { schema: newsletterSchema });
     },
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
@@ -36,7 +38,7 @@ export function NewsletterForm({
   if (state.successMessage) {
     return (
       <div className={clsx('text-center py-6 text-green-600 font-medium', className)}>
-        Thanks for subscribing! We'll be in touch soon.
+        {successMessage}
       </div>
     );
   }

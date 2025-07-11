@@ -47,6 +47,7 @@ export function Subscribe({
         <div className="absolute inset-0 w-full h-full">
           <Image
             alt="Newsletter form background"
+            aria-hidden="true"
             className="object-cover"
             fill
             sizes="(max-width: 768px) 100vw, 768px"
@@ -58,9 +59,9 @@ export function Subscribe({
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center p-4 pt-12 pb-12 md:p-10 md:pt-14 md:pb-14">
+        <div className="relative z-10 flex flex-col items-center justify-center p-4 pt-12 pb-12 md:p-10 md:pt-14 md:pb-14" role="region" aria-label="Newsletter subscription">
           <div className="text-center mb-6">
-            <h2 className="text-3xl md:text-5xl font-extrabold leading-[48px] text-gray-800 mb-2">
+            <h2 className="text-3xl md:text-5xl font-extrabold leading-[48px] text-gray-800 mb-2" id="newsletter-title">
               {title}
               <span className="text-[#F92F7B] w-5 h-24 text-7xl font-bold">
                 .
