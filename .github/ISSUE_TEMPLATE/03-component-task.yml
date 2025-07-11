@@ -15,7 +15,6 @@ body:
     id: component-type
     attributes:
       label: Component Type
-      default: 'UI Component'
       options:
         - UI Component
         - Page Component

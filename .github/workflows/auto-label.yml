@@ -1,0 +1,37 @@
+name: Auto Label Priority
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply priority labels
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const body = context.payload.issue.body;
+
+            // Remove existing priority labels
+            const currentLabels = context.payload.issue.labels.map(label => label.name);
+            const priorityLabels = currentLabels.filter(label => !label.startsWith('Priority:'));
+
+            // Add new priority label based on selection
+            if (body.includes('🔴 Critical')) {
+              priorityLabels.push('Priority: Critical');
+            } else if (body.includes('🟠 High')) {
+              priorityLabels.push('Priority: High');
+            } else if (body.includes('🟡 Medium')) {
+              priorityLabels.push('Priority: Medium');
+            } else if (body.includes('🟢 Low')) {
+              priorityLabels.push('Priority: Low');
+            }
+
+            // Update issue labels
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              labels: priorityLabels
+            });

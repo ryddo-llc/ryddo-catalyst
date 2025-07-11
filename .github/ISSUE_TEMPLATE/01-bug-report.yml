@@ -3,7 +3,7 @@ description: Report a bug or technical issue
 title: '[Bug]: '
 labels: ['bug', 'needs-investigation']
 assignees:
-  - frontend-triag
+  - warwick
 body:
   - type: dropdown
     id: component
@@ -58,10 +58,10 @@ body:
     attributes:
       label: Priority
       options:
-        - Critical - Site broken
-        - High - Major functionality affected
-        - Medium - Minor functionality issue
-        - Low - Cosmetic/Nice to have
+        - '🔴 Critical - Site broken'
+        - '🟠 High - Major functionality affected'
+        - '🟡 Medium - Minor functionality issue'
+        - '🟢 Low - Cosmetic/Nice to have'
     validations:
       required: true
   - type: textarea
