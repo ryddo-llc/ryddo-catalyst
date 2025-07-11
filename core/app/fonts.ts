@@ -1,4 +1,4 @@
-import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
+import { DM_Serif_Text, Inter, Nunito, Roboto_Mono } from 'next/font/google';
 
 const inter = Inter({
   display: 'swap',
@@ -19,4 +19,10 @@ const robotoMono = Roboto_Mono({
   variable: '--font-family-mono',
 });
 
-export const fonts = [inter, dmSerifText, robotoMono];
+const nunito = Nunito({
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-family-nunito',
+});
+
+export const fonts = [inter, dmSerifText, robotoMono, nunito];

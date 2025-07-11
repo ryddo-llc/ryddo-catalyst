@@ -12,6 +12,7 @@ export function Slideshow() {
   const slides = [
     {
       title: t('Slide01.title'),
+      subtitle: 'starting at $1,499',
       image: {
         src: SlideBg01.src,
         alt: t('Slide01.alt'),
@@ -25,6 +26,7 @@ export function Slideshow() {
     },
     {
       title: t('Slide02.title'),
+      subtitle: 'starting at $1,499',
       image: {
         src: SlideBg02.src,
         alt: t('Slide02.alt'),
@@ -38,6 +40,7 @@ export function Slideshow() {
     },
     {
       title: t('Slide03.title'),
+      subtitle: 'starting at $1,499',
       image: {
         src: SlideBg03.src,
         alt: t('Slide03.alt'),
