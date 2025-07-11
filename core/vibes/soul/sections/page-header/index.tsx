@@ -74,7 +74,7 @@ export const PageHeader = ({ title, backgroundImage, className }: PageHeaderProp
 
 export const PageHeaderSkeleton = ({ className }: { className?: string }) => {
   return (
-    <section className={clsx('relative w-full h-64 md:h-80 lg:h-96 flex items-center justify-center overflow-hidden bg-gray-200 animate-pulse', className)}>
+    <section className={clsx('relative w-full h-80 md:h-64 lg:h-76 flex items-center justify-center overflow-hidden bg-gray-200 animate-pulse', className)}>
       <div className="relative z-1 text-center px-4 max-w-4xl mx-auto">
         <Skeleton.Root className="mx-auto">
           <Skeleton.Box className="h-12 w-64 bg-white/20 rounded" />
