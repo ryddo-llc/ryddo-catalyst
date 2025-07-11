@@ -62,7 +62,7 @@ export const Footer = ({
   return (
     <footer
       className={clsx(
-        'group/footer border-b-4 border-t border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
+        'group/footer border-t border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
         className,
       )}
     >

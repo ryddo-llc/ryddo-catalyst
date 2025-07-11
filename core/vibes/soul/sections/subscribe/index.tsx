@@ -20,7 +20,7 @@ export function Subscribe({
   placeholder?: string;
 }) {
   return (
-    <section className="bg-primary-shadow @container">
+    <section className="bg-gray-100 @container">
       <div className="flex flex-col items-start @4xl:flex-row @4xl:items-stretch">
         {image && (
           <div className="relative min-h-96 w-full bg-primary/10 @4xl:flex-1">
@@ -42,10 +42,10 @@ export function Subscribe({
             )}
           >
             <div className="flex-1">
-              <h2 className="mb-4 font-heading text-2xl font-medium leading-none text-primary-highlight @xl:text-3xl @4xl:text-4xl">
+              <h2 className="mb-4 font-heading text-2xl font-medium leading-none text-foreground @xl:text-3xl @4xl:text-4xl">
                 {title}
               </h2>
-              <p className="text-primary-highlight opacity-75">{description}</p>
+              <p className="text-foreground opacity-75">{description}</p>
             </div>
             <InlineEmailForm action={action} className="flex-1" placeholder={placeholder} />
           </div>
