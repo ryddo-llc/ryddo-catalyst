@@ -1,29 +1,25 @@
 'use client';
+
+import type { StaticImageData } from 'next/image';
 import React from 'react';
 
-import { Link } from '../link';
 import { Image } from '../image';
+import { Link } from '../link';
 
 import cake from './brand-logos/cake-logo.svg';
-import super73 from './brand-logos/super-73-logo.svg';
 import minimotors from './brand-logos/Minimotors-logo1.svg';
+import super73 from './brand-logos/super-73-logo.svg';
 
-const brandLogos = {
-  cake: cake,
-  super73: super73,
-  minimotors: minimotors,
-};
-
-type BrandProps = {
+interface BrandProps {
+  image: string | StaticImageData;
   name: string;
-  image: string;
-};
+}
 
 export default function PartnersContactBar() {
-  const brands = [
-    { name: 'Super73', image: brandLogos.cake },
-    { name: 'Cake', image: brandLogos.super73 },
-    { name: 'MiniMotors', image: brandLogos.minimotors },
+  const brands: BrandProps[] = [
+    { name: 'Super73', image: super73 },
+    { name: 'Cake', image: cake },
+    { name: 'MiniMotors', image: minimotors },
   ];
 
   return (
@@ -31,8 +27,8 @@ export default function PartnersContactBar() {
       {/* Newsletter Signup Section */}
       <div className="xl:px-18 flex h-12 items-center justify-center border-b border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] md:h-16 md:border-b-0 md:border-r md:px-10 lg:px-12">
         <Link
-          href={'/'}
           className="h-auto whitespace-nowrap p-0 text-center text-white hover:bg-transparent hover:text-white"
+          href="/"
         >
           <span className="hidden md:inline">Sign up for Free ryddo adventures</span>
           <span className="md:hidden">Free adventures</span>
@@ -44,16 +40,16 @@ export default function PartnersContactBar() {
       <div className="flex min-h-[48px] flex-1 items-center justify-center gap-3 px-3 py-2 md:min-h-[64px] md:gap-8 md:px-8 md:py-0 lg:gap-12 lg:px-10 xl:gap-20 2xl:gap-32">
         {brands.map((brand: BrandProps) => (
           <Link
-            key={brand.name}
-            href="/products"
             className="h-auto flex-shrink-0 p-0 transition-opacity duration-200 hover:bg-transparent hover:opacity-80"
+            href="/products"
+            key={brand.name}
           >
             <Image
-              src={brand.image}
-              width={80}
-              height={20}
               alt={brand.name}
               className="h-auto w-16 max-w-[124px] md:w-24 lg:w-28 xl:w-32"
+              height={20}
+              src={brand.image}
+              width={80}
             />
           </Link>
         ))}
@@ -63,7 +59,7 @@ export default function PartnersContactBar() {
       <div className="flex w-full border-t lg:w-auto lg:border-t-0">
         {/* Phone Number */}
         <div className="flex h-12 w-1/2 items-center justify-center border-l border-white transition-colors duration-200 hover:bg-[#F92F7B] sm:h-14 md:h-16 lg:w-44 xl:w-52 2xl:w-60">
-          <Link href="tel:3236767433" className="px-2 text-center">
+          <Link className="px-2 text-center" href="tel:3236767433">
             <span className="hidden sm:inline">323.676.7433</span>
             <span className="text-xs sm:hidden">Call Us</span>
           </Link>
@@ -71,10 +67,10 @@ export default function PartnersContactBar() {
 
         {/* Book Now Button */}
         <Link
-          href="/service"
           className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] sm:h-14 md:h-16 lg:w-44 xl:w-52 2xl:w-60"
+          href="/service"
         >
-          <p className="font-bold">Book Now</p>
+          <span className="font-bold">Book Now</span>
         </Link>
       </div>
     </section>
