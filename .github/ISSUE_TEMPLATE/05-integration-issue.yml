@@ -1,0 +1,53 @@
+name: 🔌 Integration/API Issue
+description: Issues with BigCommerce or other API integrations
+title: '[Integration]: '
+labels: ['integration', 'api']
+body:
+  - type: dropdown
+    id: integration
+    attributes:
+      label: Which Integration?
+      options:
+        - BigCommerce API
+        - Payment Gateway
+        - Search API
+        - Third-party Service
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      options:
+        - Data Not Syncing
+        - API Errors
+        - Authentication Issues
+        - Rate Limiting
+        - Response Format Changes
+        - New Endpoint Needed
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue Description
+      description: What's happening with the integration?
+      placeholder: When calling the API endpoint...
+    validations:
+      required: true
+  - type: textarea
+    id: error-details
+    attributes:
+      label: Error Details
+      description: Error messages, status codes, request/response data
+      render: shell
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen?
+      placeholder: The API should return...
+    validations:
+      required: true

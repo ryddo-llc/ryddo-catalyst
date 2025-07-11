@@ -1,0 +1,57 @@
+name: 🔧 Technical Debt/Refactoring
+description: Technical improvements and code cleanup
+title: '[Tech Debt]: '
+labels: ['tech-debt', 'refactoring']
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Code Cleanup
+        - Performance Optimization
+        - Type Safety
+        - Component Refactoring
+        - API Improvements
+        - Build/Deploy Issues
+        - Dependencies Update
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Current Problem
+      description: What's wrong with the current implementation?
+      placeholder: The current code is hard to maintain because...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How should we fix this?
+      placeholder: We should refactor by...
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact/Benefits
+      description: What will this improvement achieve?
+      placeholder: |
+        - Better performance
+        - Easier to maintain
+        - Fewer bugs
+        - Better developer experience
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Estimated Effort
+      options:
+        - Small (< 2 hours)
+        - Medium (2-8 hours)
+        - Large (1-3 days)
+        - Extra Large (3+ days)
+    validations:
+      required: true
