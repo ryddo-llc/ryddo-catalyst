@@ -13,6 +13,8 @@ const config = {
   ],
   rules: {
     'prettier/prettier': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unused-eslint-disable': 'off',
     '@typescript-eslint/naming-convention': 'off',
     '@next/next/no-html-link-for-pages': 'off',
     'import/dynamic-import-chunkname': 'off',

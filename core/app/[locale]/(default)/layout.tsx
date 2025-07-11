@@ -15,14 +15,17 @@ export default async function DefaultLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   return (
-    <>
+    <div className="max-w-screen-8xl flex min-h-screen flex-col">
       <Header />
 
-      <main>{children}</main>
+      <main className="flex-grow">{children}</main>
 
       <Footer />
+
+      {/* Partners Contact Bar - Fixed at bottom of viewport */}
+
       <PartnersContactBar />
-    </>
+    </div>
   );
 }
 
