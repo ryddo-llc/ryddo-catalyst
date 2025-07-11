@@ -3,7 +3,7 @@ description: Report a bug or technical issue
 title: '[Bug]: '
 labels: ['bug', 'needs-investigation']
 assignees:
-  - warwick
+  - frontend-triag
 body:
   - type: dropdown
     id: component
