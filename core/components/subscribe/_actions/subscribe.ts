@@ -4,7 +4,7 @@ import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 
-import { schema } from '@/vibes/soul/primitives/inline-email-form/schema';
+import { newsletterSchema } from '@/vibes/soul/primitives/newsletter-form/schema';
 
 export const subscribe = async (
   _lastResult: { lastResult: SubmissionResult | null },
@@ -12,7 +12,7 @@ export const subscribe = async (
 ) => {
   const t = await getTranslations('Components.Subscribe');
 
-  const submission = parseWithZod(formData, { schema });
+  const submission = parseWithZod(formData, { schema: newsletterSchema });
 
   if (submission.status !== 'success') {
     return { lastResult: submission.reply() };
