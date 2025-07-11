@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 💬 Quick Questions
-    url: https://github.com/yourusername/yourrepo/discussions
+    url: https://github.com/ryddo-llc/ryddo-catalyst/discussions
     about: For quick dev questions and discussions
   - name: 📋 Project Board
-    url: https://github.com/yourusername/yourrepo/projects
+    url: https://github.com/ryddo-llc/ryddo-catalyst/projects/1
     about: View current sprint and project status

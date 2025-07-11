@@ -15,6 +15,7 @@ type ButtonLinkProps = ComponentPropsWithoutRef<typeof ButtonLink>;
 
 interface Slide {
   title: string;
+  subtitle?: string;
   description?: string;
   showDescription?: boolean;
   image?: { alt: string; blurDataUrl?: string; src: string };
@@ -154,21 +155,21 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
     <section
       aria-labelledby="hero-heading"
       className={clsx(
-        'w-full h-[45vh] md:h-[50vh] lg:h-[60vh] relative flex items-center @container',
+        'relative flex h-[45vh] w-full items-center @container md:h-[50vh] lg:h-[60vh]',
         className,
       )}
     >
-      <div className="h-full overflow-hidden w-full" ref={emblaRef}>
+      <div className="h-full w-full overflow-hidden" ref={emblaRef}>
         <div className="flex h-full">
           {slides.map(
-            ({ title, description, showDescription = true, image, cta, showCta = true }, idx) => {
+            ({ title, subtitle, description, showDescription = true, image, cta, showCta = true }, idx) => {
               return (
                 <div
                   className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full"
                   key={idx}
                 >
                   {/* Background Image Container */}
-                  <div className="absolute inset-0 w-full h-full opacity-30">
+                  <div className="absolute inset-0 h-full w-full opacity-30">
                     {image?.src != null && image.src !== '' && (
                       <Image
                         alt={image.alt}
@@ -189,65 +190,81 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                   </div>
 
                   {/* Content container */}
-                  <div className="container mx-auto px-4 sm:px-6 relative z-10 opacity-90 h-full flex items-center">
-                    <div className={`flex w-full transition-all duration-700 ease-out ${
-                      idx % 2 === 0 ? 'justify-end' : 'justify-start'
-                    }`}>
+                  <div className="container relative z-10 mx-auto flex h-full items-center px-4 opacity-90 sm:px-6">
+                    <div
+                      className={`flex w-full transition-all duration-700 ease-out ${
+                        idx % 2 === 0 ? 'justify-end' : 'justify-start'
+                      }`}
+                    >
                       {/* Premium e-rides box */}
-                      <div className={`w-full max-w-xs sm:max-w-sm md:max-w-md bg-white/95 rounded-xl shadow-lg p-5 sm:p-6 md:p-8 transform transition-all duration-700 ease-out ${
-                        idx === selectedIndex 
-                          ? 'translate-y-0 opacity-100' 
-                          : 'translate-y-8 opacity-0'
-                      }`}>
-                        <div className={`transition-all duration-500 ease-out delay-100 ${
-                          idx === selectedIndex 
-                            ? 'translate-y-0 opacity-100' 
-                            : 'translate-y-4 opacity-0'
-                        }`}>
-                          <p className="text-[#757575] text-sm font-semibold">
-                            starting at $1,499
-                          </p>
+                      <div
+                        className={`w-full max-w-xs transform rounded-xl bg-white/95 p-5 shadow-lg transition-all duration-700 ease-out sm:max-w-sm sm:p-6 md:max-w-md md:p-8 ${
+                          idx === selectedIndex
+                            ? 'translate-y-0 opacity-100'
+                            : 'translate-y-8 opacity-0'
+                        }`}
+                      >
+                        <div
+                          className={`transition-all delay-100 duration-500 ease-out ${
+                            idx === selectedIndex
+                              ? 'translate-y-0 opacity-100'
+                              : 'translate-y-4 opacity-0'
+                          }`}
+                        >
+                          {subtitle ? (
+                            <p className="text-sm font-semibold text-[#757575]">
+                              {subtitle}
+                            </p>
+                          ) : null}
                         </div>
 
-                        <div className={`font-nunito transition-all duration-500 ease-out delay-200 ${
-                          idx === selectedIndex 
-                            ? 'translate-y-0 opacity-100' 
-                            : 'translate-y-4 opacity-0'
-                        }`}>
+                        <div
+                          className={`font-nunito transition-all delay-200 duration-500 ease-out ${
+                            idx === selectedIndex
+                              ? 'translate-y-0 opacity-100'
+                              : 'translate-y-4 opacity-0'
+                          }`}
+                        >
                           <h1
-                            id="hero-heading"
-                            className="text-[#F92F7B] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight"
+                            className="text-3xl font-extrabold leading-tight text-[#F92F7B] sm:text-4xl md:text-5xl lg:text-6xl"
+                            id={idx === selectedIndex ? 'hero-heading' : undefined}
                           >
                             <span className="block">{title.split(' ')[0]}</span>
-                            <span className="text-zinc-800 inline-block">{title.split(' ').slice(1).join(' ')}</span>
+                            <span className="inline-block text-zinc-800">
+                              {title.split(' ').slice(1).join(' ')}
+                            </span>
                             <span className="text-[#F92F7B]">.</span>
                           </h1>
                         </div>
 
                         {showDescription && (
-                          <div className={`transition-all duration-500 ease-out delay-300 ${
-                            idx === selectedIndex 
-                              ? 'translate-y-0 opacity-100' 
-                              : 'translate-y-4 opacity-0'
-                          }`}>
-                            <p className="mt-1 text-[#757575] text-sm font-semibold">
+                          <div
+                            className={`transition-all delay-300 duration-500 ease-out ${
+                              idx === selectedIndex
+                                ? 'translate-y-0 opacity-100'
+                                : 'translate-y-4 opacity-0'
+                            }`}
+                          >
+                            <p className="mt-1 text-sm font-semibold text-[#757575]">
                               {description}
                             </p>
                           </div>
                         )}
 
                         {showCta && (
-                          <div className={`mt-4 sm:mt-5 md:mt-7 transition-all duration-500 ease-out delay-400 ${
-                            idx === selectedIndex 
-                              ? 'translate-y-0 opacity-100' 
-                              : 'translate-y-4 opacity-0'
-                          }`}>
+                          <div
+                            className={`delay-400 mt-4 transition-all duration-500 ease-out sm:mt-5 md:mt-7 ${
+                              idx === selectedIndex
+                                ? 'translate-y-0 opacity-100'
+                                : 'translate-y-4 opacity-0'
+                            }`}
+                          >
                             <ButtonLink
+                              aria-label="Shop for premium electric bikes and scooters"
                               href={cta?.href ?? '#'}
                               shape={cta?.shape ?? 'pill'}
                               size={cta?.size ?? 'large'}
                               variant={cta?.variant ?? 'primary'}
-                              aria-label="Shop for premium electric bikes and scooters"
                             >
                               {cta?.label ?? 'Shop Now'}
                             </ButtonLink>
