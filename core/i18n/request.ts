@@ -17,7 +17,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   if (locale === fallbackLocale) {
     return {
       locale,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       messages: (await import(`../messages/${locale}.json`)).default,
     };
   }
