@@ -43,7 +43,7 @@ export function Subscribe({
       )}
 
       {/* Content Container */}
-      <div className="w-full max-w-3xl pb-8 relative rounded-[10px] mx-8 md:mx-auto overflow-hidden shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.30)] mx-4 md:mx-auto">
+      <div className="w-full max-w-3xl pb-8 relative rounded-[10px] mx-4 md:mx-auto overflow-hidden shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.30)]">
         {/* Form Background Image */}
         <div className="absolute inset-0 w-full h-full">
           <Image
