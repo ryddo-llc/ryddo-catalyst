@@ -37,9 +37,17 @@ export const HeaderLinksFragment = graphql(`
       children {
         name
         path
+        image {
+          url: urlTemplate(lossy: true)
+          altText
+        }
         children {
           name
           path
+          image {
+            url: urlTemplate(lossy: true)
+            altText
+          }
         }
       }
     }
