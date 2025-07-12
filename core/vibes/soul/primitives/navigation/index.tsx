@@ -514,11 +514,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                     <div className="flex flex-col items-center gap-2">
                                       {group.image && (
                                         <Image
-                                          src={group.image.url}
                                           alt={group.image.altText}
-                                          width={400}
-                                          height={400}
                                           className="rounded object-cover"
+                                          height={400}
+                                          src={group.image.url}
+                                          width={400}
                                         />
                                       )}
                                       {group.label}
@@ -529,11 +529,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                     <div className="flex flex-col items-center gap-2">
                                       {group.image && (
                                         <Image
-                                          src={group.image.url}
                                           alt={group.image.altText}
-                                          width={400}
-                                          height={400}
                                           className="rounded object-cover"
+                                          height={400}
+                                          src={group.image.url}
+                                          width={400}
                                         />
                                       )}
                                       {group.label}
@@ -553,11 +553,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                   <div className="flex flex-col items-center gap-2">
                                     {link.image && (
                                       <Image
-                                        src={link.image.url}
                                         alt={link.image.altText}
-                                        width={32}
-                                        height={32}
                                         className="rounded object-cover"
+                                        height={32}
+                                        src={link.image.url}
+                                        width={32}
                                       />
                                     )}
                                     {link.label}
