@@ -1,3 +1,5 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
 
 import { Subscribe as SubscribeSection } from '@/vibes/soul/sections/subscribe';

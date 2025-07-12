@@ -2,10 +2,10 @@
   "Home": {
     "Slideshow": {
       "Slide01": {
-        "title": "Performance e-scooters",
-        "description": "Book a test ride at our LA location",
-        "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
-        "cta": "Book Test Rides"
+        "title": "Performance E-Scooters",
+        "description": "Book a test ride at our LA showroom.",
+        "alt": "Ryddo performance e-scooter on display in Los Angeles showroom.",
+        "cta": "Book Test Ride"
       },
       "Slide02": {
         "title": "Dealer & Servicing",
@@ -16,7 +16,7 @@
       "Slide03": {
         "title": "Premium e-bikes",
         "description": "Only THE very best electric rides.",
-        "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
+        "alt": "Premium electric bike positioned against a sleek urban backdrop.",
         "cta": "Shop Now"
       }
     },

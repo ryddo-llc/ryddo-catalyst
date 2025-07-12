@@ -3,8 +3,8 @@ import { PropsWithChildren } from 'react';
 
 import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
-import { Subscribe } from '~/components/subscribe';
 import PartnersContactBar from '~/components/partner-contact-banner';
+import { Subscribe } from '~/components/subscribe';
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
