@@ -17,7 +17,7 @@ declare const messages: {
         "cta": "Shop Now"
       },
       "Slide03": {
-        "title": "Premium e-motorbikes",
+        "title": "Premium e-bikes",
         "description": "Only THE very best electric rides.",
         "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
         "cta": "Shop Now"
