@@ -102,6 +102,7 @@ export const Header = async () => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
+
     const slicedTree = categoryTree.slice(0, 6);
     //  adding unique home link
 
@@ -117,9 +118,21 @@ export const Header = async () => {
       groups: children.map((firstChild) => ({
         label: firstChild.name,
         href: firstChild.path,
+        image: firstChild.image
+          ? {
+              url: firstChild.image.url,
+              altText: firstChild.image.altText,
+            }
+          : undefined,
         links: firstChild.children.map((secondChild) => ({
           label: secondChild.name,
           href: secondChild.path,
+          image: secondChild.image
+            ? {
+                url: secondChild.image.url,
+                altText: secondChild.image.altText,
+              }
+            : undefined,
         })),
       })),
     }));

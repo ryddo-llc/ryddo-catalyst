@@ -26,6 +26,7 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { Logo } from '@/vibes/soul/primitives/logo';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import { ProductCard } from '@/vibes/soul/primitives/product-card';
+import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { usePathname, useRouter } from '~/i18n/routing';
 import { useSearch } from '~/lib/search';
@@ -36,9 +37,17 @@ interface Link {
   groups?: Array<{
     label?: string;
     href?: string;
+    image?: {
+      url: string;
+      altText: string;
+    };
     links: Array<{
       label: string;
       href: string;
+      image?: {
+        url: string;
+        altText: string;
+      };
     }>;
   }>;
 }
@@ -466,16 +475,16 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             fallback={
               <ul className="flex min-h-[41px] animate-pulse flex-row items-center @4xl:gap-6 @4xl:p-2.5">
                 <li>
-                  <span className="bg-contrast-100 block h-4 w-10 rounded-md" />
+                  <span className="block h-4 w-10 rounded-md bg-contrast-100" />
                 </li>
                 <li>
-                  <span className="bg-contrast-100 block h-4 w-14 rounded-md" />
+                  <span className="block h-4 w-14 rounded-md bg-contrast-100" />
                 </li>
                 <li>
-                  <span className="bg-contrast-100 block h-4 w-24 rounded-md" />
+                  <span className="block h-4 w-24 rounded-md bg-contrast-100" />
                 </li>
                 <li>
-                  <span className="bg-contrast-100 block h-4 w-16 rounded-md" />
+                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
                 </li>
               </ul>
             }
@@ -494,7 +503,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   </NavigationMenu.Trigger>
                   {item.groups != null && item.groups.length > 0 && (
                     <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-                      <div className="m-auto grid w-full max-w-screen-lg grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
+                      <div className="m-auto grid w-full max-w-screen-2xl grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
                         {item.groups.map((group, columnIndex) => (
                           <ul className="flex flex-col" key={columnIndex}>
                             {/* Second Level Links */}
@@ -502,10 +511,34 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                               <li>
                                 {group.href != null && group.href !== '' ? (
                                   <Link className={navGroupClassName} href={group.href}>
-                                    {group.label}
+                                    <div className="flex flex-col items-center gap-2">
+                                      {group.image && (
+                                        <Image
+                                          alt={group.image.altText}
+                                          className="rounded object-cover"
+                                          height={400}
+                                          src={group.image.url}
+                                          width={400}
+                                        />
+                                      )}
+                                      {group.label}
+                                    </div>
                                   </Link>
                                 ) : (
-                                  <span className={navGroupClassName}>{group.label}</span>
+                                  <span className={navGroupClassName}>
+                                    <div className="flex flex-col items-center gap-2">
+                                      {group.image && (
+                                        <Image
+                                          alt={group.image.altText}
+                                          className="rounded object-cover"
+                                          height={400}
+                                          src={group.image.url}
+                                          width={400}
+                                        />
+                                      )}
+                                      {group.label}
+                                    </div>
+                                  </span>
                                 )}
                               </li>
                             )}
@@ -517,7 +550,18 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                   className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                                   href={link.href}
                                 >
-                                  {link.label}
+                                  <div className="flex flex-col items-center gap-2">
+                                    {link.image && (
+                                      <Image
+                                        alt={link.image.altText}
+                                        className="rounded object-cover"
+                                        height={32}
+                                        src={link.image.url}
+                                        width={32}
+                                      />
+                                    )}
+                                    {link.label}
+                                  </div>
                                 </Link>
                               </li>
                             ))}
@@ -550,7 +594,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   onPointerLeave={(e) => e.preventDefault()}
                   onPointerMove={(e) => e.preventDefault()}
                 >
-                  <Search size={20} strokeWidth={1} />
+                  <Search size={20} strokeWidth={2} />
                 </button>
               </Popover.Trigger>
               <Popover.Portal>
@@ -569,18 +613,18 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             </Popover.Root>
           ) : (
             <Link aria-label={searchLabel} className={navButtonClassName} href={searchHref}>
-              <Search size={20} strokeWidth={1} />
+              <Search size={30} strokeWidth={2} />
             </Link>
           )}
 
           <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
-            <User size={20} strokeWidth={1} />
+            <User size={20} strokeWidth={2} />
           </Link>
           <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
-            <ShoppingBag size={20} strokeWidth={1} />
+            <ShoppingBag size={20} strokeWidth={2} />
             <Stream
               fallback={
-                <span className="bg-contrast-100 text-background absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full text-xs" />
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-contrast-100 text-xs text-background" />
               }
               value={streamableCartCount}
             >
