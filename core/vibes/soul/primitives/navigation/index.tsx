@@ -502,8 +502,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     </Link>
                   </NavigationMenu.Trigger>
                   {item.groups != null && item.groups.length > 0 && (
-                    <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-                      <div className="m-auto grid w-full max-w-screen-2xl grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
+                    <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-2 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+                      <div className="max-w-8xl m-auto grid w-full grid-cols-4 justify-center pb-8 pt-5">
                         {item.groups.map((group, columnIndex) => (
                           <ul className="flex flex-col" key={columnIndex}>
                             {/* Second Level Links */}
@@ -516,9 +516,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                         <Image
                                           alt={group.image.altText}
                                           className="rounded object-cover"
-                                          height={400}
+                                          height={300}
                                           src={group.image.url}
-                                          width={400}
+                                          width={300}
                                         />
                                       )}
                                       {group.label}
@@ -531,9 +531,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                         <Image
                                           alt={group.image.altText}
                                           className="rounded object-cover"
-                                          height={400}
+                                          height={300}
                                           src={group.image.url}
-                                          width={400}
+                                          width={300}
                                         />
                                       )}
                                       {group.label}
