@@ -162,14 +162,17 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
       <div className="h-full w-full overflow-hidden" ref={emblaRef}>
         <div className="flex h-full">
           {slides.map(
-            ({ title, subtitle, description, showDescription = true, image, cta, showCta = true }, idx) => {
+            (
+              { title, subtitle, description, showDescription = true, image, cta, showCta = true },
+              idx,
+            ) => {
               return (
                 <div
                   className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full"
                   key={idx}
                 >
                   {/* Background Image Container */}
-                  <div className="absolute inset-0 h-full w-full opacity-30">
+                  <div className="absolute inset-0 h-full w-full opacity-80">
                     {image?.src != null && image.src !== '' && (
                       <Image
                         alt={image.alt}
@@ -198,7 +201,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                     >
                       {/* Premium e-rides box */}
                       <div
-                        className={`w-full max-w-xs transform rounded-xl bg-white/95 p-5 shadow-lg transition-all duration-700 ease-out sm:max-w-sm sm:p-6 md:max-w-md md:p-8 ${
+                        className={`w-full max-w-xs transform rounded-xl bg-white/95 p-2 shadow-lg transition-all duration-700 ease-out sm:max-w-sm sm:p-6 md:max-w-md md:p-8 ${
                           idx === selectedIndex
                             ? 'translate-y-0 opacity-100'
                             : 'translate-y-8 opacity-0'
@@ -212,9 +215,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                           }`}
                         >
                           {subtitle ? (
-                            <p className="text-sm font-semibold text-[#757575]">
-                              {subtitle}
-                            </p>
+                            <p className="text-sm font-semibold text-[#757575]">{subtitle}</p>
                           ) : null}
                         </div>
 

@@ -5,21 +5,21 @@ declare const messages: {
   "Home": {
     "Slideshow": {
       "Slide01": {
-        "title": "Fresh finds for every occasion",
-        "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
-        "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
-        "cta": "Shop Now"
+        "title": "Performance E-Scooters",
+        "description": "Book a test ride at our LA showroom.",
+        "alt": "Ryddo performance e-scooter on display in Los Angeles showroom.",
+        "cta": "Book Test Ride"
       },
       "Slide02": {
-        "title": "Discover what's new",
+        "title": "Dealer & Servicing",
         "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
         "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
         "cta": "Shop Now"
       },
       "Slide03": {
-        "title": "Something for everyone",
-        "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
-        "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
+        "title": "Premium e-bikes",
+        "description": "Only THE very best electric rides.",
+        "alt": "Premium electric bike positioned against a sleek urban backdrop.",
         "cta": "Shop Now"
       }
     },
