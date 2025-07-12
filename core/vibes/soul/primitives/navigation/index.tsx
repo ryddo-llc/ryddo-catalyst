@@ -594,7 +594,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   onPointerLeave={(e) => e.preventDefault()}
                   onPointerMove={(e) => e.preventDefault()}
                 >
-                  <Search size={20} strokeWidth={1} />
+                  <Search size={20} strokeWidth={2} />
                 </button>
               </Popover.Trigger>
               <Popover.Portal>
@@ -613,15 +613,15 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             </Popover.Root>
           ) : (
             <Link aria-label={searchLabel} className={navButtonClassName} href={searchHref}>
-              <Search size={20} strokeWidth={1} />
+              <Search size={30} strokeWidth={2} />
             </Link>
           )}
 
           <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
-            <User size={20} strokeWidth={1} />
+            <User size={20} strokeWidth={2} />
           </Link>
           <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
-            <ShoppingBag size={20} strokeWidth={1} />
+            <ShoppingBag size={20} strokeWidth={2} />
             <Stream
               fallback={
                 <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-contrast-100 text-xs text-background" />
