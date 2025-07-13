@@ -73,7 +73,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
         /* Default layout - top left text, bottom left button */
         <>
           <div className="absolute left-4 top-6">
-            <h3 className="font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-8xl font-extrabold text-[#333333] @lg:text-xl">
+            <h3 className="font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-xl font-extrabold text-[#333333] @lg:text-2xl">
               {category.name}
               <span className="ml-1 text-5xl text-[var(--category-item-dot,hsl(var(--primary)))]">
                 .
