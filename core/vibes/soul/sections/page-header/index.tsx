@@ -17,7 +17,7 @@ export const PageHeader = ({ title, backgroundImage, className }: PageHeaderProp
   };
 
   return (
-    <section className={clsx('relative w-full h-80 md:h-64 lg:h-76 flex items-end overflow-hidden', className)}>
+    <section className={clsx('relative w-full h-[30vh] md:h-[25vh] lg:h-[30vh] flex items-end overflow-hidden', className)}>
       {/* Background Image */}
       <Stream
         fallback={
