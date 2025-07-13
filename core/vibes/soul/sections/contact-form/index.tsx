@@ -19,10 +19,12 @@ type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State
 interface ContactFormProps {
   action: Action<{ lastResult: SubmissionResult | null; successMessage?: string }, FormData>;
   className?: string;
-  nameLabel?: string;
+  contactPhone?: string;
+  contactEmail?: string;
   emailLabel?: string;
-  phoneLabel?: string;
   howDidYouFindUsLabel?: string;
+  nameLabel?: string;
+  phoneLabel?: string;
   submitLabel?: string;
   successMessage?: string;
 }
@@ -30,6 +32,8 @@ interface ContactFormProps {
 export function ContactForm({
   action,
   className,
+  contactPhone = '(323) 676-7433',
+  contactEmail = 'info@ryddo.com',
   nameLabel = 'Name *',
   emailLabel = 'Email *',
   phoneLabel = 'Phone Number',
@@ -59,7 +63,7 @@ export function ContactForm({
   if (state.successMessage) {
     return (
       <div className={clsx('text-center py-8 text-green-600 font-medium', className)}>
-        {successMessage}
+        {state.successMessage}
       </div>
     );
   }
@@ -91,7 +95,6 @@ export function ContactForm({
         errors={fields.phone.errors}
         key={fields.phone.id}
         placeholder={phoneLabel}
-        required
       />
       
       <SelectField
@@ -120,7 +123,7 @@ export function ContactForm({
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-700 text-sm">PHONE</span>
-            <span className="text-pink-500 font-medium text-base">(323) 676-7433</span>
+            <span className="text-pink-500 font-medium text-base">{contactPhone}</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -129,7 +132,7 @@ export function ContactForm({
           </div>
           <div className="flex flex-col">
             <span className="font-semibold text-gray-700 text-sm">EMAIL</span>
-            <span className="text-pink-500 font-medium text-base">info@ryddo.com</span>
+            <span className="text-pink-500 font-medium text-base">{contactEmail}</span>
           </div>
         </div>
       </div>
