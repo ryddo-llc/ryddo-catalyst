@@ -15,7 +15,10 @@ export function ArrowButton({
   ...props
 }: ArrowButtonProps & ComponentPropsWithoutRef<'button'>) {
   return (
-    <Button className={`group/arrow-btn transition-all duration-200 ${className || ''}`} {...props}>
+    <Button
+      className={`group/arrow-btn text-[#FFFFFF] transition-all duration-200 ${className || ''}`}
+      {...props}
+    >
       <span className="flex items-center gap-0 transition-all duration-200 group-hover/arrow-btn:gap-2">
         <span>{children}</span>
         <ArrowRight

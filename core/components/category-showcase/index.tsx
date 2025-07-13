@@ -81,7 +81,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
             </h3>
           </div>
           <div className="absolute bottom-4 left-4">
-            <ArrowButton className="text-[#FFFFFF]" size="small" variant="primary">
+            <ArrowButton size="small" variant="primary">
               Shop
             </ArrowButton>
           </div>
