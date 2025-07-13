@@ -60,7 +60,7 @@ export const PageHeader = ({ title, backgroundImage, className }: PageHeaderProp
         >
           {(pageTitle) => (
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-['Nunito'] font-heading leading-tight text-black/70">
-              {pageTitle}
+              {pageTitle.toLocaleLowerCase()}
               <span className='text-[#F92F7B] text-5xl md:text-6xl lg:text-7xl font-["Inter"] leading-[67.20px]'>
                 .
               </span>
