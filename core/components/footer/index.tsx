@@ -73,10 +73,13 @@ export const Footer = async () => {
     return [
       {
         title: t('shop'),
-        links: sectionsData.categoryTree.map((category) => ({
-          label: category.name,
-          href: category.path,
-        })),
+        links: sectionsData.categoryTree
+          // filter out service category in footer
+          .filter((category) => category.name.toLowerCase() !== 'service')
+          .map((category) => ({
+            label: category.name,
+            href: category.path,
+          })),
       },
       {
         title: t('explore'),
