@@ -63,7 +63,7 @@ export function ContactForm({
   if (state.successMessage) {
     return (
       <div className={clsx('text-center py-8 text-green-600 font-medium', className)}>
-        {state.successMessage}
+          {state.successMessage || successMessage}
       </div>
     );
   }
