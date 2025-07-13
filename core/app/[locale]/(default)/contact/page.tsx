@@ -1,6 +1,26 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { ContactForm } from '@/vibes/soul/sections/contact-form';
+import { PageHeader } from '@/vibes/soul/sections/page-header';
+
+// Mock action, will replace with actual server action later
+async function contactAction(_state: unknown, _formData: unknown) {
+  'use server';
+
+  void _state;
+  void _formData;
+  
+  // Dummy await to satisfy linter
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  
+  // Contact form submission logic
+  return {
+    lastResult: null,
+    successMessage: "Thank you! We've received your information and will be in touch soon.",
+  };
+}
+
 interface Props {
   params: Promise<{ locale: string }>;
 }
@@ -23,81 +43,36 @@ export default async function ContactPage({ params }: Props) {
   const t = await getTranslations('Contact');
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6">{t('title')}</h1>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Get in Touch</h2>
-            <p className="text-lg mb-6">
-              Have questions about our electric vehicles or need support? We're here to help!
-            </p>
-            
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-white text-sm">📞</span>
-                </div>
-                <div>
-                  <p className="font-semibold">Phone</p>
-                  <p className="text-gray-600">(323) 676-7433</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-white text-sm">✉️</span>
-                </div>
-                <div>
-                  <p className="font-semibold">Email</p>
-                  <p className="text-gray-600">info@ryddo.com</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-white text-sm">📍</span>
-                </div>
-                <div>
-                  <p className="font-semibold">Address</p>
-                  <p className="text-gray-600">
-                    787 S Alameda St., Unit 120<br />
-                    Los Angeles, CA 90021
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Business Hours</h2>
-            <div className="space-y-2 mb-6">
-              <div className="flex justify-between">
-                <span>Monday - Friday:</span>
-                <span>9:00 AM - 6:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Saturday:</span>
-                <span>10:00 AM - 4:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Sunday:</span>
-                <span>Closed</span>
-              </div>
-            </div>
-            
-            <h2 className="text-2xl font-semibold mb-4">Follow Us</h2>
-            <div className="flex space-x-4">
-              <a className="text-pink-500 hover:text-pink-600" href="https://instagram.com/ryddo">
-                Instagram
-              </a>
-              <a className="text-pink-500 hover:text-pink-600" href="https://facebook.com/ryddo">
-                Facebook
-              </a>
+    <>
+      <PageHeader
+        backgroundImage={{
+          src: '/images/backgrounds/contact-background.webp',
+          alt: 'Contact us background'
+        }}
+        title={t('title')}
+      />
+      
+      <div 
+        className="relative py-16 bg-cover bg-top"
+        style={{
+          backgroundImage: 'url(/images/backgrounds/map-background.jpg)',
+        }}
+      >
+        <div className="absolute inset-0 bg-blue-50 bg-opacity-70"/>
+        <div className="relative container mx-auto px-4">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-lg">
+              <h2 className="text-5xl font-bold mb-4 text-gray-800 text-left">
+                Get in<span className='text-pink-500'> Touch</span>
+              </h2>
+              <p className="text-md font-bold mb-6 text-gray-600">
+                Have questions about our electric vehicles or need support? We're here to help!
+              </p>
+              <ContactForm action={contactAction} />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 } 
