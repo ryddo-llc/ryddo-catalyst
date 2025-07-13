@@ -5,6 +5,8 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { CategoryShowcase } from '~/components/category-showcase';
+import { getHeaderCategories } from '~/components/category-showcase/query';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
@@ -46,10 +48,18 @@ export default async function Home({ params }: Props) {
     return productCardTransformer(newestProducts, format);
   });
 
+  const streamableCategories = Streamable.from(async () => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const categoryTree = await getHeaderCategories(customerAccessToken);
+    
+    // Take first 5 top-level categories
+    return categoryTree.slice(0, 5);
+  });
+
   return (
     <>
       <Slideshow />
-
+      <CategoryShowcase categories={streamableCategories} />
       <FeaturedProductList
         cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
         description={t('FeaturedProducts.description')}
