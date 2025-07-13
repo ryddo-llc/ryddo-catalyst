@@ -49,7 +49,7 @@ export const PageHeader = ({ title, backgroundImage, className }: PageHeaderProp
       </Stream>
 
       {/* Content */}
-      <div className="relative z-[1] text-left px-4 pb-8 md:px-8 md:pb-12">
+      <div className="relative text-left px-4 pb-8 md:px-8 md:pb-12">
         <Stream
           fallback={
             <Skeleton.Root>
@@ -75,7 +75,7 @@ export const PageHeader = ({ title, backgroundImage, className }: PageHeaderProp
 export const PageHeaderSkeleton = ({ className }: { className?: string }) => {
   return (
     <section className={clsx('relative w-full h-[30vh] md:h-[25vh] lg:h-[30vh] flex items-center justify-center overflow-hidden bg-gray-200 animate-pulse', className)}>
-      <div className="relative z-1 text-center px-4 max-w-4xl mx-auto">
+      <div className="relative text-center px-4 max-w-4xl mx-auto">
         <Skeleton.Root className="mx-auto">
           <Skeleton.Box className="h-12 w-64 bg-white/20 rounded" />
         </Skeleton.Root>
