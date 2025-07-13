@@ -107,13 +107,13 @@ export const Header = async () => {
     //  adding unique home link
 
     slicedTree.unshift({
-      name: 'home',
+      name: 'Home',
       path: '/',
       children: [],
     });
 
     return slicedTree.map(({ name, path, children }) => ({
-      label: name,
+      label: name.toLocaleLowerCase(locale),
       href: path,
       groups: children.map((firstChild) => ({
         label: firstChild.name,
