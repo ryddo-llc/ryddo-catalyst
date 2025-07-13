@@ -17,7 +17,7 @@ export function ArrowButton({
 }: ArrowButtonProps & ComponentPropsWithoutRef<'button'>) {
   return (
     <Button
-      className={clsx('group/arrow-btn text-[#FFFFFF] transition-all duration-200', className)}
+      className={clsx('group/arrow-btn !text-[#FFFFFF] transition-all duration-200', className)}
       {...props}
     >
       <span className="flex items-center gap-0 transition-all duration-200 group-hover/arrow-btn:gap-2">
