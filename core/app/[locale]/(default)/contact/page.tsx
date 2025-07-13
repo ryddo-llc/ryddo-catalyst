@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { PageHeader } from '@/vibes/soul/sections/page-header';
 import { ContactForm } from '@/vibes/soul/sections/contact-form';
+import { PageHeader } from '@/vibes/soul/sections/page-header';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -26,8 +26,12 @@ export default async function ContactPage({ params }: Props) {
   const t = await getTranslations('Contact');
 
   // Mock action for now - replace with actual server action later
-  async function contactAction(state: any, formData: FormData) {
+  async function contactAction(_state: unknown, _formData: unknown) {
     'use server';
+
+    void _state;
+    void _formData;
+    
     // Contact form submission logic
     return {
       lastResult: null,
