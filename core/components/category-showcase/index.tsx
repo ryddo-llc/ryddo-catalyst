@@ -21,7 +21,7 @@ interface CategoryItemProps {
   index?: number;
 }
 
-function CategoryItem({ category, className, layout = 'default', index = 0 }: CategoryItemProps) {
+function CategoryItem({ category, className, layout = 'default' }: CategoryItemProps) {
   return (
     <Link
       className={clsx(
@@ -41,7 +41,7 @@ function CategoryItem({ category, className, layout = 'default', index = 0 }: Ca
           />
         ) : null}
       </div>
-      {layout === 'center' ? (
+      {layout === 'center' && (
         /* Center layout - button above text */
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
           <ArrowButton className="text-[#FFFFFF]" size="small" variant="primary">
@@ -54,7 +54,8 @@ function CategoryItem({ category, className, layout = 'default', index = 0 }: Ca
             </span>
           </h3>
         </div>
-      ) : layout === 'bottom-right' ? (
+      )}
+      {layout === 'bottom-right' && (
         /* Bottom right layout - centered text with "Book now" button below */
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
           <h3 className="mb-4 font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-4xl font-extrabold text-[#333333]">
@@ -67,7 +68,8 @@ function CategoryItem({ category, className, layout = 'default', index = 0 }: Ca
             Book now
           </ArrowButton>
         </div>
-      ) : (
+      )}
+      {layout === 'default' && (
         /* Default layout - top left text, bottom left button */
         <>
           <div className="absolute left-4 top-6">
