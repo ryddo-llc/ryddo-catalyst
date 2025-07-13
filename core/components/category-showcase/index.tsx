@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Button } from '@/vibes/soul/primitives/button';
+import { ArrowButton } from '~/components/arrow-button';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
@@ -44,9 +44,9 @@ function CategoryItem({ category, className, layout = 'default', index = 0 }: Ca
       {layout === 'center' ? (
         /* Center layout - button above text */
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <Button className="text-[#FFFFFF]" size="small" variant="primary">
+          <ArrowButton className="text-[#FFFFFF]" size="small" variant="primary">
             Shop
-          </Button>
+          </ArrowButton>
           <h3 className="font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-4xl font-extrabold text-[#333333]">
             {category.name}
             <span className="ml-1 text-5xl text-[var(--category-item-dot,hsl(var(--primary)))]">
@@ -63,9 +63,9 @@ function CategoryItem({ category, className, layout = 'default', index = 0 }: Ca
               .
             </span>
           </h3>
-          <Button size="small" className="text-[#FFFFFF]" variant="primary">
+          <ArrowButton className="text-[#FFFFFF]" size="small" variant="primary">
             Book now
-          </Button>
+          </ArrowButton>
         </div>
       ) : (
         /* Default layout - top left text, bottom left button */
@@ -79,9 +79,9 @@ function CategoryItem({ category, className, layout = 'default', index = 0 }: Ca
             </h3>
           </div>
           <div className="absolute bottom-4 left-4">
-            <Button size="small" className="text-[#FFFFFF]" variant="primary">
+            <ArrowButton className="text-[#FFFFFF]" size="small" variant="primary">
               Shop
-            </Button>
+            </ArrowButton>
           </div>
         </>
       )}
