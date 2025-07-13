@@ -140,13 +140,6 @@ const config = {
             fontVariationSettings: 'var(--font-variation-settings-mono)',
           },
         ],
-        nunito: [
-          'var(--font-family-nunito)',
-          {
-            fontFeatureSettings: 'var(--font-feature-settings-nunito)',
-            fontVariationSettings: 'var(--font-variation-settings-nunito)',
-          },
-        ],
       },
       fontSize: {
         xs: 'var(--font-size-xs, 0.75rem)',
