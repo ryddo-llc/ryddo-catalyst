@@ -113,7 +113,7 @@ export const Header = async () => {
     });
 
     return slicedTree.map(({ name, path, children }) => ({
-      label: name.toLocaleLowerCase(),
+      label: name.toLocaleLowerCase(locale),
       href: path,
       groups: children.map((firstChild) => ({
         label: firstChild.name,

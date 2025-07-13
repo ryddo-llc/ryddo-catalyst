@@ -8,9 +8,10 @@ interface PageHeaderProps {
   backgroundImage?: Streamable<{ src: string; alt: string } | null>;
   className?: string;
   title: Streamable<string>;
+  locale?: string;
 }
 
-export const PageHeader = ({ title, backgroundImage, className }: PageHeaderProps) => {
+export const PageHeader = ({ title, backgroundImage, className, locale }: PageHeaderProps) => {
   const placeholderImage = {
     alt: 'Page header background',
     src: '/images/backgrounds/newsletter-background.svg'
@@ -60,7 +61,7 @@ export const PageHeader = ({ title, backgroundImage, className }: PageHeaderProp
         >
           {(pageTitle) => (
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-['Nunito'] font-heading leading-tight text-black/70">
-              {pageTitle.toLocaleLowerCase()}
+              {pageTitle.toLocaleLowerCase(locale)}
               <span className='text-[#F92F7B] text-5xl md:text-6xl lg:text-7xl font-["Inter"] leading-[67.20px]'>
                 .
               </span>
