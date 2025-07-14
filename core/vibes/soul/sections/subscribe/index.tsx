@@ -28,7 +28,7 @@ export function Subscribe({
       style={image ? { backgroundImage: `url(${image.src})`, backgroundAttachment: 'fixed' } : undefined}
     >
       {/* Content Container */}
-      <div className="flex flex-col justify-center w-full max-w-lg h-[65%] min-h-[300px] max-h-[350px] relative mx-4 md:mx-auto pb-8 rounded-[10px] overflow-hidden shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.30)]">
+      <div className="flex flex-col justify-center w-full max-w-lg h-[80%] md:h-[65%] min-h-[300px] max-h-[350px] pb-8 relative rounded-[10px] mx-4 md:mx-auto overflow-hidden shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.30)]">
         {/* Form Background Image */}
         <div className="absolute inset-0 w-full h-full">
           <Image
