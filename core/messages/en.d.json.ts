@@ -38,6 +38,13 @@ declare const messages: {
       "emptyStateSubtitle": "Try browsing our complete catalog of products.",
       "previousProducts": "Previous products",
       "nextProducts": "Next products"
+    },
+    "PopularProducts": {
+      "title": "Popular Products",
+      "description": "Discover our most loved items",
+      "cta": "Shop All Popular",
+      "emptyStateTitle": "No popular products found",
+      "emptyStateSubtitle": "Try browsing our complete catalog of products."
     }
   },
   "Auth": {

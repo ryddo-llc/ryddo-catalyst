@@ -7,6 +7,7 @@ import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list
 import { getSessionCustomerAccessToken } from '~/auth';
 import { CategoryShowcase } from '~/components/category-showcase';
 import { getHeaderCategories } from '~/components/category-showcase/query';
+import { PopularProducts } from '~/components/popular-products';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
@@ -51,9 +52,18 @@ export default async function Home({ params }: Props) {
   const streamableCategories = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const categoryTree = await getHeaderCategories(customerAccessToken);
-    
+
     // Take first 5 top-level categories
     return categoryTree.slice(0, 5);
+  });
+
+  const streamablePopularProducts = Streamable.from(async () => {
+    const data = await streamablePageData;
+
+    const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
+
+    // Take only first 8 products for popular products section
+    return productCardTransformer(featuredProducts.slice(0, 8), format);
   });
 
   return (
@@ -78,6 +88,15 @@ export default async function Home({ params }: Props) {
         previousLabel={t('NewestProducts.previousProducts')}
         products={streamableNewestProducts}
         title={t('NewestProducts.title')}
+      />
+
+      <PopularProducts
+        cta={{ label: t('PopularProducts.cta'), href: '/shop-all/?sort=popular' }}
+        description={t('PopularProducts.description')}
+        emptyStateSubtitle={t('PopularProducts.emptyStateSubtitle')}
+        emptyStateTitle={t('PopularProducts.emptyStateTitle')}
+        products={streamablePopularProducts}
+        title={t('PopularProducts.title')}
       />
     </>
   );
