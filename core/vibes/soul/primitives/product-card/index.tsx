@@ -66,8 +66,8 @@ export function ProductCard({
   const imageUrl = image?.src;
 
   return (
-    <article className="group relative mb-5 flex w-full max-w-md flex-col items-center overflow-hidden rounded-[10px] border border-gray-100 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      <Link href={href} title={`View details for ${productName}`} className="block h-full w-full">
+    <article className="group relative mb-5 flex w-full max-w-md flex-col items-center overflow-hidden rounded-[10px] border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      <Link className="block h-full w-full" href={href} title={`View details for ${productName}`}>
         <div className="absolute left-3 top-1 z-10">
           {onSale && (
             <Badge className="bg-[#F92F7B] text-white" shape="rounded">
@@ -84,15 +84,15 @@ export function ProductCard({
         </div>
         <div className="relative w-full p-2">
           <Image
-            src={imageUrl || ''}
             alt={`${productName} || 'Product image'}`}
-            width={600}
-            height={600}
             className="w-full rounded-[10px] object-contain"
+            height={600}
             priority={imagePriority}
+            src={imageUrl || ''}
+            width={600}
           />
           {showCompare && (
-            <div className="absolute bottom-5 left-1/2 z-20 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <div className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100">
               <Compare
                 label={compareLabel}
                 paramName={compareParamName}
@@ -104,20 +104,31 @@ export function ProductCard({
         <div className="px-3 pb-3 pt-1 text-center">
           <h2 className="text-base font-bold text-zinc-800">{productName}</h2>
           <div>
-            {price && typeof price === 'object' && price.type === 'sale' ? (
-              <>
-                <span className="mr-2 text-sm text-neutral-500 line-through">
-                  {price.previousValue}
+            {(() => {
+              if (!price) return null;
+
+              if (typeof price === 'string') {
+                return <span className="text-black">{price}</span>;
+              }
+
+              if (price.type === 'sale') {
+                return (
+                  <>
+                    <span className="mr-2 text-sm text-neutral-500 line-through">
+                      {price.previousValue}
+                    </span>
+                    <span className="font-medium text-black">{price.currentValue}</span>
+                  </>
+                );
+              }
+
+              // price.type === 'range'
+              return (
+                <span className="text-black">
+                  {price.minValue} – {price.maxValue}
                 </span>
-                <span className="font-medium text-black">{price.currentValue}</span>
-              </>
-            ) : price && typeof price === 'object' && price.type === 'range' ? (
-              <span className="text-black">
-                {price.minValue} – {price.maxValue}
-              </span>
-            ) : price && typeof price === 'string' ? (
-              <span className="text-black">{price}</span>
-            ) : null}
+              );
+            })()}
           </div>
         </div>
       </Link>

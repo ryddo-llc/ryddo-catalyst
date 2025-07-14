@@ -52,24 +52,24 @@ export const Compare = function Compare({
 
   return (
     <Button
-      variant={isInCompare ? 'primary' : 'secondary'}
-      size="small"
-      shape="rounded"
+      className="min-w-24 bg-[#0000009e] px-4 text-white hover:bg-[#000000b3]"
       disabled={isDisabled}
       onClick={handleCompare}
-      className="min-w-24 bg-[#0000009e] px-4 text-white hover:bg-[#000000b3]"
+      shape="rounded"
+      size="small"
+      variant={isInCompare ? 'primary' : 'secondary'}
     >
       {isInCompare ? (
         <span className="flex items-center gap-1">
           <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
             fill="none"
+            height="16"
             stroke="currentColor"
-            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="16"
           >
             <polyline points="20,6 9,17 4,12" />
           </svg>
