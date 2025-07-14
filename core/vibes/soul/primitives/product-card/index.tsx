@@ -84,7 +84,7 @@ export function ProductCard({
         </div>
         <div className="relative w-full p-2">
           <Image
-            alt={`${productName} || 'Product image'}`}
+            alt={productName || 'Product image'}
             className="w-full rounded-[10px] object-contain"
             height={600}
             priority={imagePriority}
