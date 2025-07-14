@@ -3,7 +3,7 @@
 import { useQueryState } from 'nuqs';
 import { startTransition } from 'react';
 
-import { Checkbox } from '@/vibes/soul/form/checkbox';
+import { Button } from '@/vibes/soul/primitives/button';
 import { useCompareDrawer } from '@/vibes/soul/primitives/compare-drawer';
 import { compareParser } from '@/vibes/soul/primitives/compare-drawer/loader';
 
@@ -22,7 +22,6 @@ interface Props {
 }
 
 export const Compare = function Compare({
-  colorScheme = 'light',
   paramName = 'compare',
   label = 'Compare',
   product,
@@ -31,33 +30,54 @@ export const Compare = function Compare({
 
   const { optimisticItems, setOptimisticItems, maxItems } = useCompareDrawer();
 
+  const isInCompare = !!optimisticItems.find((item) => item.id === product.id);
+  const isDisabled = !isInCompare && maxItems !== undefined && optimisticItems.length >= maxItems;
+
+  const handleCompare = () => {
+    startTransition(async () => {
+      setOptimisticItems({
+        type: isInCompare ? 'remove' : 'add',
+        item: product,
+      });
+
+      await setParam((prev) => {
+        const next = isInCompare
+          ? (prev ?? []).filter((v) => v !== product.id)
+          : [...(prev ?? []), product.id];
+
+        return next.length > 0 ? next : null;
+      });
+    });
+  };
+
   return (
-    <Checkbox
-      checked={!!optimisticItems.find((item) => item.id === product.id)}
-      colorScheme={colorScheme}
-      disabled={
-        !optimisticItems.find((item) => item.id === product.id) &&
-        maxItems !== undefined &&
-        optimisticItems.length >= maxItems
-      }
-      label={label}
-      onCheckedChange={(value) => {
-        startTransition(async () => {
-          setOptimisticItems({
-            type: value === true ? 'add' : 'remove',
-            item: product,
-          });
-
-          await setParam((prev) => {
-            const next =
-              value === true
-                ? [...(prev ?? []), product.id]
-                : (prev ?? []).filter((v) => v !== product.id);
-
-            return next.length > 0 ? next : null;
-          });
-        });
-      }}
-    />
+    <Button
+      variant={isInCompare ? 'primary' : 'secondary'}
+      size="small"
+      shape="rounded"
+      disabled={isDisabled}
+      onClick={handleCompare}
+      className="min-w-24 bg-[#0000009e] px-4 text-white hover:bg-[#000000b3]"
+    >
+      {isInCompare ? (
+        <span className="flex items-center gap-1">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="20,6 9,17 4,12" />
+          </svg>
+          {label}
+        </span>
+      ) : (
+        label
+      )}
+    </Button>
   );
 };

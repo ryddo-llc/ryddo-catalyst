@@ -11,16 +11,22 @@ export const singleProductCardTransformer = (
   product: ResultOf<typeof ProductCardFragment>,
   format: ExistingResultType<typeof getFormatter>,
 ): Product => {
+  const priceData = pricesTransformer(product.prices, format);
+  
   return {
     id: product.entityId.toString(),
     title: product.name,
+    name: product.name,
     href: product.path,
+    type: 'product',
     image: product.defaultImage
       ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
       : undefined,
-    price: pricesTransformer(product.prices, format),
+    price: priceData,
     subtitle: product.brand?.name ?? undefined,
     rating: product.reviewSummary.averageRating,
+    onSale: typeof priceData === 'object' && priceData.type === 'sale',
+    outOfStock: !product.inventory.isInStock,
   };
 };
 
