@@ -2,6 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
+import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -11,20 +12,30 @@ import { PopularProducts } from '~/components/popular-products';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
+import { getCompareProducts as getCompareProductsData } from './(faceted)/fetch-compare-products';
+import { getSearchPageData } from './(faceted)/search/page-data';
+
 import { Slideshow } from './_components/slideshow';
 import { getPageData } from './page-data';
 
+const compareLoader = createCompareLoader();
+
 interface Props {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default async function Home({ params }: Props) {
+export default async function Home({ params, searchParams }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
   const format = await getFormatter();
+
+  const { settings } = await getSearchPageData();
+  const productComparisonsEnabled =
+    settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
   const streamablePageData = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
@@ -66,6 +77,30 @@ export default async function Home({ params }: Props) {
     return productCardTransformer(featuredProducts.slice(0, 8), format);
   });
 
+  const streamableCompareProducts = Streamable.from(async () => {
+    const searchParamsData = await searchParams;
+    const customerAccessToken = await getSessionCustomerAccessToken();
+
+    if (!productComparisonsEnabled) {
+      return [];
+    }
+
+    const { compare } = compareLoader(searchParamsData);
+
+    const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
+
+    const products = await getCompareProductsData(compareIds, customerAccessToken);
+
+    return products.map((product) => ({
+      id: product.entityId.toString(),
+      title: product.name,
+      image: product.defaultImage
+        ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+        : undefined,
+      href: product.path,
+    }));
+  });
+
   return (
     <>
       <Slideshow />
@@ -91,11 +126,15 @@ export default async function Home({ params }: Props) {
       /> */}
 
       <PopularProducts
+        compareProducts={streamableCompareProducts}
+        compareHref="/compare"
         cta={{ label: t('PopularProducts.cta'), href: '/e-bikes/' }}
         description={t('PopularProducts.description')}
         emptyStateSubtitle={t('PopularProducts.emptyStateSubtitle')}
         emptyStateTitle={t('PopularProducts.emptyStateTitle')}
+        maxItems={4}
         products={streamablePopularProducts}
+        showCompare={productComparisonsEnabled}
         title={t('PopularProducts.title')}
       />
     </>

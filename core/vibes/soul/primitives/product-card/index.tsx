@@ -68,7 +68,7 @@ export function ProductCard({
   return (
     <article className="group relative mb-5 flex w-full max-w-md flex-col items-center overflow-hidden rounded-[10px] border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <Link className="block h-full w-full" href={href} title={`View details for ${productName}`}>
-        <div className="absolute left-3 top-1 z-10">
+        <div className="absolute left-4 top-3 z-10">
           {onSale && (
             <Badge className="bg-[#F92F7B] text-white" shape="rounded">
               Sale!

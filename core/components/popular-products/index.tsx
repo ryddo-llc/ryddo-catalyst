@@ -15,12 +15,17 @@ export interface PopularProductsProps {
   description?: string;
   cta?: Link;
   products: Streamable<Product[]>;
+  compareProducts?: Streamable<Product[]>;
   emptyStateTitle?: Streamable<string>;
   emptyStateSubtitle?: Streamable<string>;
   placeholderCount?: number;
   showCompare?: Streamable<boolean>;
+  compareHref?: string;
   compareLabel?: Streamable<string>;
   compareParamName?: string;
+  removeLabel?: Streamable<string>;
+  maxItems?: number;
+  maxCompareLimitMessage?: Streamable<string>;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -42,12 +47,17 @@ export function PopularProducts({
   description,
   cta,
   products,
+  compareProducts = [],
   emptyStateTitle,
   emptyStateSubtitle,
   placeholderCount = 8,
   showCompare = true,
+  compareHref,
   compareLabel = 'Compare',
   compareParamName = 'compare',
+  removeLabel,
+  maxItems,
+  maxCompareLimitMessage,
 }: PopularProductsProps) {
   return (
     <SectionLayout containerSize="2xl">
@@ -72,12 +82,17 @@ export function PopularProducts({
       <div className="group/popular-products">
         <ProductList
           className="[&>div]:grid [&>div]:grid-cols-1 [&>div]:gap-6 [&>div]:sm:grid-cols-2 [&>div]:lg:grid-cols-4"
+          compareProducts={compareProducts}
+          compareHref={compareHref}
           compareLabel={compareLabel}
           compareParamName={compareParamName}
           emptyStateSubtitle={emptyStateSubtitle}
           emptyStateTitle={emptyStateTitle}
+          maxItems={maxItems}
+          maxCompareLimitMessage={maxCompareLimitMessage}
           placeholderCount={placeholderCount}
           products={products}
+          removeLabel={removeLabel}
           showCompare={showCompare}
         />
       </div>
