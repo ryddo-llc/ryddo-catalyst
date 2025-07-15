@@ -2,6 +2,7 @@ import { SubmissionResult } from '@conform-to/react';
 
 import { NewsletterForm } from '@/vibes/soul/primitives/newsletter-form';
 import { Image } from '~/components/image';
+import { useIsDesktop } from '~/lib/useIsDesktop';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -22,13 +23,21 @@ export function Subscribe({
   submitLabel?: string;
   title: string;
 }) {
+  const isDesktop = useIsDesktop();
+  const sectionStyle = image
+    ? {
+        backgroundImage: `url(${image.src})`,
+        ...(isDesktop ? { backgroundAttachment: 'fixed' } : {}),
+      }
+    : undefined;
+
   return (
     <section
       className={`w-full h-[60vh] overflow-hidden relative flex items-center bg-cover bg-center ${image ? '' : 'bg-gradient-to-br from-blue-50 to-indigo-100'}`}
-      style={image ? { backgroundImage: `url(${image.src})`, backgroundAttachment: 'fixed' } : undefined}
+      style={sectionStyle}
     >
       {/* Content Container */}
-      <div className="flex flex-col justify-center w-full max-w-lg h-[80%] md:h-[65%] min-h-[300px] max-h-[350px] pb-8 relative rounded-[10px] mx-4 md:mx-auto overflow-hidden shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.30)]">
+      <div className="flex flex-col justify-center w-full max-w-lg min-h-[300px] max-h-[350px] pb-8 relative rounded-[10px] mx-4 sm:mx-auto overflow-hidden shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.30)]">
         {/* Form Background Image */}
         <div className="absolute inset-0 w-full h-full">
           <Image
