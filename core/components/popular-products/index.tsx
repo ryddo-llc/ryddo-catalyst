@@ -82,14 +82,14 @@ export function PopularProducts({
       <div className="group/popular-products">
         <ProductList
           className="[&>div]:grid [&>div]:grid-cols-1 [&>div]:gap-6 [&>div]:sm:grid-cols-2 [&>div]:lg:grid-cols-4"
-          compareProducts={compareProducts}
           compareHref={compareHref}
           compareLabel={compareLabel}
           compareParamName={compareParamName}
+          compareProducts={compareProducts}
           emptyStateSubtitle={emptyStateSubtitle}
           emptyStateTitle={emptyStateTitle}
-          maxItems={maxItems}
           maxCompareLimitMessage={maxCompareLimitMessage}
+          maxItems={maxItems}
           placeholderCount={placeholderCount}
           products={products}
           removeLabel={removeLabel}

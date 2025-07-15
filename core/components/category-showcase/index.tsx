@@ -48,7 +48,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
             Shop
           </ArrowButton>
           <h3 className="font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-4xl font-extrabold text-[#333333]">
-            {category.name}
+            {category.name.toLowerCase()}
             <span className="ml-1 text-5xl text-[var(--category-item-dot,hsl(var(--primary)))]">
               .
             </span>
@@ -59,7 +59,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
         /* Bottom right layout - centered text with "Book now" button below */
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
           <h3 className="mb-4 font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-4xl font-extrabold text-[#333333]">
-            {category.name}
+            {category.name.toLowerCase()}
             <span className="ml-1 text-5xl text-[var(--category-item-dot,hsl(var(--primary)))]">
               .
             </span>
@@ -74,7 +74,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
         <>
           <div className="absolute left-4 top-6">
             <h3 className="font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-xl font-extrabold text-[#333333] @lg:text-2xl">
-              {category.name}
+              {category.name.toLowerCase()}
               <span className="ml-1 text-5xl text-[var(--category-item-dot,hsl(var(--primary)))]">
                 .
               </span>

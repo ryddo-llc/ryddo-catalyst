@@ -3,8 +3,6 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
-import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
-import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { CategoryShowcase } from '~/components/category-showcase';
 import { getHeaderCategories } from '~/components/category-showcase/query';
@@ -14,7 +12,6 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { getCompareProducts as getCompareProductsData } from './(faceted)/fetch-compare-products';
 import { getSearchPageData } from './(faceted)/search/page-data';
-
 import { Slideshow } from './_components/slideshow';
 import { getPageData } from './page-data';
 
@@ -44,21 +41,6 @@ export default async function Home({ params, searchParams }: Props) {
     return getPageData(currencyCode, customerAccessToken);
   });
 
-  const streamableFeaturedProducts = Streamable.from(async () => {
-    const data = await streamablePageData;
-
-    const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
-
-    return productCardTransformer(featuredProducts, format);
-  });
-
-  const streamableNewestProducts = Streamable.from(async () => {
-    const data = await streamablePageData;
-
-    const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
-
-    return productCardTransformer(newestProducts, format);
-  });
 
   const streamableCategories = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
@@ -126,8 +108,8 @@ export default async function Home({ params, searchParams }: Props) {
       /> */}
 
       <PopularProducts
-        compareProducts={streamableCompareProducts}
         compareHref="/compare"
+        compareProducts={streamableCompareProducts}
         cta={{ label: t('PopularProducts.cta'), href: '/e-bikes/' }}
         description={t('PopularProducts.description')}
         emptyStateSubtitle={t('PopularProducts.emptyStateSubtitle')}
