@@ -2,7 +2,7 @@ import { SubmissionResult } from '@conform-to/react';
 
 import { NewsletterForm } from '@/vibes/soul/primitives/newsletter-form';
 import { Image } from '~/components/image';
-import { useIsDesktop } from '~/lib/useIsDesktop';
+import { useIsDesktop } from '~/lib/use-is-desktop';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
