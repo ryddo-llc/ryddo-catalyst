@@ -1,8 +1,8 @@
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { AnimatedUnderline } from '@/vibes/soul/primitives/animated-underline';
 import { type Product } from '@/vibes/soul/primitives/product-card';
 import { ProductList } from '@/vibes/soul/sections/product-list';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
+import { ArrowButton } from '~/components/arrow-button';
 import { Link } from '~/components/link';
 
 interface Link {
@@ -63,8 +63,10 @@ export function PopularProducts({
           )}
         </header>
         {cta != null && cta.href !== '' && cta.label !== '' && (
-          <Link className="group/underline focus:outline-none" href={cta.href}>
-            <AnimatedUnderline className="mr-3">{cta.label}</AnimatedUnderline>
+          <Link href={cta.href}>
+            <ArrowButton className="bg-[#F92F7B] hover:bg-[#d41f63]">
+              {cta.label}
+            </ArrowButton>
           </Link>
         )}
       </div>

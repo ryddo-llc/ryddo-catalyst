@@ -91,7 +91,7 @@ export default async function Home({ params }: Props) {
       />
 
       <PopularProducts
-        cta={{ label: t('PopularProducts.cta'), href: '/shop-all/?sort=popular' }}
+        cta={{ label: t('PopularProducts.cta'), href: '/e-bikes/' }}
         description={t('PopularProducts.description')}
         emptyStateSubtitle={t('PopularProducts.emptyStateSubtitle')}
         emptyStateTitle={t('PopularProducts.emptyStateTitle')}
