@@ -112,7 +112,7 @@ export function ProductList({
                 ))}
               </div>
             </div>
-            {showCompare && compareProducts.length > 0 && (
+            {showCompare && (
               <CompareDrawer
                 href={compareHref}
                 paramName={compareParamName}

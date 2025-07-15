@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
-import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
+import { Price } from '@/vibes/soul/primitives/price-label';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
@@ -17,6 +17,10 @@ export interface Product {
   subtitle?: string;
   badge?: string;
   rating?: number;
+  onSale?: boolean;
+  outOfStock?: boolean;
+  type?: string;
+  name?: string;
 }
 
 export interface ProductCardProps {
@@ -52,130 +56,82 @@ export interface ProductCardProps {
  * ```
  */
 export function ProductCard({
-  product: { id, title, subtitle, badge, price, image, href },
-  colorScheme = 'light',
-  className,
+  product: { id, title, price, image, href, onSale, outOfStock, name },
+  imagePriority = false,
   showCompare = false,
-  aspectRatio = '5:6',
   compareLabel,
   compareParamName,
-  imagePriority = false,
-  imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
 }: ProductCardProps) {
+  const productName = name || title;
+  const imageUrl = image?.src;
+
   return (
-    <article
-      className={clsx(
-        'group flex min-w-0 max-w-md flex-col gap-2 font-[family-name:var(--card-font-family,var(--font-family-body))] @container',
-        className,
-      )}
-    >
-      <div className="relative">
-        <div
-          className={clsx(
-            'relative overflow-hidden rounded-xl @md:rounded-2xl',
-            {
-              '5:6': 'aspect-[5/6]',
-              '3:4': 'aspect-[3/4]',
-              '1:1': 'aspect-square',
-            }[aspectRatio],
-            {
-              light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
-              dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500)))]',
-            }[colorScheme],
-          )}
-        >
-          {image != null ? (
-            <Image
-              alt={image.alt}
-              className={clsx(
-                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-                {
-                  light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
-                  dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
-                }[colorScheme],
-              )}
-              fill
-              priority={imagePriority}
-              sizes={imageSizes}
-              src={image.src}
-            />
-          ) : (
-            <div
-              className={clsx(
-                'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
-                {
-                  light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
-                  dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
-                }[colorScheme],
-              )}
-            >
-              {title}
-            </div>
-          )}
-          {badge != null && badge !== '' && (
-            <Badge className="absolute left-3 top-3" shape="rounded">
-              {badge}
+    <article className="group relative mb-5 flex w-full max-w-md flex-col items-center overflow-hidden rounded-[10px] border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      <Link className="block h-full w-full" href={href} title={`View details for ${productName}`}>
+        <div className="absolute left-4 top-3 z-10">
+          {onSale && (
+            <Badge className="bg-[#F92F7B] text-white" shape="rounded">
+              Sale!
             </Badge>
           )}
         </div>
+        <div className="absolute right-3 top-1 z-10">
+          {outOfStock && (
+            <Badge className="bg-[#0000009e] text-white" shape="rounded">
+              Out of Stock
+            </Badge>
+          )}
+        </div>
+        <div className="relative w-full p-2">
+          <Image
+            alt={productName || 'Product image'}
+            className="w-full rounded-[10px] object-contain"
+            height={600}
+            priority={imagePriority}
+            src={imageUrl || ''}
+            width={600}
+          />
+          {showCompare && (
+            <div className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <Compare
+                label={compareLabel}
+                paramName={compareParamName}
+                product={{ id, title, href, image }}
+              />
+            </div>
+          )}
+        </div>
+        <div className="px-3 pb-3 pt-1 text-center">
+          <h2 className="text-base font-bold text-zinc-800">{productName}</h2>
+          <div>
+            {(() => {
+              if (!price) return null;
 
-        <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
-          <div className="flex-1 text-sm @[16rem]:text-base">
-            <span
-              className={clsx(
-                'block font-semibold',
-                {
-                  light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
-                  dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
-                }[colorScheme],
-              )}
-            >
-              {title}
-            </span>
+              if (typeof price === 'string') {
+                return <span className="text-black">{price}</span>;
+              }
 
-            {subtitle != null && subtitle !== '' && (
-              <span
-                className={clsx(
-                  'mb-2 block text-sm font-normal',
-                  {
-                    light: 'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
-                    dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
-                  }[colorScheme],
-                )}
-              >
-                {subtitle}
-              </span>
-            )}
-            {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
+              if (price.type === 'sale') {
+                return (
+                  <>
+                    <span className="mr-2 text-sm text-neutral-500 line-through">
+                      {price.previousValue}
+                    </span>
+                    <span className="font-medium text-black">{price.currentValue}</span>
+                  </>
+                );
+              }
+
+              // price.type === 'range'
+              return (
+                <span className="text-black">
+                  {price.minValue} – {price.maxValue}
+                </span>
+              );
+            })()}
           </div>
         </div>
-        {href !== '#' && (
-          <Link
-            aria-label={title}
-            className={clsx(
-              'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
-              {
-                light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
-                dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
-              }[colorScheme],
-            )}
-            href={href}
-            id={id}
-          >
-            <span className="sr-only">View product</span>
-          </Link>
-        )}
-      </div>
-      {showCompare && (
-        <div className="mt-0.5 shrink-0">
-          <Compare
-            colorScheme={colorScheme}
-            label={compareLabel}
-            paramName={compareParamName}
-            product={{ id, title, href, image }}
-          />
-        </div>
-      )}
+      </Link>
     </article>
   );
 }
