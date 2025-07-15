@@ -227,7 +227,7 @@ export function CompareDrawer({
               size="medium"
               variant="primary"
             >
-              <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 text-white">
                 {submitLabel} <ArrowRight absoluteStrokeWidth size={20} strokeWidth={1} />
               </span>
             </ButtonLink>
