@@ -2,7 +2,7 @@ import { SubmissionResult } from '@conform-to/react';
 
 import { NewsletterForm } from '@/vibes/soul/primitives/newsletter-form';
 import { Image } from '~/components/image';
-import { useIsDesktop } from '~/lib/use-is-desktop';
+import { useIsTabletOrLarger } from '~/lib/use-is-tablet-or-larger';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -23,11 +23,11 @@ export function Subscribe({
   submitLabel?: string;
   title: string;
 }) {
-  const isDesktop = useIsDesktop();
+  const isTabletOrLarger = useIsTabletOrLarger();
   const sectionStyle = image
     ? {
         backgroundImage: `url(${image.src})`,
-        ...(isDesktop ? { backgroundAttachment: 'fixed' } : {}),
+        ...(isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
       }
     : undefined;
 
