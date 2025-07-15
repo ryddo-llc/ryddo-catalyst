@@ -114,6 +114,7 @@ export interface CompareDrawerProps {
   paramName?: string;
   submitLabel?: string;
   removeLabel?: string;
+  closeLabel?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -146,6 +147,7 @@ export function CompareDrawer({
   paramName = 'compare',
   submitLabel = 'Compare',
   removeLabel = 'Remove',
+  closeLabel = 'Close',
 }: CompareDrawerProps) {
   const [params, setParam] = useQueryState(paramName, compareParser);
 
@@ -154,7 +156,23 @@ export function CompareDrawer({
   return (
     optimisticItems.length > 0 && (
       <Portal.Root asChild>
-        <div className="sticky bottom-0 z-10 w-full border-t border-[var(--compare-drawer-card-border,hsl(var(--contrast-100)))] bg-[var(--compare-drawer-background,hsl(var(--background)))] px-3 py-4 @container @md:py-5 @xl:px-6 @5xl:px-10">
+        <div className="fixed bottom-0 z-[60] w-full border-t border-[var(--compare-drawer-card-border,hsl(var(--contrast-100)))] bg-[var(--compare-drawer-background,hsl(var(--background)))] px-3 py-4 @container @md:py-5 @xl:px-6 @5xl:px-10">
+          <button
+            aria-label={`${closeLabel} comparison drawer`}
+            className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-md border border-[var(--compare-drawer-dismiss-border,hsl(var(--contrast-100)))] bg-[var(--compare-drawer-dismiss-background,hsl(var(--background)))] px-2.5 py-1.5 text-sm font-medium text-[var(--compare-drawer-dismiss-icon,hsl(var(--contrast-400)))] transition-all duration-200 hover:border-[var(--compare-drawer-dismiss-border-hover,hsl(var(--contrast-200)))] hover:bg-[var(--compare-drawer-dismiss-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--compare-drawer-dismiss-icon-hover,hsl(var(--foreground)))] focus:outline-none focus:ring-2 focus:ring-[var(--compare-drawer-card-focus,hsl(var(--primary)))] focus:ring-offset-2 focus:ring-offset-[var(--compare-drawer-background,hsl(var(--background)))]"
+            onClick={() => {
+              startTransition(async () => {
+                optimisticItems.forEach((item) => {
+                  setOptimisticItems({ type: 'remove', item });
+                });
+                await setParam(null);
+              });
+            }}
+            type="button"
+          >
+            <span>{closeLabel}</span>
+            <X absoluteStrokeWidth size={14} strokeWidth={2} />
+          </button>
           <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-end gap-x-3 gap-y-4 @md:flex-row">
             <div className="flex flex-1 flex-wrap justify-end gap-4">
               {optimisticItems.map((item) => (
@@ -209,7 +227,7 @@ export function CompareDrawer({
               size="medium"
               variant="primary"
             >
-              <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1 text-white">
                 {submitLabel} <ArrowRight absoluteStrokeWidth size={20} strokeWidth={1} />
               </span>
             </ButtonLink>
