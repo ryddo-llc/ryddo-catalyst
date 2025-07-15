@@ -159,7 +159,7 @@ export function CompareDrawer({
         <div className="fixed bottom-0 z-[60] w-full border-t border-[var(--compare-drawer-card-border,hsl(var(--contrast-100)))] bg-[var(--compare-drawer-background,hsl(var(--background)))] px-3 py-4 @container @md:py-5 @xl:px-6 @5xl:px-10">
           <button
             aria-label={`${closeLabel} comparison drawer`}
-            className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-md border border-[var(--compare-drawer-dismiss-border,hsl(var(--contrast-100)))] bg-[var(--compare-drawer-dismiss-background,hsl(var(--background)))] px-2.5 py-1.5 text-sm font-medium text-[var(--compare-drawer-dismiss-icon,hsl(var(--contrast-400)))] transition-all duration-200 hover:border-[var(--compare-drawer-dismiss-border-hover,hsl(var(--contrast-200)))] hover:bg-[var(--compare-drawer-dismiss-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--compare-drawer-dismiss-icon-hover,hsl(var(--foreground)))] focus:outline-none focus:ring-2 focus:ring-[var(--compare-drawer-card-focus,hsl(var(--primary)))] focus:ring-offset-2 focus:ring-offset-[var(--compare-drawer-background,hsl(var(--background)))]"
+            className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded border border-[var(--compare-drawer-dismiss-border,hsl(var(--contrast-100)))] bg-[var(--compare-drawer-dismiss-background,hsl(var(--background)))] text-[var(--compare-drawer-dismiss-icon,hsl(var(--contrast-400)))] transition-all duration-200 hover:border-[var(--compare-drawer-dismiss-border-hover,hsl(var(--contrast-200)))] hover:bg-[var(--compare-drawer-dismiss-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--compare-drawer-dismiss-icon-hover,hsl(var(--foreground)))] focus:outline-none focus:ring-2 focus:ring-[var(--compare-drawer-card-focus,hsl(var(--primary)))] focus:ring-offset-2 focus:ring-offset-[var(--compare-drawer-background,hsl(var(--background)))] @sm:h-8 @sm:w-8 @sm:rounded-md @md:h-auto @md:w-auto @md:gap-1.5 @md:px-2.5 @md:py-1.5 @md:right-3 @md:top-3 @xl:right-6 @xl:top-4 @5xl:right-10 @5xl:top-5"
             onClick={() => {
               startTransition(async () => {
                 optimisticItems.forEach((item) => {
@@ -170,10 +170,10 @@ export function CompareDrawer({
             }}
             type="button"
           >
-            <span>{closeLabel}</span>
-            <X absoluteStrokeWidth size={14} strokeWidth={2} />
+            <span className="hidden text-xs @md:block @md:text-sm">{closeLabel}</span>
+            <X absoluteStrokeWidth className="@sm:size-4 @md:size-[14px]" size={12} strokeWidth={2} />
           </button>
-          <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-end gap-x-3 gap-y-4 @md:flex-row">
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-end gap-x-3 gap-y-4 pr-12 @md:flex-row @md:pr-20 @xl:pr-24 @5xl:pr-32">
             <div className="flex flex-1 flex-wrap justify-end gap-4">
               {optimisticItems.map((item) => (
                 <div className="relative" key={item.id}>
