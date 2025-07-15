@@ -53,8 +53,9 @@ export function PopularProducts({
     <SectionLayout containerSize="2xl">
       <div className="mb-6 flex w-full flex-row flex-wrap items-end justify-between gap-x-8 gap-y-6 @4xl:mb-8">
         <header className="font-[family-name:var(--popular-products-font-family,var(--font-family-body))]">
-          <h2 className="font-[family-name:var(--popular-products-title-font-family,var(--font-family-heading))] text-2xl leading-none text-[var(--popular-products-title,hsl(var(--foreground)))] @xl:text-3xl @4xl:text-4xl">
+          <h2 className="font-[family-name:var(--popular-products-title-font-family,var(--font-family-heading))] text-4xl font-extrabold leading-none text-[var(--popular-products-title,hsl(var(--foreground)))] @xl:text-5xl @4xl:text-6xl">
             {title}
+            <span className="text-[hsl(var(--primary))]">.</span>
           </h2>
           {description != null && description !== '' && (
             <p className="mt-3 max-w-xl leading-relaxed text-[var(--popular-products-description,hsl(var(--contrast-500)))]">
@@ -64,9 +65,7 @@ export function PopularProducts({
         </header>
         {cta != null && cta.href !== '' && cta.label !== '' && (
           <Link href={cta.href}>
-            <ArrowButton className="bg-[#F92F7B] hover:bg-[#d41f63]">
-              {cta.label}
-            </ArrowButton>
+            <ArrowButton className="bg-[#F92F7B] hover:bg-[#d41f63]">{cta.label}</ArrowButton>
           </Link>
         )}
       </div>

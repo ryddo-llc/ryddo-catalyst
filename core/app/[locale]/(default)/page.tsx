@@ -70,7 +70,7 @@ export default async function Home({ params }: Props) {
     <>
       <Slideshow />
       <CategoryShowcase categories={streamableCategories} />
-      <FeaturedProductList
+      {/* <FeaturedProductList
         cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
         description={t('FeaturedProducts.description')}
         emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
@@ -88,7 +88,7 @@ export default async function Home({ params }: Props) {
         previousLabel={t('NewestProducts.previousProducts')}
         products={streamableNewestProducts}
         title={t('NewestProducts.title')}
-      />
+      /> */}
 
       <PopularProducts
         cta={{ label: t('PopularProducts.cta'), href: '/e-bikes/' }}

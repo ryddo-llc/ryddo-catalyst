@@ -41,7 +41,7 @@ declare const messages: {
     },
     "PopularProducts": {
       "title": "Popular Products", 
-      "description": "Discover our most loved items",
+      "description": "View and learn more about our latest products",
       "cta": "Visit Our Store",
       "emptyStateTitle": "No popular products found",
       "emptyStateSubtitle": "Try browsing our complete catalog of products."
