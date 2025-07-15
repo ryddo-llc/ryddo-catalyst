@@ -14,12 +14,12 @@ export interface BadgeProps {
  *
  * ```css
  * :root {
- *   --badge-primary-background: color-mix(in oklab, hsl(var(--primary)), white 75%);
+ *   --badge-primary-background: hsl(var(--primary));
  *   --badge-accent-background: hsl(var(--accent));
- *   --badge-success-background: color-mix(in oklab, hsl(var(--success)), white 75%);
- *   --badge-warning-background: color-mix(in oklab, hsl(var(--warning)), white 75%);
- *   --badge-error-background: color-mix(in oklab, hsl(var(--error)), white 75%);
- *   --badge-info-background: color-mix(in oklab, hsl(var(--background)), black 5%);
+ *   --badge-success-background: hsl(var(--success));
+ *   --badge-warning-background: hsl(var(--warning));
+ *   --badge-error-background: hsl(var(--error));
+ *   --badge-info-background: hsl(var(--background));
  *   --badge-text: hsl(var(--foreground));
  *   --badge-font-family: var(--font-family-mono);
  * }
@@ -29,21 +29,17 @@ export function Badge({ children, shape = 'rounded', className, variant = 'prima
   return (
     <span
       className={clsx(
-        'px-2 py-0.5 font-[family-name:var(--badge-font-family,var(--font-family-mono))] text-xs uppercase tracking-tighter text-[var(--badge-text,hsl(var(--foreground)))]',
+        'px-2 py-1 font-[family-name:var(--badge-font-family,var(--font-family-mono))] text-sm uppercase tracking-tighter text-[var(--badge-text,hsl(var(--foreground)))]',
         {
           pill: 'rounded-full',
           rounded: 'rounded',
         }[shape],
         {
-          primary:
-            'bg-[var(--badge-primary-background,color-mix(in_oklab,_hsl(var(--primary)),_white_75%))]',
-          warning:
-            'bg-[var(--badge-warning-background,color-mix(in_oklab,_hsl(var(--warning)),_white_75%))]',
-          error:
-            'bg-[var(--badge-error-background,color-mix(in_oklab,_hsl(var(--error)),_white_75%))]',
-          success:
-            'bg-[var(--badge-success-background,color-mix(in_oklab,_hsl(var(--success)),_white_75%))]',
-          info: 'bg-[var(--badge-info-background,color-mix(in_oklab,_hsl(var(--background)),_black_5%))]',
+          primary: 'bg-[var(--badge-primary-background,hsl(var(--primary)))]',
+          warning: 'bg-[var(--badge-warning-background,hsl(var(--warning)))]',
+          error: 'bg-[var(--badge-error-background,hsl(var(--error)))]',
+          success: 'bg-[var(--badge-success-background,hsl(var(--success)))]',
+          info: 'bg-[var(--badge-info-background,hsl(var(--background)))]',
         }[variant],
         className,
       )}
