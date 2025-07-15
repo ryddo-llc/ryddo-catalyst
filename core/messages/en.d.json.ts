@@ -40,7 +40,7 @@ declare const messages: {
       "nextProducts": "Next products"
     },
     "PopularProducts": {
-      "title": "Popular Products", 
+      "title": "Popular Products",
       "description": "View and learn more about our latest products",
       "cta": "Visit Our Store",
       "emptyStateTitle": "No popular products found",
