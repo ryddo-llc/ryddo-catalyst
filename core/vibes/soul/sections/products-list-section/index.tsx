@@ -17,7 +17,6 @@ import {
 
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
-  title?: Streamable<string | null>;
   totalCount: Streamable<string>;
   products: Streamable<Product[]>;
   filters: Streamable<Filter[]>;
@@ -46,7 +45,6 @@ interface Props {
 
 export function ProductsListSection({
   breadcrumbs: streamableBreadcrumbs,
-  title = 'Products',
   totalCount,
   products,
   compareProducts,
@@ -81,7 +79,7 @@ export function ProductsListSection({
               breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
             }
           </Stream>
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
             <Suspense
               fallback={
                 <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">

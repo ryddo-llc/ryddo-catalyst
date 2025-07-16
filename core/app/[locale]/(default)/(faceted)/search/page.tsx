@@ -129,13 +129,6 @@ export default async function Search(props: Props) {
     }));
   });
 
-  const streamableTitle = Streamable.from(async () => {
-    const searchParams = await props.searchParams;
-    const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : '';
-
-    return `${t('Search.searchResults')} "${searchTerm}"`;
-  });
-
   const streamableTotalCount = Streamable.from(async () => {
     const format = await getFormatter();
     const searchParams = await props.searchParams;
@@ -267,7 +260,6 @@ export default async function Search(props: Props) {
         { value: 'relevance', label: t('SortBy.relevance') },
       ]}
       sortParamName="sort"
-      title={streamableTitle}
       totalCount={streamableTotalCount}
     />
   );
