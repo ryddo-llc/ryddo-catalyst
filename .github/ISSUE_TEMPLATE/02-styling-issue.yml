@@ -1,0 +1,73 @@
+name: 🎨 Styling Issue
+description: Report styling problems like button sizes, text formatting, spacing, etc.
+title: '[Style]: '
+labels: ['styling', 'ui', 'needs-review']
+assignees:
+  - warwick
+body:
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: What type of styling issue is this?
+      options:
+        - Button size (too big/small)
+        - Text formatting (font, size, color)
+        - Spacing (too much/little space)
+        - Layout alignment
+        - Color issue
+        - Mobile responsiveness
+        - Other styling problem
+    validations:
+      required: false
+  - type: input
+    id: page-location
+    attributes:
+      label: Where did you see this issue?
+      placeholder: Home page, Product page, Cart, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the styling issue
+      description: What looks wrong? What would you like it to look like instead?
+      placeholder: The "Add to Cart" button is too big and takes up too much space. It should be smaller and more proportional to the product card.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Please attach screenshots showing the issue. You can drag and drop images here.
+      placeholder: Drag and drop your screenshots here or click to upload
+    validations:
+      required: false
+  - type: dropdown
+    id: device
+    attributes:
+      label: What device are you using?
+      options:
+        - Desktop computer
+        - Tablet
+        - Mobile phone
+        - Not sure
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How important is this to fix?
+      options:
+        - '🔴 Very important - affects user experience'
+        - '🟡 Somewhat important - minor issue'
+        - '🟢 Nice to have - cosmetic improvement'
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional details
+      description: Any other information that might help us understand the issue
+      placeholder: This happens on all product pages, but seems worse on mobile devices
+    validations:
+      required: false
