@@ -6,6 +6,7 @@ import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/load
 import { getSessionCustomerAccessToken } from '~/auth';
 import { CategoryShowcase } from '~/components/category-showcase';
 import { getHeaderCategories } from '~/components/category-showcase/query';
+import { PaymentOptions } from '~/components/payment-options';
 import { PopularProducts } from '~/components/popular-products';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
@@ -106,6 +107,8 @@ export default async function Home({ params, searchParams }: Props) {
         products={streamableNewestProducts}
         title={t('NewestProducts.title')}
       /> */}
+      
+      <PaymentOptions />
 
       <PopularProducts
         compareHref="/compare"
