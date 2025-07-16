@@ -283,7 +283,6 @@ export default async function Category(props: Props) {
           { value: 'relevance', label: t('SortBy.relevance') },
         ]}
         sortParamName="sort"
-        title={category.name}
         totalCount={streamableTotalCount}
       />
       <Stream value={streamableFacetedSearch}>

@@ -17,7 +17,6 @@ import {
 
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
-  title?: Streamable<string | null>;
   totalCount: Streamable<string>;
   products: Streamable<Product[]>;
   filters: Streamable<Filter[]>;
@@ -46,7 +45,6 @@ interface Props {
 
 export function ProductsListSection({
   breadcrumbs: streamableBreadcrumbs,
-  title = 'Products',
   totalCount,
   products,
   compareProducts,
@@ -73,7 +71,7 @@ export function ProductsListSection({
   maxCompareLimitMessage,
 }: Props) {
   return (
-    <div className="group/products-list-section @container">
+    <div className="group/products-list-section @container" style={{ backgroundColor: '#F5F5F5' }}>
       <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
         <div>
           <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
@@ -81,23 +79,31 @@ export function ProductsListSection({
               breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
             }
           </Stream>
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
-            <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
-              <Suspense
-                fallback={
-                  <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
-                }
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
+            <Suspense
+              fallback={
+                <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                  <span className="inline-flex h-4 w-32 animate-pulse rounded bg-contrast-100" />
+                </div>
+              }
+            >
+              <Stream
+                value={Streamable.all([products, totalCount])}
               >
-                {title}
-              </Suspense>
-              <Suspense
-                fallback={
-                  <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
-                }
-              >
-                <span className="text-contrast-300">{totalCount}</span>
-              </Suspense>
-            </h1>
+                {([productList, total]) => {
+                  const totalResults = parseInt(total, 10) || 0;
+                  const currentResults = productList.length;
+                  const startResult = currentResults > 0 ? 1 : 0;
+                  const endResult = currentResults;
+
+                  return (
+                    <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                      Showing {startResult}-{endResult} of {totalResults} results
+                    </div>
+                  );
+                }}
+              </Stream>
+            </Suspense>
             <div className="flex gap-2">
               <Stream
                 fallback={<SortingSkeleton />}
@@ -144,7 +150,7 @@ export function ProductsListSection({
             </div>
           </div>
         </div>
-        <div className="flex items-stretch gap-8 @4xl:gap-10">
+        <div className="flex items-start gap-8 @4xl:gap-10">
           <aside className="hidden w-52 @3xl:block @4xl:w-60">
             <Stream value={streamableFiltersPanelTitle}>
               {(filtersPanelTitle) => <h2 className="sr-only">{filtersPanelTitle}</h2>}
