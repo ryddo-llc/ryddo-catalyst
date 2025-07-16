@@ -8,32 +8,7 @@ export interface AccordionProps extends ComponentPropsWithoutRef<typeof Accordio
   colorScheme?: 'light' | 'dark';
 }
 
-// eslint-disable-next-line valid-jsdoc
-/**
- * This component supports various CSS variables for theming. Here's a comprehensive list, along
- * with their default values:
- *
- * ```css
- * :root {
- *   --accordion-focus: hsl(var(--primary));
- *   --acordion-light-offset: hsl(var(--background));
- *   --accordion-light-title-text: hsl(var(--contrast-400));
- *   --accordion-light-title-text-hover: hsl(var(--foreground));
- *   --accordion-light-title-icon: hsl(var(--contrast-500));
- *   --accordion-light-title-icon-hover: hsl(var(--foreground));
- *   --accordion-light-content-text: hsl(var(--foreground));
- *   --acordion-dark-offset: hsl(var(--foreground));
- *   --accordion-dark-title-text: hsl(var(--contrast-200));
- *   --accordion-dark-title-text-hover: hsl(var(--background));
- *   --accordion-dark-title-icon: hsl(var(--contrast-200));
- *   --accordion-dark-title-icon-hover: hsl(var(--background));
- *   --accordion-dark-content-text: hsl(var(--background));
- *   --accordion-title-font-family: var(--font-family-mono);
- *   --accordion-content-font-family: var(--font-family-body);
- * }
- * ```
- */
-function AccordionItem({
+export function PaymentOptionsAccordionItem({
   title,
   children,
   colorScheme = 'light',
@@ -50,6 +25,8 @@ function AccordionItem({
     <AccordionPrimitive.Item
       {...props}
       className={clsx(
+        'bg-gray-100 rounded-lg mb-2 w-full',
+        'data-[state=open]:bg-[rgb(227,243,246)]',
         'has-focus-visible:ring-2 has-focus-visible:ring-(--accordion-focus,hsl(var(--primary))) has-focus-visible:ring-offset-4 focus:outline-2',
         {
           light: 'ring-offset-[var(--acordion-light-offset,hsl(var(--background)))]',
@@ -59,13 +36,13 @@ function AccordionItem({
       )}
     >
       <AccordionPrimitive.Header>
-        <AccordionPrimitive.Trigger className="group flex w-full cursor-pointer items-start gap-8 border-none py-3 text-start focus:outline-none @md:py-4">
+        <AccordionPrimitive.Trigger className="group flex w-full cursor-pointer items-start gap-8 border-none py-3 px-4 text-start focus:outline-none @md:py-4">
           <div
             className={clsx(
-              'flex-1 select-none font-[family-name:var(--accordion-title-font-family,var(--font-family-mono))] text-sm font-normal transition-colors duration-300 ease-out',
+              'flex-1 select-none font-[family-name:var(--accordion-title-font-family,var(--font-family-mono))] text-lg font-bold transition-colors duration-300 ease-out',
               {
                 light:
-                  'text-[var(--accordion-light-title-text,hsl(var(--contrast-400)))] group-hover:text-[var(--accordion-light-title-text-hover,hsl(var(--foreground)))]',
+                  'text-[var(--accordion-light-title-text,hsl(var(--contrast-500)))] group-hover:text-[var(--accordion-light-title-text-hover,hsl(var(--foreground)))]',
                 dark: 'text-[var(--accordion-dark-title-text,hsl(var(--contrast-200)))] group-hover:text-[var(--accordion-dark-title-text-hover,hsl(var(--background)))]',
               }[colorScheme],
             )}
@@ -86,14 +63,12 @@ function AccordionItem({
       <AccordionPrimitive.Content
         className={clsx(
           'overflow-hidden',
-          // We need to delay the animation until the component is mounted to avoid the animation
-          // from being triggered when the component is first rendered.
           isMounted && 'data-[state=closed]:animate-collapse data-[state=open]:animate-expand',
         )}
       >
         <div
           className={clsx(
-            'py-3 font-[family-name:var(--accordion-content-font-family,var(--font-family-body))] text-base font-light leading-normal',
+            'py-3 px-4 font-[family-name:var(--accordion-content-font-family,var(--font-family-body))] text-base font-light leading-normal',
             {
               light: 'text-[var(--accordion-light-content-text,hsl(var(--foreground)))]',
               dark: 'text-[var(--accordion-dark-content-text,hsl(var(--background)))]',
@@ -141,8 +116,4 @@ function AnimatedChevron({
       />
     </svg>
   );
-}
-
-const Accordion = AccordionPrimitive.Root;
-
-export { Accordion, AccordionItem };
+} 

@@ -4,36 +4,13 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { clsx } from 'clsx';
 import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
 
+export const PaymentOptionsAccordion = AccordionPrimitive.Root;
+
 export interface AccordionProps extends ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> {
   colorScheme?: 'light' | 'dark';
 }
 
-// eslint-disable-next-line valid-jsdoc
-/**
- * This component supports various CSS variables for theming. Here's a comprehensive list, along
- * with their default values:
- *
- * ```css
- * :root {
- *   --accordion-focus: hsl(var(--primary));
- *   --acordion-light-offset: hsl(var(--background));
- *   --accordion-light-title-text: hsl(var(--contrast-400));
- *   --accordion-light-title-text-hover: hsl(var(--foreground));
- *   --accordion-light-title-icon: hsl(var(--contrast-500));
- *   --accordion-light-title-icon-hover: hsl(var(--foreground));
- *   --accordion-light-content-text: hsl(var(--foreground));
- *   --acordion-dark-offset: hsl(var(--foreground));
- *   --accordion-dark-title-text: hsl(var(--contrast-200));
- *   --accordion-dark-title-text-hover: hsl(var(--background));
- *   --accordion-dark-title-icon: hsl(var(--contrast-200));
- *   --accordion-dark-title-icon-hover: hsl(var(--background));
- *   --accordion-dark-content-text: hsl(var(--background));
- *   --accordion-title-font-family: var(--font-family-mono);
- *   --accordion-content-font-family: var(--font-family-body);
- * }
- * ```
- */
-function AccordionItem({
+export function PaymentOptionsAccordionItem({
   title,
   children,
   colorScheme = 'light',
@@ -86,8 +63,6 @@ function AccordionItem({
       <AccordionPrimitive.Content
         className={clsx(
           'overflow-hidden',
-          // We need to delay the animation until the component is mounted to avoid the animation
-          // from being triggered when the component is first rendered.
           isMounted && 'data-[state=closed]:animate-collapse data-[state=open]:animate-expand',
         )}
       >
@@ -141,8 +116,4 @@ function AnimatedChevron({
       />
     </svg>
   );
-}
-
-const Accordion = AccordionPrimitive.Root;
-
-export { Accordion, AccordionItem };
+} 
