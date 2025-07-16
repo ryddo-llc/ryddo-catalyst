@@ -4,14 +4,12 @@
 'use client';
 
 import { clsx } from 'clsx';
+import { ChevronRight } from 'lucide-react';
 import { parseAsString, useQueryStates } from 'nuqs';
-import { Suspense, useOptimistic, useState, useTransition } from 'react';
+import { Suspense, useOptimistic, useTransition } from 'react';
 
-import { Checkbox } from '@/vibes/soul/form/checkbox';
 import { RangeInput } from '@/vibes/soul/form/range-input';
-import { ToggleGroup } from '@/vibes/soul/form/toggle-group';
 import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
-import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Rating } from '@/vibes/soul/primitives/rating';
@@ -65,13 +63,6 @@ interface Props {
   rangeFilterApplyLabel?: Streamable<string>;
 }
 
-function getParamCountLabel(params: Record<string, string | null | string[]>, key: string) {
-  const value = params[key];
-
-  if (Array.isArray(value) && value.length > 0) return `(${value.length})`;
-
-  return '';
-}
 
 export function FiltersPanel({
   className,
@@ -117,16 +108,14 @@ export function FiltersPanelInner({
   );
   const [isPending, startTransition] = useTransition();
   const [optimisticParams, setOptimisticParams] = useOptimistic(params);
-  const [accordionItems, setAccordionItems] = useState(() =>
-    filters
-      .filter((filter) => filter.type !== 'link-group')
-      .map((filter, index) => ({
-        key: index.toString(),
-        value: index.toString(),
-        filter,
-        expanded: index < 3,
-      })),
-  );
+  const accordionItems = filters
+    .filter((filter) => filter.type !== 'link-group')
+    .map((filter, index) => ({
+      key: index.toString(),
+      value: index.toString(),
+      filter,
+      expanded: index < 3,
+    }));
 
   if (filters.length === 0) return null;
 
@@ -135,124 +124,215 @@ export function FiltersPanelInner({
   );
 
   return (
-    <div className={clsx('space-y-5', className)} data-pending={isPending ? true : null}>
+    <div
+      className={clsx(
+        'h-fit w-full space-y-6 rounded-lg bg-white p-5 shadow-sm md:w-[220px]',
+        className,
+      )}
+      data-pending={isPending ? true : null}
+    >
+      <div className="mb-6">
+        <h3 className="mb-4 text-lg font-bold">Let&apos;s find you a scooter!</h3>
+        <p className="mb-3 text-sm">
+          Welcome back <span className="text-[#F92F7B]">thomas</span>! Please tell us all about your
+          ideal new e-scooter and we can make some suggestions.
+        </p>
+        <div className="mt-4 flex w-full gap-1">
+          <input
+            className="min-w-0 flex-1 rounded-l-md border border-gray-300 px-3 py-2 text-sm text-[#F92F7B] placeholder:text-[#F92F7B]"
+            placeholder="Search..."
+            type="text"
+          />
+          <button className="flex-shrink-0 rounded-r-md bg-[#F92F7B] px-3 py-2 text-white hover:bg-[#E91E63] active:bg-[#C2185B] transition-colors">
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
       {linkGroupFilters.map((linkGroup, index) => (
         <div key={index.toString()}>
-          <h3 className="py-4 font-mono text-sm uppercase text-contrast-400">{linkGroup.label}</h3>
+          <h3 className="mb-3 font-bold">{linkGroup.label}</h3>
           <ul>
             {linkGroup.links.map((link, linkIndex) => (
-              <li className="py-2" key={linkIndex.toString()}>
-                <Link
-                  className="font-body text-base font-medium text-contrast-500 transition-colors duration-300 ease-out hover:text-foreground"
-                  href={link.href}
-                >
-                  {link.label}
-                </Link>
+              <li className="py-1" key={linkIndex.toString()}>
+                <div className="flex items-center">
+                  <input
+                    className="mr-2 h-4 w-4 appearance-none border-2 border-[#F92F7B] checked:bg-[#F92F7B] rounded focus:ring-[#F92F7B] focus:ring-opacity-25"
+                    id={`link-${index}-${linkIndex}`}
+                    type="checkbox"
+                  />
+                  <label className="text-sm" htmlFor={`link-${index}-${linkIndex}`}>
+                    <Link
+                      className="text-gray-700 transition-colors duration-300 ease-out hover:text-foreground"
+                      href={link.href}
+                    >
+                      {link.label}
+                    </Link>
+                  </label>
+                </div>
               </li>
             ))}
           </ul>
+          <div className="mt-4 h-px bg-[#DBDBDB]" />
         </div>
       ))}
-      <Accordion
-        onValueChange={(items) =>
-          setAccordionItems((prevItems) =>
-            prevItems.map((prevItem) => ({
-              ...prevItem,
-              expanded: items.includes(prevItem.value),
-            })),
-          )
-        }
-        type="multiple"
-        value={accordionItems.filter((item) => item.expanded).map((item) => item.value)}
-      >
-        {accordionItems.map((accordionItem) => {
-          const { key, value, filter } = accordionItem;
 
-          switch (filter.type) {
-            case 'toggle-group':
-              return (
-                <AccordionItem
-                  key={key}
-                  title={`${filter.label}${getParamCountLabel(optimisticParams, filter.paramName)}`}
-                  value={value}
-                >
-                  <ToggleGroup
-                    onValueChange={(toggleGroupValues) => {
-                      startTransition(async () => {
-                        const nextParams = {
-                          ...optimisticParams,
-                          [startCursorParamName]: null,
-                          [endCursorParamName]: null,
-                          [filter.paramName]:
-                            toggleGroupValues.length === 0 ? null : toggleGroupValues,
-                        };
+      {accordionItems.map((accordionItem) => {
+        const { key, filter } = accordionItem;
 
-                        setOptimisticParams(nextParams);
-                        await setParams(nextParams);
-                      });
-                    }}
-                    options={filter.options}
-                    type="multiple"
-                    value={optimisticParams[filter.paramName] ?? []}
+        switch (filter.type) {
+          case 'toggle-group':
+            return (
+              <div className="mb-6" key={key}>
+                <div className="mb-3 flex items-center">
+                  <input
+                    className="mr-2 h-4 w-4 appearance-none border-2 border-[#F92F7B] checked:bg-[#F92F7B] rounded focus:ring-[#F92F7B] focus:ring-opacity-25"
+                    id={`filter-${key}`}
+                    type="checkbox"
                   />
-                </AccordionItem>
-              );
+                  <label className="font-bold" htmlFor={`filter-${key}`}>
+                    {filter.label}
+                  </label>
+                </div>
+                <div className="space-y-2">
+                  {filter.options.map((option) => (
+                    <div className="flex items-center" key={option.value}>
+                      <input
+                        checked={(optimisticParams[filter.paramName] ?? []).includes(option.value)}
+                        className="relative mr-2 h-4 w-4 appearance-none rounded border-2 border-[var(--primary,#F92F7B)] bg-white checked:border-[var(--primary,#F92F7B)] checked:bg-[var(--primary,#F92F7B)] focus:ring-[var(--primary,#F92F7B)] focus:ring-opacity-25"
+                        disabled={option.disabled}
+                        id={option.value}
+                        onChange={(e) => {
+                          startTransition(async () => {
+                            const currentValues = optimisticParams[filter.paramName] ?? [];
+                            const newValues = e.target.checked
+                              ? [...currentValues, option.value]
+                              : currentValues.filter((v: string) => v !== option.value);
 
-            case 'range':
-              return (
-                <AccordionItem key={key} title={filter.label} value={value}>
-                  <RangeInput
-                    applyLabel={rangeFilterApplyLabel}
-                    disabled={filter.disabled}
-                    max={filter.max}
-                    maxLabel={filter.maxLabel}
-                    maxName={filter.maxParamName}
-                    maxPlaceholder={filter.maxPlaceholder}
-                    maxPrepend={filter.maxPrepend}
-                    min={filter.min}
-                    minLabel={filter.minLabel}
-                    minName={filter.minParamName}
-                    minPlaceholder={filter.minPlaceholder}
-                    minPrepend={filter.minPrepend}
-                    onChange={({ min, max }) => {
-                      startTransition(async () => {
-                        const nextParams = {
-                          ...optimisticParams,
-                          [filter.minParamName]: min,
-                          [filter.maxParamName]: max,
-                          [startCursorParamName]: null,
-                          [endCursorParamName]: null,
-                        };
+                            const nextParams = {
+                              ...optimisticParams,
+                              [startCursorParamName]: null,
+                              [endCursorParamName]: null,
+                              [filter.paramName]: newValues.length === 0 ? null : newValues,
+                            };
 
-                        setOptimisticParams(nextParams);
-                        await setParams(nextParams);
-                      });
-                    }}
-                    value={{
-                      min: optimisticParams[filter.minParamName] ?? null,
-                      max: optimisticParams[filter.maxParamName] ?? null,
-                    }}
+                            setOptimisticParams(nextParams);
+                            await setParams(nextParams);
+                          });
+                        }}
+                        onInput={(e) => {
+                          const target = e.currentTarget;
+
+                          if (target.checked) {
+                            target.style.backgroundImage = `url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e")`;
+                            target.style.backgroundSize = '100% 100%';
+                            target.style.backgroundPosition = 'center';
+                            target.style.backgroundRepeat = 'no-repeat';
+                          } else {
+                            target.style.backgroundImage = 'none';
+                          }
+                        }}
+                        ref={(el) => {
+                          if (
+                            el &&
+                            (optimisticParams[filter.paramName] ?? []).includes(option.value)
+                          ) {
+                            el.style.backgroundImage = `url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e")`;
+                            el.style.backgroundSize = '100% 100%';
+                            el.style.backgroundPosition = 'center';
+                            el.style.backgroundRepeat = 'no-repeat';
+                          }
+                        }}
+                        style={{
+                          backgroundImage: 'none',
+                        }}
+                        type="checkbox"
+                      />
+                      <label className="text-sm" htmlFor={option.value}>
+                        {option.label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+
+          case 'range':
+            return (
+              <div className="mb-6" key={key}>
+                <div className="mb-3 flex items-center">
+                  <input
+                    className="mr-2 h-4 w-4 appearance-none border-2 border-[#F92F7B] checked:bg-[#F92F7B] rounded focus:ring-[#F92F7B] focus:ring-opacity-25"
+                    id={`filter-${key}`}
+                    type="checkbox"
                   />
-                </AccordionItem>
-              );
+                  <label className="font-bold" htmlFor={`filter-${key}`}>
+                    {filter.label}
+                  </label>
+                </div>
+                <RangeInput
+                  applyLabel={rangeFilterApplyLabel}
+                  disabled={filter.disabled}
+                  max={filter.max}
+                  maxLabel={filter.maxLabel}
+                  maxName={filter.maxParamName}
+                  maxPlaceholder={filter.maxPlaceholder}
+                  maxPrepend={filter.maxPrepend}
+                  min={filter.min}
+                  minLabel={filter.minLabel}
+                  minName={filter.minParamName}
+                  minPlaceholder={filter.minPlaceholder}
+                  minPrepend={filter.minPrepend}
+                  onChange={({ min, max }) => {
+                    startTransition(async () => {
+                      const nextParams = {
+                        ...optimisticParams,
+                        [filter.minParamName]: min,
+                        [filter.maxParamName]: max,
+                        [startCursorParamName]: null,
+                        [endCursorParamName]: null,
+                      };
 
-            case 'rating':
-              return (
-                <AccordionItem key={key} title={filter.label} value={value}>
-                  <div className="space-y-3">
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                      <Checkbox
+                      setOptimisticParams(nextParams);
+                      await setParams(nextParams);
+                    });
+                  }}
+                  value={{
+                    min: optimisticParams[filter.minParamName] ?? null,
+                    max: optimisticParams[filter.maxParamName] ?? null,
+                  }}
+                />
+              </div>
+            );
+
+          case 'rating':
+            return (
+              <div className="mb-6" key={key}>
+                <div className="mb-3 flex items-center">
+                  <input
+                    className="mr-2 h-4 w-4 appearance-none border-2 border-[#F92F7B] checked:bg-[#F92F7B] rounded focus:ring-[#F92F7B] focus:ring-opacity-25"
+                    id={`filter-${key}`}
+                    type="checkbox"
+                  />
+                  <label className="font-bold" htmlFor={`filter-${key}`}>
+                    {filter.label}
+                  </label>
+                </div>
+                <div className="space-y-2">
+                  {[5, 4, 3, 2, 1].map((rating) => (
+                    <div className="flex items-center" key={rating}>
+                      <input
                         checked={
                           optimisticParams[filter.paramName]?.includes(rating.toString()) ?? false
                         }
+                        className="relative mr-2 h-4 w-4 appearance-none rounded border-2 border-[var(--primary,#F92F7B)] bg-white checked:border-[var(--primary,#F92F7B)] checked:bg-[var(--primary,#F92F7B)] focus:ring-[var(--primary,#F92F7B)] focus:ring-opacity-25"
                         disabled={filter.disabled}
-                        key={rating}
-                        label={<Rating rating={rating} showRating={false} />}
-                        onCheckedChange={(checked) =>
+                        id={`rating-${rating}`}
+                        onChange={(e) => {
                           startTransition(async () => {
                             const ratings = new Set(optimisticParams[filter.paramName]);
 
-                            if (checked === true) ratings.add(rating.toString());
+                            if (e.target.checked) ratings.add(rating.toString());
                             else ratings.delete(rating.toString());
 
                             const nextParams = {
@@ -264,21 +344,52 @@ export function FiltersPanelInner({
 
                             setOptimisticParams(nextParams);
                             await setParams(nextParams);
-                          })
-                        }
-                      />
-                    ))}
-                  </div>
-                </AccordionItem>
-              );
+                          });
+                        }}
+                        onInput={(e) => {
+                          const target = e.currentTarget;
 
-            default:
-              return null;
-          }
-        })}
-      </Accordion>
+                          if (target.checked) {
+                            target.style.backgroundImage = `url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e")`;
+                            target.style.backgroundSize = '100% 100%';
+                            target.style.backgroundPosition = 'center';
+                            target.style.backgroundRepeat = 'no-repeat';
+                          } else {
+                            target.style.backgroundImage = 'none';
+                          }
+                        }}
+                        ref={(el) => {
+                          if (
+                            el &&
+                            (optimisticParams[filter.paramName] ?? []).includes(rating.toString())
+                          ) {
+                            el.style.backgroundImage = `url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e")`;
+                            el.style.backgroundSize = '100% 100%';
+                            el.style.backgroundPosition = 'center';
+                            el.style.backgroundRepeat = 'no-repeat';
+                          }
+                        }}
+                        style={{
+                          backgroundImage: 'none',
+                        }}
+                        type="checkbox"
+                      />
+                      <label className="flex items-center text-sm" htmlFor={`rating-${rating}`}>
+                        <Rating rating={rating} showRating={false} />
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+
+          default:
+            return null;
+        }
+      })}
 
       <Button
+        className="w-full"
         onClick={() => {
           startTransition(async () => {
             const nextParams = {
@@ -302,48 +413,54 @@ export function FiltersPanelInner({
 
 export function FiltersSkeleton() {
   return (
-    <div className="space-y-5">
-      <AccordionSkeleton>
+    <div className="h-fit w-full space-y-6 rounded-lg bg-white p-5 shadow-sm md:w-[220px]">
+      <div className="space-y-4">
+        <div className="h-6 w-[15ch] animate-pulse rounded bg-gray-200" />
+        <div className="space-y-2">
+          <div className="h-4 w-full animate-pulse rounded bg-gray-100" />
+          <div className="h-10 w-full animate-pulse rounded bg-gray-100" />
+        </div>
+      </div>
+
+      <FilterSkeleton>
         <ToggleGroupSkeleton options={4} seed={2} />
-      </AccordionSkeleton>
-      <AccordionSkeleton>
+      </FilterSkeleton>
+      <FilterSkeleton>
         <ToggleGroupSkeleton options={3} seed={1} />
-      </AccordionSkeleton>
-      <AccordionSkeleton>
+      </FilterSkeleton>
+      <FilterSkeleton>
         <RangeSkeleton />
-      </AccordionSkeleton>
+      </FilterSkeleton>
       {/* Reset Filters Button */}
-      <div className="h-10 w-[10ch] animate-pulse rounded-full bg-contrast-100" />
+      <div className="h-10 w-full animate-pulse rounded-md bg-gray-100" />
     </div>
   );
 }
 
-function AccordionSkeleton({ children }: { children: React.ReactNode }) {
+function FilterSkeleton({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <div className="items-start py-3 font-mono text-sm uppercase last:flex @md:py-4">
-        <div className="inline-flex h-[1lh] items-center">
-          <div className="h-2 w-[10ch] flex-1 animate-pulse rounded-sm bg-contrast-100" />
-        </div>
-      </div>
-      <div className="pb-5">{children}</div>
+    <div className="space-y-3">
+      <div className="h-5 w-[8ch] animate-pulse rounded bg-gray-200" />
+      <div>{children}</div>
     </div>
   );
 }
 
 function ToggleGroupSkeleton({ options, seed = 0 }: { options: number; seed?: number }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="space-y-2">
       {Array.from({ length: options }, (_, i) => {
         const width = Math.floor(((i * 3 + 7 + seed) % 8) + 6);
 
         return (
-          <div
-            className="h-12 w-[var(--width)] animate-pulse rounded-full bg-contrast-100 px-4"
-            key={i}
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            style={{ '--width': `${width}ch` } as React.CSSProperties}
-          />
+          <div className="flex items-center" key={i}>
+            <div className="mr-2 h-4 w-4 animate-pulse rounded bg-gray-200" />
+            <div
+              className="h-4 w-[var(--width)] animate-pulse rounded bg-gray-200"
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              style={{ '--width': `${width}ch` } as React.CSSProperties}
+            />
+          </div>
         );
       })}
     </div>
@@ -353,9 +470,9 @@ function ToggleGroupSkeleton({ options, seed = 0 }: { options: number; seed?: nu
 function RangeSkeleton() {
   return (
     <div className="flex items-center gap-2">
-      <div className="h-12 w-[10ch] animate-pulse rounded-lg bg-contrast-100" />
-      <div className="h-12 w-[10ch] animate-pulse rounded-lg bg-contrast-100" />
-      <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-contrast-100" />
+      <div className="h-10 w-[10ch] animate-pulse rounded-md bg-gray-200" />
+      <div className="h-10 w-[10ch] animate-pulse rounded-md bg-gray-200" />
+      <div className="h-8 w-8 shrink-0 animate-pulse rounded bg-gray-200" />
     </div>
   );
 }

@@ -235,7 +235,6 @@ export default async function Brand(props: Props) {
         { value: 'relevance', label: t('SortBy.relevance') },
       ]}
       sortParamName="sort"
-      title={brand.name}
       totalCount={streamableTotalCount}
     />
   );
