@@ -73,7 +73,7 @@ export function ProductsListSection({
   maxCompareLimitMessage,
 }: Props) {
   return (
-    <div className="group/products-list-section @container">
+    <div className="group/products-list-section @container" style={{ backgroundColor: '#F5F5F5' }}>
       <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
         <div>
           <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
@@ -144,7 +144,7 @@ export function ProductsListSection({
             </div>
           </div>
         </div>
-        <div className="flex items-stretch gap-8 @4xl:gap-10">
+        <div className="flex items-start gap-8 @4xl:gap-10">
           <aside className="hidden w-52 @3xl:block @4xl:w-60">
             <Stream value={streamableFiltersPanelTitle}>
               {(filtersPanelTitle) => <h2 className="sr-only">{filtersPanelTitle}</h2>}
