@@ -1,16 +1,16 @@
 'use client';
 
 import { Image } from '~/components/image';
-import { useIsDesktop } from '~/lib/use-is-desktop';
+import { useIsTabletOrLarger } from '~/lib/use-is-tablet-or-larger';
 
 import { PaymentOptionsAccordion } from './payment-options-accordion';
 import { PaymentOptionsAccordionItem } from './payment-options-accordion-item';
 
 export function PaymentOptions() {
-  const isDesktop = useIsDesktop();
+  const isTabletOrLarger = useIsTabletOrLarger();
   const sectionStyle = {
     backgroundImage: 'url(/images/backgrounds/payment-options-background.jpg)',
-    ...(isDesktop ? { backgroundAttachment: 'fixed' } : {}),
+    ...(isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
   };
 
   return (
