@@ -1,8 +1,10 @@
 'use client';
 
+import { Image } from '~/components/image';
 import { useIsDesktop } from '~/lib/use-is-desktop';
-import { PaymentOptionsAccordion } from './PaymentOptionsAccordion';
-import { PaymentOptionsAccordionItem } from './PaymentOptionsAccordionItem';
+
+import { PaymentOptionsAccordion } from './payment-options-accordion';
+import { PaymentOptionsAccordionItem } from './payment-options-accordion-item';
 
 export function PaymentOptions() {
   const isDesktop = useIsDesktop();
@@ -18,23 +20,25 @@ export function PaymentOptions() {
     >
       <div className="relative flex flex-col justify-center w-full max-w-md h-auto md:min-h-[420px] md:max-h-[540px] mx-4 md:ml-[16%] md:mr-0 -mt-[4%] overflow-hidden rounded-xl">
         {/* Background image with opacity */}
-        <img
-          src="/images/backgrounds/newsletterform.png"
+        <Image
           alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-80"
           aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover opacity-80"
+          fill
+          priority={false}
+          src="/images/backgrounds/newsletterform.png"
         />
         {/* Content */}
         <div className="relative p-6 sm:p-8">
           <h2 className="text-3xl sm:text-4xl font-bold -mt-8 -mb-2 text-center">
             Payment Options<span className="text-[#F92F7B] text-6xl">.</span>
           </h2>
-          <div className="text-center text-neutral-600 text-lg mb-6">
+          <div className="text-center text-neutral-700 text-lg font-bold mb-6">
             <div>we have great finance options</div>
             <div>as well as cash discounts</div>
           </div>
           <div className="md:px-2">
-            <PaymentOptionsAccordion type="single" collapsible defaultValue="klarna">
+            <PaymentOptionsAccordion collapsible defaultValue="klarna" type="single" >
               <PaymentOptionsAccordionItem title="Finance with Klarna" value="klarna">
                 <div>
                   Finance your new ride with <span className="text-pink-500 font-semibold">Klarna</span> and receive great rates with financing terms up to 36 months. Apply at <span className="text-pink-500 font-semibold">checkout</span> for an instant decision. <span className="text-pink-500 font-semibold">Learn more</span>
