@@ -82,22 +82,30 @@ export function ProductsListSection({
             }
           </Stream>
           <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
-            <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
-              <Suspense
-                fallback={
-                  <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
-                }
+            <Suspense
+              fallback={
+                <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                  <span className="inline-flex h-4 w-32 animate-pulse rounded bg-contrast-100" />
+                </div>
+              }
+            >
+              <Stream
+                value={Streamable.all([products, totalCount])}
               >
-                {title}
-              </Suspense>
-              <Suspense
-                fallback={
-                  <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
-                }
-              >
-                <span className="text-contrast-300">{totalCount}</span>
-              </Suspense>
-            </h1>
+                {([productList, total]) => {
+                  const totalResults = parseInt(total, 10) || 0;
+                  const currentResults = productList.length;
+                  const startResult = currentResults > 0 ? 1 : 0;
+                  const endResult = currentResults;
+
+                  return (
+                    <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                      Showing {startResult}-{endResult} of {totalResults} results
+                    </div>
+                  );
+                }}
+              </Stream>
+            </Suspense>
             <div className="flex gap-2">
               <Stream
                 fallback={<SortingSkeleton />}
