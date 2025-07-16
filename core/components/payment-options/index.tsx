@@ -3,8 +3,7 @@
 import { Image } from '~/components/image';
 import { useIsTabletOrLarger } from '~/lib/use-is-tablet-or-larger';
 
-import { PaymentOptionsAccordion } from './payment-options-accordion';
-import { PaymentOptionsAccordionItem } from './payment-options-accordion-item';
+import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-options-accordion';
 
 export function PaymentOptions() {
   const isTabletOrLarger = useIsTabletOrLarger();
@@ -15,7 +14,7 @@ export function PaymentOptions() {
 
   return (
     <section
-      className="w-full h-[100vh] overflow-hidden relative flex items-center bg-cover bg-center font-['Nunito']"
+      className="w-full h-auto md:h-[100vh] overflow-hidden relative flex items-center bg-cover bg-center py-10 font-['Nunito']"
       style={sectionStyle}
     >
       <div className="relative flex flex-col justify-center w-full max-w-md h-auto md:min-h-[420px] md:max-h-[540px] mx-4 md:ml-[16%] md:mr-0 -mt-[4%] overflow-hidden rounded-xl">
