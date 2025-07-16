@@ -55,8 +55,8 @@ export function PaymentOptionsAccordionItem({
             className={clsx(
               {
                 light:
-                  'stroke-[var(--accordion-light-title-icon,hsl(var(--contrast-500)))] group-hover:stroke-[var(--accordion-light-title-icon-hover,hsl(var(--foreground)))]',
-                dark: 'stroke-[var(--accordion-dark-title-icon,hsl(var(--contrast-200)))] group-hover:stroke-[var(--accordion-dark-title-icon-hover,hsl(var(--background)))]',
+                  'stroke-[#F92F7B] transition-transform duration-200 group-hover:scale-125',
+                dark: 'stroke-[#F92F7B] transition-transform duration-200 group-hover:scale-125',
               }[colorScheme],
             )}
           />
