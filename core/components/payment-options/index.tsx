@@ -1,6 +1,7 @@
 'use client';
 
 import { Image } from '~/components/image';
+import { Link } from '~/components/link';
 import { useIsTabletOrLarger } from '~/lib/use-is-tablet-or-larger';
 
 import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-options-accordion';
@@ -40,12 +41,12 @@ export function PaymentOptions() {
             <PaymentOptionsAccordion collapsible defaultValue="klarna" type="single" >
               <PaymentOptionsAccordionItem title="Finance with Klarna" value="klarna">
                 <div>
-                  Finance your new ride with <span className="text-pink-500 font-semibold">Klarna</span> and receive great rates with financing terms up to 36 months. Apply at <span className="text-pink-500 font-semibold">checkout</span> for an instant decision. <span className="text-pink-500 font-semibold">Learn more</span>
+                  Finance your new ride with <span className="text-pink-500 font-semibold">Klarna</span> and receive great rates with financing terms up to 36 months. Apply at <span className="text-pink-500 font-semibold">checkout</span> for an instant decision. <Link href="/payment-options/" className="text-pink-500 font-semibold hover:text-[#D81B60] transition-colors">Learn more</Link>
                 </div>
               </PaymentOptionsAccordionItem>
               <PaymentOptionsAccordionItem title="ZIP Financing" value="zip">
                 <div>
-                  Split your payments in (4), <span className="text-pink-500 font-semibold">interest-free</span>, up to $3,000 with ZIP. <span className="text-pink-500 font-semibold">Learn more</span>
+                  Split your payments in (4), <span className="text-pink-500 font-semibold">interest-free</span>, up to $3,000 with ZIP. <Link href="/payment-options/" className="text-pink-500 font-semibold hover:text-[#D81B60] transition-colors">Learn more</Link>
                 </div>
               </PaymentOptionsAccordionItem>
               <PaymentOptionsAccordionItem title="Cash Discounts" value="cash">
