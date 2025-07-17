@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react';
 
 interface RotatingTextProps {
   className?: string;
+  color?: string;
   fadeDuration?: number;
   interval?: number;
   words: string[];
 }
 
-export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 2000, className, fadeDuration = 300 }) => {
+export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 2000, className, fadeDuration = 300, color = '#F92F7B' }) => {
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
@@ -42,7 +43,7 @@ export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 20
         fade ? 'opacity-100' : 'opacity-0'
       }${className ? ` ${className}` : ''}`}
       role="status"
-      style={{ color: '#F92F7B' }}
+      style={{ color }}
     >
       {words[index]}
     </span>

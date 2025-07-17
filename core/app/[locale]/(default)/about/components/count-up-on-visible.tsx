@@ -22,7 +22,6 @@ export const CountUpOnVisible: React.FC<CountUpOnVisibleProps> = ({ end, duratio
     let observer: IntersectionObserver | null = null;
 
     const animate = () => {
-      const start = 0;
       let startTime: number | null = null;
 
       setCount(0);
@@ -32,7 +31,7 @@ export const CountUpOnVisible: React.FC<CountUpOnVisibleProps> = ({ end, duratio
 
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const nextValue = Math.floor(start + (end - start) * progress);
+        const nextValue = Math.floor(end * progress);
 
         setCount(nextValue);
 
@@ -49,7 +48,7 @@ export const CountUpOnVisible: React.FC<CountUpOnVisibleProps> = ({ end, duratio
 
     observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry && entry.isIntersecting && !hasAnimated) {
+        if (entry?.isIntersecting && !hasAnimated) {
           animate();
           observer?.disconnect();
         }
