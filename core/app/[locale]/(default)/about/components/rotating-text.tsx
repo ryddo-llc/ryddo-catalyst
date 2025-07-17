@@ -3,17 +3,22 @@
 import React, { useEffect, useState } from 'react';
 
 interface RotatingTextProps {
-  words: string[];
-  interval?: number;
   className?: string;
+  fadeDuration?: number;
+  interval?: number;
+  words: string[];
 }
 
-export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 2000, className }) => {
+export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 2000, className, fadeDuration = 300 }) => {
+  if (!words || words.length === 0) {
+    return null;
+  }
+
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
   useEffect(() => {
-    const fadeOut = setTimeout(() => setFade(false), interval - 300);
+    const fadeOut = setTimeout(() => setFade(false), interval - fadeDuration);
     const timer = setTimeout(() => {
       setIndex((prev) => (prev + 1) % words.length);
       setFade(true);
@@ -27,9 +32,12 @@ export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 20
 
   return (
     <span
+      aria-label={`Rotating text: ${words.join(', ')}`}
+      aria-live="polite"
       className={`transition-opacity duration-300 ${
         fade ? 'opacity-100' : 'opacity-0'
       }${className ? ` ${className}` : ''}`}
+      role="status"
       style={{ color: '#F92F7B' }}
     >
       {words[index]}

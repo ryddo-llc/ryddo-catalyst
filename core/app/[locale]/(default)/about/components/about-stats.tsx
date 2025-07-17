@@ -4,6 +4,8 @@ import React from 'react';
 
 import { CountUpOnVisible } from './count-up-on-visible';
 
+const BACKGROUND_IMAGE = '/images/backgrounds/los-angeles-background.webp';
+
 const stats = [
   { value: 900, label: 'MPGe Average' },
   { value: 40, label: 'Mi./1kw ($.12)' },
@@ -14,7 +16,7 @@ export const AboutStats: React.FC = () => {
   return (
     <section
       className="w-full py-16 md:py-32 flex justify-center items-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/backgrounds/los-angeles-background.webp')" }}
+      style={{ backgroundImage: `url('${BACKGROUND_IMAGE}')` }}
     >
       <div className="flex flex-col md:flex-row gap-8 md:gap-16 justify-center items-center w-full max-w-4xl">
         {stats.map((stat) => (

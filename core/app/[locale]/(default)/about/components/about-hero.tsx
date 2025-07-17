@@ -15,7 +15,7 @@ export const AboutHero: React.FC = () => {
         at a time.
       </h1>
       <p className="text-lg md:text-xl text-gray-600 font-medium">
-        Turning our hobbies &amp; passions into a business. We hope you’ll come along for the ride.
+        Turning our hobbies & passions into a business. We hope you’ll come along for the ride.
       </p>
     </section>
   );

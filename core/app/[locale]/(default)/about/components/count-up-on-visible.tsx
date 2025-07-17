@@ -34,7 +34,7 @@ export const CountUpOnVisible: React.FC<CountUpOnVisibleProps> = ({ end, duratio
         const progress = Math.min(elapsed / duration, 1);
         const nextValue = Math.floor(start + (end - start) * progress);
 
-        setCount((prev) => (prev !== end ? nextValue : prev));
+        setCount(nextValue);
 
         if (progress < 1) {
           frame.current = requestAnimationFrame(animateStep);
