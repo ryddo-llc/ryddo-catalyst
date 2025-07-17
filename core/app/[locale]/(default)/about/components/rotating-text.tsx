@@ -14,7 +14,7 @@ export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 20
   const [fade, setFade] = useState(true);
 
   useEffect(() => {
-    if (!words || words.length === 0) {
+    if (words.length === 0) {
       return;
     }
 
@@ -30,7 +30,7 @@ export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 20
     };
   }, [index, interval, words.length, fadeDuration, words]);
 
-  if (!words || words.length === 0) {
+  if (words.length === 0) {
     return null;
   }
 
