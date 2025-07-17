@@ -10,14 +10,14 @@ interface RotatingTextProps {
 }
 
 export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 2000, className, fadeDuration = 300 }) => {
-  if (!words || words.length === 0) {
-    return null;
-  }
-
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
   useEffect(() => {
+    if (!words || words.length === 0) {
+      return;
+    }
+
     const fadeOut = setTimeout(() => setFade(false), interval - fadeDuration);
     const timer = setTimeout(() => {
       setIndex((prev) => (prev + 1) % words.length);
@@ -28,7 +28,11 @@ export const RotatingText: React.FC<RotatingTextProps> = ({ words, interval = 20
       clearTimeout(timer);
       clearTimeout(fadeOut);
     };
-  }, [index, interval, words.length]);
+  }, [index, interval, words.length, fadeDuration, words]);
+
+  if (!words || words.length === 0) {
+    return null;
+  }
 
   return (
     <span
