@@ -67,12 +67,6 @@ export default async function TermsPage({ params }: Props) {
             info@ryddo.com or (323) 676-7433.
           </p>
           
-          <div className="bg-gray-100 p-6 rounded-lg">
-            <p className="text-sm text-gray-600">
-              <strong>Note:</strong> This is a placeholder page. Actual terms and conditions should 
-              be reviewed and drafted by legal professionals.
-            </p>
-          </div>
         </div>
       </div>
     </div>
