@@ -15,11 +15,10 @@ export function PaymentOptions() {
 
   return (
     <section
-      className="w-full h-auto md:h-[100vh] overflow-hidden relative flex items-center bg-cover bg-center py-10 font-['Nunito']"
+      className="w-full h-auto md:h-[100vh] md:max-h-[760px] overflow-hidden relative flex items-center bg-cover bg-center py-10 font-['Nunito']"
       style={sectionStyle}
     >
-      <div className="relative flex flex-col justify-center w-full max-w-md h-auto md:min-h-[420px] md:max-h-[540px] mx-4 md:ml-[16%] md:mr-0 -mt-[4%] overflow-hidden rounded-xl">
-        {/* Background image with opacity */}
+      <div className="relative flex flex-col justify-center w-full max-w-[30vw] h-[clamp(320px,40vw,540px)] mx-4 md:ml-[16vw] md:mr-0 -mt-[clamp(2%,4vw,4%)] overflow-hidden rounded-xl">
         <Image
           alt=""
           aria-hidden="true"
@@ -33,7 +32,7 @@ export function PaymentOptions() {
           <h2 className="text-3xl sm:text-4xl font-bold -mt-8 -mb-2 text-center">
             Payment Options<span className="text-[#F92F7B] text-6xl">.</span>
           </h2>
-          <div className="text-center text-neutral-700 text-lg font-bold mb-6">
+          <div className="text-center text-neutral-700 text-lg font-medium mb-6">
             <div>we have great finance options</div>
             <div>as well as cash discounts</div>
           </div>
