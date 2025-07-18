@@ -15,11 +15,15 @@ export function PaymentOptions() {
 
   return (
     <section
-      className="w-full h-auto md:h-[100vh] overflow-hidden relative flex items-center bg-cover bg-center py-10 font-['Nunito']"
+      className="relative flex items-center w-full h-auto md:h-[100vh] md:max-h-[760px] overflow-hidden bg-cover bg-center py-10 font-['Nunito']"
       style={sectionStyle}
     >
-      <div className="relative flex flex-col justify-center w-full max-w-md h-auto md:min-h-[420px] md:max-h-[540px] mx-4 md:ml-[16%] md:mr-0 -mt-[4%] overflow-hidden rounded-xl">
-        {/* Background image with opacity */}
+      <div
+        className="relative flex flex-col justify-center h-auto
+          mx-auto lg:ml-[16vw] lg:mr-0
+          max-w-[90vw] sm:max-w-[75vw] md:max-w-[55vw] lg:max-w-[45vw] xl:max-w-[30vw] 
+          -mt-[clamp(2%,4vw,4%)] overflow-hidden rounded-xl"
+      >
         <Image
           alt=""
           aria-hidden="true"
@@ -28,12 +32,12 @@ export function PaymentOptions() {
           priority={false}
           src="/images/backgrounds/newsletterform.png"
         />
-        {/* Content */}
         <div className="relative p-6 sm:p-8">
-          <h2 className="text-3xl sm:text-4xl font-bold -mt-8 -mb-2 text-center">
-            Payment Options<span className="text-[#F92F7B] text-6xl">.</span>
-          </h2>
-          <div className="text-center text-neutral-700 text-lg font-bold mb-6">
+        <h2 className="text-[7vw] sm:text-[5vw] lg:text-[2.5vw] font-bold -mt-4 -mb-2 text-center">
+          Payment Options
+          <span className="text-[#F92F7B] text-[10vw] sm:text-[6vw] lg:text-[3.5vw] align-baseline">.</span>
+        </h2>
+          <div className="text-center text-neutral-700 text-lg font-medium mb-6">
             <div>we have great finance options</div>
             <div>as well as cash discounts</div>
           </div>
