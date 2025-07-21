@@ -8,6 +8,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { getProductDetailVariant, ProductDetailBike, ProductDetailScooter } from '~/components/product/product-detail-router';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
@@ -283,40 +284,59 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
+  // Determine which product detail component to use based on categories
+  const productDetailVariant = getProductDetailVariant(baseProduct);
+  
+  const productDetailProps = {
+    action: addToCart,
+    additionalActions: (
+      <WishlistButton
+        formId={detachedWishlistFormId}
+        productId={productId}
+        productSku={streamableProductSku}
+      />
+    ),
+    additionalInformationTitle: t('ProductDetails.additionalInformation'),
+    ctaDisabled: streameableCtaDisabled,
+    ctaLabel: streameableCtaLabel,
+    decrementLabel: t('ProductDetails.decreaseQuantity'),
+    emptySelectPlaceholder: t('ProductDetails.emptySelectPlaceholder'),
+    fields: productOptionsTransformer(baseProduct.productOptions),
+    incrementLabel: t('ProductDetails.increaseQuantity'),
+    prefetch: true,
+    product: {
+      id: baseProduct.entityId.toString(),
+      title: baseProduct.name,
+      description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
+      href: baseProduct.path,
+      images: streamableImages,
+      price: streamablePrices,
+      subtitle: baseProduct.brand?.name,
+      rating: baseProduct.reviewSummary.averageRating,
+      accordions: streameableAccordions,
+    },
+    quantityLabel: t('ProductDetails.quantity'),
+    thumbnailLabel: t('ProductDetails.thumbnail'),
+  };
+
+  const renderProductDetail = () => {
+    switch (productDetailVariant) {
+      case 'bike':
+        return <ProductDetailBike {...productDetailProps} />;
+        
+      case 'scooter':
+        return <ProductDetailScooter {...productDetailProps} />;
+        
+      case 'default':
+      default:
+        return <ProductDetail {...productDetailProps} />;
+    }
+  };
+
   return (
     <>
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
-        <ProductDetail
-          action={addToCart}
-          additionalActions={
-            <WishlistButton
-              formId={detachedWishlistFormId}
-              productId={productId}
-              productSku={streamableProductSku}
-            />
-          }
-          additionalInformationTitle={t('ProductDetails.additionalInformation')}
-          ctaDisabled={streameableCtaDisabled}
-          ctaLabel={streameableCtaLabel}
-          decrementLabel={t('ProductDetails.decreaseQuantity')}
-          emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
-          fields={productOptionsTransformer(baseProduct.productOptions)}
-          incrementLabel={t('ProductDetails.increaseQuantity')}
-          prefetch={true}
-          product={{
-            id: baseProduct.entityId.toString(),
-            title: baseProduct.name,
-            description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
-            href: baseProduct.path,
-            images: streamableImages,
-            price: streamablePrices,
-            subtitle: baseProduct.brand?.name,
-            rating: baseProduct.reviewSummary.averageRating,
-            accordions: streameableAccordions,
-          }}
-          quantityLabel={t('ProductDetails.quantity')}
-          thumbnailLabel={t('ProductDetails.thumbnail')}
-        />
+        {renderProductDetail()}
       </ProductAnalyticsProvider>
 
       <FeaturedProductCarousel
