@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
