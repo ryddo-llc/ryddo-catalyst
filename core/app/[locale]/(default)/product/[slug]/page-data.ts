@@ -182,6 +182,14 @@ const ProductQuery = graphql(
             averageRating
           }
           description
+          categories {
+            edges {
+              node {
+                name
+                path
+              }
+            }
+          }
           ...ProductOptionsFragment
         }
       }
