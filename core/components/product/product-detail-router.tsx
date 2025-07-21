@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
@@ -53,24 +52,6 @@ export function getProductDetailVariant(product: ProductWithCategories): Product
   return 'default';
 }
 
-interface ProductDetailRouterProps {
-  variant: ProductDetailVariant;
-  children: ReactNode;
-}
-
-export function ProductDetailRouter({ variant, children }: ProductDetailRouterProps) {
-  switch (variant) {
-    case 'bike':
-      return children;
-      
-    case 'scooter':
-      return children;
-      
-    case 'default':
-    default:
-      return children;
-  }
-}
 
 // Export component variants for easy access
 export { ProductDetail, ProductDetailBike, ProductDetailScooter };
