@@ -303,12 +303,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   const pathname = usePathname();
 
-  // Debug logging to help troubleshoot navigation highlighting
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Navigation Debug - Current pathname:', pathname);
-    }
-  }, [pathname]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -511,10 +505,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             value={streamableLinks}
           >
             {(links) => {
-              // Debug logging for navigation links
-              if (process.env.NODE_ENV === 'development') {
-                console.log('Navigation Debug - Available links:', links.map(link => ({ label: link.label, href: link.href })));
-              }
               
               return links.map((item, i) => {
                 // Handle trailing slash differences
@@ -522,17 +512,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
                 const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
                 
-                // Debug logging for each link's active state
-                if (process.env.NODE_ENV === 'development') {
-                  console.log(`Navigation Debug - Link "${item.label}" (${item.href}): isActive=${isActive}, pathname=${pathname}, normalizedPathname=${normalizedPathname}, normalizedHref=${normalizedHref}`);
-                }
                 
                 return (
                   <NavigationMenu.Item key={i} value={i.toString()}>
                     <NavigationMenu.Trigger asChild>
                       <Link
                         className={clsx(
-                          "text-md hidden items-center whitespace-nowrap rounded-xl p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out hover:underline hover:underline-offset-4 focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex",
+                          "text-md hidden items-center whitespace-nowrap rounded-xl p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex group relative",
                           {
                             "bg-[var(--nav-link-background-active,transparent)] text-[var(--nav-link-text-active,#F92F7B)]": isActive,
                             "bg-[var(--nav-link-background,transparent)] text-[var(--nav-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))]": !isActive
@@ -540,7 +526,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                         )}
                         href={item.href}
                       >
-                        {item.label}
+                        <span>{item.label}</span>
+                        {item.groups != null && item.groups.length > 0 && (
+                          <ChevronDown 
+                            className="absolute top-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100" 
+                            size={16}
+                          />
+                        )}
                       </Link>
                   </NavigationMenu.Trigger>
                   {item.groups != null && item.groups.length > 0 && (
