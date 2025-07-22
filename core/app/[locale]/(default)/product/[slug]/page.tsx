@@ -8,7 +8,11 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { getProductDetailVariant, ProductDetailBike, ProductDetailScooter } from '~/components/product/layout/product-detail-router';
+import {
+  getProductDetailVariant,
+  ProductDetailBike,
+  ProductDetailScooter,
+} from '~/components/product/layout/product-detail-router';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -156,21 +160,20 @@ export default async function Product({ params, searchParams }: Props) {
       alt: image.altText,
     }));
 
-    // Debug: Log all images received from BigCommerce
-    console.log('All images from BigCommerce:', allImages.length);
-    console.log('Images:', allImages.map((img, idx) => `${idx}: ${img.src}`));
-    console.log('Default image:', product.defaultImage?.url);
-
     // If we have a default image and it's not already in the array, ensure it's first
     if (product.defaultImage) {
-      const defaultImageInArray = allImages.find(img => img.src === product.defaultImage?.url);
+      const defaultImageInArray = allImages.find((img) => img.src === product.defaultImage?.url);
+
       if (defaultImageInArray) {
         // Default image is already in array, reorder to put it first
-        const otherImages = allImages.filter(img => img.src !== product.defaultImage?.url);
-        
-        return [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...otherImages];
+        const otherImages = allImages.filter((img) => img.src !== product.defaultImage?.url);
+
+        return [
+          { src: product.defaultImage.url, alt: product.defaultImage.altText },
+          ...otherImages,
+        ];
       }
-      
+
       // Default image not in array, add it as first
       return [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...allImages];
     }
@@ -305,17 +308,19 @@ export default async function Product({ params, searchParams }: Props) {
   const productDetailVariant = getProductDetailVariant(baseProduct);
 
   // Create streamable bike-specific data for bike products
-  const streamableBikeData = productDetailVariant === 'bike' 
-    ? Streamable.from(async () => {
-        const product = await streamableProduct;
-        return bikeProductTransformer(product);
-      })
-    : null;
-  
+  const streamableBikeData =
+    productDetailVariant === 'bike'
+      ? Streamable.from(async () => {
+          const product = await streamableProduct;
+
+          return bikeProductTransformer(product);
+        })
+      : null;
+
   // Create streamable inventory status for all products
   const streamableInventoryStatus = Streamable.from(async () => {
     const product = await streamableProduct;
-    
+
     return {
       isInStock: product.inventory.isInStock,
       status: product.availabilityV2.status,
@@ -336,10 +341,10 @@ export default async function Product({ params, searchParams }: Props) {
   };
 
   // Enhanced product data for bike components
-  const bikeProductData = streamableBikeData 
+  const bikeProductData = streamableBikeData
     ? Streamable.from(async () => {
         const bikeData = await streamableBikeData;
-        
+
         return {
           ...baseProductData,
           backgroundImage: bikeData.backgroundImage,
@@ -375,10 +380,10 @@ export default async function Product({ params, searchParams }: Props) {
     switch (productDetailVariant) {
       case 'bike':
         return <ProductDetailBike {...productDetailProps} />;
-        
+
       case 'scooter':
         return <ProductDetailScooter {...productDetailProps} />;
-        
+
       case 'default':
       default:
         return <ProductDetail {...productDetailProps} />;
