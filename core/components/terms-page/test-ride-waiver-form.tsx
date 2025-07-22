@@ -615,8 +615,8 @@ export function TestRideWaiverForm() {
                 State *
               </label>
               <select
-                id="state"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                id="state"
                 onChange={(e) => handleInputChange('state', e.target.value)}
                 required
                 value={formData.state}
