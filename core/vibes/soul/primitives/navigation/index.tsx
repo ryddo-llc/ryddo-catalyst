@@ -303,6 +303,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   const pathname = usePathname();
 
+  // Debug logging to help troubleshoot navigation highlighting
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Navigation Debug - Current pathname:', pathname);
+    }
+  }, [pathname]);
+
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsSearchOpen(false);
@@ -368,18 +375,30 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   value={streamableLinks}
                 >
                   {(links) =>
-                    links.map((item, i) => (
-                      <ul className="flex flex-col p-2 @4xl:gap-4 @4xl:p-5" key={i}>
-                        {item.label !== '' && (
-                          <li>
-                            <Link
-                              className="block rounded-lg bg-[var(--nav-mobile-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
-                              href={item.href}
-                            >
-                              {item.label}
-                            </Link>
-                          </li>
-                        )}
+                    links.map((item, i) => {
+                      // Handle trailing slash differences
+                      const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
+                      const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
+                      const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                      
+                      return (
+                        <ul className="flex flex-col p-2 @4xl:gap-4 @4xl:p-5" key={i}>
+                          {item.label !== '' && (
+                            <li>
+                              <Link
+                                className={clsx(
+                                  "block rounded-lg px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4",
+                                  {
+                                    "bg-[var(--nav-mobile-link-background-active,transparent)] text-[var(--nav-mobile-link-text-active,#F92F7B)]": isActive,
+                                    "bg-[var(--nav-mobile-link-background,transparent)] text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]": !isActive
+                                  }
+                                )}
+                                href={item.href}
+                              >
+                                {item.label}
+                              </Link>
+                            </li>
+                          )}
                         {item.groups
                           ?.flatMap((group) => group.links)
                           .map((link, j) => (
@@ -392,8 +411,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                               </Link>
                             </li>
                           ))}
-                      </ul>
-                    ))
+                        </ul>
+                      );
+                    })
                   }
                 </Stream>
                 {/* Mobile Locale / Currency Dropdown */}
@@ -490,16 +510,38 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             }
             value={streamableLinks}
           >
-            {(links) =>
-              links.map((item, i) => (
-                <NavigationMenu.Item key={i} value={i.toString()}>
-                  <NavigationMenu.Trigger asChild>
-                    <Link
-                      className="text-md hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] hover:underline hover:underline-offset-4 focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
-                      href={item.href}
-                    >
-                      {item.label}
-                    </Link>
+            {(links) => {
+              // Debug logging for navigation links
+              if (process.env.NODE_ENV === 'development') {
+                console.log('Navigation Debug - Available links:', links.map(link => ({ label: link.label, href: link.href })));
+              }
+              
+              return links.map((item, i) => {
+                // Handle trailing slash differences
+                const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
+                const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
+                const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                
+                // Debug logging for each link's active state
+                if (process.env.NODE_ENV === 'development') {
+                  console.log(`Navigation Debug - Link "${item.label}" (${item.href}): isActive=${isActive}, pathname=${pathname}, normalizedPathname=${normalizedPathname}, normalizedHref=${normalizedHref}`);
+                }
+                
+                return (
+                  <NavigationMenu.Item key={i} value={i.toString()}>
+                    <NavigationMenu.Trigger asChild>
+                      <Link
+                        className={clsx(
+                          "text-md hidden items-center whitespace-nowrap rounded-xl p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out hover:underline hover:underline-offset-4 focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex",
+                          {
+                            "bg-[var(--nav-link-background-active,transparent)] text-[var(--nav-link-text-active,#F92F7B)]": isActive,
+                            "bg-[var(--nav-link-background,transparent)] text-[var(--nav-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))]": !isActive
+                          }
+                        )}
+                        href={item.href}
+                      >
+                        {item.label}
+                      </Link>
                   </NavigationMenu.Trigger>
                   {item.groups != null && item.groups.length > 0 && (
                     <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-2 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
@@ -571,8 +613,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     </NavigationMenu.Content>
                   )}
                 </NavigationMenu.Item>
-              ))
-            }
+                );
+              });
+            }}
           </Stream>
         </ul>
 
