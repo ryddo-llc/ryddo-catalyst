@@ -9,7 +9,6 @@ import {
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
 
-import { BikeSpecsIcons } from './bike-specifications';
 import { BaseProductDetailProduct } from '../layout/product-detail-layout';
 import { ProductBadges } from '../shared/product-badges';
 import {
@@ -21,6 +20,8 @@ import {
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
 import { AuthorizedDealerCard, OffersCard } from '../shared/product-side-cards';
+
+import { BikeSpecsIcons } from './bike-specifications';
 
 interface BikeSpecifications {
   motorPower?: string;
@@ -139,7 +140,7 @@ export function ProductDetailBike<F extends Field>({
                       <div className="mx-auto w-full max-w-xs px-4 sm:max-w-sm md:max-w-lg lg:max-w-3xl xl:max-w-4xl">
                         <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                           {(images) => {
-                            const bikeImage = images[2];
+                            const bikeImage = images[2] ?? images[0];
 
                             return bikeImage ? (
                               <Image

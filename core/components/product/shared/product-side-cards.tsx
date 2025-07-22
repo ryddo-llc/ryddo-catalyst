@@ -69,11 +69,39 @@ export function AuthorizedDealerCard({ product }: { product: ProductWithSideCard
       </h3>
       <div className="text-center">
         <Stream fallback={<Skeleton.Box className="mx-auto mb-4 h-8 w-24" />} value={product.price}>
-          {(price) => (
-            <div className="mb-4">
-              <PriceLabel className="text-3xl font-bold" price={price ?? '$3,695'} />
-            </div>
-          )}
+          {(price) => {
+            // Convert price to the expected Price type
+            let formattedPrice;
+
+            if (typeof price === 'string') {
+              formattedPrice = price;
+            } else if (price && typeof price === 'object') {
+              if (price.type === 'sale' && price.currentValue && price.previousValue) {
+                formattedPrice = {
+                  type: 'sale' as const,
+                  currentValue: price.currentValue,
+                  previousValue: price.previousValue,
+                };
+              } else if (price.type === 'range' && price.currentValue && price.previousValue) {
+                formattedPrice = {
+                  type: 'range' as const,
+                  minValue: price.previousValue,
+                  maxValue: price.currentValue,
+                };
+              } else {
+                // Fallback to current value if available, otherwise default
+                formattedPrice = price.currentValue || '$3,695';
+              }
+            } else {
+              formattedPrice = '$3,695';
+            }
+
+            return (
+              <div className="mb-4">
+                <PriceLabel className="text-3xl font-bold" price={formattedPrice} />
+              </div>
+            );
+          }}
         </Stream>
         <Button className="mb-3 w-full" size="large" variant="primary">
           Buy Now

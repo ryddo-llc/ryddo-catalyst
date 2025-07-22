@@ -8,7 +8,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { getProductDetailVariant, ProductDetailBike, ProductDetailScooter } from '~/components/product/product-detail-router';
+import { getProductDetailVariant, ProductDetailBike, ProductDetailScooter } from '~/components/product/layout/product-detail-router';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
