@@ -90,7 +90,9 @@ export function ProductDetailBike<F extends Field>({
                 >
                   {(images) => {
                     const backgroundSrc =
-                      product.backgroundImage || images[1]?.src || '/default-background.jpg';
+                      product.backgroundImage ||
+                      images[1]?.src ||
+                      '/images/backgrounds/default-background.png';
 
                     return (
                       <Image
