@@ -312,6 +312,16 @@ export default async function Product({ params, searchParams }: Props) {
       })
     : null;
   
+  // Create streamable inventory status for all products
+  const streamableInventoryStatus = Streamable.from(async () => {
+    const product = await streamableProduct;
+    
+    return {
+      isInStock: product.inventory.isInStock,
+      status: product.availabilityV2.status,
+    };
+  });
+
   const baseProductData = {
     id: baseProduct.entityId.toString(),
     title: baseProduct.name,
@@ -322,6 +332,7 @@ export default async function Product({ params, searchParams }: Props) {
     subtitle: baseProduct.brand?.name,
     rating: baseProduct.reviewSummary.averageRating,
     accordions: streameableAccordions,
+    inventoryStatus: streamableInventoryStatus,
   };
 
   // Enhanced product data for bike components

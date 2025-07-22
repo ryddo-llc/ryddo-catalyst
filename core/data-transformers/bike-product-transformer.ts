@@ -62,12 +62,22 @@ interface ProductWithCustomFields {
       };
     }> | null;
   };
+  inventory?: {
+    isInStock: boolean;
+  };
+  availabilityV2?: {
+    status: 'Available' | 'Unavailable' | 'Preorder';
+  };
 }
 
 export interface BikeProductData {
   backgroundImage?: string;
   bikeSpecs?: BikeSpecifications;
   colors?: ColorOption[];
+  inventoryStatus?: {
+    isInStock: boolean;
+    status: 'Available' | 'Unavailable' | 'Preorder';
+  };
 }
 
 export function bikeProductTransformer(product: ProductWithCustomFields): BikeProductData {
@@ -134,9 +144,16 @@ export function bikeProductTransformer(product: ProductWithCustomFields): BikePr
       isDefault: value.isDefault,
     })) : [];
 
+  // Extract inventory status
+  const inventoryStatus = product.inventory && product.availabilityV2 ? {
+    isInStock: product.inventory.isInStock,
+    status: product.availabilityV2.status,
+  } : undefined;
+
   return {
     backgroundImage,
     bikeSpecs: Object.values(bikeSpecs).some(Boolean) ? bikeSpecs : undefined,
     colors: colors.length > 0 ? colors : undefined,
+    inventoryStatus,
   };
 }

@@ -95,15 +95,12 @@ export function ProductDetailBike<F extends Field>({
               </div>
 
               {/* Content Container */}
-              <div className="relative z-10 flex h-full flex-col justify-center px-4 py-8 md:px-8">
+              <div className="relative z-0 flex h-full flex-col justify-center px-4 py-8 md:px-8">
                 <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
                   {/* Top Section - Product Name & Stock */}
                   <div className="mb-4 text-center md:mb-8">
                     {/* Stock Status */}
-                    <div className="mb-4 inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-                      <div className="mr-2 h-2 w-2 rounded-full bg-green-500" />
-                      In Stock
-                    </div>
+                    <StockStatusBadge product={product} />
 
                     {/* Product Title */}
                     <h1
@@ -149,12 +146,12 @@ export function ProductDetailBike<F extends Field>({
                     </div>
 
                     {/* Left side - OffersCard */}
-                    <div className="absolute left-0 top-0 hidden lg:block">
+                    <div className="absolute left-0 top-0 z-0 hidden lg:block">
                       <OffersCard />
                     </div>
 
                     {/* Right side - PriceCard */}
-                    <div className="absolute right-0 top-0 hidden lg:block">
+                    <div className="absolute right-0 top-0 z-0 hidden lg:block">
                       <AuthorizedDealerCard product={product} />
                     </div>
                   </div>
@@ -218,6 +215,66 @@ export function ProductDetailBike<F extends Field>({
         }
       </Stream>
     </section>
+  );
+}
+
+// Stock Status Component
+function StockStatusBadge({ product }: { product: ProductDetailBikeProduct }) {
+  return (
+    <Stream fallback={<StockStatusSkeleton />} value={product.inventoryStatus}>
+      {(inventoryStatus) => {
+        if (!inventoryStatus) {
+          // Fallback to hardcoded status if no inventory data
+          return (
+            <div className="mb-4 inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800">
+              <div className="mr-2 h-2 w-2 rounded-full bg-gray-500" />
+              Status Unknown
+            </div>
+          );
+        }
+
+        const { isInStock, status } = inventoryStatus;
+
+        // Determine styling based on status
+        let badgeStyles = '';
+        let dotStyles = '';
+        let statusText = '';
+
+        if (status === 'Unavailable') {
+          badgeStyles = 'bg-red-100 text-red-800';
+          dotStyles = 'bg-red-500';
+          statusText = 'Unavailable';
+        } else if (status === 'Preorder') {
+          badgeStyles = 'bg-blue-100 text-blue-800';
+          dotStyles = 'bg-blue-500';
+          statusText = 'Pre-Order';
+        } else if (isInStock) {
+          badgeStyles = 'bg-green-100 text-green-800';
+          dotStyles = 'bg-green-500';
+          statusText = 'In Stock';
+        } else {
+          badgeStyles = 'bg-yellow-100 text-yellow-800';
+          dotStyles = 'bg-yellow-500';
+          statusText = 'Out of Stock';
+        }
+
+        return (
+          <div className={`mb-4 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${badgeStyles}`}>
+            <div className={`mr-2 h-2 w-2 rounded-full ${dotStyles}`} />
+            {statusText}
+          </div>
+        );
+      }}
+    </Stream>
+  );
+}
+
+function StockStatusSkeleton() {
+  return (
+    <div className="mb-4 inline-flex items-center rounded-full bg-gray-100 px-3 py-1">
+      <Skeleton.Box className="mr-2 h-2 w-2 rounded-full" />
+      <Skeleton.Box className="h-4 w-16 rounded" />
+    </div>
   );
 }
 
@@ -422,7 +479,7 @@ export function ProductDetailBikeSkeleton() {
         </div>
 
         {/* Content Skeleton */}
-        <div className="relative z-10 flex h-full flex-col justify-center px-4 py-8 md:px-8">
+        <div className="relative z-0 flex h-full flex-col justify-center px-4 py-8 md:px-8">
           <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
             <Skeleton.Root className="animate-pulse" pending>
               {/* Header */}
@@ -435,10 +492,10 @@ export function ProductDetailBikeSkeleton() {
               {/* Main Content Area */}
               <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-hidden">
                 {/* Side Cards */}
-                <div className="absolute left-0 top-0 hidden lg:block">
+                <div className="absolute left-0 top-0 z-0 hidden lg:block">
                   <Skeleton.Box className="h-64 w-64 rounded-lg" />
                 </div>
-                <div className="absolute right-0 top-0 hidden lg:block">
+                <div className="absolute right-0 top-0 z-0 hidden lg:block">
                   <Skeleton.Box className="h-64 w-64 rounded-lg" />
                 </div>
 
