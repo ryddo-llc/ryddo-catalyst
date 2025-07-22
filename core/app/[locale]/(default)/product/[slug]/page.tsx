@@ -8,7 +8,12 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { getProductDetailVariant, ProductDetailBike, ProductDetailScooter } from '~/components/product/product-detail-router';
+import {
+  getProductDetailVariant,
+  ProductDetailBike,
+  ProductDetailScooter,
+} from '~/components/product/layout/product-detail-router';
+import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
@@ -149,16 +154,31 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableImages = Streamable.from(async () => {
     const product = await streamableProduct;
 
-    const images = removeEdgesAndNodes(product.images)
-      .filter((image) => image.url !== product.defaultImage?.url)
-      .map((image) => ({
-        src: image.url,
-        alt: image.altText,
-      }));
+    // Get all images without filtering out the default image
+    const allImages = removeEdgesAndNodes(product.images).map((image) => ({
+      src: image.url,
+      alt: image.altText,
+    }));
 
-    return product.defaultImage
-      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
-      : images;
+    // If we have a default image and it's not already in the array, ensure it's first
+    if (product.defaultImage) {
+      const defaultImageInArray = allImages.find((img) => img.src === product.defaultImage?.url);
+
+      if (defaultImageInArray) {
+        // Default image is already in array, reorder to put it first
+        const otherImages = allImages.filter((img) => img.src !== product.defaultImage?.url);
+
+        return [
+          { src: product.defaultImage.url, alt: product.defaultImage.altText },
+          ...otherImages,
+        ];
+      }
+
+      // Default image not in array, add it as first
+      return [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...allImages];
+    }
+
+    return allImages;
   });
 
   const streameableCtaLabel = Streamable.from(async () => {
@@ -286,7 +306,54 @@ export default async function Product({ params, searchParams }: Props) {
 
   // Determine which product detail component to use based on categories
   const productDetailVariant = getProductDetailVariant(baseProduct);
-  
+
+  // Create streamable bike-specific data for bike products
+  const streamableBikeData =
+    productDetailVariant === 'bike'
+      ? Streamable.from(async () => {
+          const product = await streamableProduct;
+
+          return bikeProductTransformer(product);
+        })
+      : null;
+
+  // Create streamable inventory status for all products
+  const streamableInventoryStatus = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    return {
+      isInStock: product.inventory.isInStock,
+      status: product.availabilityV2.status,
+    };
+  });
+
+  const baseProductData = {
+    id: baseProduct.entityId.toString(),
+    title: baseProduct.name,
+    description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
+    href: baseProduct.path,
+    images: streamableImages,
+    price: streamablePrices,
+    subtitle: baseProduct.brand?.name,
+    rating: baseProduct.reviewSummary.averageRating,
+    accordions: streameableAccordions,
+    inventoryStatus: streamableInventoryStatus,
+  };
+
+  // Enhanced product data for bike components
+  const bikeProductData = streamableBikeData
+    ? Streamable.from(async () => {
+        const bikeData = await streamableBikeData;
+
+        return {
+          ...baseProductData,
+          backgroundImage: bikeData.backgroundImage,
+          bikeSpecs: Streamable.from(() => Promise.resolve(bikeData.bikeSpecs || null)),
+          colors: bikeData.colors,
+        };
+      })
+    : baseProductData;
+
   const productDetailProps = {
     action: addToCart,
     additionalActions: (
@@ -304,17 +371,7 @@ export default async function Product({ params, searchParams }: Props) {
     fields: productOptionsTransformer(baseProduct.productOptions),
     incrementLabel: t('ProductDetails.increaseQuantity'),
     prefetch: true,
-    product: {
-      id: baseProduct.entityId.toString(),
-      title: baseProduct.name,
-      description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
-      href: baseProduct.path,
-      images: streamableImages,
-      price: streamablePrices,
-      subtitle: baseProduct.brand?.name,
-      rating: baseProduct.reviewSummary.averageRating,
-      accordions: streameableAccordions,
-    },
+    product: productDetailVariant === 'bike' ? bikeProductData : baseProductData,
     quantityLabel: t('ProductDetails.quantity'),
     thumbnailLabel: t('ProductDetails.thumbnail'),
   };
@@ -323,10 +380,10 @@ export default async function Product({ params, searchParams }: Props) {
     switch (productDetailVariant) {
       case 'bike':
         return <ProductDetailBike {...productDetailProps} />;
-        
+
       case 'scooter':
         return <ProductDetailScooter {...productDetailProps} />;
-        
+
       case 'default':
       default:
         return <ProductDetail {...productDetailProps} />;

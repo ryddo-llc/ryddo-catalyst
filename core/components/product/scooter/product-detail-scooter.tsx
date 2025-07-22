@@ -6,7 +6,7 @@ import {
   BaseProductDetailProduct,
   ProductDetailLayout, 
   type ProductDetailLayoutProps 
-} from './product-detail-layout';
+} from '../layout/product-detail-layout';
 
 interface ScooterSpecifications {
   motorPower?: string;

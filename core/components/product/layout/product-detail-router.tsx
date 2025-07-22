@@ -2,8 +2,8 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 
-import { ProductDetailBike } from './product-detail-bike';
-import { ProductDetailScooter } from './product-detail-scooter';
+import { ProductDetailBike } from '../bike/product-detail-bike';
+import { ProductDetailScooter } from '../scooter/product-detail-scooter';
 
 interface ProductCategory {
   name: string;

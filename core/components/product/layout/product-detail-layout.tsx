@@ -27,6 +27,10 @@ export interface BaseProductDetailProduct {
       content: ReactNode;
     }>
   >;
+  inventoryStatus?: Streamable<{
+    isInStock: boolean;
+    status: 'Available' | 'Unavailable' | 'Preorder';
+  } | null>;
 }
 
 export interface ProductDetailLayoutProps<F extends Field, P extends BaseProductDetailProduct> {
