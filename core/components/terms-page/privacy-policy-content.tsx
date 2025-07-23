@@ -6,6 +6,7 @@ import { Link } from '~/components/link';
 import type { AccordionItem, SubSection } from '~/lib/data/terms-conditions';
 import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
 import { Button } from '~/vibes/soul/primitives/button';
+
 interface Props {
   accordionItems: AccordionItem[];
 }
