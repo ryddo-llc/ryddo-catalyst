@@ -4,6 +4,7 @@ import React from 'react';
 import { Link } from '~/components/link';
 import type { AccordionItem, SubSection } from '~/lib/data/terms-conditions';
 import { Button } from '~/vibes/soul/primitives/button';
+import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
 
 interface Props {
   accordionItems: AccordionItem[];
@@ -126,7 +127,7 @@ export function PrivacyPolicyContent({ accordionItems }: Props) {
               {item.description ? (
                 <p className="mb-4">{item.description}</p>
               ) : null}
-              <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              <div dangerouslySetInnerHTML={createSanitizedHtml(item.content)} />
             </div>
           )}
         </section>

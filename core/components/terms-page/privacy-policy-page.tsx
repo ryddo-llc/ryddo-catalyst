@@ -2,6 +2,7 @@
 
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import type { TermsNavigationItem, TermsSection } from '~/lib/data/terms-conditions';
+import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
 
 interface Props {
   children?: React.ReactNode;
@@ -46,7 +47,7 @@ export function PrivacyPolicyPage({ children, content, currentPageId, navigation
         {content.description ? (
           <div 
             className="text-lg text-gray-700 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: content.description }}
+            dangerouslySetInnerHTML={createSanitizedHtml(content.description)}
           />
         ) : null}
 

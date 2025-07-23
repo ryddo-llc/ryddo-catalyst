@@ -6,6 +6,7 @@ import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
 
 import { Accordion } from '@/vibes/soul/primitives/accordion';
 import type { AccordionItem } from '~/lib/data/terms-conditions';
+import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
 
 interface Props {
   accordionItems: AccordionItem[];
@@ -91,7 +92,7 @@ export function TermsAccordion({ accordionItems }: Props) {
           >
                         <div 
               className="text-gray-700 leading-relaxed [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:space-y-1 [&>li]:mb-1"
-              dangerouslySetInnerHTML={{ __html: item.content }}
+              dangerouslySetInnerHTML={createSanitizedHtml(item.content)}
             />
           </TermsAccordionItem>
         ))}

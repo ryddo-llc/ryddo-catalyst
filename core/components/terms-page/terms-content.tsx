@@ -1,6 +1,7 @@
 'use client';
 
 import type { AccordionItem } from '~/lib/data/terms-conditions';
+import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
 
 interface Props {
   accordionItems: AccordionItem[];
@@ -26,7 +27,7 @@ export function TermsContent({ accordionItems }: Props) {
                     <div>
                       <div className="flex items-start">
                         <span className="text-gray-900 mr-2">•</span>
-                        <span className="text-gray-900" dangerouslySetInnerHTML={{ __html: subsection.title || '' }} />
+                        <span className="text-gray-900" dangerouslySetInnerHTML={createSanitizedHtml(subsection.title || '')} />
                       </div>
                     </div>
                   ) : (
@@ -75,7 +76,7 @@ export function TermsContent({ accordionItems }: Props) {
                               {subsection.contentWithLinks.map((contentItem, itemIndex) => (
                                 <span key={itemIndex}>
                                   {contentItem.type === 'text' && (
-                                    <span dangerouslySetInnerHTML={{ __html: contentItem.content || '' }} />
+                                    <span dangerouslySetInnerHTML={createSanitizedHtml(contentItem.content || '')} />
                                   )}
                                   {contentItem.type === 'link' && contentItem.link && (
                                     <a 
@@ -90,7 +91,7 @@ export function TermsContent({ accordionItems }: Props) {
                             </>
                           ) : (
                             <>
-                              <span dangerouslySetInnerHTML={{ __html: subsection.content || '' }} />
+                              <span dangerouslySetInnerHTML={createSanitizedHtml(subsection.content || '')} />
                               {subsection.links && (
                                 <span>
                                   <span> </span>
@@ -121,7 +122,7 @@ export function TermsContent({ accordionItems }: Props) {
               {item.description ? (
                 <p className="mb-4">{item.description}</p>
               ) : null}
-              <div dangerouslySetInnerHTML={{ __html: item.content }} />
+              <div dangerouslySetInnerHTML={createSanitizedHtml(item.content)} />
             </div>
           )}
         </section>

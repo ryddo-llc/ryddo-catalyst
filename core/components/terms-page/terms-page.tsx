@@ -2,6 +2,7 @@
 
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import type { TermsNavigationItem, TermsSection } from '~/lib/data/terms-conditions';
+import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
 
 interface Props {
   content: TermsSection;
@@ -45,12 +46,12 @@ export function TermsPage({ content, navigationItems, currentPageId, children }:
         <div>
           <h1 
             className="text-4xl font-bold mb-4"
-            dangerouslySetInnerHTML={{ __html: content.title }}
+            dangerouslySetInnerHTML={createSanitizedHtml(content.title)}
           />
           {content.description ? (
             <div 
               className="text-lg text-gray-600 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: content.description }}
+              dangerouslySetInnerHTML={createSanitizedHtml(content.description)}
             />
           ) : null}
         </div>

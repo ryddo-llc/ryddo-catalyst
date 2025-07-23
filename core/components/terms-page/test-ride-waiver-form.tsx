@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { testRideWaiverContent } from '~/lib/data/terms-conditions';
 import { Button } from '~/vibes/soul/primitives/button';
 import { COUNTRIES, US_STATES } from '~/lib/constants/countries-states';
+import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
 
 interface FormData {
   firstName: string;
@@ -414,11 +415,11 @@ export function TestRideWaiverForm() {
                 {section.type === 'numbered-list' ? (
                   <ol className="list-decimal list-inside space-y-2">
                     {section.items?.map((item, index) => (
-                      <li className="text-gray-700" dangerouslySetInnerHTML={{ __html: item }} key={index} />
+                      <li className="text-gray-700" dangerouslySetInnerHTML={createSanitizedHtml(item)} key={index} />
                     ))}
                   </ol>
                 ) : (
-                  <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: section.content || '' }} />
+                  <p className="text-gray-700" dangerouslySetInnerHTML={createSanitizedHtml(section.content || '')} />
                 )}
               </div>
             ))}
