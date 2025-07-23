@@ -128,11 +128,15 @@ export function ProductDetailBike<F extends Field>({
                         .
                       </span>
                     </h1>
-                    {product.subtitle ? (
-                      <p className="justify-center self-stretch text-center font-['Nunito'] text-3xl font-medium leading-loose text-neutral-500">
-                        {product.subtitle}
-                      </p>
-                    ) : null}
+                    <Stream fallback={<div className="h-4 animate-pulse bg-gray-200" />} value={product.description}>
+                      {(description) =>
+                        Boolean(description) && (
+                          <div className="justify-center self-stretch text-center font-['Nunito'] text-3xl font-medium leading-loose text-neutral-500">
+                            {description}
+                          </div>
+                        )
+                      }
+                    </Stream>
                   </div>
 
                   {/* Middle Section - Bike Image Centered with Cards on Sides */}
