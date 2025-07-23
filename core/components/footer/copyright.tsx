@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function Copyright() {
   return (
-    <div className='flex justify-center items-center mt-8 lg:mt-10 border-t border-[#dbdbdb] pt-4'>
+    <div className='flex justify-center items-center mt-8 lg:mt-10 border-t border-gray-300 pt-4'>
       <span className='text-sm'>
         Copyright 2019 - {new Date().getFullYear()} ©&nbsp;
       </span>
