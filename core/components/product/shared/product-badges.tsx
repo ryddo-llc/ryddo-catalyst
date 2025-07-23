@@ -18,7 +18,11 @@ interface ProductBadgesProps {
 }
 
 // Stock Status Badge Component
-function StockStatusBadge({ inventoryStatus }: { inventoryStatus?: Streamable<InventoryStatus | null> }) {
+function StockStatusBadge({
+  inventoryStatus,
+}: {
+  inventoryStatus?: Streamable<InventoryStatus | null>;
+}) {
   if (!inventoryStatus) return null;
 
   return (
@@ -47,7 +51,7 @@ function StockStatusBadge({ inventoryStatus }: { inventoryStatus?: Streamable<In
         }
 
         return (
-          <div className="inline-flex items-center rounded border border-gray-300 bg-gray-50 px-3 py-1 text-sm font-medium text-gray-600">
+          <div className="inline-flex items-center rounded border border-gray-300 bg-transparent px-5 py-1 text-sm font-medium text-gray-600">
             {statusText}
           </div>
         );
@@ -71,7 +75,7 @@ function SaleBadge({ price }: { price?: Streamable<ProductPrice | string | null>
             </div>
           );
         }
-        
+
         return null;
       }}
     </Stream>

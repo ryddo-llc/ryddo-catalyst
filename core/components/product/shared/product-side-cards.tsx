@@ -1,16 +1,15 @@
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Button } from '@/vibes/soul/primitives/button';
-import { PriceLabel } from '@/vibes/soul/primitives/price-label';
-import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+'use client';
 
-interface ColorOption {
-  entityId: number;
-  label: string;
-  hexColors?: string[];
-  imageUrl?: string;
-  isSelected?: boolean;
-  isDefault?: boolean;
-}
+import { ReactNode } from 'react';
+
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Compare } from '@/vibes/soul/primitives/product-card/compare';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
+import { Field } from '@/vibes/soul/sections/product-detail/schema';
+
+import { ColorOption } from '../../../data-transformers/bike-product-transformer';
+import { BikeAddToCartForm } from '../../product/bike/bike-add-to-cart-form';
 
 interface ProductPrice {
   type?: 'sale' | 'range';
@@ -18,9 +17,19 @@ interface ProductPrice {
   previousValue?: string;
 }
 
-interface ProductWithSideCardData {
+interface ProductWithSideCardData<F extends Field = Field> {
+  id: string;
+  title: string;
+  href: string;
+  images?: Array<{ src: string; alt: string }>;
   price?: Streamable<ProductPrice | string | null>;
   colors?: ColorOption[];
+  // Form props for add to cart functionality
+  action?: ProductDetailFormAction<F>;
+  fields?: F[];
+  ctaLabel?: string;
+  ctaDisabled?: boolean;
+  additionalActions?: ReactNode;
 }
 
 // Offers Card Component
@@ -58,123 +67,81 @@ export function OffersCard() {
 }
 
 // Authorized Dealer Card Component
-export function AuthorizedDealerCard({ product }: { product: ProductWithSideCardData }) {
+export function AuthorizedDealerCard<F extends Field = Field>({ product }: { product: ProductWithSideCardData<F> }) {
   return (
-    <aside
-      aria-labelledby="dealer-heading"
-      className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
-    >
-      <h3 className="mb-4 text-lg font-semibold text-gray-900" id="dealer-heading">
-        Authorized Dealer
-      </h3>
-      <div className="text-center">
-        <Stream fallback={<Skeleton.Box className="mx-auto mb-4 h-8 w-24" />} value={product.price}>
-          {(price) => {
-            // Convert price to the expected Price type
-            let formattedPrice;
+    <div className="max-w-sm text-right">
+      {/* Authorized Dealer Header */}
+      <div className="mb-6">
+        <h3 className="text-md mb-1 font-bold text-gray-900">Authorized Dealer</h3>
+        <p className="text-xs leading-relaxed text-[#AE9D77]">
+          Specializing in service
+          <br />& custom modifications
+        </p>
+      </div>
 
-            if (typeof price === 'string') {
-              formattedPrice = price;
-            } else if (price && typeof price === 'object') {
-              if (price.type === 'sale' && price.currentValue && price.previousValue) {
-                formattedPrice = {
-                  type: 'sale' as const,
-                  currentValue: price.currentValue,
-                  previousValue: price.previousValue,
-                };
-              } else if (price.type === 'range' && price.currentValue && price.previousValue) {
-                formattedPrice = {
-                  type: 'range' as const,
-                  minValue: price.previousValue,
-                  maxValue: price.currentValue,
-                };
-              } else {
-                // Fallback to current value if available, otherwise default
-                formattedPrice = price.currentValue || '$3,695';
-              }
-            } else {
-              formattedPrice = '$3,695';
-            }
+      {/* Price Section */}
+      <div className="mb-6">
+        <Stream fallback={<Skeleton.Box className="ml-auto h-12 w-32" />} value={product.price}>
+          {(price) => {
+            const displayPrice =
+              typeof price === 'string' ? price : price?.currentValue || '$3,695';
 
             return (
-              <div className="mb-4">
-                <PriceLabel className="text-3xl font-bold" price={formattedPrice} />
-              </div>
+              <>
+                <div className="mb-2 text-4xl font-black text-gray-900">{displayPrice}</div>
+                <div className="text-xs leading-relaxed text-gray-600">
+                  <span>Payment options available </span>
+                  <span className="font-medium text-pink-500">with Affirm, Klarna</span>
+                  <br />
+                  <span className="cursor-pointer font-medium text-pink-500 underline">
+                    Learn more
+                  </span>
+                </div>
+              </>
             );
           }}
         </Stream>
-        <Button className="mb-3 w-full" size="large" variant="primary">
-          Buy Now
-        </Button>
+      </div>
 
-        {/* Dynamic Color Swatches from BigCommerce */}
-        {product.colors && product.colors.length > 0 ? (
-          <>
-            <div
-              aria-label="Available colors"
-              className="mb-4 flex justify-center space-x-2"
-              role="group"
-            >
-              {product.colors.slice(0, 4).map((color) => (
-                <button
-                  aria-label={`Select ${color.label} color`}
-                  className={`h-4 w-4 rounded-full border-2 transition-colors ${
-                    color.isSelected || color.isDefault ? 'border-gray-900' : 'border-gray-300'
-                  } hover:border-gray-900 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2`}
-                  key={color.entityId}
-                  style={{
-                    backgroundColor: color.hexColors?.[0] || '#ccc',
-                    backgroundImage: color.imageUrl ? `url(${color.imageUrl})` : undefined,
-                    backgroundSize: 'cover',
-                  }}
-                  title={color.label}
-                  type="button"
-                />
-              ))}
-            </div>
-            <p aria-live="polite" className="text-sm text-gray-600">
-              {product.colors.length} color{product.colors.length > 1 ? 's' : ''} available
-            </p>
-          </>
+      {/* Action Buttons - Side by Side */}
+      <div className="mb-6">
+        {product.action && product.fields ? (
+          <BikeAddToCartForm
+            action={product.action}
+            additionalActions={product.additionalActions}
+            colors={product.colors}
+            compareProduct={{
+              id: product.id,
+              title: product.title,
+              href: product.href,
+              image: product.images?.[0]
+            }}
+            ctaLabel={product.ctaLabel || "Add to cart"}
+            disabled={product.ctaDisabled}
+            fields={product.fields}
+            productId={product.id}
+          />
         ) : (
-          // Fallback static colors
-          <>
-            <div
-              aria-label="Available colors"
-              className="mb-4 flex justify-center space-x-2"
-              role="group"
+          <div className="flex gap-3 justify-end">
+            <Compare
+              label="Compare"
+              product={{
+                id: product.id,
+                title: product.title,
+                href: product.href,
+                image: product.images?.[0]
+              }}
+            />
+            <button 
+              className="bg-[#F92F7B] text-white py-2 px-5 rounded-full font-semibold hover:bg-pink-600 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={product.ctaDisabled}
             >
-              <button
-                aria-label="Select black color"
-                className="h-4 w-4 rounded-full border-2 border-gray-300 bg-gray-800 transition-colors hover:border-gray-900 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                title="Black"
-                type="button"
-              />
-              <button
-                aria-label="Select white color"
-                className="h-4 w-4 rounded-full border-2 border-gray-300 bg-white transition-colors hover:border-gray-900 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                title="White"
-                type="button"
-              />
-              <button
-                aria-label="Select red color"
-                className="h-4 w-4 rounded-full border-2 border-gray-300 bg-red-500 transition-colors hover:border-gray-900 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                title="Red"
-                type="button"
-              />
-              <button
-                aria-label="Select blue color"
-                className="h-4 w-4 rounded-full border-2 border-gray-300 bg-blue-500 transition-colors hover:border-gray-900 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                title="Blue"
-                type="button"
-              />
-            </div>
-            <p aria-live="polite" className="text-sm text-gray-600">
-              4 colors available
-            </p>
-          </>
+              {product.ctaLabel || "Add to cart"}
+            </button>
+          </div>
         )}
       </div>
-    </aside>
+      
+    </div>
   );
 }

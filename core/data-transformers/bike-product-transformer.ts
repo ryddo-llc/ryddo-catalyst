@@ -1,28 +1,14 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { ResultOf } from 'gql.tada';
 
-interface CustomField {
-  entityId: number;
+import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
+
+export interface BikeSpecifications {
   name: string;
   value: string;
 }
 
-interface ProductImage {
-  url: string;
-  altText: string;
-}
-
-interface BikeSpecifications {
-  motorPower?: string;
-  batteryCapacity?: string;
-  maxSpeed?: string;
-  range?: string;
-  frameSize?: string;
-  wheelSize?: string;
-  brakeSystem?: string;
-  transmissionType?: string;
-}
-
-interface ColorOption {
+export interface ColorOption {
   entityId: number;
   label: string;
   hexColors?: string[];
@@ -31,34 +17,22 @@ interface ColorOption {
   isDefault?: boolean;
 }
 
-interface ProductWithCustomFields {
+// Use the actual GraphQL result type
+type ProductWithOptions = ResultOf<typeof ProductOptionsFragment> & {
   customFields: {
     edges: Array<{
-      node: CustomField;
+      node: {
+        entityId: number;
+        name: string;
+        value: string;
+      };
     }> | null;
   };
   images: {
     edges: Array<{
-      node: ProductImage;
-    }> | null;
-  };
-  productOptions?: {
-    edges: Array<{
       node: {
-        entityId: number;
-        displayName: string;
-        values: {
-          edges: Array<{
-            node: {
-              entityId: number;
-              label: string;
-              isDefault: boolean;
-              isSelected: boolean;
-              hexColors?: string[];
-              imageUrl?: string;
-            };
-          }>;
-        };
+        url: string;
+        altText: string;
       };
     }> | null;
   };
@@ -68,11 +42,11 @@ interface ProductWithCustomFields {
   availabilityV2?: {
     status: 'Available' | 'Unavailable' | 'Preorder';
   };
-}
+};
 
 export interface BikeProductData {
   backgroundImage?: string;
-  bikeSpecs?: BikeSpecifications;
+  bikeSpecs?: BikeSpecifications[];
   colors?: ColorOption[];
   inventoryStatus?: {
     isInStock: boolean;
@@ -80,79 +54,97 @@ export interface BikeProductData {
   };
 }
 
-export function bikeProductTransformer(product: ProductWithCustomFields): BikeProductData {
+export function bikeProductTransformer(product: ProductWithOptions): BikeProductData {
   const customFields = removeEdgesAndNodes(product.customFields);
   const images = removeEdgesAndNodes(product.images);
-  const productOptions = removeEdgesAndNodes(product.productOptions || { edges: [] });
+  const productOptions = removeEdgesAndNodes(product.productOptions);
 
-  // Extract background image from custom fields
-  const backgroundImageField = customFields.find(
-    field => field.name.toLowerCase().includes('background') || 
-             field.name.toLowerCase().includes('hero') ||
-             field.name === 'Background Image URL'
+  // Extract background image from custom fields - check for background/hero image fields
+  const backgroundImageField = customFields.find(field => 
+    field.name === 'Background Image URL' || 
+    field.name === 'Hero Image' || 
+    field.name.toLowerCase().includes('background')
   );
+  const backgroundImage = backgroundImageField?.value || images[1]?.url;
 
-  const backgroundImage = backgroundImageField?.value || images[1]?.url; // Fallback to second image (index 1) - skip thumbnail
-
-  // Extract bike specifications from custom fields
-  const bikeSpecs: BikeSpecifications = {
-    motorPower: customFields.find(f => 
-      f.name.toLowerCase().includes('motor') || 
-      f.name.toLowerCase().includes('power')
-    )?.value,
-    batteryCapacity: customFields.find(f => 
-      f.name.toLowerCase().includes('battery') || 
-      f.name.toLowerCase().includes('capacity')
-    )?.value,
-    maxSpeed: customFields.find(f => 
-      f.name.toLowerCase().includes('speed') || 
-      f.name.toLowerCase().includes('max speed')
-    )?.value,
-    range: customFields.find(f => 
-      f.name.toLowerCase().includes('range') || 
-      f.name.toLowerCase().includes('distance')
-    )?.value,
-    frameSize: customFields.find(f => 
-      f.name.toLowerCase().includes('frame') || 
-      f.name.toLowerCase().includes('size')
-    )?.value,
-    wheelSize: customFields.find(f => 
-      f.name.toLowerCase().includes('wheel')
-    )?.value,
-    brakeSystem: customFields.find(f => 
-      f.name.toLowerCase().includes('brake')
-    )?.value,
-    transmissionType: customFields.find(f => 
-      f.name.toLowerCase().includes('transmission') || 
-      f.name.toLowerCase().includes('gear')
-    )?.value,
-  };
+  // Return all custom fields as bike specs - let the component handle display logic
+  const bikeSpecs: BikeSpecifications[] = customFields
+    .filter(field => field.name !== 'Background Image URL' && field.name !== 'Hero Image')
+    .map(field => ({
+      name: field.name,
+      value: field.value
+    }));
 
   // Extract color options from product options
-  const colorOption = productOptions.find(option => 
-    option.displayName.toLowerCase().includes('color') ||
-    option.displayName.toLowerCase().includes('colour')
+  const colorOption = productOptions.find(
+    (option) =>
+      option.displayName.toLowerCase().includes('color') ||
+      option.displayName.toLowerCase().includes('colour'),
   );
 
-  const colors: ColorOption[] = colorOption ? 
-    removeEdgesAndNodes(colorOption.values).map(value => ({
-      entityId: value.entityId,
-      label: value.label,
-      hexColors: value.hexColors,
-      imageUrl: value.imageUrl,
-      isSelected: value.isSelected,
-      isDefault: value.isDefault,
-    })) : [];
+  // Helper function to get hex colors with proper typing
+  const getHexColorsFromValue = (optionValue: {
+    __typename?: string;
+    label: string;
+    hexColors?: string[];
+  }): string[] | undefined => {
+    // First try to get from BigCommerce swatch data
+    if (optionValue.__typename === 'SwatchOptionValue' && optionValue.hexColors?.length) {
+      return optionValue.hexColors;
+    }
+
+    // Fallback to common color name mapping
+    const colorName = optionValue.label.toLowerCase();
+    const colorMap: Record<string, string> = {
+      red: '#ef4444',
+      green: '#22c55e',
+      blue: '#3b82f6',
+      black: '#000000',
+      white: '#ffffff',
+    };
+
+    const mappedColor = colorMap[colorName];
+
+    return mappedColor ? [mappedColor] : undefined;
+  };
+
+  const colors: ColorOption[] =
+    colorOption && colorOption.__typename === 'MultipleChoiceOption'
+      ? removeEdgesAndNodes(colorOption.values).map((optionValue) => {
+          let imageUrl: string | undefined;
+
+          if ('__typename' in optionValue && optionValue.__typename === 'SwatchOptionValue') {
+            imageUrl = optionValue.imageUrl || undefined;
+          } else if (
+            '__typename' in optionValue &&
+            optionValue.__typename === 'ProductPickListOptionValue'
+          ) {
+            imageUrl = optionValue.defaultImage?.url;
+          }
+
+          return {
+            entityId: optionValue.entityId,
+            label: optionValue.label,
+            hexColors: getHexColorsFromValue(optionValue),
+            imageUrl,
+            isSelected: optionValue.isSelected ?? false,
+            isDefault: optionValue.isDefault,
+          };
+        })
+      : [];
 
   // Extract inventory status
-  const inventoryStatus = product.inventory && product.availabilityV2 ? {
-    isInStock: product.inventory.isInStock,
-    status: product.availabilityV2.status,
-  } : undefined;
+  const inventoryStatus =
+    product.inventory && product.availabilityV2
+      ? {
+          isInStock: product.inventory.isInStock,
+          status: product.availabilityV2.status,
+        }
+      : undefined;
 
   return {
     backgroundImage,
-    bikeSpecs: Object.values(bikeSpecs).some(Boolean) ? bikeSpecs : undefined,
+    bikeSpecs: bikeSpecs.length > 0 ? bikeSpecs : undefined,
     colors: colors.length > 0 ? colors : undefined,
     inventoryStatus,
   };
