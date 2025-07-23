@@ -28,7 +28,13 @@ export function SlideContent({ slide, index, selectedIndex }: SlideItemProps) {
           className="text-3xl font-extrabold leading-tight text-[#F92F7B] sm:text-4xl md:text-5xl lg:text-6xl"
           id={index === selectedIndex ? 'hero-heading' : undefined}
         >
-          <span className="block">{title.split(' ')[0]}</span>
+          <span className="block">
+            {title.split(' ').length > 1 && (
+              <span className="inline-block text-zinc-800">
+                {title.split(' ').slice(1).join(' ')}
+              </span>
+            )}
+          </span>
           <span className="inline-block text-zinc-800">{title.split(' ').slice(1).join(' ')}</span>
           <span className="text-[#F92F7B]">.</span>
         </h1>
