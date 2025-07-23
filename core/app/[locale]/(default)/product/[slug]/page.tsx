@@ -5,6 +5,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { SearchParams } from 'nuqs/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -19,6 +20,8 @@ import { productCardTransformer } from '~/data-transformers/product-card-transfo
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
+import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
+
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
@@ -32,6 +35,8 @@ import {
   getProductPricingAndRelatedProducts,
   getStreamableProduct,
 } from './page-data';
+
+const compareLoader = createCompareLoader();
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -327,6 +332,29 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
+  // Create streamable compare products
+  const streamableCompareProducts = Streamable.from(async () => {
+    const searchParamsData = await searchParams;
+
+    const { compare } = compareLoader(searchParamsData);
+    const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
+
+    if (compareIds.entityIds.length === 0) {
+      return [];
+    }
+
+    const products = await getCompareProductsData(compareIds, customerAccessToken);
+
+    return products.map((product) => ({
+      id: product.entityId.toString(),
+      title: product.name,
+      image: product.defaultImage
+        ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+        : undefined,
+      href: product.path,
+    }));
+  });
+
   const baseProductData = {
     id: baseProduct.entityId.toString(),
     title: baseProduct.name,
@@ -364,12 +392,16 @@ export default async function Product({ params, searchParams }: Props) {
       />
     ),
     additionalInformationTitle: t('ProductDetails.additionalInformation'),
+    compareProducts: streamableCompareProducts,
+    compareLabel: 'Compare',
     ctaDisabled: streameableCtaDisabled,
     ctaLabel: streameableCtaLabel,
     decrementLabel: t('ProductDetails.decreaseQuantity'),
     emptySelectPlaceholder: t('ProductDetails.emptySelectPlaceholder'),
     fields: productOptionsTransformer(baseProduct.productOptions),
     incrementLabel: t('ProductDetails.increaseQuantity'),
+    maxCompareItems: 3,
+    maxCompareLimitMessage: "You've reached the maximum number of products for comparison.",
     prefetch: true,
     product: productDetailVariant === 'bike' ? bikeProductData : baseProductData,
     quantityLabel: t('ProductDetails.quantity'),

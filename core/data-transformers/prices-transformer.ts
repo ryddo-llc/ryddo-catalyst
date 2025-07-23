@@ -16,36 +16,31 @@ export const pricesTransformer = (
   const isPriceRange = prices.priceRange.min.value !== prices.priceRange.max.value;
   const isSalePrice = prices.salePrice?.value !== prices.basePrice?.value;
 
+  // Helper function to format price without .00 for whole numbers
+  const formatPrice = (value: number, currencyCode: string) => {
+    return format.number(value, {
+      style: 'currency',
+      currency: currencyCode,
+      minimumFractionDigits: value % 1 === 0 ? 0 : 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
   if (isPriceRange) {
     return {
       type: 'range',
-      minValue: format.number(prices.priceRange.min.value, {
-        style: 'currency',
-        currency: prices.price.currencyCode,
-      }),
-      maxValue: format.number(prices.priceRange.max.value, {
-        style: 'currency',
-        currency: prices.price.currencyCode,
-      }),
+      minValue: formatPrice(prices.priceRange.min.value, prices.price.currencyCode),
+      maxValue: formatPrice(prices.priceRange.max.value, prices.price.currencyCode),
     };
   }
 
   if (isSalePrice && prices.salePrice && prices.basePrice) {
     return {
       type: 'sale',
-      previousValue: format.number(prices.basePrice.value, {
-        style: 'currency',
-        currency: prices.price.currencyCode,
-      }),
-      currentValue: format.number(prices.price.value, {
-        style: 'currency',
-        currency: prices.price.currencyCode,
-      }),
+      previousValue: formatPrice(prices.basePrice.value, prices.price.currencyCode),
+      currentValue: formatPrice(prices.price.value, prices.price.currencyCode),
     };
   }
 
-  return format.number(prices.price.value, {
-    style: 'currency',
-    currency: prices.price.currencyCode,
-  });
+  return formatPrice(prices.price.value, prices.price.currencyCode);
 };

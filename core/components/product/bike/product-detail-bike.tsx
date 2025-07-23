@@ -1,13 +1,12 @@
 import { ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { CompareDrawer, CompareDrawerProvider } from '@/vibes/soul/primitives/compare-drawer';
 import { Rating } from '@/vibes/soul/primitives/rating';
-import {
-  ProductDetailForm,
-  ProductDetailFormAction,
-} from '@/vibes/soul/sections/product-detail/product-detail-form';
+import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
+import type { BikeSpecifications, ColorOption } from '~/data-transformers/bike-product-transformer';
 
 import { BaseProductDetailProduct } from '../layout/product-detail-layout';
 import { ProductBadges } from '../shared/product-badges';
@@ -21,30 +20,12 @@ import {
 } from '../shared/product-detail-skeletons';
 import { AuthorizedDealerCard, OffersCard } from '../shared/product-side-cards';
 
+import { BikeAddToCartForm } from './bike-add-to-cart-form';
 import { BikeSpecsIcons } from './bike-specifications';
 
-interface BikeSpecifications {
-  motorPower?: string;
-  batteryCapacity?: string;
-  maxSpeed?: string;
-  range?: string;
-  frameSize?: string;
-  wheelSize?: string;
-  brakeSystem?: string;
-  transmissionType?: string;
-}
-
-interface ColorOption {
-  entityId: number;
-  label: string;
-  hexColors?: string[];
-  imageUrl?: string;
-  isSelected?: boolean;
-  isDefault?: boolean;
-}
 
 interface ProductDetailBikeProduct extends BaseProductDetailProduct {
-  bikeSpecs?: Streamable<BikeSpecifications | null>;
+  bikeSpecs?: Streamable<BikeSpecifications[] | null>;
   backgroundImage?: string;
   colors?: ColorOption[];
 }
@@ -53,37 +34,43 @@ export interface ProductDetailBikeProps<F extends Field> {
   product: Streamable<ProductDetailBikeProduct | null>;
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
-  quantityLabel?: string;
-  incrementLabel?: string;
-  decrementLabel?: string;
-  emptySelectPlaceholder?: string;
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
-  prefetch?: boolean;
   additionalActions?: ReactNode;
+  // Compare functionality
+  compareProducts?: Streamable<Array<{ id: string; image?: { src: string; alt: string }; href: string; title: string }>>;
+  compareLabel?: string;
+  maxCompareItems?: number;
+  maxCompareLimitMessage?: string;
 }
 
 export function ProductDetailBike<F extends Field>({
   product: streamableProduct,
   action,
   fields: streamableFields,
-  quantityLabel,
-  incrementLabel,
-  decrementLabel,
-  emptySelectPlaceholder,
   ctaLabel: streamableCtaLabel,
   ctaDisabled: streamableCtaDisabled,
-  prefetch,
   additionalActions,
+  compareProducts,
+  compareLabel = 'Compare',
+  maxCompareItems = 3,
+  maxCompareLimitMessage = "You've reached the maximum number of products for comparison.",
 }: ProductDetailBikeProps<F>) {
   return (
-    <section aria-labelledby="product-heading" className="relative w-full">
-      <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
-        {(product) =>
+    <Stream fallback={<ProductDetailBikeSkeleton />} value={compareProducts || []}>
+      {(compareItems) => (
+        <CompareDrawerProvider
+          items={compareItems}
+          maxCompareLimitMessage={maxCompareLimitMessage}
+          maxItems={maxCompareItems}
+        >
+      <section aria-labelledby="product-heading" className="relative w-full">
+        <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
+          {(product) =>
           product && (
-            <div className="relative min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh]">
+            <div className="relative min-h-[60vh] py-5 md:min-h-[70vh] lg:min-h-[80vh]">
               {/* Background Image */}
-              <div className="absolute inset-0 h-full w-full opacity-40">
+              <div className="absolute inset-0 h-full w-full">
                 <Stream
                   fallback={<div className="h-full w-full bg-gray-100" />}
                   value={product.images}
@@ -120,7 +107,7 @@ export function ProductDetailBike<F extends Field>({
 
                     {/* Product Title */}
                     <h1
-                      className="font-['Nunito'] text-3xl font-black leading-tight text-zinc-800 md:text-5xl lg:text-6xl xl:text-7xl"
+                      className="font-['Nunito'] text-2xl font-black leading-tight text-zinc-800 sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl px-4"
                       id="product-heading"
                     >
                       {product.title}
@@ -128,7 +115,10 @@ export function ProductDetailBike<F extends Field>({
                         .
                       </span>
                     </h1>
-                    <Stream fallback={<div className="h-4 animate-pulse bg-gray-200" />} value={product.description}>
+                    <Stream
+                      fallback={<div className="h-4 animate-pulse bg-gray-200" />}
+                      value={product.description}
+                    >
                       {(description) =>
                         Boolean(description) && (
                           <div className="justify-center self-stretch text-center font-['Nunito'] text-3xl font-medium leading-loose text-neutral-500">
@@ -152,10 +142,10 @@ export function ProductDetailBike<F extends Field>({
                               <Image
                                 alt={bikeImage.alt}
                                 className="h-auto max-h-full w-full object-contain"
-                                height={1000}
+                                height={2000}
                                 priority
                                 src={bikeImage.src}
-                                width={1000}
+                                width={2000}
                               />
                             ) : (
                               <div className="text-center text-gray-500">
@@ -174,7 +164,33 @@ export function ProductDetailBike<F extends Field>({
 
                     {/* Right side - PriceCard */}
                     <div className="absolute right-0 top-0 z-0 hidden lg:block">
-                      <AuthorizedDealerCard product={product} />
+                      <Stream
+                        fallback={<ProductDetailFormSkeleton />}
+                        value={Streamable.all([
+                          product.images,
+                          streamableFields,
+                          streamableCtaLabel,
+                          streamableCtaDisabled,
+                        ])}
+                      >
+                        {([images, fields, ctaLabel, ctaDisabled]) => (
+                          <AuthorizedDealerCard
+                            product={{
+                              id: product.id,
+                              title: product.title,
+                              href: product.href,
+                              images,
+                              price: product.price,
+                              colors: product.colors,
+                              action,
+                              fields,
+                              ctaLabel: ctaLabel || undefined,
+                              ctaDisabled: ctaDisabled || undefined,
+                              additionalActions,
+                            }}
+                          />
+                        )}
+                      </Stream>
                     </div>
                   </div>
 
@@ -208,25 +224,52 @@ export function ProductDetailBike<F extends Field>({
                     <Stream
                       fallback={<ProductDetailFormSkeleton />}
                       value={Streamable.all([
+                        product.images,
                         streamableFields,
                         streamableCtaLabel,
                         streamableCtaDisabled,
                       ])}
                     >
-                      {([fields, ctaLabel, ctaDisabled]) => (
-                        <ProductDetailForm
-                          action={action}
-                          additionalActions={additionalActions}
-                          ctaDisabled={ctaDisabled ?? undefined}
-                          ctaLabel={ctaLabel ?? undefined}
-                          decrementLabel={decrementLabel}
-                          emptySelectPlaceholder={emptySelectPlaceholder}
-                          fields={fields}
-                          incrementLabel={incrementLabel}
-                          prefetch={prefetch}
-                          productId={product.id}
-                          quantityLabel={quantityLabel}
-                        />
+                      {([images, fields, ctaLabel, ctaDisabled]) => (
+                        <div className="space-y-6">
+                          {/* Mobile Price Display */}
+                          <div className="text-center">
+                            <Stream fallback={<div className="h-8 w-24 animate-pulse bg-gray-200 rounded" />} value={product.price}>
+                              {(price) => {
+                                let displayPrice = '$3,695';
+
+                                if (typeof price === 'string') {
+                                  displayPrice = price;
+                                } else if (price && 'type' in price && price.type === 'sale' && 'currentValue' in price) {
+                                  displayPrice = price.currentValue;
+                                } else if (price && 'type' in price && 'minValue' in price) {
+                                  displayPrice = `${price.minValue} - ${price.maxValue}`;
+                                }
+
+                                return (
+                                  <div className="text-3xl font-black text-gray-900">{displayPrice}</div>
+                                );
+                              }}
+                            </Stream>
+                          </div>
+                          
+                          {/* Mobile Bike Add to Cart Form with Colors */}
+                          <BikeAddToCartForm
+                            action={action}
+                            additionalActions={additionalActions}
+                            colors={product.colors}
+                            compareProduct={{
+                              id: product.id,
+                              title: product.title,
+                              href: product.href,
+                              image: images[0]
+                            }}
+                            ctaLabel={ctaLabel || "Add to cart"}
+                            disabled={ctaDisabled || false}
+                            fields={fields}
+                            productId={product.id}
+                          />
+                        </div>
                       )}
                     </Stream>
                   </div>
@@ -236,7 +279,14 @@ export function ProductDetailBike<F extends Field>({
           )
         }
       </Stream>
-    </section>
+      </section>
+          <CompareDrawer
+            href="/compare"
+            submitLabel={compareLabel}
+          />
+        </CompareDrawerProvider>
+      )}
+    </Stream>
   );
 }
 

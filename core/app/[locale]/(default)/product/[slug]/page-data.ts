@@ -257,13 +257,14 @@ const StreamableProductQuery = graphql(
           availabilityV2 {
             status
           }
+          ...ProductOptionsFragment
           ...ProductViewedFragment
           ...ProductSchemaFragment
         }
       }
     }
   `,
-  [ProductViewedFragment, ProductSchemaFragment],
+  [ProductOptionsFragment, ProductViewedFragment, ProductSchemaFragment],
 );
 
 type Variables = VariablesOf<typeof StreamableProductQuery>;
