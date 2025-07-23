@@ -2,8 +2,8 @@ import DOMPurify from 'isomorphic-dompurify';
 
 /**
  * Safely sanitizes HTML content using DOMPurify
- * @param html - The HTML string to sanitize
- * @returns Sanitized HTML string
+ * @param {string} html - The HTML string to sanitize
+ * @returns {string} Sanitized HTML string
  */
 export function sanitizeHtml(html: string): string {
   if (!html) return '';
@@ -13,8 +13,8 @@ export function sanitizeHtml(html: string): string {
 
 /**
  * Creates a sanitized dangerouslySetInnerHTML object
- * @param html - The HTML string to sanitize
- * @returns Object with sanitized HTML for dangerouslySetInnerHTML
+ * @param {string} html - The HTML string to sanitize
+ * @returns {{ __html: string }} Object with sanitized HTML for dangerouslySetInnerHTML
  */
 export function createSanitizedHtml(html: string) {
   return { __html: sanitizeHtml(html) };

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 
-import { testRideWaiverContent } from '~/lib/data/terms-conditions';
-import { Button } from '~/vibes/soul/primitives/button';
 import { COUNTRIES, US_STATES } from '~/lib/constants/countries-states';
+import { testRideWaiverContent } from '~/lib/data/terms-conditions';
 import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
+import { Button } from '~/vibes/soul/primitives/button';
 
 interface FormData {
   firstName: string;
@@ -39,6 +39,7 @@ export function TestRideWaiverForm() {
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Validate email format
@@ -193,8 +194,7 @@ export function TestRideWaiverForm() {
         minorsAgreement: false
       });
     } catch (error) {
-      console.error('Failed to submit waiver:', error);
-      // Show error message to user
+      setShowError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -202,6 +202,10 @@ export function TestRideWaiverForm() {
 
   const closeSuccessMessage = () => {
     setShowSuccess(false);
+  };
+
+  const closeErrorMessage = () => {
+    setShowError(false);
   };
 
   return (
@@ -216,6 +220,23 @@ export function TestRideWaiverForm() {
             <button
               className="text-green-600 hover:text-green-800"
               onClick={closeSuccessMessage}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showError && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-semibold text-red-800">Submission Failed</h3>
+              <p className="text-red-700">There was an error submitting your waiver. Please try again.</p>
+            </div>
+            <button
+              className="text-red-600 hover:text-red-800"
+              onClick={closeErrorMessage}
             >
               ✕
             </button>

@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
+
 import { Link } from '~/components/link';
 import type { AccordionItem, SubSection } from '~/lib/data/terms-conditions';
-import { Button } from '~/vibes/soul/primitives/button';
 import { createSanitizedHtml } from '~/lib/utils/sanitize-html';
-
+import { Button } from '~/vibes/soul/primitives/button';
 interface Props {
   accordionItems: AccordionItem[];
 }
