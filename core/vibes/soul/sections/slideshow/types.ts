@@ -1,4 +1,5 @@
 import { ComponentPropsWithoutRef } from 'react';
+
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 
 type ButtonLinkProps = ComponentPropsWithoutRef<typeof ButtonLink>;
