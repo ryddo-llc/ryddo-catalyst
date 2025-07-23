@@ -42,7 +42,6 @@ export default async function Home({ params, searchParams }: Props) {
     return getPageData(currencyCode, customerAccessToken);
   });
 
-
   const streamableCategories = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const categoryTree = await getHeaderCategories(customerAccessToken);
@@ -88,26 +87,7 @@ export default async function Home({ params, searchParams }: Props) {
     <>
       <Slideshow />
       <CategoryShowcase categories={streamableCategories} />
-      {/* <FeaturedProductList
-        cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
-        description={t('FeaturedProducts.description')}
-        emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
-        emptyStateTitle={t('FeaturedProducts.emptyStateTitle')}
-        products={streamableFeaturedProducts}
-        title={t('FeaturedProducts.title')}
-      />
 
-      <FeaturedProductCarousel
-        cta={{ label: t('NewestProducts.cta'), href: '/shop-all/?sort=newest' }}
-        description={t('NewestProducts.description')}
-        emptyStateSubtitle={t('NewestProducts.emptyStateSubtitle')}
-        emptyStateTitle={t('NewestProducts.emptyStateTitle')}
-        nextLabel={t('NewestProducts.nextProducts')}
-        previousLabel={t('NewestProducts.previousProducts')}
-        products={streamableNewestProducts}
-        title={t('NewestProducts.title')}
-      /> */}
-      
       <PaymentOptions />
 
       <PopularProducts
