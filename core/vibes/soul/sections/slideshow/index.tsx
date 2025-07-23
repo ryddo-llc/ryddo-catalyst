@@ -6,28 +6,10 @@ import Autoplay from 'embla-carousel-autoplay';
 import Fade from 'embla-carousel-fade';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Pause, Play } from 'lucide-react';
-import { ComponentPropsWithoutRef, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { Image } from '~/components/image';
-
-type ButtonLinkProps = ComponentPropsWithoutRef<typeof ButtonLink>;
-
-interface Slide {
-  title: string;
-  subtitle?: string;
-  description?: string;
-  showDescription?: boolean;
-  image?: { alt: string; blurDataUrl?: string; src: string };
-  cta?: {
-    label: string;
-    href: string;
-    variant?: ButtonLinkProps['variant'];
-    size?: ButtonLinkProps['size'];
-    shape?: ButtonLinkProps['shape'];
-  };
-  showCta?: boolean;
-}
+import { SlideItem } from './slide-item';
+import { Slide } from './types';
 
 interface Props {
   slides: Slide[];
@@ -161,123 +143,9 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
     >
       <div className="h-full w-full overflow-hidden" ref={emblaRef}>
         <div className="flex h-full">
-          {slides.map(
-            (
-              { title, subtitle, description, showDescription = true, image, cta, showCta = true },
-              idx,
-            ) => {
-              return (
-                <div
-                  className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full"
-                  key={idx}
-                >
-                  {/* Background Image Container */}
-                  <div className="absolute inset-0 h-full w-full opacity-80">
-                    {image?.src != null && image.src !== '' && (
-                      <Image
-                        alt={image.alt}
-                        blurDataURL={image.blurDataUrl}
-                        className="object-cover"
-                        fill
-                        placeholder={
-                          image.blurDataUrl != null && image.blurDataUrl !== '' ? 'blur' : 'empty'
-                        }
-                        priority={idx === 0}
-                        sizes="100vw"
-                        src={image.src}
-                        style={{
-                          objectPosition: 'center 60%',
-                        }}
-                      />
-                    )}
-                  </div>
-
-                  {/* Content container */}
-                  <div className="container relative z-10 mx-auto flex h-full items-center px-4 opacity-90 sm:px-6">
-                    <div
-                      className={`flex w-full transition-all duration-700 ease-out ${
-                        idx % 2 === 0 ? 'justify-end' : 'justify-start'
-                      }`}
-                    >
-                      {/* Premium e-rides box */}
-                      <div
-                        className={`w-full max-w-xs transform rounded-xl bg-white/95 p-2 shadow-lg transition-all duration-700 ease-out sm:max-w-sm sm:p-6 md:max-w-md md:p-8 ${
-                          idx === selectedIndex
-                            ? 'translate-y-0 opacity-100'
-                            : 'translate-y-8 opacity-0'
-                        }`}
-                      >
-                        <div
-                          className={`transition-all delay-100 duration-500 ease-out ${
-                            idx === selectedIndex
-                              ? 'translate-y-0 opacity-100'
-                              : 'translate-y-4 opacity-0'
-                          }`}
-                        >
-                          {subtitle ? (
-                            <p className="text-sm font-semibold text-[#757575]">{subtitle}</p>
-                          ) : null}
-                        </div>
-
-                        <div
-                          className={`font-nunito transition-all delay-200 duration-500 ease-out ${
-                            idx === selectedIndex
-                              ? 'translate-y-0 opacity-100'
-                              : 'translate-y-4 opacity-0'
-                          }`}
-                        >
-                          <h1
-                            className="text-3xl font-extrabold leading-tight text-[#F92F7B] sm:text-4xl md:text-5xl lg:text-6xl"
-                            id={idx === selectedIndex ? 'hero-heading' : undefined}
-                          >
-                            <span className="block">{title.split(' ')[0]}</span>
-                            <span className="inline-block text-zinc-800">
-                              {title.split(' ').slice(1).join(' ')}
-                            </span>
-                            <span className="text-[#F92F7B]">.</span>
-                          </h1>
-                        </div>
-
-                        {showDescription && (
-                          <div
-                            className={`transition-all delay-300 duration-500 ease-out ${
-                              idx === selectedIndex
-                                ? 'translate-y-0 opacity-100'
-                                : 'translate-y-4 opacity-0'
-                            }`}
-                          >
-                            <p className="mt-1 text-sm font-semibold text-[#757575]">
-                              {description}
-                            </p>
-                          </div>
-                        )}
-
-                        {showCta && (
-                          <div
-                            className={`delay-400 mt-4 transition-all duration-500 ease-out sm:mt-5 md:mt-7 ${
-                              idx === selectedIndex
-                                ? 'translate-y-0 opacity-100'
-                                : 'translate-y-4 opacity-0'
-                            }`}
-                          >
-                            <ButtonLink
-                              aria-label="Shop for premium electric bikes and scooters"
-                              href={cta?.href ?? '#'}
-                              shape={cta?.shape ?? 'pill'}
-                              size={cta?.size ?? 'large'}
-                              variant={cta?.variant ?? 'primary'}
-                            >
-                              {cta?.label ?? 'Shop Now'}
-                            </ButtonLink>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            },
-          )}
+          {slides.map((slide, idx) => (
+            <SlideItem index={idx} key={idx} selectedIndex={selectedIndex} slide={slide} />
+          ))}
         </div>
       </div>
 
