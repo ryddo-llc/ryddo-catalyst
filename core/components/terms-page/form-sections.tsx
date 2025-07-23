@@ -10,7 +10,7 @@ interface FormSectionsProps {
   onInputChange: (field: keyof FormData, value: string | boolean) => void;
 }
 
-export function PersonalInformationSection({ formData, onInputChange }: FormSectionsProps) {
+export function PersonalInformationSection({ formData, isUnder16, onInputChange }: FormSectionsProps) {
   return (
     <div className="bg-white p-6 rounded-lg border border-gray-200">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
