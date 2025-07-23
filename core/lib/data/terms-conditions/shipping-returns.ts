@@ -28,7 +28,7 @@ export const shippingReturnsContent: TermsSection = {
         {
           title: '7-Day Test Ride',
           titleStyle: 'normal',
-          content: 'Applies to select e-scooters, e-bikes or e-boards purchased from Ryddo.com. When the product includes the <strong>"7-Day Test Ride"</strong> banner on the product page you may return the product within (7) seven calendar days from the date of delivery, and we will refund the purchase price, <strong> minus(10%) of the full, non-discounted/sale, listed price,  on the product page and shipping costs both ways, as well as any mileage fees and repair costs, if applicable. The customer may also elect for a store credit for the same amount (Good for 12 months from the original purchase date).</strong> Subject to the following terms and conditions:',
+          content: 'Applies to select e-scooters, e-bikes, or e-boards purchased from Ryddo.com. When the product includes the <strong>"7-Day Test Ride"</strong> banner on the product page, you may return the product within seven (7) calendar days from the date of delivery. We will refund the purchase price <strong>minus 10% of the full, non-discounted listed price, shipping costs both ways, as well as any mileage fees and repair costs, if applicable. Alternatively, you may elect for store credit for the same amount (valid for 12 months from the original purchase date).</strong> Subject to the following terms and conditions:',
           type: 'paragraph'
         },
         {
@@ -59,7 +59,7 @@ export const shippingReturnsContent: TermsSection = {
         {
           title: '30-Day Return Period for Electric Scooters & Bikes',
           titleStyle: 'normal',
-          content: 'Any item purchased from Ryddo.com may be returned within (30) thirty calendar days from the date delivery of the item to you was completed, if the item remains <strong>new, unused, unopened, in its original packaging complete with all originally included materials and all tags still attached to the items. An RMA must be requested and approved or any returned will not be processed.</strong> Upon receipt, processing, and inspection of the returned item, we will refund the purchase price, minus discounts and credits, <strong>minus all shipping costs, outbound and return,</strong>  to you subject to the following terms and conditions:</strong>',
+          content: 'Any item purchased from Ryddo.com may be returned within thirty (30) calendar days from the date of delivery, if the item remains <strong>new, unused, unopened, in its original packaging with all originally included materials and tags still attached. An RMA must be requested and approved, or any return will not be processed.</strong> Upon receipt, processing, and inspection of the returned item, we will refund the purchase price minus discounts, credits, <strong>and all shipping costs (outbound and return)</strong> subject to the following terms and conditions:',
           type: 'paragraph'
         },
         {
@@ -73,12 +73,12 @@ export const shippingReturnsContent: TermsSection = {
           type: 'bullet'
         },
         {
-          title: 'A prepaid return label will supplied upon request.  Please use this label and contact the shipping company for a pickup or drop-off. If insurance is included in the shipping it is the responsibility of the customer to obtain the required signatures to validate the insurance policy. UPS requires that a UPS driver, or an official UPS Customer Center must sign the documents. A UPS Store is not acceptable. The customer can use their shipping company of choice but Ryddo will not be responsible for lost or damaged products. It is at the customers\' discretion to purchase insurance for the package.',
+          title: 'A prepaid return label will be supplied upon request. Please use this label and contact the shipping company for pickup or drop-off. If insurance is included in the shipping, it is the customer\'s responsibility to obtain the required signatures to validate the insurance policy. UPS requires that a UPS driver or an official UPS Customer Center must sign the documents (UPS Store is not acceptable). Customers may use their shipping company of choice, but Ryddo will not be responsible for lost or damaged products. It is at the customer\'s discretion to purchase insurance for the package.',
           content: '',
           type: 'bullet'
         },
         {
-          title: 'Should the customer believe any items to be defective the customer must bring this to the attention of Ryddo prior to use. Once the product has been used it can no longer be returned for a refund and defective items would be covered under manufacturer warranty.',
+          title: 'If a customer believes any items to be defective, they must bring this to Ryddo\'s attention prior to use. Once the product has been used, it can no longer be returned for a refund, and defective items will be covered under the manufacturer warranty.',
           content: '',
           type: 'bullet'
         },
