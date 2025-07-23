@@ -34,9 +34,9 @@ export default async function TermsConditionsPage({ params }: Props) {
   return (
     <>
       <PageHeader 
-        backgroundImage={Streamable.from(async () => Promise.resolve(backgroundImage))}
+        backgroundImage={backgroundImage}
         locale={locale}
-        title={Streamable.from(async () => Promise.resolve(termsOfUseContent.pageTitle || termsOfUseContent.title))}
+        title={termsOfUseContent.pageTitle || termsOfUseContent.title}
       />
       <TermsPage
         content={termsOfUseContent}

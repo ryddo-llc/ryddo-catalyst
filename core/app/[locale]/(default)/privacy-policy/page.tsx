@@ -30,9 +30,9 @@ export default async function PrivacyPolicyPageComponent({ params }: Props) {
   return (
     <>
       <PageHeader 
-        backgroundImage={Streamable.from(async () => Promise.resolve(backgroundImage))}
+        backgroundImage={backgroundImage}
         locale={locale}
-        title={Streamable.from(async () => Promise.resolve(privacyPolicyContent.pageTitle || privacyPolicyContent.title))}
+        title={privacyPolicyContent.pageTitle || privacyPolicyContent.title}
       />
       <PrivacyPolicyPage
         content={privacyPolicyContent}

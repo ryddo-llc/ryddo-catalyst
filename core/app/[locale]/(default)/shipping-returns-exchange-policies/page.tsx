@@ -30,9 +30,9 @@ export default async function ShippingReturnsPage({ params }: Props) {
   return (
     <>
       <PageHeader 
-        backgroundImage={Streamable.from(async () => Promise.resolve(backgroundImage))}
+        backgroundImage={backgroundImage}
         locale={locale}
-        title={Streamable.from(async () => Promise.resolve(shippingReturnsContent.pageTitle || shippingReturnsContent.title))}
+        title={shippingReturnsContent.pageTitle || shippingReturnsContent.title}
       />
       <TermsPage
         content={shippingReturnsContent}

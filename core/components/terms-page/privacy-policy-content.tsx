@@ -1,11 +1,25 @@
 'use client';
 
+import React from 'react';
 import { Link } from '~/components/link';
-import type { AccordionItem } from '~/lib/data/terms-conditions';
+import type { AccordionItem, SubSection } from '~/lib/data/terms-conditions';
 import { Button } from '~/vibes/soul/primitives/button';
 
 interface Props {
   accordionItems: AccordionItem[];
+}
+
+function renderTitle(subsection: SubSection) {
+  const { title, titleStyle } = subsection;
+    
+  switch (titleStyle) {
+    case 'italic':
+      return <em className="text-gray-900">{title}</em>;
+    case 'normal':
+      return <span className="text-gray-900">{title}</span>;
+    default:
+      return <strong className="text-gray-900">{title}</strong>;
+  }
 }
 
 export function PrivacyPolicyContent({ accordionItems }: Props) {
@@ -33,15 +47,7 @@ export function PrivacyPolicyContent({ accordionItems }: Props) {
                     </div>
                   ) : (
                     <div>
-                      {subsection.titleStyle === 'italic' && (
-                        <em className="text-gray-900">{subsection.title}</em>
-                      )}
-                      {subsection.titleStyle === 'normal' && (
-                        <span className="text-gray-900">{subsection.title}</span>
-                      )}
-                      {subsection.titleStyle !== 'italic' && subsection.titleStyle !== 'normal' && (
-                        <strong className="text-gray-900">{subsection.title}</strong>
-                      )}
+                      {renderTitle(subsection)}
                       <span> </span>
                       {subsection.paragraphs ? (
                         <div>

@@ -8,16 +8,17 @@ interface Props {
   content: TermsSection;
   currentPageId: string;
   navigationItems: TermsNavigationItem[];
+  sidebarTitle?: string;
 }
 
-export function PrivacyPolicyPage({ children, content, currentPageId, navigationItems }: Props) {
+export function PrivacyPolicyPage({ children, content, currentPageId, navigationItems, sidebarTitle = "Terms & Conditions" }: Props) {
   return (
     <StickySidebarLayout
       containerSize="2xl"
       sidebar={
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Terms & Conditions</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">{sidebarTitle}</h2>
             <nav className="bg-gray-50 rounded-lg p-4">
               <ul className="space-y-2">
                 {navigationItems.map((item) => (

@@ -17,22 +17,22 @@ export function generateMetadata(): Metadata {
   };
 }
 
+const TERMS_BACKGROUND_IMAGE = {
+  alt: 'Terms and policies background',
+  src: '/images/backgrounds/terms-background.webp',
+};
+
 export default async function PriceMatchPage({ params }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
 
-  const backgroundImage = {
-    alt: 'Price match guarantee background',
-    src: '/images/backgrounds/terms-background.webp',
-  };
-
   return (
     <>
       <PageHeader 
-        backgroundImage={Streamable.from(async () => Promise.resolve(backgroundImage))}
+        backgroundImage={TERMS_BACKGROUND_IMAGE}
         locale={locale}
-        title={Streamable.from(async () => Promise.resolve(priceMatchContent.pageTitle || priceMatchContent.title))}
+        title={priceMatchContent.pageTitle || priceMatchContent.title}
       />
       <TermsPage
         content={priceMatchContent}
