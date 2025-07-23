@@ -1,4 +1,5 @@
 import { COMPANY_INFO } from '~/lib/config/company-info';
+
 import type { TermsSection } from './interfaces';
 
 // Terms of Use page content

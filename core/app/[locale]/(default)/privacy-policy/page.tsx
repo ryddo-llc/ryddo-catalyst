@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
 import { PageHeader } from '@/vibes/soul/sections/page-header';
 import { PrivacyPolicyContent } from '~/components/terms-page/privacy-policy-content';
 import { PrivacyPolicyPage } from '~/components/terms-page/privacy-policy-page';

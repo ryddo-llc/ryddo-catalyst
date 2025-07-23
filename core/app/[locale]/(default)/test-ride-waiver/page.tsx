@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
 import { PageHeader } from '@/vibes/soul/sections/page-header';
 import { TermsPage } from '~/components/terms-page/terms-page';
 import { TestRideWaiverForm } from '~/components/terms-page/test-ride-waiver-form';

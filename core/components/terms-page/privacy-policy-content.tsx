@@ -15,8 +15,10 @@ function renderTitle(subsection: SubSection) {
   switch (titleStyle) {
     case 'italic':
       return <em className="text-gray-900">{title}</em>;
+
     case 'normal':
       return <span className="text-gray-900">{title}</span>;
+      
     default:
       return <strong className="text-gray-900">{title}</strong>;
   }
