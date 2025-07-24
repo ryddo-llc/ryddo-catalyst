@@ -1,0 +1,1 @@
+export { default as SlideUpPopup } from './slide-up-popup'; 
