@@ -2,11 +2,10 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ResultOf } from 'gql.tada';
 
 import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
+import { type ProductSpecification } from '~/components/product/shared/product-specifications';
 
-export interface BikeSpecifications {
-  name: string;
-  value: string;
-}
+// Re-export shared type for consistency
+export { type ProductSpecification as BikeSpecifications } from '~/components/product/shared/product-specifications';
 
 export interface ColorOption {
   entityId: number;
@@ -46,7 +45,7 @@ type ProductWithOptions = ResultOf<typeof ProductOptionsFragment> & {
 
 export interface BikeProductData {
   backgroundImage?: string;
-  bikeSpecs?: BikeSpecifications[];
+  bikeSpecs?: ProductSpecification[];
   colors?: ColorOption[];
   inventoryStatus?: {
     isInStock: boolean;
@@ -60,19 +59,20 @@ export function bikeProductTransformer(product: ProductWithOptions): BikeProduct
   const productOptions = removeEdgesAndNodes(product.productOptions);
 
   // Extract background image from custom fields - check for background/hero image fields
-  const backgroundImageField = customFields.find(field => 
-    field.name === 'Background Image URL' || 
-    field.name === 'Hero Image' || 
-    field.name.toLowerCase().includes('background')
+  const backgroundImageField = customFields.find(
+    (field) =>
+      field.name === 'Background Image URL' ||
+      field.name === 'Hero Image' ||
+      field.name.toLowerCase().includes('background'),
   );
   const backgroundImage = backgroundImageField?.value || images[1]?.url;
 
   // Return all custom fields as bike specs - let the component handle display logic
-  const bikeSpecs: BikeSpecifications[] = customFields
-    .filter(field => field.name !== 'Background Image URL' && field.name !== 'Hero Image')
-    .map(field => ({
+  const bikeSpecs: ProductSpecification[] = customFields
+    .filter((field) => field.name !== 'Background Image URL' && field.name !== 'Hero Image')
+    .map((field) => ({
       name: field.name,
-      value: field.value
+      value: field.value,
     }));
 
   // Extract color options from product options

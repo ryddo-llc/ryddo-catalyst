@@ -6,9 +6,13 @@ import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
-import { ProductDetailForm, ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
+import {
+  ProductDetailForm,
+  ProductDetailFormAction,
+} from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
+import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 
 export interface BaseProductDetailProduct {
   id: string;
@@ -73,9 +77,9 @@ export function ProductDetailLayout<F extends Field, P extends BaseProductDetail
   mainSkeleton,
 }: ProductDetailLayoutProps<F, P>) {
   return (
-    <section className="@container">
+    <SectionLayout containerSize="full">
       <h1>{productType}</h1>
-      <div className="group/product-detail mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
+      <div className="group/product-detail">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">
             <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -111,11 +115,9 @@ export function ProductDetailLayout<F extends Field, P extends BaseProductDetail
                       )}
                     </Stream>
                   </div>
-                  
+
                   {/* Product-specific specs section */}
-                  <div className="mb-6">
-                    {specsSection(product)}
-                  </div>
+                  <div className="mb-6">{specsSection(product)}</div>
 
                   <div className="group/product-gallery mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
@@ -201,7 +203,7 @@ export function ProductDetailLayout<F extends Field, P extends BaseProductDetail
           }
         </Stream>
       </div>
-    </section>
+    </SectionLayout>
   );
 }
 

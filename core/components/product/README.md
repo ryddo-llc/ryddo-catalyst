@@ -10,12 +10,14 @@ core/components/product/
 ├── shared/                           # ♻️ Reusable components across product types
 │   ├── product-badges.tsx           # Stock status and sale price badges
 │   ├── product-detail-skeletons.tsx # Loading states for all components
-│   └── product-side-cards.tsx       # Offers card and authorized dealer card
+│   ├── product-side-cards.tsx       # Offers card and authorized dealer card
+│   └── product-specifications.tsx   # Product specifications with icons (bikes & scooters)
 ├── bike/                            # 🚲 Bike-specific components
 │   ├── product-detail-bike.tsx      # Main bike product detail layout
-│   └── bike-specifications.tsx      # Bike technical specifications icons
+│   └── bike-specifications.tsx      # Re-exports shared specifications component
 ├── scooter/                         # 🛴 Scooter-specific components
-│   └── product-detail-scooter.tsx   # Main scooter product detail layout
+│   ├── product-detail-scooter.tsx   # Main scooter product detail layout
+│   └── scooter-specifications.tsx   # Re-exports shared specifications component
 └── layout/                          # 🏗️ Base layout and routing components
     ├── product-detail-layout.tsx    # Base product detail layout template
     └── product-detail-router.tsx    # Routes to appropriate product type component
