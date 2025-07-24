@@ -1,11 +1,13 @@
 'use client';
 
 import type { StaticImageData } from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Image } from '../image';
 import { Link } from '../link';
 
+import AdventuresPopup from './adventures-popup';
+import BookNowPopup from './book-now-popup';
 import cake from './brand-logos/cake-logo.svg';
 import minimotors from './brand-logos/Minimotors-logo1.svg';
 import super73 from './brand-logos/super-73-logo.svg';
@@ -15,26 +17,51 @@ interface BrandProps {
   name: string;
 }
 
+type PopupType = 'adventures' | 'booknow' | null;
+
 export default function PartnersContactBar() {
+  const [activePopup, setActivePopup] = useState<PopupType>(null);
+  
   const brands: BrandProps[] = [
     { name: 'Super73', image: super73 },
     { name: 'Cake', image: cake },
     { name: 'MiniMotors', image: minimotors },
   ];
 
+  const openPopup = (popupType: PopupType) => {
+    // Toggle functionality: if the same popup is already open, close it
+    if (activePopup === popupType) {
+      setActivePopup(null);
+    } else if (activePopup && activePopup !== popupType) {
+      // Sequential transition: close current popup first, then open new one
+      setActivePopup(null);
+      // Wait for close animation to complete before opening new popup
+      setTimeout(() => {
+        setActivePopup(popupType);
+      }, 225);
+    } else {
+      // No popup currently open, open immediately
+      setActivePopup(popupType);
+    }
+  };
+
+  const closePopup = () => {
+    setActivePopup(null);
+  };
+
   return (
     <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-xs font-bold text-white sm:text-sm lg:flex-row">
       {/* Newsletter Signup Section */}
-      <div className="xl:px-18 flex h-12 items-center justify-center border-b border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] md:h-16 md:border-b-0 md:border-r md:px-10 lg:px-12">
-        <Link
-          className="h-auto whitespace-nowrap p-0 text-center text-white hover:bg-transparent hover:text-white"
-          href="/"
-        >
+      <button 
+        className="xl:px-18 flex h-12 items-center justify-center border-b border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] md:h-16 md:border-b-0 md:border-r md:px-10 lg:px-12 cursor-pointer"
+        onClick={() => openPopup('adventures')}
+      >
+        <div className="h-auto whitespace-nowrap p-0 text-center text-white">
           <span className="hidden md:inline">Sign up for Free ryddo adventures</span>
           <span className="md:hidden">Free adventures</span>
           <span className="ml-1 text-[#F92F7B]">^</span>
-        </Link>
-      </div>
+        </div>
+      </button>
 
       {/* Partners/Brands Section */}
       <div className="flex min-h-[48px] flex-1 items-center justify-center gap-3 px-3 py-2 md:min-h-[64px] md:gap-8 md:px-8 md:py-0 lg:gap-12 lg:px-10 xl:gap-20 2xl:gap-32">
@@ -66,13 +93,25 @@ export default function PartnersContactBar() {
         </div>
 
         {/* Book Now Button */}
-        <Link
-          className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] sm:h-14 md:h-16 lg:w-44 xl:w-52 2xl:w-60"
-          href="/service"
+        <button
+          className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] sm:h-14 md:h-16 lg:w-44 xl:w-52 2xl:w-60 cursor-pointer"
+          onClick={() => openPopup('booknow')}
         >
           <span className="font-bold">Book Now</span>
-        </Link>
+        </button>
       </div>
+      
+      {/* Adventures Popup */}
+      <AdventuresPopup 
+        isOpen={activePopup === 'adventures'} 
+        onClose={closePopup} 
+      />
+      
+      {/* Book Now Popup */}
+      <BookNowPopup 
+        isOpen={activePopup === 'booknow'} 
+        onClose={closePopup} 
+      />
     </section>
   );
 }
