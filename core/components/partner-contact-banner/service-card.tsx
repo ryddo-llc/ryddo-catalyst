@@ -6,7 +6,6 @@ interface ServiceCardProps {
   title: string;
   description: string;
   serviceType: string;
-  selectedService: string;
   onSelect: (serviceType: string) => void;
 }
 
@@ -14,7 +13,6 @@ export default function ServiceCard({
   title, 
   description, 
   serviceType, 
-  selectedService, 
   onSelect 
 }: ServiceCardProps) {
   return (
@@ -24,18 +22,10 @@ export default function ServiceCard({
         {description}
       </p>
       <Button
-        className={`px-6 sm:px-8 text-white transition-all duration-200 ${
-          selectedService === serviceType 
-            ? 'bg-[#F92F7B] ring-2 ring-[#F92F7B] ring-offset-2' 
-            : ''
-        }`}
+        className="px-6 sm:px-8 text-white transition-all duration-200"
         onClick={() => onSelect(serviceType)}
         shape="pill"
         size="small"
-        style={{
-          backgroundColor: '#F92F7B',
-          borderColor: '#F92F7B'
-        }}
         variant="primary"
       >
         Book

@@ -1,7 +1,7 @@
 'use client';
 
 import type { StaticImageData } from 'next/image';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Image } from '../image';
 import { Link } from '../link';
@@ -21,6 +21,7 @@ type PopupType = 'adventures' | 'booknow' | null;
 
 export default function PartnersContactBar() {
   const [activePopup, setActivePopup] = useState<PopupType>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const brands: BrandProps[] = [
     { name: 'Super73', image: super73 },
@@ -28,19 +29,21 @@ export default function PartnersContactBar() {
     { name: 'MiniMotors', image: minimotors },
   ];
 
+  const POPUP_TRANSITION_DURATION = 225;
+
   const openPopup = (popupType: PopupType) => {
-    // Toggle functionality: if the same popup is already open, close it
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  
     if (activePopup === popupType) {
       setActivePopup(null);
     } else if (activePopup && activePopup !== popupType) {
-      // Sequential transition: close current popup first, then open new one
       setActivePopup(null);
-      // Wait for close animation to complete before opening new popup
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setActivePopup(popupType);
-      }, 225);
+      }, POPUP_TRANSITION_DURATION);
     } else {
-      // No popup currently open, open immediately
       setActivePopup(popupType);
     }
   };
@@ -53,7 +56,7 @@ export default function PartnersContactBar() {
     <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-xs font-bold text-white sm:text-sm lg:flex-row">
       {/* Newsletter Signup Section */}
       <button 
-        className="xl:px-18 flex h-12 items-center justify-center border-b border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] md:h-16 md:border-b-0 md:border-r md:px-10 lg:px-12 cursor-pointer"
+        className="xl:px-18 flex h-12 items-center justify-center border-b border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] md:h-16 md:border-b-0 md:border-r md:px-10 lg:px-12"
         onClick={() => openPopup('adventures')}
       >
         <div className="h-auto whitespace-nowrap p-0 text-center text-white">
@@ -94,7 +97,7 @@ export default function PartnersContactBar() {
 
         {/* Book Now Button */}
         <button
-          className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] sm:h-14 md:h-16 lg:w-44 xl:w-52 2xl:w-60 cursor-pointer"
+          className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] sm:h-14 md:h-16 lg:w-44 xl:w-52 2xl:w-60"
           onClick={() => openPopup('booknow')}
         >
           <span className="font-bold">Book Now</span>

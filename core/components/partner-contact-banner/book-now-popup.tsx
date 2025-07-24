@@ -66,16 +66,15 @@ export default function BookNowPopup({ isOpen, onClose }: BookNowPopupProps) {
             
             {/* Three Service Options */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-12 xl:gap-16">
-              {serviceOptions.map((service) => (
+              {serviceOptions.map((service) =>
                 <ServiceCard
                   description={service.description}
                   key={service.serviceType}
                   onSelect={handleServiceSelect}
-                  selectedService=""
                   serviceType={service.serviceType}
                   title={service.title}
                 />
-              ))}
+              )}
             </div>
           </div>
         </div>
