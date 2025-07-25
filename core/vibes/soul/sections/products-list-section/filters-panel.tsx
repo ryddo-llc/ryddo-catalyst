@@ -123,7 +123,8 @@ export function FiltersPanelInner({
   const linkGroupFilters = filters.filter(
     (filter): filter is LinkGroupFilter => filter.type === 'link-group',
   );
-
+  const username = session?.user?.name?.split(' ')[0] || 'Guest';
+  
   return (
     <div
       className={clsx(
@@ -135,8 +136,8 @@ export function FiltersPanelInner({
       <div className="mb-6">
         <h3 className="mb-4 text-lg font-bold">Let&apos;s find you a scooter!</h3>
         <p className="mb-3 text-sm">
-          Welcome back <span className="text-[#F92F7B]">{session?.user?.name?.split(' ')[0] || 'Guest'}</span>! Please tell us all about your
-          ideal new e-scooter and we can make some suggestions.
+          Welcome back <span className="text-[#F92F7B]">{username}</span>! Please tell us all about
+          your ideal new e-scooter and we can make some suggestions.
         </p>
         <div className="mt-4 flex w-full gap-1">
           <input
