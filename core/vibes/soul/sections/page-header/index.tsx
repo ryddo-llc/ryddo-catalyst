@@ -14,7 +14,7 @@ interface PageHeaderProps {
 export const PageHeader = ({ title, backgroundImage, className, locale }: PageHeaderProps) => {
   const placeholderImage = {
     alt: 'Page header background',
-    src: '/images/backgrounds/newsletter-background.svg'
+    src: '/images/backgrounds/newsletter-background.webp'
   };
 
   return (

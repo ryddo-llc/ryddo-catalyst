@@ -46,7 +46,7 @@ export function Subscribe({
             className="object-cover"
             fill
             sizes="(max-width: 768px) 100vw, 768px"
-            src="/images/backgrounds/newsletterform.png"
+            src="/images/backgrounds/newsletter-form.webp"
             style={{
               objectPosition: 'center',
             }}

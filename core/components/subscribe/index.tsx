@@ -22,7 +22,7 @@ export const Subscribe = ({ image }: SubscribeProps = {}) => {
       description={t('description')}
       emailPlaceholder={t('emailPlaceholder')}
       image={{
-        src: image?.src || '/images/backgrounds/newsletter-background.png',
+        src: image?.src || '/images/backgrounds/newsletter-background.webp',
         alt: image?.alt || 'Newsletter background with palm trees and mountains',
       }}
       namePlaceholder={t('namePlaceholder')}

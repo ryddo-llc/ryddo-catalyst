@@ -9,7 +9,7 @@ import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-
 export function PaymentOptions() {
   const isTabletOrLarger = useIsTabletOrLarger();
   const sectionStyle = {
-    backgroundImage: 'url(/images/backgrounds/payment-options-background.jpg)',
+    backgroundImage: 'url(/images/backgrounds/payment-options-background.webp)',
     ...(isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
   };
 
@@ -30,7 +30,7 @@ export function PaymentOptions() {
           className="absolute inset-0 w-full h-full object-cover opacity-80"
           fill
           priority={false}
-          src="/images/backgrounds/newsletterform.png"
+          src="/images/backgrounds/newsletter-form.webp"
         />
         <div className="relative p-6 sm:p-8">
         <h2 className="text-[7vw] sm:text-[5vw] lg:text-[2.5vw] font-bold -mt-4 -mb-2 text-center">

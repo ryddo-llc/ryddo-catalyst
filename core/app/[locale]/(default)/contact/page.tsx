@@ -55,7 +55,7 @@ export default async function ContactPage({ params }: Props) {
       <div 
         className="relative py-16 bg-cover bg-top"
         style={{
-          backgroundImage: 'url(/images/backgrounds/map-background.jpg)',
+          backgroundImage: 'url(/images/backgrounds/map-background.webp)',
         }}
       >
         <div className="absolute inset-0 bg-blue-50 bg-opacity-70"/>
