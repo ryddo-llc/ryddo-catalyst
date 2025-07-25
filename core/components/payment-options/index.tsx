@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { useIsTabletOrLarger } from '~/lib/use-is-tablet-or-larger';
@@ -8,10 +10,13 @@ import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-
 
 export function PaymentOptions() {
   const isTabletOrLarger = useIsTabletOrLarger();
-  const sectionStyle = {
-    backgroundImage: 'url(/images/backgrounds/payment-options-background.webp)',
-    ...(isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
-  };
+  const sectionStyle = useMemo(
+    () => ({
+      backgroundImage: 'url(/images/backgrounds/payment-options-background.webp)',
+      ...(isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
+    }),
+    [isTabletOrLarger],
+  );
 
   return (
     <section
