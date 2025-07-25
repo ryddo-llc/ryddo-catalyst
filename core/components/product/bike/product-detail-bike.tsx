@@ -82,7 +82,7 @@ export function ProductDetailBike<F extends Field>({
                           const backgroundSrc =
                             product.backgroundImage ||
                             images[1]?.src ||
-                            '/images/backgrounds/default-background.png';
+                            '/images/backgrounds/default-background.webp';
 
                           return (
                             <Image

@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { useIsTabletOrLarger } from '~/lib/use-is-tablet-or-larger';
@@ -8,10 +10,13 @@ import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-
 
 export function PaymentOptions() {
   const isTabletOrLarger = useIsTabletOrLarger();
-  const sectionStyle = {
-    backgroundImage: 'url(/images/backgrounds/payment-options-background.jpg)',
-    ...(isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
-  };
+  const sectionStyle = useMemo(
+    () => ({
+      backgroundImage: 'url(/images/backgrounds/payment-options-background.webp)',
+      ...(isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
+    }),
+    [isTabletOrLarger],
+  );
 
   return (
     <section
@@ -30,7 +35,7 @@ export function PaymentOptions() {
           className="absolute inset-0 w-full h-full object-cover opacity-80"
           fill
           priority={false}
-          src="/images/backgrounds/newsletterform.png"
+          src="/images/backgrounds/newsletter-form.webp"
         />
         <div className="relative p-6 sm:p-8">
         <h2 className="text-[7vw] sm:text-[5vw] lg:text-[2.5vw] font-bold -mt-4 -mb-2 text-center">

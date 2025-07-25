@@ -56,7 +56,7 @@ export default function BookNowPopup({ isOpen, onClose }: BookNowPopupProps) {
             className="object-cover"
             fill
             priority
-            src="/images/backgrounds/default-background.png"
+            src="/images/backgrounds/default-background.webp"
           />
         </div>
         
