@@ -124,7 +124,7 @@ export function FiltersPanelInner({
     (filter): filter is LinkGroupFilter => filter.type === 'link-group',
   );
   const username = session?.user?.name?.split(' ')[0] || 'Guest';
-  
+
   return (
     <div
       className={clsx(
