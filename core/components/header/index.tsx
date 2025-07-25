@@ -104,15 +104,23 @@ export const Header = async () => {
    */
 
     const slicedTree = categoryTree.slice(0, 6);
-    //  adding unique home link
+    
+    // Create the complete navigation tree with Home and Service
+    const allCategories = [
+      {
+        name: 'Home',
+        path: '/',
+        children: [],
+      },
+      ...slicedTree,
+      {
+        name: 'Service',
+        path: '/service/',
+        children: [],
+      },
+    ];
 
-    slicedTree.unshift({
-      name: 'Home',
-      path: '/',
-      children: [],
-    });
-
-    return slicedTree.map(({ name, path, children }) => ({
+    return allCategories.map(({ name, path, children }) => ({
       label: name.toLocaleLowerCase(locale),
       href: path,
       groups: children.map((firstChild) => ({
