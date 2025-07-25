@@ -14,6 +14,16 @@ export interface Category {
   } | null;
 }
 
+// Static Service category injected in
+const SERVICE_CATEGORY: Category = {
+  name: 'Service',
+  path: '/service/',
+  image: {
+    url: '/images/backgrounds/street-background.webp',
+    altText: 'Street background for service category',
+  },
+};
+
 interface CategoryItemProps {
   category: Category;
   className?: string;
@@ -126,8 +136,10 @@ export function CategoryShowcase({
           {(categoriesData) => {
             if (categoriesData.length === 0) return null;
 
-            const topRowCategories = categoriesData.slice(0, 3);
-            const bottomRowCategories = categoriesData.slice(3, 5);
+            const allCategories = [...categoriesData, SERVICE_CATEGORY];
+            
+            const topRowCategories = allCategories.slice(0, 3);
+            const bottomRowCategories = allCategories.slice(3, 5);
 
             return (
               <div className="space-y-6">
