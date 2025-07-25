@@ -44,10 +44,10 @@ export const AboutValuesGrid: React.FC = () => {
             >
               {item.background}
             </span>
-            <h3 className="text-2xl font-extrabold text-black font-['Nunito'] w-full relative">
+            <h3 className="text-2xl font-extrabold text-black font-['Nunito'] w-full">
               {item.title}
             </h3>
-            <div className="text-base text-gray-700 font-['Nunito'] relative">{item.description}</div>
+            <div className="text-base text-gray-700 font-['Nunito']">{item.description}</div>
           </div>
         ))}
       </div>
