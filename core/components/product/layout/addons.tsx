@@ -19,7 +19,7 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
         <h2 className="mb-12 text-3xl font-black text-gray-900 md:text-4xl lg:text-5xl">
           Add-Ons for your
           <br />
-          <span className="text-[#F92F7B]">new {name}.</span>
+          <span className="-mt-8 block text-[#F92F7B]">new {name}.</span>
         </h2>
 
         {/* Grid of Add-Ons with Background Text */}
