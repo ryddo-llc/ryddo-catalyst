@@ -303,6 +303,7 @@ export function ProductDetailBike<F extends Field>({
               }
             </Stream>
           </section>
+          
           <CompareDrawer href="/compare" submitLabel={compareLabel} />
         </CompareDrawerProvider>
       )}

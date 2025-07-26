@@ -13,6 +13,11 @@ import {
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
+import { getSessionCustomerAccessToken } from '~/auth';
+import { productCardTransformer } from '~/data-transformers/product-card-transformer';
+
+import Addons from './addons';
+import { getAccessories } from './addons-query';
 
 export interface BaseProductDetailProduct {
   id: string;
@@ -76,6 +81,16 @@ export function ProductDetailLayout<F extends Field, P extends BaseProductDetail
   specsSection,
   mainSkeleton,
 }: ProductDetailLayoutProps<F, P>) {
+  // Create streamable addons data
+  const streamableAddons = Streamable.from(async () => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const accessories = await getAccessories(undefined, customerAccessToken);
+    const { getFormatter } = await import('next-intl/server');
+    const format = await getFormatter();
+    
+    return productCardTransformer(accessories, format);
+  });
+
   return (
     <SectionLayout containerSize="full">
       <h1>{productType}</h1>
@@ -200,6 +215,21 @@ export function ProductDetailLayout<F extends Field, P extends BaseProductDetail
                 </div>
               </div>
             )
+          }
+        </Stream>
+        
+        {/* Addons section */}
+        <Stream fallback={null} value={streamableProduct}>
+          {(product) =>
+            product ? (
+              <div className="mt-12 border-t border-[var(--product-detail-border,hsl(var(--contrast-100)))] pt-8">
+                <Addons
+                  addons={streamableAddons}
+                  name={product.title}
+                  productType={productType.toLowerCase() === 'scooter' ? 'scooter' : 'bike'}
+                />
+              </div>
+            ) : null
           }
         </Stream>
       </div>
