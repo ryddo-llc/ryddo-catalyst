@@ -5,6 +5,7 @@
 
 import { clsx } from 'clsx';
 import { ChevronRight } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { parseAsString, useQueryStates } from 'nuqs';
 import { Suspense, useOptimistic, useTransition } from 'react';
 
@@ -63,7 +64,6 @@ interface Props {
   rangeFilterApplyLabel?: Streamable<string>;
 }
 
-
 export function FiltersPanel({
   className,
   filters,
@@ -89,6 +89,7 @@ export function FiltersPanelInner({
   rangeFilterApplyLabel: streamableRangeFilterApplyLabel,
   paginationInfo: streamablePaginationInfo,
 }: Props) {
+  const { data: session } = useSession();
   const filters = useStreamable(streamableFilters);
   const resetFiltersLabel = useStreamable(streamableResetFiltersLabel) ?? 'Reset filters';
   const rangeFilterApplyLabel = useStreamable(streamableRangeFilterApplyLabel);
@@ -122,6 +123,7 @@ export function FiltersPanelInner({
   const linkGroupFilters = filters.filter(
     (filter): filter is LinkGroupFilter => filter.type === 'link-group',
   );
+  const username = session?.user?.name?.split(' ')[0] || 'Guest';
 
   return (
     <div
@@ -134,8 +136,8 @@ export function FiltersPanelInner({
       <div className="mb-6">
         <h3 className="mb-4 text-lg font-bold">Let&apos;s find you a scooter!</h3>
         <p className="mb-3 text-sm">
-          Welcome back <span className="text-[#F92F7B]">thomas</span>! Please tell us all about your
-          ideal new e-scooter and we can make some suggestions.
+          Welcome back <span className="text-[#F92F7B]">{username}</span>! Please tell us all about
+          your ideal new e-scooter and we can make some suggestions.
         </p>
         <div className="mt-4 flex w-full gap-1">
           <input
@@ -143,7 +145,7 @@ export function FiltersPanelInner({
             placeholder="Search..."
             type="text"
           />
-          <button className="flex-shrink-0 rounded-r-md bg-[#F92F7B] px-3 py-2 text-white hover:bg-[#E91E63] active:bg-[#C2185B] transition-colors">
+          <button className="flex-shrink-0 rounded-r-md bg-[#F92F7B] px-3 py-2 text-white transition-colors hover:bg-[#E91E63] active:bg-[#C2185B]">
             <ChevronRight size={16} />
           </button>
         </div>
@@ -157,7 +159,7 @@ export function FiltersPanelInner({
               <li className="py-1" key={linkIndex.toString()}>
                 <div className="flex items-center">
                   <input
-                    className="mr-2 h-4 w-4 appearance-none border-2 border-[#F92F7B] checked:bg-[#F92F7B] rounded focus:ring-[#F92F7B] focus:ring-opacity-25"
+                    className="mr-2 h-4 w-4 appearance-none rounded border-2 border-[#F92F7B] checked:bg-[#F92F7B] focus:ring-[#F92F7B] focus:ring-opacity-25"
                     id={`link-${index}-${linkIndex}`}
                     type="checkbox"
                   />
@@ -186,7 +188,7 @@ export function FiltersPanelInner({
               <div className="mb-6" key={key}>
                 <div className="mb-3 flex items-center">
                   <input
-                    className="mr-2 h-4 w-4 appearance-none border-2 border-[#F92F7B] checked:bg-[#F92F7B] rounded focus:ring-[#F92F7B] focus:ring-opacity-25"
+                    className="mr-2 h-4 w-4 appearance-none rounded border-2 border-[#F92F7B] checked:bg-[#F92F7B] focus:ring-[#F92F7B] focus:ring-opacity-25"
                     id={`filter-${key}`}
                     type="checkbox"
                   />
@@ -262,7 +264,7 @@ export function FiltersPanelInner({
               <div className="mb-6" key={key}>
                 <div className="mb-3 flex items-center">
                   <input
-                    className="mr-2 h-4 w-4 appearance-none border-2 border-[#F92F7B] checked:bg-[#F92F7B] rounded focus:ring-[#F92F7B] focus:ring-opacity-25"
+                    className="mr-2 h-4 w-4 appearance-none rounded border-2 border-[#F92F7B] checked:bg-[#F92F7B] focus:ring-[#F92F7B] focus:ring-opacity-25"
                     id={`filter-${key}`}
                     type="checkbox"
                   />
@@ -310,7 +312,7 @@ export function FiltersPanelInner({
               <div className="mb-6" key={key}>
                 <div className="mb-3 flex items-center">
                   <input
-                    className="mr-2 h-4 w-4 appearance-none border-2 border-[#F92F7B] checked:bg-[#F92F7B] rounded focus:ring-[#F92F7B] focus:ring-opacity-25"
+                    className="mr-2 h-4 w-4 appearance-none rounded border-2 border-[#F92F7B] checked:bg-[#F92F7B] focus:ring-[#F92F7B] focus:ring-opacity-25"
                     id={`filter-${key}`}
                     type="checkbox"
                   />
