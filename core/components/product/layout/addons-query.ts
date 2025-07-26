@@ -5,9 +5,9 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
 const AccessoriesQuery = graphql(`
-  query AccessoriesQuery($first: Int!, $categoryEntityId: Int) {
+  query AccessoriesQuery($first: Int!) {
     site {
-      products(first: $first, filters: { categoryEntityId: $categoryEntityId }) {
+      products(first: $first) {
         edges {
           node {
             entityId
@@ -17,53 +17,6 @@ const AccessoriesQuery = graphql(`
               altText
               url: urlTemplate(lossy: true)
             }
-            prices {
-              basePrice {
-                ... on Money {
-                  value
-                  currencyCode
-                }
-              }
-              price {
-                ... on Money {
-                  value
-                  currencyCode
-                }
-              }
-              salePrice {
-                ... on Money {
-                  value
-                  currencyCode
-                }
-              }
-              retailPrice {
-                ... on Money {
-                  value
-                  currencyCode
-                }
-              }
-              priceRange {
-                min {
-                  value
-                  currencyCode
-                }
-                max {
-                  value
-                  currencyCode
-                }
-              }
-            }
-            reviewSummary {
-              averageRating
-              numberOfReviews
-            }
-            brand {
-              name
-              path
-            }
-            inventory {
-              isInStock
-            }
           }
         }
       }
@@ -71,12 +24,11 @@ const AccessoriesQuery = graphql(`
   }
 `);
 
-export const getAccessories = cache(async (categoryEntityId?: number, customerAccessToken?: string) => {
+export const getAccessories = cache(async (customerAccessToken?: string) => {
   const { data } = await client.fetch({
     document: AccessoriesQuery,
     variables: { 
-      first: 6,
-      categoryEntityId: categoryEntityId || undefined
+      first: 6
     },
     customerAccessToken,
     validateCustomerAccessToken: false,

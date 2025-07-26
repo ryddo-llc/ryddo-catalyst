@@ -9,6 +9,10 @@ import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { Image } from '~/components/image';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import { getSessionCustomerAccessToken } from '~/auth';
+
+import Addons from '../layout/addons';
+import { getAccessories } from '../layout/addons-query';
 
 import { BaseProductDetailProduct } from '../layout/product-detail-layout';
 import { ProductBadges } from '../shared/product-badges';
@@ -59,6 +63,23 @@ export function ProductDetailBike<F extends Field>({
   maxCompareItems = 3,
   maxCompareLimitMessage = "You've reached the maximum number of products for comparison.",
 }: ProductDetailBikeProps<F>) {
+  // Create streamable addons data
+  const streamableAddons = Streamable.from(async () => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const accessories = await getAccessories(customerAccessToken);
+    
+    // Simple transformation - only what we need for images
+    return accessories.map((accessory) => ({
+      id: accessory.entityId.toString(),
+      title: accessory.name,
+      href: accessory.path,
+      image: accessory.defaultImage ? {
+        src: accessory.defaultImage.url,
+        alt: accessory.defaultImage.altText
+      } : undefined
+    }));
+  });
+
   return (
     <Stream fallback={<ProductDetailBikeSkeleton />} value={compareProducts || []}>
       {(compareItems) => (
@@ -303,6 +324,19 @@ export function ProductDetailBike<F extends Field>({
               }
             </Stream>
           </section>
+          
+          {/* Addons section */}
+          <Stream fallback={null} value={streamableProduct}>
+            {(product) =>
+              product ? (
+                <Addons
+                  addons={streamableAddons}
+                  name={product.title}
+                  productType="bike"
+                />
+              ) : null
+            }
+          </Stream>
           
           <CompareDrawer href="/compare" submitLabel={compareLabel} />
         </CompareDrawerProvider>
