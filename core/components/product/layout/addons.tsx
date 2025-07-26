@@ -50,10 +50,28 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
 
                 return displayAccessories.map((accessory) => (
                   <Link href={accessory.href} key={accessory.id}>
-                    <div className="group cursor-pointer">
+                    <div className="group relative cursor-pointer overflow-hidden rounded-2xl">
+                      {/* Optimized ripple effect */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        {/* Center pulse */}
+                        <div className="absolute h-16 w-16 rounded-full bg-[#F92F7B] opacity-0 transition-all duration-200 ease-out group-hover:scale-125 group-hover:opacity-100" />
+
+                        {/* Inner pulse circle */}
+                        <div className="absolute h-20 w-20 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-100 duration-300 ease-out group-hover:scale-110 group-hover:opacity-80" />
+
+                        {/* First wave of ripples */}
+                        <div className="absolute h-32 w-32 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-150 duration-500 ease-out group-hover:scale-150 group-hover:opacity-0" />
+                        <div className="group-hover:scale-200 absolute h-24 w-24 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-200 duration-700 ease-out group-hover:opacity-0" />
+                        <div className="group-hover:scale-200 absolute h-28 w-28 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-300 duration-700 ease-out group-hover:opacity-0" />
+
+                        {/* Second wave of ripples */}
+                        <div className="group-hover:scale-200 absolute h-32 w-32 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-300 duration-1000 ease-out group-hover:opacity-0" />
+                        <div className="group-hover:scale-200 absolute h-36 w-36 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-500 duration-1000 ease-out group-hover:opacity-0" />
+                        <div className="group-hover:scale-200 absolute h-40 w-40 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-700 duration-1000 ease-out group-hover:opacity-0" />
+                      </div>
                       <Image
                         alt={accessory.title}
-                        className="aspect-square transform rounded-2xl object-contain p-6 transition-all duration-300 hover:-translate-y-2 hover:scale-105 hover:shadow-lg md:p-8"
+                        className="relative z-10 aspect-square rounded-2xl object-contain p-6 md:p-8"
                         height={500}
                         src={accessory.image?.src || '/images/placeholder.png'}
                         width={500}
