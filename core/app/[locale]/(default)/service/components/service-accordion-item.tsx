@@ -12,7 +12,7 @@ interface ServiceAccordionItemProps extends ComponentPropsWithoutRef<typeof Acco
 const AnimatedChevron = memo(function AnimatedChevron() {
   return (
     <svg
-      className="mt-1 shrink-0 stroke-[#F92F7B] transition-transform duration-200 group-hover:scale-125 [&>line]:origin-center [&>line]:transition [&>line]:duration-300 [&>line]:ease-out"
+      className="mt-1 shrink-0 stroke-pink-600 transition-transform duration-200 group-hover:scale-125 [&>line]:origin-center [&>line]:transition [&>line]:duration-300 [&>line]:ease-out"
       viewBox="0 0 10 10"
       width={16}
     >

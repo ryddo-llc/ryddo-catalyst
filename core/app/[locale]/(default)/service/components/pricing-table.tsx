@@ -43,8 +43,8 @@ export function PricingTable({ leftColumn, noteText, noteTitle, rightColumn }: P
           ))}
         </div>
       </div>
-      <div className="bg-pink-50 border border-pink-200 p-3 rounded-lg" role="note" aria-labelledby="note-title">
-        <p id="note-title" className="text-sm font-semibold text-pink-800 mb-1">{noteTitle}:</p>
+      <div aria-labelledby="note-title" className="bg-pink-50 border border-pink-200 p-3 rounded-lg" role="note">
+        <p className="text-sm font-semibold text-pink-800 mb-1" id="note-title">{noteTitle}:</p>
         <p className="text-sm text-pink-700">{noteText}</p>
       </div>
     </div>

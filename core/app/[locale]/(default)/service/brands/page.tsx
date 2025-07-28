@@ -31,7 +31,7 @@ export default function BrandsPage() {
         <h3 className="mb-4 text-lg font-semibold text-gray-900">In-Store Brands:</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 justify-items-center md:justify-items-start">
           {brandLogos.map((logo) => (
-            <div key={logo.name} className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center">
+            <div className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center" key={logo.name}>
               <Image
                 alt={logo.name}
                 className="object-contain w-full h-full"

@@ -43,7 +43,7 @@ export default function ServiceLayout({
           </div>
           
           {/* Map Pins - Desktop Only */}
-          <div role="complementary" aria-label="Service location map pins" className="hidden lg:block">
+          <div aria-label="Service location map pins" className="hidden lg:block" role="complementary">
             <ServiceMapPins />
           </div>
         </div>
