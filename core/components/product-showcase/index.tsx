@@ -73,7 +73,7 @@ export function ProductShowcase({
       {/* Background Product Name Text */}
       {productName ? (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-          <span className="select-none whitespace-nowrap text-6xl font-black uppercase leading-loose tracking-widest text-gray-300 opacity-30 md:text-8xl lg:text-9xl xl:text-[12rem]">
+          <span className="select-none whitespace-nowrap text-6xl font-black uppercase leading-loose tracking-widest text-gray-600 opacity-30 md:text-8xl lg:text-9xl xl:text-[12rem]">
             {productName}
           </span>
         </div>
@@ -110,9 +110,6 @@ export function ProductShowcase({
                               src={image.src}
                               width={1000}
                             />
-                            {/* Decorative elements */}
-                            <div className="absolute -left-4 -top-4 h-24 w-24 rounded-full bg-pink-500 opacity-10 blur-xl" />
-                            <div className="absolute -bottom-4 -right-4 h-32 w-32 rounded-full bg-pink-500 opacity-10 blur-xl" />
                           </div>
                         </CarouselItem>
                       ))}
