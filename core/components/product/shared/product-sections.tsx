@@ -1,3 +1,5 @@
+import { clsx } from 'clsx';
+
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { ProductShowcase } from '~/components/product-showcase';
 
@@ -31,24 +33,20 @@ export function ProductAddonsSection({
 export function ProductShowcaseSection({
   product,
   className,
-  title = 'Product Images',
 }: {
   product: Streamable<BaseProductDetailProduct | null>;
   className?: string;
-  title?: string;
 }) {
   return (
-    <div className={className}>
+    <div className={clsx('w-full', className)}>
       <Stream fallback={null} value={product}>
         {(productData) =>
           productData ? (
-            <div className="mt-12 pt-8">
-              <h2 className="mb-6 text-center font-[family-name:var(--font-family-heading)] text-2xl font-bold">
-                {title}
-              </h2>
+            <div>
               <ProductShowcase
                 aria-labelledby="product-images-heading"
                 images={productData.images}
+                productName={productData.title}
               />
             </div>
           ) : null
