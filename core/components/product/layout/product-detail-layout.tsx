@@ -13,10 +13,8 @@ import {
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
-import { getSessionCustomerAccessToken } from '~/auth';
 
-import Addons from './addons';
-import { getAccessories } from './addons-query';
+import { ProductAddonsSection, ProductShowcaseSection } from '../shared/product-sections';
 
 export interface BaseProductDetailProduct {
   id: string;
@@ -59,6 +57,12 @@ export interface ProductDetailLayoutProps<F extends Field, P extends BaseProduct
   productType: string;
   specsSection: (product: P) => ReactNode;
   mainSkeleton: () => ReactNode;
+  relatedProducts?: Streamable<
+    Array<{ id: string; title: string; href: string; image?: { src: string; alt: string } }>
+  >;
+  popularAccessories?: Streamable<
+    Array<{ id: string; title: string; href: string; image?: { src: string; alt: string } }>
+  >;
 }
 
 export function ProductDetailLayout<F extends Field, P extends BaseProductDetailProduct>({
@@ -79,26 +83,9 @@ export function ProductDetailLayout<F extends Field, P extends BaseProductDetail
   productType,
   specsSection,
   mainSkeleton,
+
+  popularAccessories,
 }: ProductDetailLayoutProps<F, P>) {
-  // Create streamable addons data
-  const streamableAddons = Streamable.from(async () => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const accessories = await getAccessories(customerAccessToken);
-
-    // Simple transformation - only what we need for images
-    return accessories.map((accessory) => ({
-      id: accessory.entityId.toString(),
-      title: accessory.name,
-      href: accessory.path,
-      image: accessory.defaultImage
-        ? {
-            src: accessory.defaultImage.url,
-            alt: accessory.defaultImage.altText,
-          }
-        : undefined,
-    }));
-  });
-
   return (
     <SectionLayout containerSize="full">
       <h1>{productType}</h1>
@@ -227,15 +214,14 @@ export function ProductDetailLayout<F extends Field, P extends BaseProductDetail
         </Stream>
 
         {/* Addons section */}
-        <Stream fallback={null} value={streamableProduct}>
-          {(product) =>
-            product ? (
-              <div className="mt-12 border-t border-[var(--product-detail-border,hsl(var(--contrast-100)))] pt-8">
-                <Addons addons={streamableAddons} name={product.title} />
-              </div>
-            ) : null
-          }
-        </Stream>
+        <ProductAddonsSection
+          className="mt-12 border-t border-[var(--product-detail-border,hsl(var(--contrast-100)))] pt-8"
+          product={streamableProduct}
+          relatedProducts={popularAccessories || []}
+        />
+
+        {/* Product Showcase section */}
+        <ProductShowcaseSection product={streamableProduct} />
       </div>
     </SectionLayout>
   );

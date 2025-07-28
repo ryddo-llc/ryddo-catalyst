@@ -6,13 +6,10 @@ import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
-import { getSessionCustomerAccessToken } from '~/auth';
 import { Image } from '~/components/image';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 
-import Addons from '../layout/addons';
-import { getAccessories } from '../layout/addons-query';
 import { BaseProductDetailProduct } from '../layout/product-detail-layout';
 import { ProductBadges } from '../shared/product-badges';
 import {
@@ -23,6 +20,7 @@ import {
   ProductSummarySkeleton,
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
+import { ProductAddonsSection, ProductShowcaseSection } from '../shared/product-sections';
 import { AuthorizedDealerCard, OffersCard } from '../shared/product-side-cards';
 
 import { BikeAddToCartForm } from './bike-add-to-cart-form';
@@ -48,6 +46,13 @@ export interface ProductDetailBikeProps<F extends Field> {
   compareLabel?: string;
   maxCompareItems?: number;
   maxCompareLimitMessage?: string;
+  // Related products for addons
+  relatedProducts?: Streamable<
+    Array<{ id: string; title: string; href: string; image?: { src: string; alt: string } }>
+  >;
+  popularAccessories?: Streamable<
+    Array<{ id: string; title: string; href: string; image?: { src: string; alt: string } }>
+  >;
 }
 
 export function ProductDetailBike<F extends Field>({
@@ -61,26 +66,9 @@ export function ProductDetailBike<F extends Field>({
   compareLabel = 'Compare',
   maxCompareItems = 3,
   maxCompareLimitMessage = "You've reached the maximum number of products for comparison.",
+
+  popularAccessories,
 }: ProductDetailBikeProps<F>) {
-  // Create streamable addons data
-  const streamableAddons = Streamable.from(async () => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const accessories = await getAccessories(customerAccessToken);
-
-    // Simple transformation - only what we need for images
-    return accessories.map((accessory) => ({
-      id: accessory.entityId.toString(),
-      title: accessory.name,
-      href: accessory.path,
-      image: accessory.defaultImage
-        ? {
-            src: accessory.defaultImage.url,
-            alt: accessory.defaultImage.altText,
-          }
-        : undefined,
-    }));
-  });
-
   return (
     <Stream fallback={<ProductDetailBikeSkeleton />} value={compareProducts || []}>
       {(compareItems) => (
@@ -326,12 +314,17 @@ export function ProductDetailBike<F extends Field>({
             </Stream>
           </section>
 
-          {/* Addons section */}
-          <Stream fallback={null} value={streamableProduct}>
-            {(product) =>
-              product ? <Addons addons={streamableAddons} name={product.title} /> : null
-            }
-          </Stream>
+          {/* Shared Addons section */}
+          <ProductAddonsSection
+            product={streamableProduct}
+            relatedProducts={popularAccessories || []}
+          />
+
+          {/* Shared Product Showcase section */}
+          <ProductShowcaseSection
+            className="bg-white px-4 py-8 md:px-8"
+            product={streamableProduct}
+          />
 
           <CompareDrawer href="/compare" submitLabel={compareLabel} />
         </CompareDrawerProvider>
