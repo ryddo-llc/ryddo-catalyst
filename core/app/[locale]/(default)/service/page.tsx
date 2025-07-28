@@ -21,6 +21,7 @@ export default function ServicePage() {
 
         <div className="text-center mt-5">
           <Button 
+            aria-label="Book service appointment"
             className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 text-base font-semibold rounded-full shadow-md"
             size="small" 
           >

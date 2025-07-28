@@ -1,8 +1,8 @@
 'use client';
 
 import { PageHeader } from '@/vibes/soul/sections/page-header';
-
 import { Image } from '~/components/image';
+
 import { ServiceMapPins } from './components/service-map-pins';
 import { ServiceSidebar } from './components/service-sidebar';
 
@@ -33,7 +33,7 @@ export default function ServiceLayout({
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4">
-          <div className="rounded-3xl bg-white/50 shadow-2xl ml-0 lg:ml-0 lg:mr-64 min-h-[600px] flex flex-col lg:flex-row">
+          <div className="rounded-3xl bg-white/50 shadow-2xl ml-0 lg:mr-64 min-h-[600px] flex flex-col lg:flex-row">
 
             <ServiceSidebar />
 
@@ -43,7 +43,9 @@ export default function ServiceLayout({
           </div>
           
           {/* Map Pins - Desktop Only */}
-          <ServiceMapPins />
+          <div role="complementary" aria-label="Service location map pins" className="hidden lg:block">
+            <ServiceMapPins />
+          </div>
         </div>
       </section>
     </>

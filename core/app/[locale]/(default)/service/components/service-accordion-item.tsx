@@ -2,14 +2,14 @@
 
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { clsx } from 'clsx';
-import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
+import { ComponentPropsWithoutRef, memo } from 'react';
 
 interface ServiceAccordionItemProps extends ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> {
   title: string;
   children: React.ReactNode;
 }
 
-function AnimatedChevron() {
+const AnimatedChevron = memo(function AnimatedChevron() {
   return (
     <svg
       className="mt-1 shrink-0 stroke-[#F92F7B] transition-transform duration-200 group-hover:scale-125 [&>line]:origin-center [&>line]:transition [&>line]:duration-300 [&>line]:ease-out"
@@ -36,18 +36,13 @@ function AnimatedChevron() {
       />
     </svg>
   );
-}
+});
 
 export function ServiceAccordionItem({ children, className, title, ...props }: ServiceAccordionItemProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   return (
     <AccordionPrimitive.Item
-      className={clsx('', className)}
+      className={clsx(className)}
       {...props}
     >
       <AccordionPrimitive.Header>
@@ -61,7 +56,7 @@ export function ServiceAccordionItem({ children, className, title, ...props }: S
       <AccordionPrimitive.Content
         className={clsx(
           'overflow-hidden',
-          isMounted && 'data-[state=closed]:animate-collapse data-[state=open]:animate-expand',
+          'data-[state=closed]:animate-collapse data-[state=open]:animate-expand',
         )}
       >
         <div className="pb-3 px-6 text-base text-gray-700 leading-relaxed">

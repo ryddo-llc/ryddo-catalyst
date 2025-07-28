@@ -4,6 +4,15 @@ import { IoStar } from "react-icons/io5";
 import { Button } from '@/vibes/soul/primitives/button';
 import { Image } from '~/components/image';
 
+const brandLogos = [
+  { name: 'UBCO', src: '/images/logos/UBCO.webp' },
+  { name: 'Gocycle', src: '/images/logos/Gocycle.webp' },
+  { name: 'Jack Rabbit', src: '/images/logos/JackRabbit.webp' },
+  { name: 'AVIONICS', src: '/images/logos/AVIONICS.webp' },
+  { name: 'Troy Lee', src: '/images/logos/Troy-Lee.webp' },
+  { name: 'DUALTRON', src: '/images/logos/DUALTRON.webp' },
+];
+
 export default function BrandsPage() {
   return (
     <div className="space-y-8">
@@ -21,65 +30,17 @@ export default function BrandsPage() {
       <div>
         <h3 className="mb-4 text-lg font-semibold text-gray-900">In-Store Brands:</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 justify-items-center md:justify-items-start">
-          <div className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center">
-            <Image
-              alt="UBCO"
-              className="object-contain w-full h-full"
-              height={80}
-              src="/images/logos/UBCO.webp"
-              width={128}
-            />
-          </div>
-          
-          <div className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center">
-            <Image
-              alt="Gocycle"
-              className="object-contain w-full h-full"
-              height={80}
-              src="/images/logos/Gocycle.webp"
-              width={128}
-            />
-          </div>
-          
-          <div className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center">
-            <Image
-              alt="Jack Rabbit"
-              className="object-contain w-full h-full"
-              height={80}
-              src="/images/logos/JackRabbit.webp"
-              width={128}
-            />
-          </div>
-          
-          <div className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center">
-            <Image
-              alt="AVIONICS"
-              className="object-contain w-full h-full"
-              height={80}
-              src="/images/logos/AVIONICS.webp"
-              width={128}
-            />
-          </div>
-          
-          <div className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center">
-            <Image
-              alt="Troy Lee"
-              className="object-contain w-full h-full"
-              height={80}
-              src="/images/logos/Troy-Lee.webp"
-              width={128}
-            />
-          </div>
-          
-          <div className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center">
-            <Image
-              alt="DUALTRON"
-              className="object-contain w-full h-full"
-              height={80}
-              src="/images/logos/DUALTRON.webp"
-              width={128}
-            />
-          </div>
+          {brandLogos.map((logo) => (
+            <div key={logo.name} className="h-16 w-24 md:h-20 md:w-32 xl:h-24 xl:w-40 flex items-center justify-center">
+              <Image
+                alt={logo.name}
+                className="object-contain w-full h-full"
+                height={80}
+                src={logo.src}
+                width={128}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
