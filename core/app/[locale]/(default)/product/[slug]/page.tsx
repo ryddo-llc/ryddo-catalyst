@@ -16,6 +16,7 @@ import {
 } from '~/components/product/layout/product-detail-router';
 import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
+import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -38,7 +39,6 @@ import {
   getProductPricingAndRelatedProducts,
   getStreamableProduct,
 } from './page-data';
-import TechSpecs from '~/components/tech-specs';
 
 const compareLoader = createCompareLoader();
 
@@ -383,6 +383,12 @@ export default async function Product({ params, searchParams }: Props) {
     }));
   });
 
+  const streamableTechSpecData = Streamable.from(async () => {
+    const bikeData = await streamableBikeData;
+
+    return bikeData?.bikeSpecs || null;
+  });
+
   const baseProductData = {
     id: baseProduct.entityId.toString(),
     title: baseProduct.name,
@@ -458,7 +464,7 @@ export default async function Product({ params, searchParams }: Props) {
         {renderProductDetail()}
       </ProductAnalyticsProvider>
 
-      {/* Enhanced sections for vehicles only */}
+      {/* Enhanced sections for bikes and scooters only */}
       {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
         <>
           <Addons addons={streamablePopularAccessories} name={baseProduct.name} />
@@ -468,7 +474,7 @@ export default async function Product({ params, searchParams }: Props) {
             images={streamableImages}
             productName={baseProduct.name}
           />
-          <TechSpecs />
+          <TechSpecs powerSpecs={streamableTechSpecData} />
         </>
       )}
 
