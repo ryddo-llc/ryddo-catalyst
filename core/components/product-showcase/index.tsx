@@ -11,7 +11,6 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/vibes/soul/primitives/carousel';
-
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 
