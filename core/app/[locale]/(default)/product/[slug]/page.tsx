@@ -38,6 +38,7 @@ import {
   getProductPricingAndRelatedProducts,
   getStreamableProduct,
 } from './page-data';
+import TechSpecs from '~/components/tech-specs';
 
 const compareLoader = createCompareLoader();
 
@@ -359,7 +360,6 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
-
   // Create streamable compare products
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParamsData = await searchParams;
@@ -468,6 +468,7 @@ export default async function Product({ params, searchParams }: Props) {
             images={streamableImages}
             productName={baseProduct.name}
           />
+          <TechSpecs />
         </>
       )}
 
