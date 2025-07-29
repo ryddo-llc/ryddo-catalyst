@@ -174,6 +174,7 @@ const ProductQuery = graphql(
           entityId
           name
           description
+          plainTextDescription(characterLimit: 300)
           path
           brand {
             name
@@ -181,7 +182,6 @@ const ProductQuery = graphql(
           reviewSummary {
             averageRating
           }
-          description
           categories {
             edges {
               node {

@@ -14,6 +14,8 @@ import {
   ProductDetailBike,
   ProductDetailScooter,
 } from '~/components/product/layout/product-detail-router';
+import Addons from '~/components/product/shared/addons';
+import { ProductShowcase } from '~/components/product-showcase';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -297,7 +299,7 @@ export default async function Product({ params, searchParams }: Props) {
   const streamablePopularAccessories = Streamable.from(async () => {
     const accessToken = await getSessionCustomerAccessToken();
     const currency = await getPreferredCurrencyCode();
-    
+
     const data = await getPageData(currency, accessToken);
 
     const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
@@ -344,6 +346,7 @@ export default async function Product({ params, searchParams }: Props) {
       status: product.availabilityV2.status,
     };
   });
+
 
   // Create streamable compare products
   const streamableCompareProducts = Streamable.from(async () => {
@@ -443,6 +446,20 @@ export default async function Product({ params, searchParams }: Props) {
         {renderProductDetail()}
       </ProductAnalyticsProvider>
 
+      {/* Enhanced sections for vehicles only */}
+      {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
+        <>
+          <Addons addons={streamablePopularAccessories} name={baseProduct.name} />
+          <ProductShowcase
+            aria-labelledby="product-images-heading"
+            description={baseProduct.plainTextDescription}
+            images={streamableImages}
+            productName={baseProduct.name}
+          />
+        </>
+      )}
+
+      {/* Common sections for all products */}
       <FeaturedProductCarousel
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
         emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
