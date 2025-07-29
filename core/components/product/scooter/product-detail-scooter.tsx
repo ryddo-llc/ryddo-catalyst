@@ -140,7 +140,10 @@ export function ProductDetailScooter<F extends Field>({
                         <div className="group/product-price">
                           <Stream fallback={<PriceLabelSkeleton />} value={product.price}>
                             {(price) => (
-                              <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />
+                              <PriceLabel
+                                className="my-3 text-xl @xl:text-2xl"
+                                price={price ?? ''}
+                              />
                             )}
                           </Stream>
                         </div>
@@ -148,7 +151,10 @@ export function ProductDetailScooter<F extends Field>({
                         {/* Scooter-specific specs section */}
                         <div className="mb-6">
                           <div className="group/scooter-quick-specs">
-                            <Stream fallback={<ScooterSpecsSkeleton />} value={product.scooterSpecs}>
+                            <Stream
+                              fallback={<ScooterSpecsSkeleton />}
+                              value={product.scooterSpecs}
+                            >
                               {(specs) =>
                                 specs && (
                                   <div className="rounded-lg border border-[var(--product-detail-border,hsl(var(--contrast-100)))] p-4">
@@ -161,7 +167,9 @@ export function ProductDetailScooter<F extends Field>({
                                           <span className="text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
                                             Motor:
                                           </span>
-                                          <span className="ml-2 font-medium">{specs.motorPower}</span>
+                                          <span className="ml-2 font-medium">
+                                            {specs.motorPower}
+                                          </span>
                                         </div>
                                       ) : null}
                                       {specs.maxSpeed ? (
@@ -185,7 +193,9 @@ export function ProductDetailScooter<F extends Field>({
                                           <span className="text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
                                             Max Load:
                                           </span>
-                                          <span className="ml-2 font-medium">{specs.maxWeight}</span>
+                                          <span className="ml-2 font-medium">
+                                            {specs.maxWeight}
+                                          </span>
                                         </div>
                                       ) : null}
                                       {specs.foldable !== undefined ? (
@@ -277,7 +287,10 @@ export function ProductDetailScooter<F extends Field>({
                           </Stream>
                         </div>
                         <div className="group/product-description">
-                          <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
+                          <Stream
+                            fallback={<ProductDescriptionSkeleton />}
+                            value={product.description}
+                          >
                             {(description) =>
                               Boolean(description) && (
                                 <div className="prose prose-sm max-w-none border-t border-[var(--product-detail-border,hsl(var(--contrast-100)))] py-8 [&>div>*:first-child]:mt-0 [&>div>*:last-child]:mb-0">
@@ -289,7 +302,10 @@ export function ProductDetailScooter<F extends Field>({
                         </div>
                         <h2 className="sr-only">{additionalInformationTitle}</h2>
                         <div className="group/product-accordion">
-                          <Stream fallback={<ProductAccordionsSkeleton />} value={product.accordions}>
+                          <Stream
+                            fallback={<ProductAccordionsSkeleton />}
+                            value={product.accordions}
+                          >
                             {(accordions) =>
                               accordions && (
                                 <Accordion
@@ -353,7 +369,7 @@ function ProductSummarySkeleton() {
   return (
     <div className="flex w-full flex-col gap-3.5 pb-6">
       {Array.from({ length: 3 }).map((_, idx) => (
-        <div key={idx} className="h-2.5 w-full animate-pulse bg-gray-200" />
+        <div className="h-2.5 w-full animate-pulse bg-gray-200" key={idx} />
       ))}
     </div>
   );
@@ -374,7 +390,7 @@ function ProductDescriptionSkeleton() {
   return (
     <div className="flex w-full flex-col gap-3.5 pb-6">
       {Array.from({ length: 2 }).map((_, idx) => (
-        <div key={idx} className="h-2.5 w-full animate-pulse bg-gray-200" />
+        <div className="h-2.5 w-full animate-pulse bg-gray-200" key={idx} />
       ))}
       <div className="h-2.5 w-3/4 animate-pulse bg-gray-200" />
     </div>
@@ -417,7 +433,6 @@ function ScooterSpecsSkeleton() {
     </Skeleton.Root>
   );
 }
-
 
 export function ProductDetailScooterSkeleton() {
   return (
