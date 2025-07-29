@@ -24,6 +24,7 @@ export interface ProductShowcaseProps {
   previousLabel?: string;
   nextLabel?: string;
   productName?: string;
+  description?: string | null;
 }
 
 function ProductShowcaseSkeleton() {
@@ -53,6 +54,7 @@ export function ProductShowcase({
   previousLabel = 'Previous image',
   nextLabel = 'Next image',
   productName,
+  description,
 }: ProductShowcaseProps) {
   return (
     <section
@@ -76,6 +78,27 @@ export function ProductShowcase({
       ) : null}
       <div className="absolute bottom-0 left-0 right-0 z-0 h-32 bg-gradient-to-t from-blue-50 to-transparent" />
 
+      {/* Description Section - Top Right */}
+      {description ? (
+        <div className="absolute right-8 top-12 z-10 hidden max-w-md lg:block">
+          <h2 className="text-3xl font-black leading-tight md:text-4xl lg:text-5xl xl:text-6xl">
+            <span className="block text-[#F92F7B]">
+              {description
+                .split(' ')
+                .slice(0, Math.ceil(description.split(' ').length / 2))
+                .join(' ')}
+            </span>
+            <span className="-mt-6 block text-gray-900">
+              {description
+                .split(' ')
+                .slice(Math.ceil(description.split(' ').length / 2))
+                .join(' ')
+                .toLowerCase()}
+            </span>
+          </h2>
+        </div>
+      ) : null}
+
       {/* Main carousel content */}
       <Stream fallback={<ProductShowcaseSkeleton />} value={images}>
         {(imagesData) => {
@@ -95,16 +118,16 @@ export function ProductShowcase({
               <CarouselContent className="h-full w-full">
                 {imagesData.map((image, index) => (
                   <CarouselItem
-                    key={index}
                     className="flex h-full w-full items-center justify-center"
+                    key={index}
                   >
                     <Image
                       alt={image.alt}
-                      src={image.src}
-                      width={1000}
+                      className="h-auto max-h-[60vh] w-full object-contain"
                       height={600}
                       priority={index === 0}
-                      className="h-auto max-h-[60vh] w-full object-contain"
+                      src={image.src}
+                      width={1000}
                     />
                   </CarouselItem>
                 ))}
@@ -113,15 +136,15 @@ export function ProductShowcase({
               {/* Left Button */}
               <CarouselButtons
                 className="absolute left-0 top-1/2 z-20 -translate-y-1/2 [&>button:first-child]:flex [&>button:first-child]:h-[130px] [&>button:first-child]:w-[55px] [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-l-none [&>button:first-child]:rounded-r-2xl [&>button:first-child]:bg-[#F92F7B] [&>button:first-child]:text-white [&>button:first-child]:shadow-lg [&>button:first-child]:transition-all [&>button:first-child]:duration-300 [&>button:first-child]:hover:scale-105 [&>button:first-child]:hover:bg-[#e01b5f] [&>button:last-child]:hidden"
-                previousLabel={previousLabel}
                 nextLabel={nextLabel}
+                previousLabel={previousLabel}
               />
 
               {/* Right Button */}
               <CarouselButtons
                 className="absolute right-0 top-1/2 z-20 -translate-y-1/2 [&>button:first-child]:hidden [&>button:last-child]:flex [&>button:last-child]:h-[130px] [&>button:last-child]:w-[55px] [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-l-2xl [&>button:last-child]:rounded-r-none [&>button:last-child]:bg-[#F92F7B] [&>button:last-child]:text-white [&>button:last-child]:shadow-lg [&>button:last-child]:transition-all [&>button:last-child]:duration-300 [&>button:last-child]:hover:scale-105 [&>button:last-child]:hover:bg-[#e01b5f]"
-                previousLabel={previousLabel}
                 nextLabel={nextLabel}
+                previousLabel={previousLabel}
               />
             </Carousel>
           );

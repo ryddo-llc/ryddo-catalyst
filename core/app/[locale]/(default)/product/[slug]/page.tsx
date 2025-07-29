@@ -347,6 +347,7 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
+
   // Create streamable compare products
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParamsData = await searchParams;
@@ -451,6 +452,7 @@ export default async function Product({ params, searchParams }: Props) {
           <Addons addons={streamablePopularAccessories} name={baseProduct.name} />
           <ProductShowcase
             aria-labelledby="product-images-heading"
+            description={baseProduct.plainTextDescription}
             images={streamableImages}
             productName={baseProduct.name}
           />
