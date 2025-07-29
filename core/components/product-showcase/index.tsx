@@ -1,6 +1,7 @@
 'use client';
 
 import { clsx } from 'clsx';
+import useEmblaCarousel from 'embla-carousel-react';
 import { useEffect, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -10,7 +11,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/vibes/soul/primitives/carousel';
-import useEmblaCarousel from 'embla-carousel-react';
+
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 
@@ -93,7 +94,7 @@ export function ProductShowcase({
     <section
       aria-labelledby={ariaLabelledBy}
       className={clsx(
-        'relative flex max-h-screen min-h-[40vh] w-full items-center justify-center overflow-hidden bg-white font-[family-name:var(--product-showcase-font-family,var(--font-family-body))] md:min-h-[60vh] lg:min-h-[80vh]',
+        'relative flex max-h-screen min-h-[50vh] w-full items-center justify-center overflow-hidden bg-white font-[family-name:var(--product-showcase-font-family,var(--font-family-body))] sm:min-h-[40vh] md:min-h-[60vh] lg:min-h-[80vh]',
         className,
       )}
     >
@@ -104,23 +105,23 @@ export function ProductShowcase({
       />
       {productName ? (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-          <span className="mt-80 select-none whitespace-nowrap text-6xl font-black uppercase leading-loose tracking-widest text-gray-600 opacity-30 md:text-8xl lg:text-9xl xl:text-[12rem]">
+          <span className="mt-32 select-none whitespace-nowrap text-6xl font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60 sm:text-6xl md:text-8xl lg:text-9xl xl:text-[12rem]">
             {productName}
           </span>
         </div>
       ) : null}
 
-      {/* Description Section - Top Right */}
+      {/* Description Section - Responsive */}
       {description ? (
-        <div className="z-5 absolute right-10 top-12 hidden max-w-md lg:block">
-          <h2 className="text-3xl font-black leading-tight md:text-4xl lg:text-5xl xl:text-6xl">
+        <div className="z-5 absolute left-1/2 top-6 max-w-xs -translate-x-1/2 transform px-4 sm:left-auto sm:right-10 sm:top-12 sm:max-w-md sm:translate-x-0 sm:px-0">
+          <h2 className="text-center text-xl font-black leading-tight sm:text-left sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
             <span className="block text-[#F92F7B]">
               {description
                 .split(' ')
                 .slice(0, Math.ceil(description.split(' ').length / 2))
                 .join(' ')}
             </span>
-            <span className="-mt-6 block text-gray-900">
+            <span className="-mt-3 block text-gray-900 sm:-mt-6">
               {description
                 .split(' ')
                 .slice(Math.ceil(description.split(' ').length / 2))
@@ -145,7 +146,12 @@ export function ProductShowcase({
           return (
             <Carousel
               className="z-5 relative flex h-full w-full items-center justify-center"
-              opts={{ align: 'center', loop: true }}
+              opts={{
+                align: 'center',
+                loop: true,
+                dragFree: true,
+                containScroll: 'trimSnaps',
+              }}
               setApi={setCarouselApi}
             >
               <CarouselContent className="h-full w-full">
@@ -156,7 +162,7 @@ export function ProductShowcase({
                   >
                     <Image
                       alt={image.alt}
-                      className="h-auto max-h-[60vh] w-full object-contain"
+                      className="h-auto max-h-[40vh] w-full object-contain sm:max-h-[60vh]"
                       height={600}
                       priority={index === 0}
                       src={image.src}
@@ -168,14 +174,14 @@ export function ProductShowcase({
 
               {/* Left Button */}
               <CarouselButtons
-                className="z-5 absolute left-0 top-1/2 -translate-y-1/2 [&>button:first-child]:flex [&>button:first-child]:h-[130px] [&>button:first-child]:w-[55px] [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-l-none [&>button:first-child]:rounded-r-2xl [&>button:first-child]:bg-[#F92F7B] [&>button:first-child]:text-white [&>button:first-child]:shadow-lg [&>button:first-child]:transition-all [&>button:first-child]:duration-300 [&>button:first-child]:hover:scale-105 [&>button:first-child]:hover:bg-[#e01b5f] [&>button:last-child]:hidden"
+                className="z-5 absolute left-0 top-1/2 -translate-y-1/2 [&>button:first-child]:flex [&>button:first-child]:h-[80px] [&>button:first-child]:w-[40px] [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-l-none [&>button:first-child]:rounded-r-2xl [&>button:first-child]:bg-[#F92F7B] [&>button:first-child]:text-white [&>button:first-child]:shadow-lg [&>button:first-child]:transition-all [&>button:first-child]:duration-300 [&>button:first-child]:hover:scale-105 [&>button:first-child]:hover:bg-[#e01b5f] [&>button:first-child]:active:scale-95 sm:[&>button:first-child]:h-[130px] sm:[&>button:first-child]:w-[55px] [&>button:last-child]:hidden"
                 nextLabel={nextLabel}
                 previousLabel={previousLabel}
               />
 
               {/* Right Button */}
               <CarouselButtons
-                className="z-5 absolute right-0 top-1/2 -translate-y-1/2 [&>button:first-child]:hidden [&>button:last-child]:flex [&>button:last-child]:h-[130px] [&>button:last-child]:w-[55px] [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-l-2xl [&>button:last-child]:rounded-r-none [&>button:last-child]:bg-[#F92F7B] [&>button:last-child]:text-white [&>button:last-child]:shadow-lg [&>button:last-child]:transition-all [&>button:last-child]:duration-300 [&>button:last-child]:hover:scale-105 [&>button:last-child]:hover:bg-[#e01b5f]"
+                className="z-5 absolute right-0 top-1/2 -translate-y-1/2 [&>button:first-child]:hidden [&>button:last-child]:flex [&>button:last-child]:h-[80px] [&>button:last-child]:w-[40px] [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-l-2xl [&>button:last-child]:rounded-r-none [&>button:last-child]:bg-[#F92F7B] [&>button:last-child]:text-white [&>button:last-child]:shadow-lg [&>button:last-child]:transition-all [&>button:last-child]:duration-300 [&>button:last-child]:hover:scale-105 [&>button:last-child]:hover:bg-[#e01b5f] [&>button:last-child]:active:scale-95 sm:[&>button:last-child]:h-[130px] sm:[&>button:last-child]:w-[55px]"
                 nextLabel={nextLabel}
                 previousLabel={previousLabel}
               />
