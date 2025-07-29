@@ -4,7 +4,20 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { ProductShowcase } from '~/components/product-showcase';
 
 import Addons from '../layout/addons';
-import { BaseProductDetailProduct } from '../layout/product-detail-layout';
+interface BaseProductDetailProduct {
+  id: string;
+  title: string;
+  href: string;
+  images: any;
+  price?: any;
+  subtitle?: string;
+  badge?: string;
+  rating?: any;
+  summary?: any;
+  description?: any;
+  accordions?: any;
+  inventoryStatus?: any;
+}
 
 // Shared Addons Section - now uses related products instead of separate call
 export function ProductAddonsSection({
