@@ -65,16 +65,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: pageTitle || product.name,
     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url
-      ? {
-          images: [
-            {
-              url,
-              alt,
-            },
-          ],
-        }
-      : null,
+    openGraph: {
+      type: 'website',
+      title: pageTitle || product.name,
+      description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+      siteName: 'Ryddo',
+      ...(url && {
+        images: [
+          {
+            url,
+            alt,
+            width: 1200,
+            height: 630,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: pageTitle || product.name,
+      description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+      ...(url && {
+        images: [url],
+      }),
+    },
   };
 }
 
@@ -189,41 +203,39 @@ export default async function Product({ params, searchParams }: Props) {
     return allImages;
   });
 
-  const streameableCtaLabel = Streamable.from(async () => {
+  // Consolidated CTA data - combines label and disabled state
+  const streamableCtaData = Streamable.from(async () => {
     const product = await streamableProduct;
 
     if (product.availabilityV2.status === 'Unavailable') {
-      return t('ProductDetails.Submit.unavailable');
+      return {
+        label: t('ProductDetails.Submit.unavailable'),
+        disabled: true,
+      };
     }
 
     if (product.availabilityV2.status === 'Preorder') {
-      return t('ProductDetails.Submit.preorder');
+      return {
+        label: t('ProductDetails.Submit.preorder'),
+        disabled: false,
+      };
     }
 
     if (!product.inventory.isInStock) {
-      return t('ProductDetails.Submit.outOfStock');
+      return {
+        label: t('ProductDetails.Submit.outOfStock'),
+        disabled: true,
+      };
     }
 
-    return t('ProductDetails.Submit.addToCart');
+    return {
+      label: t('ProductDetails.Submit.addToCart'),
+      disabled: false,
+    };
   });
 
-  const streameableCtaDisabled = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    if (product.availabilityV2.status === 'Unavailable') {
-      return true;
-    }
-
-    if (product.availabilityV2.status === 'Preorder') {
-      return false;
-    }
-
-    if (!product.inventory.isInStock) {
-      return true;
-    }
-
-    return false;
-  });
+  const streameableCtaLabel = Streamable.from(async () => (await streamableCtaData).label);
+  const streameableCtaDisabled = Streamable.from(async () => (await streamableCtaData).disabled);
 
   const streameableAccordions = Streamable.from(async () => {
     const product = await streamableProduct;

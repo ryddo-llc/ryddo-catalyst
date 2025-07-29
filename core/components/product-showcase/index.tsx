@@ -156,7 +156,7 @@ export function ProductShowcase({
               <CarouselContent className="h-full w-full">
                 {imagesData.slice(2).map((image, index) => (
                   <CarouselItem
-                    className="flex h-full w-full items-center justify-center"
+                    className="relative flex h-full w-full items-center justify-center"
                     key={index}
                   >
                     <Image
@@ -164,6 +164,7 @@ export function ProductShowcase({
                       className="h-auto max-h-[40vh] w-full object-contain sm:max-h-[60vh]"
                       height={600}
                       priority={index === 0}
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
                       src={image.src}
                       width={1000}
                     />
