@@ -16,8 +16,15 @@ interface TechSpecsSection {
   hasContent: boolean;
 }
 
+interface TechSpecData {
+  Power: ProductSpecification[];
+  Components: ProductSpecification[];
+  Safety: ProductSpecification[];
+  Other: ProductSpecification[];
+}
+
 interface TechSpecsProps {
-  powerSpecs?: Streamable<ProductSpecification[] | null>;
+  powerSpecs?: Streamable<TechSpecData | null>;
 }
 
 interface ExpandableContentProps {
@@ -114,24 +121,6 @@ const ExpandableContent = ({ isExpanded, children }: ExpandableContentProps) => 
 };
 
 const TechSpecs = ({ powerSpecs }: TechSpecsProps) => {
-  // Enhancement mapping for adding contextual information inline
-  const SPEC_ENHANCEMENTS: Record<string, (value: string) => string> = {
-    Range: (value: string) => `${value} (Varies by user and condition)`,
-    'Max Speed': (value: string) => `${value} under optimal conditions`,
-    Speed: (value: string) => `${value} under optimal conditions`,
-    'Motor Power': (value: string) => `${value} peak output`,
-    Power: (value: string) => `${value} peak output`,
-    'Battery Capacity': (value: string) => `${value} lithium-ion`,
-    'Charging Time': (value: string) => `${value} with standard charger`,
-  };
-
-  // Helper function to get enhanced value
-  const getEnhancedValue = (name: string, value: string): string => {
-    const enhancer = SPEC_ENHANCEMENTS[name];
-
-    return enhancer ? enhancer(value) : value;
-  };
-
   const streamablePowerSpecs = powerSpecs;
   const [expandedSections, setExpandedSections] = useState({
     power: true,
@@ -147,18 +136,17 @@ const TechSpecs = ({ powerSpecs }: TechSpecsProps) => {
     }));
   };
 
-  const allSections: TechSpecsSection[] = [
-    { key: 'power', title: 'Power', hasContent: true },
-    { key: 'components', title: 'Components', hasContent: false },
-    { key: 'safety', title: 'Safety / Security', hasContent: false },
-    { key: 'other', title: 'Other Specs', hasContent: false },
+  const getSections = (specs: TechSpecData | null | undefined): TechSpecsSection[] => [
+    { key: 'power', title: 'Power', hasContent: (specs?.Power.length ?? 0) > 0 },
+    { key: 'components', title: 'Components', hasContent: (specs?.Components.length ?? 0) > 0 },
+    { key: 'safety', title: 'Safety / Security', hasContent: (specs?.Safety.length ?? 0) > 0 },
+    { key: 'other', title: 'Other Specs', hasContent: (specs?.Other.length ?? 0) > 0 },
   ];
 
   return (
     <Stream fallback={<TechSpecsSkeleton />} value={streamablePowerSpecs}>
-      {(finalPowerSpecs) => {
-        // Use default data if finalPowerSpecs is null
-        const specsToRender = finalPowerSpecs;
+      {(finalSpecs) => {
+        const allSections = getSections(finalSpecs);
 
         return (
           <div className="max-w-8xl mx-auto bg-[#F5F5F5] p-4 sm:p-6 md:p-10 lg:p-16">
@@ -209,29 +197,53 @@ const TechSpecs = ({ powerSpecs }: TechSpecsProps) => {
 
                   <ExpandableContent isExpanded={expandedSections[section.key]}>
                     <div className="pb-6 md:pb-8">
-                      {section.key === 'power' ? (
-                        /* Power Grid */
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:gap-8 lg:grid-cols-4">
-                          {specsToRender?.map((spec, specIndex) => (
-                            <div className="space-y-3 md:space-y-4" key={specIndex}>
-                              <h3 className="text-sm font-bold text-black md:text-base">
-                                {spec.name}
-                              </h3>
-                              <p className="text-base leading-relaxed text-gray-600 md:text-lg">
-                                {getEnhancedValue(spec.name, spec.value)}
+                      {(() => {
+                        if (!section.hasContent || !finalSpecs) {
+                          return (
+                            <div className="rounded-lg p-4 md:p-6">
+                              <p className="text-base text-gray-600 md:text-lg">
+                                No {section.title.toLowerCase()} specifications available.
                               </p>
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        /* Other sections placeholder content */
-                        <div className="rounded-lg p-4 md:p-6">
-                          <p className="text-base text-gray-600 md:text-lg">
-                            Content for {section.title} would go here. This is where you would add
-                            the specific details for each section.
-                          </p>
-                        </div>
-                      )}
+                          );
+                        }
+
+                        const getSpecsForSection = (key: SectionKey): ProductSpecification[] => {
+                          switch (key) {
+                            case 'power':
+                              return finalSpecs.Power;
+
+                            case 'components':
+                              return finalSpecs.Components;
+
+                            case 'safety':
+                              return finalSpecs.Safety;
+
+                            case 'other':
+                              return finalSpecs.Other;
+
+                            default:
+                              return [];
+                          }
+                        };
+
+                        const specs = getSpecsForSection(section.key);
+
+                        return (
+                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:gap-8 lg:grid-cols-4">
+                            {specs.map((spec, specIndex) => (
+                              <div className="space-y-3 md:space-y-4" key={specIndex}>
+                                <h3 className="text-sm font-bold text-black md:text-base">
+                                  {spec.name}
+                                </h3>
+                                <p className="text-base leading-relaxed text-gray-600 md:text-lg">
+                                  {spec.value}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </ExpandableContent>
                 </div>

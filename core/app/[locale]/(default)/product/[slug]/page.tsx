@@ -383,10 +383,33 @@ export default async function Product({ params, searchParams }: Props) {
     }));
   });
 
-  const streamableTechSpecData = Streamable.from(async () => {
-    const bikeData = await streamableBikeData;
+  // Direct custom field filtering for TechSpecs (eliminates dependency chain)
+  const streamableTechSpecFields = Streamable.from(async () => {
+    const product = await streamableProduct;
+    const customFields = removeEdgesAndNodes(product.customFields);
 
-    return bikeData?.bikeSpecs || null;
+    const fieldNames = {
+      Power: ['Battery', 'Charge Time', 'Class', 'Motor/s', 'Speed-Tech', 'Pedal Assist'],
+      Components: ['Brakes', 'Class', 'Frame Material', 'Speed', 'Tires', 'Throttle'],
+      Safety: [
+        'Brake Lights',
+        'Class',
+        'Headlights',
+        'Mobile App',
+        'Speed',
+        'Horn',
+        'Tail Light',
+        'Turn Signals',
+      ],
+      Other: ['Color', 'Class', 'Max Load', 'Model', 'Speed', 'Display', 'Seat Height'],
+    };
+
+    return {
+      Power: customFields.filter((field) => fieldNames.Power.includes(field.name)),
+      Components: customFields.filter((field) => fieldNames.Components.includes(field.name)),
+      Safety: customFields.filter((field) => fieldNames.Safety.includes(field.name)),
+      Other: customFields.filter((field) => fieldNames.Other.includes(field.name)),
+    };
   });
 
   const baseProductData = {
@@ -474,7 +497,7 @@ export default async function Product({ params, searchParams }: Props) {
             images={streamableImages}
             productName={baseProduct.name}
           />
-          <TechSpecs powerSpecs={streamableTechSpecData} />
+          <TechSpecs powerSpecs={streamableTechSpecFields} />
         </>
       )}
 

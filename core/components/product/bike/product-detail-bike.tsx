@@ -5,7 +5,6 @@ import { CompareDrawer, CompareDrawerProvider } from '@/vibes/soul/primitives/co
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { Image } from '~/components/image';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
@@ -29,13 +28,17 @@ interface BaseProductDetailProduct {
   title: string;
   href: string;
   images: Streamable<Array<{ src: string; alt: string }>>;
-  price?: Streamable<{
-    type?: 'sale' | 'range';
-    currentValue?: string;
-    previousValue?: string;
-    minValue?: string;
-    maxValue?: string;
-  } | string | null>;
+  price?: Streamable<
+    | {
+        type?: 'sale' | 'range';
+        currentValue?: string;
+        previousValue?: string;
+        minValue?: string;
+        maxValue?: string;
+      }
+    | string
+    | null
+  >;
   subtitle?: string;
   badge?: string;
   rating?: Streamable<number | null>;
@@ -228,13 +231,7 @@ export function ProductDetailBike<F extends Field>({
                         {/* Bottom Section - Specs Grid */}
                         <div className="mt-auto">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
-                            {(specs) =>
-                              specs && (
-                                <SectionLayout>
-                                  <BikeSpecsIcons specs={specs} />
-                                </SectionLayout>
-                              )
-                            }
+                            {(specs) => specs && <BikeSpecsIcons specs={specs} />}
                           </Stream>
                         </div>
                       </div>
@@ -294,9 +291,9 @@ export function ProductDetailBike<F extends Field>({
                                       ) {
                                         displayPrice = price.currentValue;
                                       } else if (
-                                        price && 
+                                        price &&
                                         typeof price === 'object' &&
-                                        'type' in price && 
+                                        'type' in price &&
                                         'minValue' in price &&
                                         'maxValue' in price &&
                                         price.minValue &&
@@ -341,7 +338,6 @@ export function ProductDetailBike<F extends Field>({
               }
             </Stream>
           </section>
-
 
           <CompareDrawer href="/compare" submitLabel={compareLabel} />
         </CompareDrawerProvider>

@@ -88,7 +88,7 @@ export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
       className="flex flex-wrap justify-center gap-4 space-x-8"
       role="region"
     >
-      {specs.map((spec) => {
+      {specs.slice(0, 6).map((spec) => {
         const { iconSrc, alt } = getSpecIcon(spec.name);
 
         return (
