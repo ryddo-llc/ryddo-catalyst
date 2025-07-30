@@ -5,7 +5,6 @@ import { CompareDrawer, CompareDrawerProvider } from '@/vibes/soul/primitives/co
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { Image } from '~/components/image';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
