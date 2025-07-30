@@ -16,6 +16,7 @@ import {
 } from '~/components/product/layout/product-detail-router';
 import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
+import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -359,7 +360,6 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
-
   // Create streamable compare products
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParamsData = await searchParams;
@@ -381,6 +381,12 @@ export default async function Product({ params, searchParams }: Props) {
         : undefined,
       href: product.path,
     }));
+  });
+
+  const streamableTechSpecData = Streamable.from(async () => {
+    const bikeData = await streamableBikeData;
+
+    return bikeData?.bikeSpecs || null;
   });
 
   const baseProductData = {
@@ -458,7 +464,7 @@ export default async function Product({ params, searchParams }: Props) {
         {renderProductDetail()}
       </ProductAnalyticsProvider>
 
-      {/* Enhanced sections for vehicles only */}
+      {/* Enhanced sections for bikes and scooters only */}
       {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
         <>
           <Addons addons={streamablePopularAccessories} name={baseProduct.name} />
@@ -468,6 +474,7 @@ export default async function Product({ params, searchParams }: Props) {
             images={streamableImages}
             productName={baseProduct.name}
           />
+          <TechSpecs powerSpecs={streamableTechSpecData} />
         </>
       )}
 
