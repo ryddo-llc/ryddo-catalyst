@@ -398,7 +398,7 @@ export default async function Product({ params, searchParams }: Props) {
         'Mobile App',
         'Speed',
         'Horn',
-        ' Tail Light',
+        'Tail Light',
         'Turn Signals',
       ],
       Other: ['Color', 'Class', 'Max Load', 'Model', 'Speed', 'Display', 'Seat Height'],
