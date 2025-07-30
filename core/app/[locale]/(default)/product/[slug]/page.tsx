@@ -383,10 +383,23 @@ export default async function Product({ params, searchParams }: Props) {
     }));
   });
 
-  const streamableTechSpecData = Streamable.from(async () => {
-    const bikeData = await streamableBikeData;
+  // Direct custom field filtering for TechSpecs (eliminates dependency chain)
+  const streamableTechSpecFields = Streamable.from(async () => {
+    const product = await streamableProduct;
+    const customFields = removeEdgesAndNodes(product.customFields);
 
-    return bikeData?.bikeSpecs || null;
+    return customFields.filter((field) =>
+      [
+        'Range',
+        'Speed', 
+        'Battery',
+        'Charge Time',
+        'Class',
+        'Motor/s',
+        'Speed-Tech',
+        'Pedal Assist',
+      ].includes(field.name),
+    );
   });
 
   const baseProductData = {
@@ -474,7 +487,7 @@ export default async function Product({ params, searchParams }: Props) {
             images={streamableImages}
             productName={baseProduct.name}
           />
-          <TechSpecs powerSpecs={streamableTechSpecData} />
+          <TechSpecs powerSpecs={streamableTechSpecFields} />
         </>
       )}
 
