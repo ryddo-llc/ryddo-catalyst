@@ -14,7 +14,7 @@ import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gal
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 
-import { ProductAddonsSection, ProductShowcaseSection } from '../shared/product-sections';
+import { ProductAddonsSection, ProductShowcaseSection, PerformanceComparisonSection } from '../shared/product-sections';
 
 export interface BaseProductDetailProduct {
   id: string;
@@ -222,6 +222,9 @@ export function ProductDetailLayout<F extends Field, P extends BaseProductDetail
 
         {/* Product Showcase section */}
         <ProductShowcaseSection product={streamableProduct} />
+
+        {/* Performance Comparison section */}
+        <PerformanceComparisonSection product={streamableProduct} />
       </div>
     </SectionLayout>
   );
@@ -344,6 +347,48 @@ export function ProductAccordionsSkeleton() {
       <div className="flex items-center justify-between">
         <Skeleton.Box className="h-2 w-32 rounded-sm" />
         <Skeleton.Box className="h-3 w-3 rounded-full" />
+      </div>
+    </Skeleton.Root>
+  );
+}
+
+export function PerformanceComparisonSkeleton() {
+  return (
+    <Skeleton.Root className="w-full min-h-[100vh] bg-gray-50 relative overflow-hidden">
+      {/* Background skeleton */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <Skeleton.Box className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 h-full w-48" />
+      </div>
+
+      {/* Title Section skeleton */}
+      <div className="relative pt-16 px-8">
+        <div className="text-center">
+          <Skeleton.Box className="h-12 sm:h-14 md:h-16 lg:h-20 w-96 mx-auto mb-4" />
+          <Skeleton.Box className="h-6 sm:h-7 w-80 mx-auto" />
+        </div>
+      </div>
+
+      {/* Main content skeleton */}
+      <div className="relative min-h-[100vh] overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="relative w-[600px] h-[600px]">
+            {/* Performance metrics skeleton */}
+            <div className="space-y-6">
+              {Array.from({ length: 7 }).map((_, index) => (
+                <div key={index} className="mb-6">
+                  <Skeleton.Box className="h-6 w-48 mb-2" />
+                  <Skeleton.Box className="h-2 w-80 mb-1" />
+                  <Skeleton.Box className="h-4 w-64" />
+                </div>
+              ))}
+            </div>
+            
+            {/* Bike image skeleton */}
+            <div className="absolute inset-0 pointer-events-none">
+              <Skeleton.Box className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-72" />
+            </div>
+          </div>
+        </div>
       </div>
     </Skeleton.Root>
   );

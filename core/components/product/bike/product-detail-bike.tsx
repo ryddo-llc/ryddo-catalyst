@@ -20,7 +20,7 @@ import {
   ProductSummarySkeleton,
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
-import { ProductAddonsSection, ProductShowcaseSection } from '../shared/product-sections';
+import { ProductAddonsSection, ProductShowcaseSection, PerformanceComparisonSection } from '../shared/product-sections';
 import { AuthorizedDealerCard, OffersCard } from '../shared/product-side-cards';
 
 import { BikeAddToCartForm } from './bike-add-to-cart-form';
@@ -323,6 +323,11 @@ export function ProductDetailBike<F extends Field>({
           {/* Shared Product Showcase section */}
           <ProductShowcaseSection
             className="bg-white px-4 py-8 md:px-8"
+            product={streamableProduct}
+          />
+
+          {/* Performance Comparison section */}
+          <PerformanceComparisonSection
             product={streamableProduct}
           />
 

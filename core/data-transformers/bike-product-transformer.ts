@@ -51,6 +51,13 @@ export interface BikeProductData {
     isInStock: boolean;
     status: 'Available' | 'Unavailable' | 'Preorder';
   };
+  wheelSpecs?: {
+    centerX: number;
+    centerY: number;
+    radius: number;
+    lineSpacing: number;
+    barWidth: number;
+  };
 }
 
 export function bikeProductTransformer(product: ProductWithOptions): BikeProductData {
@@ -147,5 +154,12 @@ export function bikeProductTransformer(product: ProductWithOptions): BikeProduct
     bikeSpecs: bikeSpecs.length > 0 ? bikeSpecs : undefined,
     colors: colors.length > 0 ? colors : undefined,
     inventoryStatus,
+    wheelSpecs: {
+      centerX: 1650,
+      centerY: 825,
+      radius: 150,
+      lineSpacing: 48,
+      barWidth: 350,
+    },
   };
 }
