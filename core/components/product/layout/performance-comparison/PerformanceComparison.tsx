@@ -49,8 +49,9 @@ export function PerformanceComparison({
         </div>
       </div>
 
+      {/* Desktop Layout (xl and above) */}
       <div
-        className="relative flex flex-col justify-end"
+        className="relative hidden xl:flex flex-col justify-end"
         style={{
           height: measuredHeight ? `${measuredHeight}px` : 'auto',
         }}
@@ -113,6 +114,63 @@ export function PerformanceComparison({
               lineSpacing={performanceConfig.performanceMetrics.lineSpacing}
               barWidth={performanceConfig.performanceMetrics.barWidth}
               topOffset={performanceConfig.performanceMetrics.topOffset}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile/Tablet Layout (lg and below) */}
+      <div className="xl:hidden">
+        {/* Centered Image Section */}
+        <div className="relative flex justify-center items-center pb-8">
+          <div className="relative">
+            <Image
+              src={productImage.src || performanceConfig.image.src}
+              alt={productImage.alt || performanceConfig.image.alt}
+              width={performanceConfig.image.width}
+              height={performanceConfig.image.height}
+              priority
+              className="object-cover w-auto h-auto relative z-10 max-w-full"
+              style={{
+                maxWidth: '90vw',
+                maxHeight: '60vh',
+              }}
+            />
+            
+            {/* Pulsing rings (hidden on mobile as configured) */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                left: '50%',
+                top: '50%',
+                transform: `translate(-50%, -50%) translate(${performanceConfig.wheel.centerX - performanceConfig.image.width / 2}px, ${performanceConfig.wheel.centerY - performanceConfig.image.height / 2}px)`,
+              }}
+            >
+              <PulseRings
+                baseSize={performanceConfig.wheel.radius * 2}
+                ringSpacing={performanceConfig.wheel.ringSpacing}
+                pulseSpeed={performanceConfig.wheel.pulseSpeed}
+                baseColor={performanceConfig.wheel.baseColor}
+                edgeColor={performanceConfig.wheel.edgeColor}
+                opacity={performanceConfig.wheel.opacity}
+                disabledOnMobile={performanceConfig.disabledOnMobile}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Full-width Metrics Section */}
+        <div className="px-4 md:px-8 pb-6">
+          <div className="w-full max-w-4xl mx-auto">
+            <PerformanceMetrics
+              metrics={metrics}
+              className="w-full"
+              wheelCenterX={0}
+              wheelCenterY={0}
+              wheelRadius={0} // No curves on mobile
+              lineSpacing={performanceConfig.performanceMetrics.lineSpacing}
+              barWidth={performanceConfig.performanceMetrics.barWidth}
+              topOffset={0}
             />
           </div>
         </div>

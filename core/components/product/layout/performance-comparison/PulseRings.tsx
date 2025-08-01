@@ -39,7 +39,7 @@ export function PulseRings({
 
   return (
     <div
-      className={`pointer-events-none ${disabledOnMobile ? 'hidden md:block' : ''}`}
+      className={`pointer-events-none ${disabledOnMobile ? 'hidden xl:block' : ''}`}
       style={{
         position: 'relative',
         width: baseSize + ringSpacing * 3,
