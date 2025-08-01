@@ -2,125 +2,101 @@
 import React from 'react';
 
 interface PulseRingsProps {
-  x: number;
-  y: number;
   baseSize: number;
   ringSpacing: number;
   pulseSpeed: number;
   baseColor: string;
-  fadeColor: string;
+  edgeColor: string;
   opacity: number;
   disabledOnMobile?: boolean;
 }
 
 export function PulseRings({
-  x,
-  y,
   baseSize,
   ringSpacing,
   pulseSpeed,
   baseColor,
-  fadeColor,
+  edgeColor,
   opacity,
   disabledOnMobile = true,
 }: PulseRingsProps) {
-  const uniqueId = React.useId();
-  const radius = baseSize / 2;
+  const makeRing = (multiplier: number) => ({
+    position: 'absolute' as const,
+    top: '50%',
+    left: '50%',
+    width: baseSize + ringSpacing * multiplier,
+    height: baseSize + ringSpacing * multiplier,
+    borderRadius: '50%',
+    background: `radial-gradient(circle, ${baseColor} 60%, ${edgeColor} 100%)`,
+    opacity,
+    transform: 'translate(-50%, -50%) scale(0.95)',
+    animation: `apulser-fade-${multiplier} ${pulseSpeed}ms ease-in-out infinite`,
+    WebkitMaskImage: `radial-gradient(circle, black calc(100% - 35px), rgba(0,0,0,0.8) calc(100% - 25px), transparent calc(100% - 15px))`,
+    WebkitMaskRepeat: 'no-repeat',
+    WebkitMaskPosition: 'center',
+    WebkitMaskComposite: 'destination-out',
+  });
 
   return (
     <div
       className={`pointer-events-none ${disabledOnMobile ? 'hidden md:block' : ''}`}
       style={{
         position: 'relative',
-        width: baseSize,
-        height: baseSize,
+        width: baseSize + ringSpacing * 3,
+        height: baseSize + ringSpacing * 3,
       }}
     >
-      {/* Static center circle - same size as wheel */}
+      {/* Solid center circle */}
       <div
         style={{
           position: 'absolute',
           top: '50%',
           left: '50%',
-          width: radius * 2, // Same as wheel diameter
-          height: radius * 2, // Same as wheel diameter
+          width: baseSize,
+          height: baseSize,
           borderRadius: '50%',
           backgroundColor: baseColor,
-          opacity: opacity * 0.3,
+          opacity: opacity * 0.8,
           transform: 'translate(-50%, -50%)',
         }}
       />
 
-      {/* Pulsing rings - all same width, extending outward */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width: radius * 2 + ringSpacing,
-          height: radius * 2 + ringSpacing,
-          borderRadius: '50%',
-          border: `4px solid ${baseColor}`,
-          opacity: opacity * 0.6,
-          animation: `pulse-ring-1 ${pulseSpeed}ms ease-in-out infinite`,
-        }}
-      />
-
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width: radius * 2 + ringSpacing * 2,
-          height: radius * 2 + ringSpacing * 2,
-          borderRadius: '50%',
-          border: `4px solid ${baseColor}`,
-          opacity: opacity * 0.4,
-          animation: `pulse-ring-2 ${pulseSpeed}ms ease-in-out infinite`,
-          animationDelay: `${pulseSpeed * 0.3}ms`,
-        }}
-      />
-
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width: radius * 2 + ringSpacing * 3,
-          height: radius * 2 + ringSpacing * 3,
-          borderRadius: '50%',
-          border: `4px solid ${baseColor}`,
-          opacity: opacity * 0.2,
-          animation: `pulse-ring-3 ${pulseSpeed}ms ease-in-out infinite`,
-          animationDelay: `${pulseSpeed * 0.6}ms`,
-        }}
-      />
+      {/* Three pulsing rings with cascading fade levels */}
+      <div style={makeRing(1)} />
+      <div style={makeRing(2)} />
+      <div style={makeRing(3)} />
 
       <style jsx>{`
-        @keyframes pulse-ring-1 {
+        @keyframes apulser-fade-1 {
           0%, 100% {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: ${opacity * 0.6};
+            transform: translate(-50%, -50%) scale(0.95);
+            opacity: 1;
           }
           50% {
-            transform: translate(-50%, -50%) scale(1.1);
-            opacity: ${opacity * 0.3};
+            transform: translate(-50%, -50%) scale(1.08);
+            opacity: 0.7;
           }
         }
-
-        @keyframes pulse-ring-2 {
+        
+        @keyframes apulser-fade-2 {
           0%, 100% {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: ${opacity * 0.4};
+            transform: translate(-50%, -50%) scale(0.95);
+            opacity: 1;
           }
           50% {
-            transform: translate(-50%, -50%) scale(1.1);
-            opacity: ${opacity * 0.2};
+            transform: translate(-50%, -50%) scale(1.08);
+            opacity: 0.5;
           }
         }
-
-        @keyframes pulse-ring-3 {
+        
+        @keyframes apulser-fade-3 {
           0%, 100% {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: ${opacity * 0.2};
+            transform: translate(-50%, -50%) scale(0.95);
+            opacity: 1;
           }
           50% {
-            transform: translate(-50%, -50%) scale(1.1);
-            opacity: ${opacity * 0.1};
+            transform: translate(-50%, -50%) scale(1.08);
+            opacity: 0.2;
           }
         }
       `}</style>

@@ -8,14 +8,13 @@ export interface WheelConfig {
   
   // Ring configuration
   ringSpacing: number;
-  ringCount: number;
   
   // Animation settings
   pulseSpeed: number;
   
   // Visual settings
   baseColor: string;
-  fadeColor: string;
+  edgeColor: string;
   opacity: number;
 }
 
@@ -63,12 +62,11 @@ export const DEFAULT_WHEEL_CONFIG: WheelConfig = {
   centerX: 750,
   centerY: 180,
   radius: 150,
-  ringSpacing: 25,
-  ringCount: 3,
-  pulseSpeed: 2000,
-  baseColor: '#FFD600',
-  fadeColor: '#FFF59D',
-  opacity: 0.7,
+  ringSpacing: 35,
+  pulseSpeed: 1750,
+  baseColor: 'rgba(237, 216, 98, 0.1)',
+  edgeColor: 'rgba(200, 180, 50, 0.5)',
+  opacity: 1,
 };
 
 export const DEFAULT_IMAGE_CONFIG: ImageConfig = {
@@ -96,7 +94,7 @@ export const DEFAULT_PERFORMANCE_CONFIG: PerformanceComparisonConfig = {
       barWidth: 350,     // Progress bar width
       containerWidth: 800, // Container width for metrics
       containerHeight: 1000, // Container height for metrics
-      topOffset: 0,     // No top offset - align with wheel center
+      topOffset: 0,     // Offset to align with wheel center
     },
   disabledOnMobile: true,
 };
@@ -108,7 +106,7 @@ export const BIKE_CONFIGS = {
       ...DEFAULT_WHEEL_CONFIG,
       centerX: 1362,
       centerY: 824,
-      radius: 235,   // Wheel radius
+      radius: 235,
     },
     image: {
       ...DEFAULT_IMAGE_CONFIG,
@@ -117,18 +115,18 @@ export const BIKE_CONFIGS = {
       maxWidth: 1800,
       maxHeight: 1000,
       containerScale: 0.9,
-      offsetX: -350,  // Move bike image left within container
-      offsetY: 0,     // No vertical offset
+      offsetX: -350,  // Move bike image within container
+      offsetY: 0,
     },
     performanceMetrics: {
       trackingMultiplier: 0.3,
       zIndex: 3,
-      gapFromWheel: 20,  // 20 pixels from wheel edge to metrics center
-      lineSpacing: 48,   // Space between metrics
-      barWidth: 350,     // Progress bar width
-      containerWidth: 800, // Container width for metrics
-      containerHeight: 1000, // Container height for metrics
-      topOffset: 0,     // No top offset - align with wheel center
+      gapFromWheel: 20,
+      lineSpacing: 48,
+      barWidth: 350,
+      containerWidth: 800,
+      containerHeight: 1000,
+      topOffset: 0,
     },
     disabledOnMobile: true,
   },
@@ -146,22 +144,21 @@ export const BIKE_CONFIGS = {
       maxWidth: 1800,
       maxHeight: 1000,
       containerScale: 0.8,
-      offsetX: 50,   // Custom offset for Eagle Pro
-      offsetY: -20,  // Custom offset for Eagle Pro
+      offsetX: 50,
+      offsetY: -20,
     },
     performanceMetrics: {
       trackingMultiplier: 0.3,
       zIndex: 3,
       gapFromWheel: 20,
-      lineSpacing: 48,   // Space between metrics
-      barWidth: 350,     // Progress bar width
-      containerWidth: 800, // Container width for metrics
-      containerHeight: 1000, // Container height for metrics
-      topOffset: 0,     // No top offset - align with wheel center
+      lineSpacing: 48,
+      barWidth: 350,
+      containerWidth: 800,
+      containerHeight: 1000,
+      topOffset: 0,
     },
     disabledOnMobile: true,
   },
-  // Add more bike configurations as needed
 } as const;
 
 // Helper function to get configuration for a specific bike model
@@ -179,10 +176,9 @@ export function getSuper73RXWheelConfig() {
     centerY: 180,
     radius: 150,
     ringSpacing: 25,
-    ringCount: 3,
     pulseSpeed: 2000,
     baseColor: '#FFD600',
-    fadeColor: '#FFF59D',
+    edgeColor: 'rgba(200, 180, 50, 0.5)',
     opacity: 0.7,
   };
 }

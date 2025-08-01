@@ -86,13 +86,11 @@ export function PerformanceComparison({
             }}
           >
             <PulseRings
-              x={0}
-              y={0}
               baseSize={performanceConfig.wheel.radius * 2}
               ringSpacing={performanceConfig.wheel.ringSpacing}
               pulseSpeed={performanceConfig.wheel.pulseSpeed}
               baseColor={performanceConfig.wheel.baseColor}
-              fadeColor={performanceConfig.wheel.fadeColor}
+              edgeColor={performanceConfig.wheel.edgeColor}
               opacity={performanceConfig.wheel.opacity}
               disabledOnMobile={performanceConfig.disabledOnMobile}
             />
