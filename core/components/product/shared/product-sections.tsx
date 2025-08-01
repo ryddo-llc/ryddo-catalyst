@@ -124,7 +124,7 @@ export function PerformanceComparisonSection({
                     },
                     {
                       category: 'brakes',
-                      label: 'Breaking Power',
+                      label: 'Braking Power',
                       value: '90%',
                       percentage: 90,
                       sublabel: 'Quad Piston Hydraulic',
