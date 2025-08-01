@@ -140,6 +140,7 @@ export function PerformanceComparisonSection({
                       category: 'comfort',
                       label: 'Comfort',
                       value: '85%',
+                      percentage: 85,
                       sublabel: 'Suspension + Position + Seat',
                     },
                     {
