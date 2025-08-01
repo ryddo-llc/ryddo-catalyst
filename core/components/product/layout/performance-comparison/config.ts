@@ -16,6 +16,10 @@ export interface WheelConfig {
   baseColor: string;
   edgeColor: string;
   opacity: number;
+  
+  // Mobile-specific adjustments
+  mobileOffsetX?: number;  // Additional X offset for mobile positioning
+  mobileOffsetY?: number;  // Additional Y offset for mobile positioning
 }
 
 export interface ImageConfig {
@@ -67,6 +71,8 @@ export const DEFAULT_WHEEL_CONFIG: WheelConfig = {
   baseColor: 'rgba(237, 216, 98, 0.1)',
   edgeColor: 'rgba(200, 180, 50, 0.5)',
   opacity: 1,
+  mobileOffsetX: 0,
+  mobileOffsetY: 0,
 };
 
 export const DEFAULT_IMAGE_CONFIG: ImageConfig = {
@@ -107,6 +113,8 @@ export const BIKE_CONFIGS = {
       centerX: 1362,
       centerY: 824,
       radius: 235,
+      mobileOffsetX: 145,
+      mobileOffsetY: 0,
     },
     image: {
       ...DEFAULT_IMAGE_CONFIG,
@@ -115,7 +123,7 @@ export const BIKE_CONFIGS = {
       maxWidth: 1800,
       maxHeight: 1000,
       containerScale: 0.9,
-      offsetX: -350,  // Move bike image within container
+      offsetX: -350,
       offsetY: 0,
     },
     performanceMetrics: {

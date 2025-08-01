@@ -121,7 +121,7 @@ export function PerformanceComparison({
 
       {/* Mobile/Tablet Layout (lg and below) */}
       <div className="xl:hidden">
-        {/* Edge-to-edge Image Section */}
+        {/* Edge-to-edge Image Section with Rings */}
         <div className="relative flex justify-center items-center pb-8 -mx-4 md:-mx-8">
           <div className="relative w-full">
             <Image
@@ -154,6 +154,61 @@ export function PerformanceComparison({
                 opacity={performanceConfig.wheel.opacity}
                 disabledOnMobile={performanceConfig.disabledOnMobile}
               />
+            </div>
+
+            {/* Static rings for mobile - positioned relative to image */}
+            <div
+              className="absolute pointer-events-none xl:hidden"
+              style={{
+                left: `${((performanceConfig.wheel.centerX + (performanceConfig.wheel.mobileOffsetX || 0)) / performanceConfig.image.width) * 100}%`,
+                top: `${((performanceConfig.wheel.centerY + (performanceConfig.wheel.mobileOffsetY || 0)) / performanceConfig.image.height) * 100}%`,
+                transform: 'translate(-50%, -50%) scale(0.3)',
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  width: performanceConfig.wheel.radius * 2 + performanceConfig.wheel.ringSpacing * 3,
+                  height: performanceConfig.wheel.radius * 2 + performanceConfig.wheel.ringSpacing * 3,
+                }}
+              >
+                {/* Static center circle */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    width: performanceConfig.wheel.radius * 2,
+                    height: performanceConfig.wheel.radius * 2,
+                    borderRadius: '50%',
+                    backgroundColor: performanceConfig.wheel.baseColor,
+                    opacity: performanceConfig.wheel.opacity * 0.8,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                />
+
+                {/* Static rings (no animation) */}
+                {[1, 2, 3].map((multiplier) => (
+                  <div
+                    key={multiplier}
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      width: performanceConfig.wheel.radius * 2 + performanceConfig.wheel.ringSpacing * multiplier,
+                      height: performanceConfig.wheel.radius * 2 + performanceConfig.wheel.ringSpacing * multiplier,
+                      borderRadius: '50%',
+                      background: `radial-gradient(circle, ${performanceConfig.wheel.baseColor} 60%, ${performanceConfig.wheel.edgeColor} 100%)`,
+                      opacity: performanceConfig.wheel.opacity,
+                      transform: 'translate(-50%, -50%) scale(0.95)',
+                      WebkitMaskImage: `radial-gradient(circle, black calc(100% - 35px), rgba(0,0,0,0.8) calc(100% - 25px), transparent calc(100% - 15px))`,
+                      WebkitMaskRepeat: 'no-repeat',
+                      WebkitMaskPosition: 'center',
+                      WebkitMaskComposite: 'destination-out',
+                    }}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
