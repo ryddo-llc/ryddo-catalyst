@@ -121,7 +121,7 @@ export const BIKE_CONFIGS = {
     performanceMetrics: {
       trackingMultiplier: 0.3,
       zIndex: 3,
-      gapFromWheel: 20,
+      gapFromWheel: 25,
       lineSpacing: 48,
       barWidth: 350,
       containerWidth: 800,
