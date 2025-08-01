@@ -121,18 +121,17 @@ export function PerformanceComparison({
 
       {/* Mobile/Tablet Layout (lg and below) */}
       <div className="xl:hidden">
-        {/* Centered Image Section */}
-        <div className="relative flex justify-center items-center pb-8">
-          <div className="relative">
+        {/* Edge-to-edge Image Section */}
+        <div className="relative flex justify-center items-center pb-8 -mx-4 md:-mx-8">
+          <div className="relative w-full">
             <Image
               src={productImage.src || performanceConfig.image.src}
               alt={productImage.alt || performanceConfig.image.alt}
               width={performanceConfig.image.width}
               height={performanceConfig.image.height}
               priority
-              className="object-cover w-auto h-auto relative z-10 max-w-full"
+              className="object-cover w-full h-auto relative z-10"
               style={{
-                maxWidth: '90vw',
                 maxHeight: '60vh',
               }}
             />
@@ -160,19 +159,17 @@ export function PerformanceComparison({
         </div>
 
         {/* Full-width Metrics Section */}
-        <div className="px-4 md:px-8 pb-6">
-          <div className="w-full max-w-4xl mx-auto">
-            <PerformanceMetrics
-              metrics={metrics}
-              className="w-full"
-              wheelCenterX={0}
-              wheelCenterY={0}
-              wheelRadius={0} // No curves on mobile
-              lineSpacing={performanceConfig.performanceMetrics.lineSpacing}
-              barWidth={performanceConfig.performanceMetrics.barWidth}
-              topOffset={0}
-            />
-          </div>
+        <div className="px-6 md:px-8 pb-6">
+          <PerformanceMetrics
+            metrics={metrics}
+            className="w-full"
+            wheelCenterX={0}
+            wheelCenterY={0}
+            wheelRadius={0} // No curves on mobile
+            lineSpacing={performanceConfig.performanceMetrics.lineSpacing}
+            barWidth={performanceConfig.performanceMetrics.barWidth}
+            topOffset={0}
+          />
         </div>
       </div>
     </div>
