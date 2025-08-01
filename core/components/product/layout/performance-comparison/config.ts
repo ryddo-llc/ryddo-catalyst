@@ -80,8 +80,8 @@ export const DEFAULT_IMAGE_CONFIG: ImageConfig = {
   maxHeight: 1000,
   containerTransform: 'translateX(calc(22vw - 625px))',
   containerScale: 0.9,
-  offsetX: 0,  // No horizontal offset by default
-  offsetY: 0,  // No vertical offset by default
+  offsetX: 0,
+  offsetY: 0,
   zIndex: 2,
 };
 
@@ -106,8 +106,8 @@ export const BIKE_CONFIGS = {
   'super73-rx': {
     wheel: {
       ...DEFAULT_WHEEL_CONFIG,
-      centerX: 662,  // Wheel center X within 600px container
-      centerY: 497,  // Wheel center Y within 600px container
+      centerX: 1362,
+      centerY: 824,
       radius: 235,   // Wheel radius
     },
     image: {
@@ -116,8 +116,8 @@ export const BIKE_CONFIGS = {
       alt: 'SUPER73 RX Performance',
       maxWidth: 1800,
       maxHeight: 1000,
-      containerScale: 1,
-      offsetX: 0,  // Move bike image left within container
+      containerScale: 0.9,
+      offsetX: -350,  // Move bike image left within container
       offsetY: 0,     // No vertical offset
     },
     performanceMetrics: {
