@@ -14,7 +14,7 @@ import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gal
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 
-import { ProductAddonsSection, ProductShowcaseSection, PerformanceComparisonSection } from '../shared/product-sections';
+import {  PerformanceComparisonSection, ProductAddonsSection, ProductShowcaseSection } from '../shared/product-sections';
 
 export interface BaseProductDetailProduct {
   id: string;
@@ -375,7 +375,7 @@ export function PerformanceComparisonSkeleton() {
             {/* Performance metrics skeleton */}
             <div className="space-y-6">
               {Array.from({ length: 7 }).map((_, index) => (
-                <div key={index} className="mb-6">
+                <div className="mb-6" key={index}>
                   <Skeleton.Box className="h-6 w-48 mb-2" />
                   <Skeleton.Box className="h-2 w-80 mb-1" />
                   <Skeleton.Box className="h-4 w-64" />

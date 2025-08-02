@@ -169,27 +169,21 @@ export const BIKE_CONFIGS = {
   },
 } as const;
 
+// Type guard to check if a string is a valid bike config key
+function isBikeConfigKey(key: string): key is keyof typeof BIKE_CONFIGS {
+  return key in BIKE_CONFIGS;
+}
+
 // Helper function to get configuration for a specific bike model
 export function getBikeConfig(modelSlug?: string): PerformanceComparisonConfig {
-  if (modelSlug && modelSlug in BIKE_CONFIGS) {
-    return BIKE_CONFIGS[modelSlug as keyof typeof BIKE_CONFIGS];
+  if (modelSlug && isBikeConfigKey(modelSlug)) {
+    return BIKE_CONFIGS[modelSlug];
   }
+  
   return DEFAULT_PERFORMANCE_CONFIG;
 }
 
-// Helper function to get default wheel coordinates for Super73 RX
-export function getSuper73RXWheelConfig() {
-  return {
-    centerX: 750,
-    centerY: 180,
-    radius: 150,
-    ringSpacing: 25,
-    pulseSpeed: 2000,
-    baseColor: '#FFD600',
-    edgeColor: 'rgba(200, 180, 50, 0.5)',
-    opacity: 0.7,
-  };
-}
+
 
 // Helper function to create custom configuration for any product
 export function createProductConfig(options: {
@@ -243,6 +237,7 @@ export function createProductConfig(options: {
 export function getContainerTransform(config: ImageConfig): string {
   const baseTransform = config.containerTransform;
   const offsetTransform = `translate(${config.offsetX}px, ${config.offsetY}px)`;
+
   return `${baseTransform} ${offsetTransform} scale(${config.containerScale})`;
 }
 
@@ -253,5 +248,6 @@ export function getPerformanceMetricsTransform(imageConfig: ImageConfig, trackin
     'translateX(calc(22vw - 625px))',
     `translateX(calc(22vw - 625px) * ${trackingMultiplier})`
   );
+
   return `${trackedTransform} scale(${imageConfig.containerScale})`;
 }

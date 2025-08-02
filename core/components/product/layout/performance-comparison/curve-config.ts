@@ -104,5 +104,6 @@ export function getCurveConfig(size?: keyof typeof CURVE_CONFIGS): CurveConfig {
   if (size && size in CURVE_CONFIGS) {
     return CURVE_CONFIGS[size];
   }
+  
   return DEFAULT_CURVE_CONFIG;
 }

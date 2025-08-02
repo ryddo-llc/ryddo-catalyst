@@ -1,12 +1,13 @@
 'use client';
-import { PerformanceMetric } from './types';
-import { useEffect, useState, useRef } from 'react';
+
+import { useEffect, useRef, useState } from 'react';
+
 import { 
-  CurveConfig, 
-  DEFAULT_CURVE_CONFIG, 
-  getCurveOffset, 
-  getAnimationDelay
+  DEFAULT_CURVE_CONFIG,
+  getAnimationDelay, 
+  getCurveOffset
 } from './curve-config';
+import { PerformanceMetric } from './types';
 
 interface PerformanceMetricsProps {
   metrics: PerformanceMetric[];
@@ -38,8 +39,8 @@ export function PerformanceMetrics({
     curveRadius: wheelRadius,
     curveCenterX: wheelCenterX,
     curveCenterY: wheelCenterY,
-    lineSpacing: lineSpacing,
-    barWidth: barWidth,
+    lineSpacing,
+    barWidth
   };
 
   useEffect(() => {
@@ -48,6 +49,7 @@ export function PerformanceMetrics({
       (entries) => {
         if (entries[0]?.isIntersecting) {
           setIsVisible(true);
+
           // Optional: Stop observing after first trigger
           if (ref.current) {
             observer.unobserve(ref.current);
@@ -61,6 +63,7 @@ export function PerformanceMetrics({
     );
 
     const currentRef = ref.current;
+
     if (currentRef) {
       observer.observe(currentRef);
     }
@@ -74,15 +77,15 @@ export function PerformanceMetrics({
 
   return (
     <div 
-      ref={ref} 
       className={`space-y-4 ${className}`} 
+      ref={ref} 
       style={{ 
         position: 'relative', 
         top: `${topOffset}px`
       }}
     >
       {metrics.map((metric, index) => (
-        <div key={`${metric.category}-${index}`} className="mb-6 relative">
+        <div className="mb-6 relative" key={`${metric.category}-${index}`}>
           {/* Desktop: Curved positioning (xl and up) */}
           <div className="hidden xl:block">
             <div
@@ -113,7 +116,7 @@ export function PerformanceMetrics({
                   height: `${curveConfig.barHeight}px`,
                   borderRadius: `${curveConfig.barBorderRadius}px`,
                 }}
-              ></div>
+              />
             </div>
             <div
               className='text-base text-gray-500'
@@ -147,7 +150,7 @@ export function PerformanceMetrics({
                   height: `${curveConfig.barHeight}px`,
                   borderRadius: `${curveConfig.barBorderRadius}px`,
                 }}
-              ></div>
+              />
             </div>
             <div className='text-base text-gray-500'>
               {metric.sublabel}

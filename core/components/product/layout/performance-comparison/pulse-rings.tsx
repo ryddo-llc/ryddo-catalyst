@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 
 interface PulseRingsProps {
@@ -66,7 +67,7 @@ export function PulseRings({
       <div style={makeRing(2)} />
       <div style={makeRing(3)} />
 
-      <style jsx>{`
+      <style>{`
         @keyframes apulser-fade-1 {
           0%, 100% {
             transform: translate(-50%, -50%) scale(0.95);

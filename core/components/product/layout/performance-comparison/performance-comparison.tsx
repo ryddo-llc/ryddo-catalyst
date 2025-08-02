@@ -1,10 +1,13 @@
 'use client';
-import { useRef, useLayoutEffect, useState } from 'react';
-import { PerformanceComparisonProps } from './types';
-import { PerformanceMetrics } from './PerformanceMetrics';
-import { PulseRings } from './PulseRings';
+
+import { useLayoutEffect, useRef, useState } from 'react';
+
 import { Image } from '~/components/image';
+
 import { getBikeConfig, type PerformanceComparisonConfig } from './config';
+import { PerformanceMetrics } from './performance-metrics';
+import { PulseRings } from './pulse-rings';
+import { PerformanceComparisonProps } from './types';
 
 export function PerformanceComparison({
   productTitle,
@@ -22,6 +25,7 @@ export function PerformanceComparison({
   useLayoutEffect(() => {
     if (scaleWrapperRef.current) {
       const rect = scaleWrapperRef.current.getBoundingClientRect();
+
       setMeasuredHeight(rect.height);
     }
   }, [performanceConfig.image.containerScale]);
@@ -30,11 +34,11 @@ export function PerformanceComparison({
     <div className={`bg-gray-50 w-full h-auto relative flex flex-col ${className}`} style={{ zIndex: 0 }}>
       <div className="absolute inset-0 pointer-events-none z-0">
         <Image
-          src="/images/backgrounds/PERFORM.webp"
           alt=""
-          width={200}
-          height={600}
           className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 h-full w-auto object-contain"
+          height={600}
+          src="/images/backgrounds/PERFORM.webp"
+          width={200}
         />
       </div>
 
@@ -57,25 +61,25 @@ export function PerformanceComparison({
         }}
       >
         <div
-          ref={scaleWrapperRef}
           className="relative flex items-center justify-center pointer-events-none"
+          ref={scaleWrapperRef}
           style={{
             transform: `scale(${performanceConfig.image.containerScale})`,
             transformOrigin: 'bottom center',
           }}
         >
           <Image
-            src={productImage.src || performanceConfig.image.src}
             alt={productImage.alt || performanceConfig.image.alt}
-            width={performanceConfig.image.width}
+            className="object-cover w-auto h-auto relative z-10"
             height={performanceConfig.image.height}
             priority
-            className="object-cover w-auto h-auto relative z-10"
+            src={productImage.src || performanceConfig.image.src}
             style={{
               maxWidth: `${performanceConfig.image.maxWidth}px`,
               maxHeight: `${performanceConfig.image.maxHeight}px`,
               transform: `translate(${performanceConfig.image.offsetX}px, ${performanceConfig.image.offsetY}px)`,
             }}
+            width={performanceConfig.image.width}
           />
 
           <div
@@ -87,13 +91,13 @@ export function PerformanceComparison({
             }}
           >
             <PulseRings
-              baseSize={performanceConfig.wheel.radius * 2}
-              ringSpacing={performanceConfig.wheel.ringSpacing}
-              pulseSpeed={performanceConfig.wheel.pulseSpeed}
               baseColor={performanceConfig.wheel.baseColor}
+              baseSize={performanceConfig.wheel.radius * 2}
+              disabledOnMobile={performanceConfig.disabledOnMobile}
               edgeColor={performanceConfig.wheel.edgeColor}
               opacity={performanceConfig.wheel.opacity}
-              disabledOnMobile={performanceConfig.disabledOnMobile}
+              pulseSpeed={performanceConfig.wheel.pulseSpeed}
+              ringSpacing={performanceConfig.wheel.ringSpacing}
             />
           </div>
 
@@ -106,14 +110,14 @@ export function PerformanceComparison({
             }}
           >
             <PerformanceMetrics
-              metrics={metrics}
+              barWidth={performanceConfig.performanceMetrics.barWidth}
               className="w-full h-full"
+              lineSpacing={performanceConfig.performanceMetrics.lineSpacing}
+              metrics={metrics}
+              topOffset={performanceConfig.performanceMetrics.topOffset}
               wheelCenterX={0}
               wheelCenterY={0}
               wheelRadius={performanceConfig.wheel.radius}
-              lineSpacing={performanceConfig.performanceMetrics.lineSpacing}
-              barWidth={performanceConfig.performanceMetrics.barWidth}
-              topOffset={performanceConfig.performanceMetrics.topOffset}
             />
           </div>
         </div>
@@ -125,15 +129,15 @@ export function PerformanceComparison({
         <div className="relative flex justify-center items-center pb-8 -mx-4 md:-mx-8">
           <div className="relative w-full">
             <Image
-              src={productImage.src || performanceConfig.image.src}
               alt={productImage.alt || performanceConfig.image.alt}
-              width={performanceConfig.image.width}
+              className="object-cover w-full h-auto relative z-10"
               height={performanceConfig.image.height}
               priority
-              className="object-cover w-full h-auto relative z-10"
+              src={productImage.src || performanceConfig.image.src}
               style={{
                 maxHeight: '60vh',
               }}
+              width={performanceConfig.image.width}
             />
             
             {/* Pulsing rings (hidden on mobile as configured) */}
@@ -146,13 +150,13 @@ export function PerformanceComparison({
               }}
             >
               <PulseRings
-                baseSize={performanceConfig.wheel.radius * 2}
-                ringSpacing={performanceConfig.wheel.ringSpacing}
-                pulseSpeed={performanceConfig.wheel.pulseSpeed}
                 baseColor={performanceConfig.wheel.baseColor}
+                baseSize={performanceConfig.wheel.radius * 2}
+                disabledOnMobile={performanceConfig.disabledOnMobile}
                 edgeColor={performanceConfig.wheel.edgeColor}
                 opacity={performanceConfig.wheel.opacity}
-                disabledOnMobile={performanceConfig.disabledOnMobile}
+                pulseSpeed={performanceConfig.wheel.pulseSpeed}
+                ringSpacing={performanceConfig.wheel.ringSpacing}
               />
             </div>
 
@@ -216,14 +220,14 @@ export function PerformanceComparison({
         {/* Full-width Metrics Section */}
         <div className="px-6 md:px-8 pb-6">
           <PerformanceMetrics
-            metrics={metrics}
+            barWidth={performanceConfig.performanceMetrics.barWidth}
             className="w-full"
+            lineSpacing={performanceConfig.performanceMetrics.lineSpacing}
+            metrics={metrics}
+            topOffset={0}
             wheelCenterX={0}
             wheelCenterY={0}
             wheelRadius={0} // No curves on mobile
-            lineSpacing={performanceConfig.performanceMetrics.lineSpacing}
-            barWidth={performanceConfig.performanceMetrics.barWidth}
-            topOffset={0}
           />
         </div>
       </div>

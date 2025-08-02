@@ -20,7 +20,7 @@ import {
   ProductSummarySkeleton,
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
-import { ProductAddonsSection, ProductShowcaseSection, PerformanceComparisonSection } from '../shared/product-sections';
+import { PerformanceComparisonSection, ProductAddonsSection, ProductShowcaseSection } from '../shared/product-sections';
 import { AuthorizedDealerCard, OffersCard } from '../shared/product-side-cards';
 
 import { BikeAddToCartForm } from './bike-add-to-cart-form';
