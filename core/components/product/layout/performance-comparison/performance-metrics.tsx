@@ -44,11 +44,22 @@ export function PerformanceMetrics({
   };
 
   useEffect(() => {
+    console.log('PerformanceMetrics: Component mounted, setting up animation');
+    
+    // Fallback timer to ensure animation triggers even if Intersection Observer fails
+    const fallbackTimer = setTimeout(() => {
+      console.log('PerformanceMetrics: Fallback timer triggered, setting isVisible to true');
+      setIsVisible(true);
+    }, 1000); // Trigger after 1 second as fallback
+
     // Trigger animation when it comes on the screen
     const observer = new IntersectionObserver(
       (entries) => {
+        console.log('PerformanceMetrics: Intersection observer triggered', entries[0]?.isIntersecting);
         if (entries[0]?.isIntersecting) {
+          console.log('PerformanceMetrics: Component is intersecting, setting isVisible to true');
           setIsVisible(true);
+          clearTimeout(fallbackTimer); // Clear fallback if intersection works
 
           // Optional: Stop observing after first trigger
           if (ref.current) {
@@ -65,10 +76,15 @@ export function PerformanceMetrics({
     const currentRef = ref.current;
 
     if (currentRef) {
+      console.log('PerformanceMetrics: Observing element', currentRef);
       observer.observe(currentRef);
+    } else {
+      console.log('PerformanceMetrics: No ref available');
     }
 
     return () => {
+      console.log('PerformanceMetrics: Cleaning up');
+      clearTimeout(fallbackTimer);
       if (currentRef) {
         observer.unobserve(currentRef);
       }
@@ -84,12 +100,17 @@ export function PerformanceMetrics({
         top: `${topOffset}px`
       }}
     >
+      {/* Debug indicator */}
+      <div className="text-xs text-red-500 mb-2">
+        Debug: isVisible = {isVisible.toString()}, metrics count = {metrics.length}
+      </div>
+      
       {metrics.map((metric, index) => (
         <div className="mb-6 relative" key={`${metric.category}-${index}`}>
           {/* Desktop: Curved positioning (xl and up) */}
           <div className="hidden xl:block">
             <div
-              className='font-bold text-gray-900 text-lg leading-tight'
+              className='font-bold text-gray-900 text-lg leading-tight mb-2'
               style={{ 
                 position: 'relative', 
                 left: getCurveOffset(index, metrics.length, curveConfig.labelYAdjust, curveConfig) 
@@ -98,23 +119,22 @@ export function PerformanceMetrics({
               {metric.label} - {metric.value}
             </div>
             <div
-              className="w-full bg-gray-200 rounded-full overflow-hidden mt-1"
+              className="bg-gray-200 rounded-full overflow-hidden mb-2"
               style={{
                 position: 'relative',
                 left: getCurveOffset(index, metrics.length, curveConfig.barYAdjust, curveConfig),
                 width: `${curveConfig.barWidth}px`,
-                height: `${curveConfig.barHeight}px`,
-                borderRadius: `${curveConfig.barBorderRadius}px`,
+                height: '8px',
+                borderRadius: '4px',
               }}
             >
               <div
-                className="rounded-full transition-all duration-1000 ease-out"
+                className="rounded-full transition-all duration-1000 ease-out bg-[#F92F7B]"
                 style={{
-                  backgroundColor: '#F92F7B',
                   width: isVisible ? `${metric.percentage}%` : '0%',
-                  transitionDelay: `${getAnimationDelay(index, curveConfig)}ms`,
-                  height: `${curveConfig.barHeight}px`,
-                  borderRadius: `${curveConfig.barBorderRadius}px`,
+                  transitionDelay: `${index * 150}ms`,
+                  height: '8px',
+                  borderRadius: '4px',
                 }}
               />
             </div>
@@ -131,24 +151,23 @@ export function PerformanceMetrics({
 
           {/* Mobile: Normal vertical layout (below xl) */}
           <div className="block xl:hidden">
-            <div className='font-bold text-gray-900 text-lg leading-tight'>
+            <div className='font-bold text-gray-900 text-lg leading-tight mb-2'>
               {metric.label} - {metric.value}
             </div>
             <div 
-              className="w-full bg-gray-200 rounded-full overflow-hidden mt-1"
+              className="w-full bg-gray-200 rounded-full overflow-hidden mb-2"
               style={{
-                height: `${curveConfig.barHeight}px`,
-                borderRadius: `${curveConfig.barBorderRadius}px`,
+                height: '8px',
+                borderRadius: '4px',
               }}
             >
               <div
-                className="rounded-full transition-all duration-1000 ease-out"
+                className="rounded-full transition-all duration-1000 ease-out bg-[#F92F7B]"
                 style={{
-                  backgroundColor: '#F92F7B',
                   width: isVisible ? `${metric.percentage}%` : '0%',
-                  transitionDelay: `${getAnimationDelay(index, curveConfig)}ms`,
-                  height: `${curveConfig.barHeight}px`,
-                  borderRadius: `${curveConfig.barBorderRadius}px`,
+                  height: '8px',
+                  borderRadius: '4px',
+                  transitionDelay: `${index * 150}ms`,
                 }}
               />
             </div>
