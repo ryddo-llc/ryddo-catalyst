@@ -14,6 +14,11 @@ import {
   ProductDetailBike,
   ProductDetailScooter,
 } from '~/components/product/layout/product-detail-router';
+import Addons from '~/components/product/shared/addons';
+import { ProductShowcase } from '~/components/product-showcase';
+import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
+import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
+import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -63,16 +68,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: pageTitle || product.name,
     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url
-      ? {
-          images: [
-            {
-              url,
-              alt,
-            },
-          ],
-        }
-      : null,
+    openGraph: {
+      type: 'website',
+      title: pageTitle || product.name,
+      description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+      siteName: 'Ryddo',
+      ...(url && {
+        images: [
+          {
+            url,
+            alt,
+            width: 1200,
+            height: 630,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: pageTitle || product.name,
+      description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+      ...(url && {
+        images: [url],
+      }),
+    },
   };
 }
 
@@ -187,41 +206,39 @@ export default async function Product({ params, searchParams }: Props) {
     return allImages;
   });
 
-  const streameableCtaLabel = Streamable.from(async () => {
+  // Consolidated CTA data - combines label and disabled state
+  const streamableCtaData = Streamable.from(async () => {
     const product = await streamableProduct;
 
     if (product.availabilityV2.status === 'Unavailable') {
-      return t('ProductDetails.Submit.unavailable');
+      return {
+        label: t('ProductDetails.Submit.unavailable'),
+        disabled: true,
+      };
     }
 
     if (product.availabilityV2.status === 'Preorder') {
-      return t('ProductDetails.Submit.preorder');
+      return {
+        label: t('ProductDetails.Submit.preorder'),
+        disabled: false,
+      };
     }
 
     if (!product.inventory.isInStock) {
-      return t('ProductDetails.Submit.outOfStock');
+      return {
+        label: t('ProductDetails.Submit.outOfStock'),
+        disabled: true,
+      };
     }
 
-    return t('ProductDetails.Submit.addToCart');
+    return {
+      label: t('ProductDetails.Submit.addToCart'),
+      disabled: false,
+    };
   });
 
-  const streameableCtaDisabled = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    if (product.availabilityV2.status === 'Unavailable') {
-      return true;
-    }
-
-    if (product.availabilityV2.status === 'Preorder') {
-      return false;
-    }
-
-    if (!product.inventory.isInStock) {
-      return true;
-    }
-
-    return false;
-  });
+  const streameableCtaLabel = Streamable.from(async () => (await streamableCtaData).label);
+  const streameableCtaDisabled = Streamable.from(async () => (await streamableCtaData).disabled);
 
   const streameableAccordions = Streamable.from(async () => {
     const product = await streamableProduct;
@@ -297,7 +314,7 @@ export default async function Product({ params, searchParams }: Props) {
   const streamablePopularAccessories = Streamable.from(async () => {
     const accessToken = await getSessionCustomerAccessToken();
     const currency = await getPreferredCurrencyCode();
-    
+
     const data = await getPageData(currency, accessToken);
 
     const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
@@ -366,6 +383,35 @@ export default async function Product({ params, searchParams }: Props) {
         : undefined,
       href: product.path,
     }));
+  });
+
+  // Direct custom field filtering for TechSpecs (eliminates dependency chain)
+  const streamableTechSpecFields = Streamable.from(async () => {
+    const product = await streamableProduct;
+    const customFields = removeEdgesAndNodes(product.customFields);
+
+    const fieldNames = {
+      Power: ['Battery', 'Charge Time', 'Class', 'Motor/s', 'Speed-Tech', 'Pedal Assist'],
+      Components: ['Brakes', 'Class', 'Frame Material', 'Speed', 'Tires', 'Throttle'],
+      Safety: [
+        'Brake Lights',
+        'Class',
+        'Headlights',
+        'Mobile App',
+        'Speed',
+        'Horn',
+        'Tail Light',
+        'Turn Signals',
+      ],
+      Other: ['Color', 'Class', 'Max Load', 'Model', 'Speed', 'Display', 'Seat Height'],
+    };
+
+    return {
+      Power: customFields.filter((field) => fieldNames.Power.includes(field.name)),
+      Components: customFields.filter((field) => fieldNames.Components.includes(field.name)),
+      Safety: customFields.filter((field) => fieldNames.Safety.includes(field.name)),
+      Other: customFields.filter((field) => fieldNames.Other.includes(field.name)),
+    };
   });
 
   const baseProductData = {
@@ -443,6 +489,83 @@ export default async function Product({ params, searchParams }: Props) {
         {renderProductDetail()}
       </ProductAnalyticsProvider>
 
+      {/* Enhanced sections for bikes and scooters only */}
+      {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
+        <>
+          <Addons addons={streamablePopularAccessories} name={baseProduct.name} />
+          <ProductShowcase
+            aria-labelledby="product-images-heading"
+            description={baseProduct.plainTextDescription}
+            images={streamableImages}
+            productName={baseProduct.name}
+          />
+          {/* Performance Comparison section */}
+          <div className="bg-white px-4 py-8 md:px-8">
+            <PerformanceComparison
+              config={getBikeConfig('super73-rx')}
+              metrics={[
+                {
+                  category: 'range',
+                  label: 'Maximum Range',
+                  percentage: 85,
+                  sublabel: '960 watt-hours, 21700 cells',
+                  value: '45+ Miles (pedal assist*)',
+                },
+                {
+                  category: 'power',
+                  label: 'Power',
+                  percentage: 100,
+                  sublabel: '48V Motor: 2,000W peak',
+                  value: '2,000 Watts',
+                },
+                {
+                  category: 'speed',
+                  label: 'Top Speed',
+                  percentage: 88,
+                  sublabel: 'Based on ideal conditions',
+                  value: '28+ mph',
+                },
+                {
+                  category: 'brakes',
+                  label: 'Braking Power',
+                  percentage: 90,
+                  sublabel: 'Quad Piston Hydraulic',
+                  value: '90%',
+                },
+                {
+                  category: 'portability',
+                  label: 'Portability',
+                  percentage: 50,
+                  sublabel: 'Weight & Portability',
+                  value: '50%',
+                },
+                {
+                  category: 'comfort',
+                  label: 'Comfort',
+                  percentage: 85,
+                  sublabel: 'Suspension + Position + Seat',
+                  value: '85%',
+                },
+                {
+                  category: 'tech',
+                  label: 'Tech Features',
+                  percentage: 75,
+                  sublabel: 'Apps, Lighting, Navigation, Electrical',
+                  value: '75%',
+                },
+              ]}
+              productImage={{
+                src: '/images/backgrounds/S73-RX-RED-performance.webp',
+                alt: 'SUPER73 RX Performance',
+              }}
+              productTitle={baseProduct.name}
+            />
+          </div>
+          <TechSpecs powerSpecs={streamableTechSpecFields} />
+        </>
+      )}
+
+      {/* Common sections for all products */}
       <FeaturedProductCarousel
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
         emptyStateSubtitle={t('RelatedProducts.browseCatalog')}

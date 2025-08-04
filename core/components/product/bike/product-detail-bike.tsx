@@ -5,12 +5,10 @@ import { CompareDrawer, CompareDrawerProvider } from '@/vibes/soul/primitives/co
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { Image } from '~/components/image';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 
-import { BaseProductDetailProduct } from '../layout/product-detail-layout';
 import { ProductBadges } from '../shared/product-badges';
 import {
   BikeImageSkeleton,
@@ -20,11 +18,44 @@ import {
   ProductSummarySkeleton,
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
-import { PerformanceComparisonSection, ProductAddonsSection, ProductShowcaseSection } from '../shared/product-sections';
 import { AuthorizedDealerCard, OffersCard } from '../shared/product-side-cards';
+
 
 import { BikeAddToCartForm } from './bike-add-to-cart-form';
 import { BikeSpecsIcons } from './bike-specifications';
+
+interface BaseProductDetailProduct {
+  id: string;
+  title: string;
+  href: string;
+  images: Streamable<Array<{ src: string; alt: string }>>;
+  price?: Streamable<
+    | {
+        type?: 'sale' | 'range';
+        currentValue?: string;
+        previousValue?: string;
+        minValue?: string;
+        maxValue?: string;
+      }
+    | string
+    | null
+  >;
+  subtitle?: string;
+  badge?: string;
+  rating?: Streamable<number | null>;
+  summary?: Streamable<string>;
+  description?: Streamable<string | ReactNode | null>;
+  accordions?: Streamable<
+    Array<{
+      title: string;
+      content: ReactNode;
+    }>
+  >;
+  inventoryStatus?: Streamable<{
+    isInStock: boolean;
+    status: 'Available' | 'Unavailable' | 'Preorder';
+  } | null>;
+}
 
 interface ProductDetailBikeProduct extends BaseProductDetailProduct {
   bikeSpecs?: Streamable<ProductSpecification[] | null>;
@@ -46,13 +77,6 @@ export interface ProductDetailBikeProps<F extends Field> {
   compareLabel?: string;
   maxCompareItems?: number;
   maxCompareLimitMessage?: string;
-  // Related products for addons
-  relatedProducts?: Streamable<
-    Array<{ id: string; title: string; href: string; image?: { src: string; alt: string } }>
-  >;
-  popularAccessories?: Streamable<
-    Array<{ id: string; title: string; href: string; image?: { src: string; alt: string } }>
-  >;
 }
 
 export function ProductDetailBike<F extends Field>({
@@ -66,8 +90,6 @@ export function ProductDetailBike<F extends Field>({
   compareLabel = 'Compare',
   maxCompareItems = 3,
   maxCompareLimitMessage = "You've reached the maximum number of products for comparison.",
-
-  popularAccessories,
 }: ProductDetailBikeProps<F>) {
   return (
     <Stream fallback={<ProductDetailBikeSkeleton />} value={compareProducts || []}>
@@ -210,13 +232,7 @@ export function ProductDetailBike<F extends Field>({
                         {/* Bottom Section - Specs Grid */}
                         <div className="mt-auto">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
-                            {(specs) =>
-                              specs && (
-                                <SectionLayout>
-                                  <BikeSpecsIcons specs={specs} />
-                                </SectionLayout>
-                              )
-                            }
+                            {(specs) => specs && <BikeSpecsIcons specs={specs} />}
                           </Stream>
                         </div>
                       </div>
@@ -268,12 +284,22 @@ export function ProductDetailBike<F extends Field>({
                                         displayPrice = price;
                                       } else if (
                                         price &&
+                                        typeof price === 'object' &&
                                         'type' in price &&
                                         price.type === 'sale' &&
-                                        'currentValue' in price
+                                        'currentValue' in price &&
+                                        price.currentValue
                                       ) {
                                         displayPrice = price.currentValue;
-                                      } else if (price && 'type' in price && 'minValue' in price) {
+                                      } else if (
+                                        price &&
+                                        typeof price === 'object' &&
+                                        'type' in price &&
+                                        'minValue' in price &&
+                                        'maxValue' in price &&
+                                        price.minValue &&
+                                        price.maxValue
+                                      ) {
                                         displayPrice = `${price.minValue} - ${price.maxValue}`;
                                       }
 
@@ -313,23 +339,6 @@ export function ProductDetailBike<F extends Field>({
               }
             </Stream>
           </section>
-
-          {/* Shared Addons section */}
-          <ProductAddonsSection
-            product={streamableProduct}
-            relatedProducts={popularAccessories || []}
-          />
-
-          {/* Shared Product Showcase section */}
-          <ProductShowcaseSection
-            className="bg-white px-4 py-8 md:px-8"
-            product={streamableProduct}
-          />
-
-          {/* Performance Comparison section */}
-          <PerformanceComparisonSection
-            product={streamableProduct}
-          />
 
           <CompareDrawer href="/compare" submitLabel={compareLabel} />
         </CompareDrawerProvider>
