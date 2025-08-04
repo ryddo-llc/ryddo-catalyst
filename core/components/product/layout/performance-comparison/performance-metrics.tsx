@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { 
   DEFAULT_CURVE_CONFIG,
-  getAnimationDelay, 
   getCurveOffset
 } from './curve-config';
 import { PerformanceMetric } from './types';
@@ -44,24 +43,19 @@ export function PerformanceMetrics({
   };
 
   useEffect(() => {
-    console.log('PerformanceMetrics: Component mounted, setting up animation');
-    
     // Fallback timer to ensure animation triggers even if Intersection Observer fails
     const fallbackTimer = setTimeout(() => {
-      console.log('PerformanceMetrics: Fallback timer triggered, setting isVisible to true');
       setIsVisible(true);
     }, 1000); // Trigger after 1 second as fallback
 
     // Trigger animation when it comes on the screen
     const observer = new IntersectionObserver(
       (entries) => {
-        console.log('PerformanceMetrics: Intersection observer triggered', entries[0]?.isIntersecting);
         if (entries[0]?.isIntersecting) {
-          console.log('PerformanceMetrics: Component is intersecting, setting isVisible to true');
           setIsVisible(true);
           clearTimeout(fallbackTimer); // Clear fallback if intersection works
 
-          // Optional: Stop observing after first trigger
+          // Stop observing after first trigger
           if (ref.current) {
             observer.unobserve(ref.current);
           }
@@ -76,14 +70,10 @@ export function PerformanceMetrics({
     const currentRef = ref.current;
 
     if (currentRef) {
-      console.log('PerformanceMetrics: Observing element', currentRef);
       observer.observe(currentRef);
-    } else {
-      console.log('PerformanceMetrics: No ref available');
     }
 
     return () => {
-      console.log('PerformanceMetrics: Cleaning up');
       clearTimeout(fallbackTimer);
       if (currentRef) {
         observer.unobserve(currentRef);
@@ -100,11 +90,6 @@ export function PerformanceMetrics({
         top: `${topOffset}px`
       }}
     >
-      {/* Debug indicator */}
-      <div className="text-xs text-red-500 mb-2">
-        Debug: isVisible = {isVisible.toString()}, metrics count = {metrics.length}
-      </div>
-      
       {metrics.map((metric, index) => (
         <div className="mb-6 relative" key={`${metric.category}-${index}`}>
           {/* Desktop: Curved positioning (xl and up) */}
