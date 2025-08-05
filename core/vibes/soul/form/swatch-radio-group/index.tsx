@@ -111,9 +111,6 @@ export const SwatchRadioGroup = React.forwardRef<
               value={option.value}
             >
               {(() => {
-                // Helper function to detect if this is a text-only option (like size)
-                const isTextOption = !('color' in option) && !('image' in option);
-                
                 if (option.type === 'color' && 'color' in option) {
                   return (
                     <span
@@ -143,9 +140,10 @@ export const SwatchRadioGroup = React.forwardRef<
                       <Image alt={option.image.alt} height={40} src={option.image.src} width={40} />
                     </span>
                   );
-                } else {
-                  // Handle size options that don't have color or image data
-                  return (
+                }
+                
+                // Handle size options that don't have color or image data
+                return (
                     <span
                       className={clsx(
                         'swatch-text-option flex size-full items-center justify-center border text-xs font-bold uppercase tracking-wide',
@@ -158,8 +156,7 @@ export const SwatchRadioGroup = React.forwardRef<
                     >
                       {option.label}
                     </span>
-                  );
-                }
+                );
               })()}
               <div
                 className={clsx(

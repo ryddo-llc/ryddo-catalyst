@@ -76,9 +76,6 @@ export function ProductDetailForm<F extends Field>({
   fields,
   productId,
   ctaLabel = 'Add to cart',
-  quantityLabel = 'Quantity', // eslint-disable-line @typescript-eslint/no-unused-vars
-  incrementLabel = 'Increase quantity', // eslint-disable-line @typescript-eslint/no-unused-vars
-  decrementLabel = 'Decrease quantity', // eslint-disable-line @typescript-eslint/no-unused-vars
   emptySelectPlaceholder = 'Select an option',
   ctaDisabled = false,
   prefetch = false,
