@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 
-import type { SectionKey, TechSpecData, TechSpecsSection } from '../types';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
+
+import type { SectionKey, TechSpecData, TechSpecsSection } from '../types';
 
 export const useTechSpecs = () => {
   const [expandedSections, setExpandedSections] = useState({

@@ -57,6 +57,7 @@ export interface PerformanceComparisonConfig {
     containerWidth: number; // Container width for metrics
     containerHeight: number; // Container height for metrics
     topOffset: number;     // Top offset for metrics container
+    curveRadiusMultiplier: number; // Multiplier for curve radius
   };
   disabledOnMobile: boolean;
 }
@@ -101,6 +102,7 @@ export const DEFAULT_PERFORMANCE_CONFIG: PerformanceComparisonConfig = {
       containerWidth: 800, // Container width for metrics
       containerHeight: 1000, // Container height for metrics
       topOffset: 0,     // Offset to align with wheel center
+      curveRadiusMultiplier: 0.6, // Multiplier for curve radius
     },
   disabledOnMobile: true,
 };
@@ -135,6 +137,7 @@ export const BIKE_CONFIGS = {
       containerWidth: 800,
       containerHeight: 1000,
       topOffset: 0,
+      curveRadiusMultiplier: 0.6,
     },
     disabledOnMobile: true,
   },
@@ -164,6 +167,7 @@ export const BIKE_CONFIGS = {
       containerWidth: 800,
       containerHeight: 1000,
       topOffset: 0,
+      curveRadiusMultiplier: 0.6,
     },
     disabledOnMobile: true,
   },

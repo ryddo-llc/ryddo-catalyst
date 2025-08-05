@@ -17,6 +17,8 @@ interface PerformanceMetricsProps {
   lineSpacing?: number;   // Space between metrics
   barWidth?: number;      // Progress bar width
   topOffset?: number;     // Top offset for metrics container
+  curveRadiusMultiplier?: number; // Multiplier for curve radius
+  gapFromWheel?: number;  // Gap from wheel to metrics
 }
 
 export function PerformanceMetrics({ 
@@ -27,7 +29,9 @@ export function PerformanceMetrics({
   wheelRadius = 150, 
   lineSpacing = 48, 
   barWidth = 350,
-  topOffset = 50
+  topOffset = 50,
+  curveRadiusMultiplier = 0.6,
+  gapFromWheel = 0
 }: PerformanceMetricsProps) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -75,6 +79,7 @@ export function PerformanceMetrics({
 
     return () => {
       clearTimeout(fallbackTimer);
+      
       if (currentRef) {
         observer.unobserve(currentRef);
       }
@@ -98,7 +103,7 @@ export function PerformanceMetrics({
               className='font-bold text-gray-900 text-lg leading-tight mb-2'
               style={{ 
                 position: 'relative', 
-                left: getCurveOffset(index, metrics.length, curveConfig.labelYAdjust, curveConfig) 
+                left: getCurveOffset(index, metrics.length, curveConfig.labelYAdjust, curveConfig, curveRadiusMultiplier, gapFromWheel) 
               }}
             >
               {metric.label} - {metric.value}
@@ -107,7 +112,7 @@ export function PerformanceMetrics({
               className="bg-gray-200 rounded-full overflow-hidden mb-2"
               style={{
                 position: 'relative',
-                left: getCurveOffset(index, metrics.length, curveConfig.barYAdjust, curveConfig),
+                left: getCurveOffset(index, metrics.length, curveConfig.barYAdjust, curveConfig, curveRadiusMultiplier, gapFromWheel),
                 width: `${curveConfig.barWidth}px`,
                 height: '8px',
                 borderRadius: '4px',
@@ -127,7 +132,7 @@ export function PerformanceMetrics({
               className='text-base text-gray-500'
               style={{ 
                 position: 'relative', 
-                left: getCurveOffset(index, metrics.length, curveConfig.sublabelYAdjust, curveConfig) 
+                left: getCurveOffset(index, metrics.length, curveConfig.sublabelYAdjust, curveConfig, curveRadiusMultiplier, gapFromWheel) 
               }}
             >
               {metric.sublabel}

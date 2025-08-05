@@ -9,6 +9,8 @@ import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/load
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
+import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import {
   getProductDetailVariant,
   ProductDetailBike,
@@ -16,10 +18,9 @@ import {
 } from '~/components/product/layout/product-detail-router';
 import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
-import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
-import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
+import { findPerformanceImage, transformPerformanceComparisonData } from '~/data-transformers/performance-comparison-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
@@ -501,65 +502,37 @@ export default async function Product({ params, searchParams }: Props) {
           />
           {/* Performance Comparison section */}
           <div className="bg-white px-4 py-8 md:px-8">
-            <PerformanceComparison
-              config={getBikeConfig('super73-rx')}
-              metrics={[
-                {
-                  category: 'range',
-                  label: 'Maximum Range',
-                  percentage: 85,
-                  sublabel: '960 watt-hours, 21700 cells',
-                  value: '45+ Miles (pedal assist*)',
-                },
-                {
-                  category: 'power',
-                  label: 'Power',
-                  percentage: 100,
-                  sublabel: '48V Motor: 2,000W peak',
-                  value: '2,000 Watts',
-                },
-                {
-                  category: 'speed',
-                  label: 'Top Speed',
-                  percentage: 88,
-                  sublabel: 'Based on ideal conditions',
-                  value: '28+ mph',
-                },
-                {
-                  category: 'brakes',
-                  label: 'Braking Power',
-                  percentage: 90,
-                  sublabel: 'Quad Piston Hydraulic',
-                  value: '90%',
-                },
-                {
-                  category: 'portability',
-                  label: 'Portability',
-                  percentage: 50,
-                  sublabel: 'Weight & Portability',
-                  value: '50%',
-                },
-                {
-                  category: 'comfort',
-                  label: 'Comfort',
-                  percentage: 85,
-                  sublabel: 'Suspension + Position + Seat',
-                  value: '85%',
-                },
-                {
-                  category: 'tech',
-                  label: 'Tech Features',
-                  percentage: 75,
-                  sublabel: 'Apps, Lighting, Navigation, Electrical',
-                  value: '75%',
-                },
-              ]}
-              productImage={{
-                src: '/images/backgrounds/S73-RX-RED-performance.webp',
-                alt: 'SUPER73 RX Performance',
+            <Stream
+              fallback={null}
+              value={Streamable.all([streamableProduct, streamableImages])}
+            >
+              {([product, images]) => {
+                const customFields = product.customFields;
+                const dynamicData = transformPerformanceComparisonData(customFields);
+                
+                const performanceImage = findPerformanceImage(
+                  images,
+                  dynamicData.performanceImageDescription
+                );
+                
+                if (dynamicData.metrics.length === 0) {
+                  return null;
+                }
+                
+                return (
+                  <PerformanceComparison
+                    config={getBikeConfig('super73-rx')}
+                    dynamicData={dynamicData}
+                    metrics={dynamicData.metrics}
+                    productImage={performanceImage || {
+                      src: '/images/backgrounds/S73-RX-RED-performance.webp',
+                      alt: 'SUPER73 RX Performance',
+                    }}
+                    productTitle={baseProduct.name}
+                  />
+                );
               }}
-              productTitle={baseProduct.name}
-            />
+            </Stream>
           </div>
           <TechSpecs powerSpecs={streamableTechSpecFields} />
         </>

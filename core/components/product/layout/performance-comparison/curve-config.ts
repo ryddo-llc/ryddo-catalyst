@@ -32,16 +32,16 @@ export const DEFAULT_CURVE_CONFIG: CurveConfig = {
   containerWidth: 600,
   containerHeight: 600,
   curveRadius: 150,
-  curveCenterX: 300, // Half of containerWidth
-  curveCenterY: 300, // Half of containerHeight
+  curveCenterX: 300,
+  curveCenterY: 300,
   lineSpacing: 48,
   barWidth: 350,
   labelYAdjust: -16,
   barYAdjust: 0,
   sublabelYAdjust: 16,
   baseAnimationDelay: 150,
-  barHeight: 8, // 2 in Tailwind = 8px
-  barBorderRadius: 4, // 1 in Tailwind = 4px
+  barHeight: 8,
+  barBorderRadius: 4,
 };
 
 // Helper function to calculate curve offset for positioning metrics around the wheel
@@ -49,7 +49,9 @@ export function getCurveOffset(
   index: number,
   total: number,
   yAdjust: number,
-  config: CurveConfig
+  config: CurveConfig,
+  curveRadiusMultiplier = 0.6,
+  gapFromWheel = 0
 ): number {
   // Calculate Y position based on index and spacing
   const y = config.curveCenterY - ((total - 1) / 2 - index) * config.lineSpacing + yAdjust;
@@ -57,10 +59,13 @@ export function getCurveOffset(
   // Calculate X offset using circle equation: (x-h)² + (y-k)² = r²
   // Solving for x: x = h ± √(r² - (y-k)²)
   const yDiff = y - config.curveCenterY;
-  const dx = Math.sqrt(Math.max(0, config.curveRadius ** 2 - yDiff ** 2));
   
-  // Return the X position (right side of the circle)
-  return config.curveCenterX + dx - config.barWidth;
+  // Adjust curve radius using the multiplier from BigCommerce
+  const adjustedRadius = config.curveRadius * curveRadiusMultiplier;
+  const dx = Math.sqrt(Math.max(0, adjustedRadius ** 2 - yDiff ** 2));
+  
+  // Return the X position (right side of the circle) plus the gap from wheel
+  return config.curveCenterX + dx - config.barWidth + gapFromWheel;
 }
 
 // Helper function to get animation delay based on index
