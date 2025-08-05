@@ -21,6 +21,12 @@ type SwatchOption =
       label: string;
       image: { src: string; alt: string };
       disabled?: boolean;
+    }
+  | {
+      type?: 'text' | undefined; // For text-only options like sizes
+      value: string;
+      label: string;
+      disabled?: boolean;
     };
 
 /**
@@ -104,32 +110,57 @@ export const SwatchRadioGroup = React.forwardRef<
               }}
               value={option.value}
             >
-              {option.type === 'color' ? (
-                <span
-                  className={clsx(
-                    'block size-full rounded-full border group-disabled:opacity-20',
-                    {
-                      light:
-                        'border-[var(--swatch-radio-group-light-option-border,hsl(var(--foreground)/10%))]',
-                      dark: 'border-[var(--swatch-radio-group-dark-option-border,hsl(var(--background)/10%))]',
-                    }[colorScheme],
-                  )}
-                  style={{ backgroundColor: option.color }}
-                />
-              ) : (
-                <span
-                  className={clsx(
-                    'relative block size-full overflow-hidden rounded-full border',
-                    {
-                      light:
-                        'border-[var(--swatch-radio-group-light-option-border,hsl(var(--foreground)/10%))]',
-                      dark: 'border-[var(--swatch-radio-group-dark-option-border,hsl(var(--background)/10%))]',
-                    }[colorScheme],
-                  )}
-                >
-                  <Image alt={option.image.alt} height={40} src={option.image.src} width={40} />
-                </span>
-              )}
+              {(() => {
+                // Helper function to detect if this is a text-only option (like size)
+                const isTextOption = !('color' in option) && !('image' in option);
+                
+                if (option.type === 'color' && 'color' in option) {
+                  return (
+                    <span
+                      className={clsx(
+                        'block size-full rounded-full border group-disabled:opacity-20',
+                        {
+                          light:
+                            'border-[var(--swatch-radio-group-light-option-border,hsl(var(--foreground)/10%))]',
+                          dark: 'border-[var(--swatch-radio-group-dark-option-border,hsl(var(--background)/10%))]',
+                        }[colorScheme],
+                      )}
+                      style={{ backgroundColor: option.color }}
+                    />
+                  );
+                } else if (option.type === 'image' && 'image' in option) {
+                  return (
+                    <span
+                      className={clsx(
+                        'relative block size-full overflow-hidden rounded-full border',
+                        {
+                          light:
+                            'border-[var(--swatch-radio-group-light-option-border,hsl(var(--foreground)/10%))]',
+                          dark: 'border-[var(--swatch-radio-group-dark-option-border,hsl(var(--background)/10%))]',
+                        }[colorScheme],
+                      )}
+                    >
+                      <Image alt={option.image.alt} height={40} src={option.image.src} width={40} />
+                    </span>
+                  );
+                } else {
+                  // Handle size options that don't have color or image data
+                  return (
+                    <span
+                      className={clsx(
+                        'swatch-text-option flex size-full items-center justify-center border text-xs font-bold uppercase tracking-wide',
+                        {
+                          light:
+                            'border-[var(--swatch-radio-group-light-option-border,hsl(var(--foreground)/10%))] bg-white text-gray-900',
+                          dark: 'border-[var(--swatch-radio-group-dark-option-border,hsl(var(--background)/10%))] bg-gray-900 text-white',
+                        }[colorScheme],
+                      )}
+                    >
+                      {option.label}
+                    </span>
+                  );
+                }
+              })()}
               <div
                 className={clsx(
                   'disabled-icon absolute inset-0 hidden place-content-center',

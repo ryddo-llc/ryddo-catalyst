@@ -10,6 +10,7 @@ export interface ProductGalleryProps {
   images: Array<{ alt: string; src: string }>;
   className?: string;
   thumbnailLabel?: string;
+  productTitle?: string;
   aspectRatio?:
     | '1:1'
     | '4:5'
@@ -43,6 +44,7 @@ export function ProductGallery({
   images,
   className,
   thumbnailLabel = 'View image number',
+  productTitle,
   aspectRatio = '4:5',
   fit = 'contain',
 }: ProductGalleryProps) {
@@ -66,10 +68,13 @@ export function ProductGallery({
     if (emblaApi) emblaApi.scrollTo(index);
   };
 
+  // Get first word of product title
+  const firstWord = productTitle?.split(' ')[0] || '';
+
   return (
-    <div className={clsx('sticky top-4 flex flex-col gap-2 @2xl:flex-row', className)}>
+    <div className={clsx('sticky top-0 flex flex-col gap-2 @2xl:flex-row @2xl:items-start', className)}>
       <div
-        className="w-full overflow-hidden rounded-xl @xl:rounded-2xl @2xl:order-2"
+        className="w-full overflow-hidden rounded-xl @xl:rounded-2xl @2xl:order-2 @2xl:-mt-24"
         ref={emblaRef}
       >
         <div className="flex">
@@ -96,7 +101,6 @@ export function ProductGallery({
               <Image
                 alt={image.alt}
                 className={clsx(
-                  'bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))]',
                   {
                     contain: 'object-contain',
                     cover: 'object-cover',
@@ -111,12 +115,27 @@ export function ProductGallery({
           ))}
         </div>
       </div>
-      <div className="flex max-w-full shrink-0 flex-row gap-2 overflow-x-auto p-1 @2xl:order-1 @2xl:flex-col">
+      <div className="relative flex max-w-full shrink-0 flex-row gap-2 @2xl:order-1 @2xl:flex-col @2xl:overflow-visible">
+        {/* Vertical text behind thumbnails */}
+        {Boolean(firstWord) && (
+          <div className="pointer-events-none absolute inset-0 hidden items-start justify-center pt-48 @2xl:flex">
+            <span 
+              className="select-none text-[12rem] font-black uppercase tracking-widest text-gray-300 opacity-50"
+              style={{ 
+                writingMode: 'vertical-rl', 
+                textOrientation: 'mixed',
+                transform: 'rotate(180deg) translateY(60%)'
+              }}
+            >
+              {firstWord}
+            </span>
+          </div>
+        )}
         {images.map((image, index) => (
           <button
             aria-label={`${thumbnailLabel} ${index + 1}`}
             className={clsx(
-              'relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 @md:h-16 @md:w-16',
+              'relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border bg-white transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 @md:h-20 @md:w-28',
               index === previewImage
                 ? 'border-[var(--product-gallery-image-border-active,hsl(var(--foreground)))]'
                 : 'border-transparent',
@@ -132,7 +151,7 @@ export function ProductGallery({
             >
               <Image
                 alt={image.alt}
-                className="bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))] object-cover"
+                className="object-contain"
                 fill
                 sizes="(min-width: 28rem) 4rem, 3rem"
                 src={image.src}

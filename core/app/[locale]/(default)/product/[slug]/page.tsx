@@ -425,6 +425,8 @@ export default async function Product({ params, searchParams }: Props) {
     inventoryStatus: streamableInventoryStatus,
   };
 
+  const defaultProductData = baseProductData;
+
   // Enhanced product data for bike components
   const bikeProductData = streamableBikeData
     ? Streamable.from(async () => {
@@ -439,7 +441,7 @@ export default async function Product({ params, searchParams }: Props) {
       })
     : baseProductData;
 
-  const productDetailProps = {
+  const baseProps = {
     action: addToCart,
     additionalActions: (
       <WishlistButton
@@ -460,7 +462,6 @@ export default async function Product({ params, searchParams }: Props) {
     maxCompareItems: 3,
     maxCompareLimitMessage: "You've reached the maximum number of products for comparison.",
     prefetch: true,
-    product: productDetailVariant === 'bike' ? bikeProductData : baseProductData,
     quantityLabel: t('ProductDetails.quantity'),
     thumbnailLabel: t('ProductDetails.thumbnail'),
     relatedProducts: streameableRelatedProducts,
@@ -470,14 +471,14 @@ export default async function Product({ params, searchParams }: Props) {
   const renderProductDetail = () => {
     switch (productDetailVariant) {
       case 'bike':
-        return <ProductDetailBike {...productDetailProps} />;
+        return <ProductDetailBike {...baseProps} product={bikeProductData} />;
 
       case 'scooter':
-        return <ProductDetailScooter {...productDetailProps} />;
+        return <ProductDetailScooter {...baseProps} product={baseProductData} />;
 
       case 'default':
       default:
-        return <ProductDetail {...productDetailProps} />;
+        return <ProductDetail {...baseProps} product={defaultProductData} />;
     }
   };
 
