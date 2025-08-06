@@ -39,10 +39,10 @@ import { Field, schema, SchemaRawShape } from './schema';
 const isVariantField = (field: Field): boolean => {
   const variantTypes = ['swatch-radio-group', 'button-radio-group', 'card-radio-group'];
   const variantNames = ['color', 'colour', 'size', 'variant'];
-  
+
   return (
     variantTypes.includes(field.type) ||
-    variantNames.some(name => field.name.toLowerCase().includes(name))
+    variantNames.some((name) => field.name.toLowerCase().includes(name))
   );
 };
 
@@ -91,7 +91,6 @@ export function ProductDetailForm<F extends Field>({
   prefetch = false,
   additionalActions,
   price,
- 
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -161,7 +160,6 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
-
   // Helper function to render price
   const renderPrice = (priceValue: Price) => {
     if (typeof priceValue === 'string') {
@@ -185,13 +183,18 @@ export function ProductDetailForm<F extends Field>({
       <FormStateInput />
       <form {...getFormProps(form)} action={formAction} className="space-y-8">
         <input name="id" type="hidden" value={productId} />
-        
+
         {/* Price Display */}
         {price ? (
-          <div className="rounded-lg bg-white/90 p-6 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm">
+          <div className="p-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-600 uppercase tracking-wider">Price</span>
-              <span className="text-3xl font-black text-gray-900 @xl:text-4xl" style={{ fontFamily: 'Nunito' }}>
+              <span className="text-sm font-medium uppercase tracking-wider text-gray-600">
+                Price
+              </span>
+              <span
+                className="text-3xl font-black text-gray-900 @xl:text-4xl"
+                style={{ fontFamily: 'Nunito' }}
+              >
                 {renderPrice(price)}
               </span>
             </div>
@@ -204,7 +207,10 @@ export function ProductDetailForm<F extends Field>({
             .filter((field) => !isVariantField(field))
             .map((field) => {
               return (
-                <div className="rounded-lg bg-white/90 p-6 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm" key={formFields[field.name]?.id}>
+                <div
+                  className="rounded-lg bg-white/90 p-6 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm"
+                  key={formFields[field.name]?.id}
+                >
                   <FormField
                     emptySelectPlaceholder={emptySelectPlaceholder}
                     field={field}
@@ -216,7 +222,7 @@ export function ProductDetailForm<F extends Field>({
               );
             })}
         </div>
-          
+
         {/* Variant fields - hidden inputs only for form submission */}
         {fields
           .filter((field) => isVariantField(field))
@@ -239,12 +245,8 @@ export function ProductDetailForm<F extends Field>({
         {/* Add to Cart Section */}
         <div className="rounded-lg bg-white/90 p-6 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm">
           {/* Hidden quantity input with default value of 1 */}
-          <input
-            name={formFields.quantity.name}
-            type="hidden"
-            value="1"
-          />
-          
+          <input name={formFields.quantity.name} type="hidden" value="1" />
+
           <div className="flex flex-col gap-4 @sm:flex-row @sm:items-center @sm:justify-between">
             <div className="flex items-center gap-4">
               <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
@@ -262,7 +264,7 @@ function SubmitButton({ children, disabled }: { children: ReactNode; disabled?: 
 
   return (
     <Button
-      className="flex-1 bg-[#F92F7B] text-white hover:bg-[#e01b5f] focus:ring-2 focus:ring-[#F92F7B] focus:ring-offset-2 disabled:bg-gray-300 @sm:flex-none @sm:min-w-[200px]"
+      className="flex-1 bg-[#F92F7B] text-white hover:bg-[#e01b5f] focus:ring-2 focus:ring-[#F92F7B] focus:ring-offset-2 disabled:bg-gray-300 @sm:min-w-[200px] @sm:flex-none"
       disabled={disabled}
       loading={pending}
       size="large"
@@ -508,7 +510,7 @@ export function ProductVariantSelector({
       <div className="grid gap-6 @md:grid-cols-2">
         {variantFields.map((field) => {
           const formField = formFields[field.name];
-          
+
           if (!formField) return null;
 
           return (

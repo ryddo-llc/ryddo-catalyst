@@ -23,12 +23,14 @@ const isVariantField = (field: Field): boolean => {
 
 // Helper function to render color swatch as small square
 const renderColorSwatch = (field: Field, option: unknown, label: string) => {
-  if (field.type === 'swatch-radio-group' &&
-      typeof option === 'object' &&
-      option !== null &&
-      'type' in option &&
-      option.type === 'color' &&
-      'color' in option) {
+  if (
+    field.type === 'swatch-radio-group' &&
+    typeof option === 'object' &&
+    option !== null &&
+    'type' in option &&
+    option.type === 'color' &&
+    'color' in option
+  ) {
     return (
       <div
         className="mx-auto h-6 w-6 rounded border border-gray-300 shadow-sm"
@@ -47,9 +49,7 @@ const renderColorSwatch = (field: Field, option: unknown, label: string) => {
 const renderSizeBadge = (label: string) => {
   return (
     <div className="mx-auto flex h-6 w-6 items-center justify-center rounded border border-gray-300 bg-white shadow-sm">
-      <span className="text-xs font-bold uppercase text-gray-700">
-        {label}
-      </span>
+      <span className="text-xs font-bold uppercase text-gray-700">{label}</span>
     </div>
   );
 };
@@ -135,26 +135,23 @@ export function ProductDetail<F extends Field>({
         }}
       />
 
-      <div className="group/product-detail relative z-10 mx-auto w-full max-w-screen-2xl px-4 py-8 @xl:px-6 @xl:py-12 @4xl:px-8 @4xl:py-16">
+      <div className="group/product-detail z-5 relative mx-auto w-full max-w-screen-2xl px-4 py-8 @xl:px-6 @xl:py-12 @4xl:px-8 @4xl:py-16">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">
             <Breadcrumbs breadcrumbs={breadcrumbs} />
           </div>
         )}
 
-        <Stream 
-          fallback={<ProductDetailSkeleton />} 
-          value={Streamable.all([streamableProduct, streamableFields])}
-        >
-          {([product, fields]) =>
+        <Stream fallback={<ProductDetailSkeleton />} value={streamableProduct}>
+          {(product) =>
             product && (
               <div className="space-y-16">
-                <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2 @2xl:gap-16 @5xl:gap-20">
+                <div className="grid grid-cols-1 items-start gap-8 @2xl:grid-cols-2 @2xl:gap-16 @5xl:gap-20">
                   {/* Product Gallery - Left Side */}
                   <div className="group/product-gallery order-2 @2xl:order-1">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(images) => (
-                        <div className="sticky top-8">
+                        <div className="sticky top-0">
                           <ProductGallery
                             aspectRatio="4:5"
                             images={images}
@@ -167,7 +164,7 @@ export function ProductDetail<F extends Field>({
                   </div>
 
                   {/* Product Information - Right Side */}
-                  <div className="group/product-info order-1 space-y-6 @2xl:order-2 @2xl:pt-8">
+                  <div className="group/product-info order-1 space-y-6 @2xl:order-2">
                     {/* Badge */}
                     <div className="inline-flex items-center rounded-full border border-[#F92F7B]/20 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm">
                       <span className="text-xs font-semibold uppercase tracking-wider text-[#F92F7B]">
@@ -208,6 +205,21 @@ export function ProductDetail<F extends Field>({
                       </Stream>
                     </div>
 
+                    {/* Description */}
+                    <div className="group/product-description">
+                      <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
+                        {(description) =>
+                          Boolean(description) && (
+                            <div className="p-6">
+                              <div className="prose prose-gray max-w-none text-sm leading-relaxed text-gray-700">
+                                {description}
+                              </div>
+                            </div>
+                          )
+                        }
+                      </Stream>
+                    </div>
+
                     {/* Rating */}
                     <div className="group/product-rating">
                       <Stream fallback={<RatingSkeleton />} value={product.rating}>
@@ -226,14 +238,14 @@ export function ProductDetail<F extends Field>({
                           product.price,
                         ])}
                       >
-                        {([formFields, ctaLabel, ctaDisabled, price]) => (
+                        {([fields, ctaLabel, ctaDisabled, price]) => (
                           <ProductDetailForm
                             action={action}
                             additionalActions={additionalActions}
                             ctaDisabled={ctaDisabled ?? undefined}
                             ctaLabel={ctaLabel ?? undefined}
                             emptySelectPlaceholder={emptySelectPlaceholder}
-                            fields={formFields}
+                            fields={fields}
                             prefetch={prefetch}
                             price={price}
                             productId={product.id}
@@ -241,95 +253,106 @@ export function ProductDetail<F extends Field>({
                         )}
                       </Stream>
                     </div>
-
-                    {/* Description */}
-                    <div className="group/product-description">
-                      <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
-                        {(description) =>
-                          Boolean(description) && (
-                            <div className="rounded-lg bg-gray-50 p-6">
-                              <h3 className="mb-3 text-lg font-semibold text-gray-900">
-                                Description
-                              </h3>
-                              <div className="prose prose-gray max-w-none text-sm leading-relaxed text-gray-700">
-                                {description}
-                              </div>
-                            </div>
-                          )
-                        }
-                      </Stream>
-                    </div>
                   </div>
                 </div>
 
                 {/* Product Specifications & Options - Single Row Layout */}
                 <div className="group/product-specifications">
-                  {(() => {
-                    const variantFields = fields.filter(isVariantField);
-                      
+                  <Stream fallback={null} value={streamableFields}>
+                    {(fields) => {
+                      const variantFields = fields.filter(isVariantField);
+
                       // Find color and size fields
-                      const colorField = variantFields.find(
-                        (field) =>
-                          field.name.toLowerCase().includes('color') ||
-                          field.name.toLowerCase().includes('colour'),
-                      ) || variantFields[0]; // Fallback to first variant field
-                      
-                      const sizeField = variantFields.find((field) =>
-                        field.name.toLowerCase().includes('size'),
-                      ) || variantFields[1]; // Fallback to second variant field
+                      const colorField =
+                        variantFields.find(
+                          (field) =>
+                            field.name.toLowerCase().includes('color') ||
+                            field.name.toLowerCase().includes('colour'),
+                        ) || variantFields[0]; // Fallback to first variant field
+
+                      const sizeField =
+                        variantFields.find((field) => field.name.toLowerCase().includes('size')) ||
+                        variantFields[1]; // Fallback to second variant field
 
                       const specifications = [];
 
                       // Add Colors section
                       if (colorField && 'options' in colorField && colorField.options.length > 0) {
-                        const colorSwatches = colorField.options.map((option) => {
+                        const colorSwatches = colorField.options.map((option, index) => {
                           const label = typeof option === 'string' ? option : option.label;
+                          const value = typeof option === 'string' ? option : option.value;
 
-                          return renderColorSwatch(colorField, option, label);
+                          return (
+                            <div key={value || index}>
+                              {renderColorSwatch(colorField, option, label)}
+                            </div>
+                          );
                         });
-                        
+
                         specifications.push(
-                          createSpecificationItem('Colors', 
+                          createSpecificationItem(
+                            'Colors',
                             <div className="flex flex-wrap justify-center gap-0.5">
                               {colorSwatches}
-                            </div>
-                          )
+                            </div>,
+                          ),
                         );
                       }
 
-                      // Add Sizes section  
+                      // Add Sizes section
                       if (sizeField && 'options' in sizeField && sizeField.options.length > 0) {
-                        const sizeBadges = sizeField.options.map((option) => {
+                        const sizeBadges = sizeField.options.map((option, index) => {
                           const label = typeof option === 'string' ? option : option.label;
+                          const value = typeof option === 'string' ? option : option.value;
 
-                          return renderSizeBadge(label);
+                          return <div key={value || index}>{renderSizeBadge(label)}</div>;
                         });
-                        
+
                         specifications.push(
-                          createSpecificationItem('Size',
+                          createSpecificationItem(
+                            'Size',
                             <div className="flex flex-wrap justify-center gap-0.5">
                               {sizeBadges}
-                            </div>
-                          )
+                            </div>,
+                          ),
                         );
                       }
 
                       // Add static specifications
                       specifications.push(
-                        createSpecificationItem('Weight', <span className="text-base font-medium text-gray-600">2.5 lbs</span>),
-                        createSpecificationItem('Construction', <span className="text-base font-medium text-gray-600">Aluminum Frame</span>),
-                        createSpecificationItem('Color Finish', <span className="text-base font-medium text-gray-600">Powder Coated</span>),
-                        createSpecificationItem('Certifications', <span className="text-base font-medium text-gray-600">CE, UL Listed</span>)
+                        createSpecificationItem(
+                          'Weight',
+                          <span className="text-base font-medium text-gray-600">2.5 lbs</span>,
+                        ),
+                        createSpecificationItem(
+                          'Construction',
+                          <span className="text-base font-medium text-gray-600">
+                            Aluminum Frame
+                          </span>,
+                        ),
+                        createSpecificationItem(
+                          'Color Finish',
+                          <span className="text-base font-medium text-gray-600">
+                            Powder Coated
+                          </span>,
+                        ),
+                        createSpecificationItem(
+                          'Certifications',
+                          <span className="text-base font-medium text-gray-600">
+                            CE, UL Listed
+                          </span>,
+                        ),
                       );
 
-                    return (
-                      <div className="grid grid-cols-2 gap-8 @md:grid-cols-4 @xl:grid-cols-6">
-                        {specifications.map((spec, index) => (
-                          <div key={index}>{spec}</div>
-                        ))}
-                      </div>
-                    );
-                  })()}
+                      return (
+                        <div className="grid grid-cols-2 gap-8 @md:grid-cols-4 @xl:grid-cols-6">
+                          {specifications.map((spec, index) => (
+                            <div key={index}>{spec}</div>
+                          ))}
+                        </div>
+                      );
+                    }}
+                  </Stream>
                 </div>
               </div>
             )

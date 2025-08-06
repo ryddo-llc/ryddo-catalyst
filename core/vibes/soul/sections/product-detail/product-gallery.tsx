@@ -2,7 +2,7 @@
 
 import { clsx } from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { Image } from '~/components/image';
 
@@ -50,6 +50,9 @@ export function ProductGallery({
 }: ProductGalleryProps) {
   const [previewImage, setPreviewImage] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+  const thumbnailContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -68,22 +71,144 @@ export function ProductGallery({
     if (emblaApi) emblaApi.scrollTo(index);
   };
 
+  const checkScrollButtons = () => {
+    if (!thumbnailContainerRef.current) return;
+
+    const container = thumbnailContainerRef.current;
+    const scrollTop = container.scrollTop;
+    const scrollHeight = container.scrollHeight;
+    const clientHeight = container.clientHeight;
+
+    setCanScrollUp(scrollTop > 0);
+    setCanScrollDown(scrollTop < scrollHeight - clientHeight - 1);
+  };
+
+  const scrollThumbnails = (direction: 'up' | 'down') => {
+    if (!thumbnailContainerRef.current) return;
+
+    const container = thumbnailContainerRef.current;
+    const scrollAmount = container.clientHeight * 0.7; // Scroll 70% of container height
+
+    container.scrollBy({
+      top: direction === 'down' ? scrollAmount : -scrollAmount,
+      behavior: 'smooth',
+    });
+  };
+
+  useEffect(() => {
+    checkScrollButtons();
+    const container = thumbnailContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScrollButtons);
+      window.addEventListener('resize', checkScrollButtons);
+
+      return () => {
+        container.removeEventListener('scroll', checkScrollButtons);
+        window.removeEventListener('resize', checkScrollButtons);
+      };
+    }
+  }, [images]);
+
   // Get first word of product title
   const firstWord = productTitle?.split(' ')[0] || '';
 
   return (
-    <div className={clsx('flex flex-col gap-6', className)}>
-      {/* Main Image */}
-      <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-white shadow-xl ring-1 ring-gray-200">
+    <div
+      className={clsx('relative flex flex-col items-start gap-4 @md:flex-row @md:gap-6', className)}
+    >
+      {/* Brand name background text - behind thumbnails only */}
+      {Boolean(firstWord) && (
         <div
-          className="w-full overflow-hidden"
-          ref={emblaRef}
+          className="pointer-events-none absolute left-0 top-0 hidden items-center justify-center @md:flex @md:min-h-[500px] @md:w-36 @xl:w-40"
+          style={{ zIndex: 1 }}
         >
+          <span
+            className="select-none text-[10rem] font-black uppercase tracking-widest text-gray-300 opacity-15 @xl:text-[14rem]"
+            style={{
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed',
+              transform: 'rotate(180deg)',
+            }}
+          >
+            {firstWord}
+          </span>
+        </div>
+      )}
+
+      {/* Thumbnail Gallery with Natural Arrow Flow */}
+      <div className="flex w-full flex-row @md:w-36 @md:flex-col @xl:w-40">
+        {/* Up Arrow */}
+        <button
+          onClick={() => selectImage(Math.max(0, previewImage - 1))}
+          className="hidden items-center justify-center @md:flex @md:w-32 @md:pb-2 @xl:w-36"
+          aria-label="Previous image"
+        >
+          <svg className="h-6 w-6" fill="none" stroke="#F92F7B" strokeWidth={3} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
+
+        {/* Thumbnails Container */}
+        <div
+          ref={thumbnailContainerRef}
+          className="flex flex-row gap-3 overflow-x-auto pb-2 @md:flex-col @md:overflow-y-auto @md:pb-0 [&::-webkit-scrollbar]:hidden"
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
+          {images.map((image, index) => (
+            <button
+              aria-label={`${thumbnailLabel} ${index + 1}`}
+              className={clsx(
+                'group relative z-10 h-20 w-24 shrink-0 overflow-hidden rounded-xl border-2 bg-white shadow-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 @md:h-24 @md:w-32 @xl:h-28 @xl:w-36',
+                index === previewImage
+                  ? 'border-gray-400'
+                  : 'border-gray-200 hover:border-gray-300',
+              )}
+              key={index}
+              onClick={() => selectImage(index)}
+            >
+              <div className="p-1">
+                <div
+                  className={clsx(
+                    'h-full w-full transition-opacity duration-300',
+                    index === previewImage ? 'opacity-100' : 'opacity-60 group-hover:opacity-90',
+                  )}
+                >
+                  <Image
+                    alt={image.alt}
+                    className="object-contain"
+                    fill
+                    sizes="(max-width: 768px) 6rem, (max-width: 1280px) 8rem, 9rem"
+                    src={image.src}
+                  />
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Down Arrow */}
+        <button
+          onClick={() => selectImage(Math.min(images.length - 1, previewImage + 1))}
+          className="hidden items-center justify-center @md:flex @md:w-32 @md:pt-2 @xl:w-36"
+          aria-label="Next image"
+        >
+          <svg className="h-6 w-6" fill="none" stroke="#F92F7B" strokeWidth={3} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Main Image */}
+      <div className="group relative -mt-20 flex-1 overflow-hidden @md:-mt-16 @md:pt-[2rem]">
+        <div className="w-full overflow-hidden" ref={emblaRef}>
           <div className="flex">
             {images.map((image, idx) => (
               <div
                 className={clsx(
-                  'relative w-full shrink-0 grow-0 basis-full p-8',
+                  'relative w-full shrink-0 grow-0 basis-full',
                   {
                     '5:6': 'aspect-[5/6]',
                     '3:4': 'aspect-[3/4]',
@@ -103,7 +228,7 @@ export function ProductGallery({
                 <Image
                   alt={image.alt}
                   className={clsx(
-                    'transition-transform duration-300 group-hover:scale-105',
+                    'transition-transform duration-300',
                     {
                       contain: 'object-contain',
                       cover: 'object-cover',
@@ -118,56 +243,6 @@ export function ProductGallery({
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Thumbnail Gallery */}
-      <div className="relative flex gap-3 overflow-x-auto pb-2">
-        {/* Vertical text behind thumbnails - now more subtle */}
-        {Boolean(firstWord) && (
-          <div className="pointer-events-none absolute inset-0 hidden items-center justify-start pl-2 @lg:flex">
-            <span 
-              className="select-none text-8xl font-black uppercase tracking-widest text-gray-100 opacity-30"
-              style={{ 
-                writingMode: 'vertical-rl', 
-                textOrientation: 'mixed',
-                transform: 'rotate(180deg)'
-              }}
-            >
-              {firstWord}
-            </span>
-          </div>
-        )}
-        
-        {images.map((image, index) => (
-          <button
-            aria-label={`${thumbnailLabel} ${index + 1}`}
-            className={clsx(
-              'group relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white shadow-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 @md:h-24 @md:w-24',
-              index === previewImage
-                ? 'border-[#F92F7B] shadow-lg ring-2 ring-[#F92F7B]/20'
-                : 'border-gray-200 hover:border-gray-300',
-            )}
-            key={index}
-            onClick={() => selectImage(index)}
-          >
-            <div className="p-2">
-              <div
-                className={clsx(
-                  'transition-all duration-300',
-                  index === previewImage ? 'opacity-100 scale-100' : 'opacity-60 group-hover:opacity-100 group-hover:scale-105',
-                )}
-              >
-                <Image
-                  alt={image.alt}
-                  className="object-contain"
-                  fill
-                  sizes="6rem"
-                  src={image.src}
-                />
-              </div>
-            </div>
-          </button>
-        ))}
       </div>
     </div>
   );
