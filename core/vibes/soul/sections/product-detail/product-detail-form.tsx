@@ -184,23 +184,6 @@ export function ProductDetailForm<F extends Field>({
       <form {...getFormProps(form)} action={formAction} className="space-y-8">
         <input name="id" type="hidden" value={productId} />
 
-        {/* Price Display */}
-        {price ? (
-          <div className="p-6">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium uppercase tracking-wider text-gray-600">
-                Price
-              </span>
-              <span
-                className="text-3xl font-black text-gray-900 @xl:text-4xl"
-                style={{ fontFamily: 'Nunito' }}
-              >
-                {renderPrice(price)}
-              </span>
-            </div>
-          </div>
-        ) : null}
-
         {/* Regular fields (non-variant) */}
         <div className="space-y-6">
           {fields
@@ -242,17 +225,24 @@ export function ProductDetailForm<F extends Field>({
           </FormStatus>
         ))}
 
-        {/* Add to Cart Section */}
-        <div className="rounded-lg bg-white/90 p-6 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm">
+        {/* Price and Add to Cart Section */}
+        <div className="flex flex-col gap-4 @sm:flex-row @sm:items-center @sm:gap-6">
           {/* Hidden quantity input with default value of 1 */}
           <input name={formFields.quantity.name} type="hidden" value="1" />
 
-          <div className="flex flex-col gap-4 @sm:flex-row @sm:items-center @sm:justify-between">
-            <div className="flex items-center gap-4">
-              <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
-              {additionalActions}
-            </div>
-          </div>
+          {/* Price Display */}
+          {price ? (
+            <span
+              className="max-w-[288px] text-3xl font-black leading-normal text-[#333] @md:text-4xl @lg:text-5xl @xl:text-6xl"
+              style={{ fontFamily: 'Nunito' }}
+            >
+              {renderPrice(price)}
+            </span>
+          ) : null}
+
+          {/* Add to Cart Button */}
+          <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+          {additionalActions}
         </div>
       </form>
     </FormProvider>
@@ -267,7 +257,7 @@ function SubmitButton({ children, disabled }: { children: ReactNode; disabled?: 
       className="flex-1 bg-[#F92F7B] text-white hover:bg-[#e01b5f] focus:ring-2 focus:ring-[#F92F7B] focus:ring-offset-2 disabled:bg-gray-300 @sm:min-w-[200px] @sm:flex-none"
       disabled={disabled}
       loading={pending}
-      size="large"
+      size="medium"
       type="submit"
     >
       {children}

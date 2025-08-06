@@ -119,11 +119,11 @@ export function ProductGallery({
       {/* Brand name background text - behind thumbnails only */}
       {Boolean(firstWord) && (
         <div
-          className="pointer-events-none absolute left-0 top-0 hidden items-center justify-center @md:flex @md:min-h-[500px] @md:w-36 @xl:w-40"
+          className="pointer-events-none absolute left-0 top-[-12px] hidden items-center justify-center @md:ml-2 @md:flex @md:min-h-[300px] @md:w-24 @lg:ml-3 @lg:w-28 @xl:ml-4 @xl:w-32"
           style={{ zIndex: 1 }}
         >
           <span
-            className="select-none text-[10rem] font-black uppercase tracking-widest text-gray-300 opacity-15 @xl:text-[14rem]"
+            className="select-none text-[8rem] font-black uppercase tracking-widest text-gray-400 opacity-15 @md:text-[6rem] @lg:text-[8rem] @xl:text-[10rem] @2xl:text-[12rem]"
             style={{
               writingMode: 'vertical-rl',
               textOrientation: 'mixed',
@@ -136,11 +136,11 @@ export function ProductGallery({
       )}
 
       {/* Thumbnail Gallery with Natural Arrow Flow */}
-      <div className="flex w-full flex-row @md:w-36 @md:flex-col @xl:w-40">
+      <div className="flex w-full flex-row @md:ml-4 @md:w-24 @md:flex-col @md:items-center @lg:ml-6 @lg:w-28 @xl:ml-8 @xl:w-32">
         {/* Up Arrow */}
         <button
           onClick={() => selectImage(Math.max(0, previewImage - 1))}
-          className="hidden items-center justify-center @md:flex @md:w-32 @md:pb-2 @xl:w-36"
+          className="hidden items-center justify-center @md:flex @md:pb-2"
           aria-label="Previous image"
         >
           <svg className="h-6 w-6" fill="none" stroke="#F92F7B" strokeWidth={3} viewBox="0 0 24 24">
@@ -161,7 +161,7 @@ export function ProductGallery({
             <button
               aria-label={`${thumbnailLabel} ${index + 1}`}
               className={clsx(
-                'group relative z-10 h-20 w-24 shrink-0 overflow-hidden rounded-xl border-2 bg-white shadow-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 @md:h-24 @md:w-32 @xl:h-28 @xl:w-36',
+                '@lg:h-22 group relative z-10 h-16 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white shadow-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 @md:h-20 @md:w-24 @lg:w-28 @xl:h-24 @xl:w-32',
                 index === previewImage
                   ? 'border-gray-400'
                   : 'border-gray-200 hover:border-gray-300',
@@ -169,7 +169,7 @@ export function ProductGallery({
               key={index}
               onClick={() => selectImage(index)}
             >
-              <div className="p-1">
+              <div className="p-3">
                 <div
                   className={clsx(
                     'h-full w-full transition-opacity duration-300',
@@ -192,7 +192,7 @@ export function ProductGallery({
         {/* Down Arrow */}
         <button
           onClick={() => selectImage(Math.min(images.length - 1, previewImage + 1))}
-          className="hidden items-center justify-center @md:flex @md:w-32 @md:pt-2 @xl:w-36"
+          className="hidden items-center justify-center @md:flex @md:pt-2"
           aria-label="Next image"
         >
           <svg className="h-6 w-6" fill="none" stroke="#F92F7B" strokeWidth={3} viewBox="0 0 24 24">
@@ -202,7 +202,7 @@ export function ProductGallery({
       </div>
 
       {/* Main Image */}
-      <div className="group relative -mt-20 flex-1 overflow-hidden @md:-mt-16 @md:pt-[2rem]">
+      <div className="group relative -mt-16 overflow-hidden @md:-mt-12 @md:w-[calc(100%-7rem)] @md:pt-[2rem] @lg:w-[calc(100%-8rem)] @xl:w-[calc(100%-9rem)]">
         <div className="w-full overflow-hidden" ref={emblaRef}>
           <div className="flex">
             {images.map((image, idx) => (

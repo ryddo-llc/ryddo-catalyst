@@ -146,9 +146,9 @@ export function ProductDetail<F extends Field>({
           {(product) =>
             product && (
               <div className="space-y-16">
-                <div className="grid grid-cols-1 items-start gap-8 @2xl:grid-cols-2 @2xl:gap-16 @5xl:gap-20">
+                <div className="grid grid-cols-1 items-start gap-6 max-h-[85vh] @lg:grid-cols-2 @lg:gap-12 @2xl:gap-16 @5xl:gap-20">
                   {/* Product Gallery - Left Side */}
-                  <div className="group/product-gallery order-2 @2xl:order-1">
+                  <div className="group/product-gallery order-2 @lg:order-1">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(images) => (
                         <div className="sticky top-0">
@@ -164,10 +164,10 @@ export function ProductDetail<F extends Field>({
                   </div>
 
                   {/* Product Information - Right Side */}
-                  <div className="group/product-info order-1 space-y-6 @2xl:order-2">
+                  <div className="group/product-info order-1 space-y-4 @lg:order-2">
                     {/* Badge */}
-                    <div className="inline-flex items-center rounded-full border border-[#F92F7B]/20 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-[#F92F7B]">
+                    <div className="inline-flex items-center justify-center gap-2 rounded border border-[#757575] p-2">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-[#333]">
                         Ryddo Recommended
                       </span>
                     </div>
@@ -179,10 +179,11 @@ export function ProductDetail<F extends Field>({
                       </p>
                     )}
 
-                    {/* Product Title */}
+                    {/* Product Title, Rating, Description - Tight spacing */}
                     <div className="space-y-2">
+                      {/* Product Title */}
                       <h1
-                        className="text-4xl font-black leading-tight text-gray-900 @xl:text-5xl @4xl:text-6xl"
+                        className="text-3xl font-black leading-tight text-gray-900 @md:text-4xl @lg:text-5xl @xl:text-6xl"
                         style={{ fontFamily: 'Nunito' }}
                       >
                         <span className="text-[#F92F7B]">{product.title.split(' ')[0]}</span>
@@ -190,6 +191,26 @@ export function ProductDetail<F extends Field>({
                           <span className="text-gray-900">{` ${product.title.split(' ').slice(1).join(' ')}`}</span>
                         )}
                       </h1>
+
+                      {/* Rating */}
+                      <div className="group/product-rating">
+                        <Stream fallback={<RatingSkeleton />} value={product.rating}>
+                          {(rating) => rating && rating > 0 ? <Rating rating={rating} /> : null}
+                        </Stream>
+                      </div>
+
+                      {/* Description */}
+                      <div className="group/product-description">
+                        <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
+                          {(description) =>
+                            Boolean(description) && (
+                              <div className="max-w-[421px] text-[#757575] font-normal text-base leading-relaxed @md:text-lg @lg:text-xl" style={{ fontFamily: 'Inter' }}>
+                                {description}
+                              </div>
+                            )
+                          }
+                        </Stream>
+                      </div>
                     </div>
 
                     {/* Summary */}
@@ -202,28 +223,6 @@ export function ProductDetail<F extends Field>({
                             </p>
                           )
                         }
-                      </Stream>
-                    </div>
-
-                    {/* Description */}
-                    <div className="group/product-description">
-                      <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
-                        {(description) =>
-                          Boolean(description) && (
-                            <div className="p-6">
-                              <div className="prose prose-gray max-w-none text-sm leading-relaxed text-gray-700">
-                                {description}
-                              </div>
-                            </div>
-                          )
-                        }
-                      </Stream>
-                    </div>
-
-                    {/* Rating */}
-                    <div className="group/product-rating">
-                      <Stream fallback={<RatingSkeleton />} value={product.rating}>
-                        {(rating) => rating && <Rating rating={rating} />}
                       </Stream>
                     </div>
 
