@@ -1,7 +1,42 @@
 'use client';
 
 import React from 'react';
-import './pulse-rings.module.css';
+
+// Keyframes CSS - needs to be inline for dynamic animation names
+const KEYFRAMES_CSS = `
+  @keyframes apulser-fade-1 {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(0.95);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.08);
+      opacity: 0.7;
+    }
+  }
+  
+  @keyframes apulser-fade-2 {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(0.95);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.08);
+      opacity: 0.5;
+    }
+  }
+  
+  @keyframes apulser-fade-3 {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(0.95);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.08);
+      opacity: 0.2;
+    }
+  }
+`;
 
 interface PulseRingsProps {
   baseSize: number;
@@ -103,7 +138,7 @@ export function PulseRings({
       <div style={makeRing(2)} />
       <div style={makeRing(3)} />
 
-
+      <style>{KEYFRAMES_CSS}</style>
     </div>
   );
 }
