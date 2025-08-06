@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import './pulse-rings.module.css';
 
 interface PulseRingsProps {
   baseSize: number;
@@ -10,7 +11,43 @@ interface PulseRingsProps {
   edgeColor: string;
   opacity: number;
   disabledOnMobile?: boolean;
+  maskInner?: number;
+  maskMiddle?: number;
+  maskOuter?: number;
 }
+
+// Create a separate styles object for better maintainability
+const createRingStyles = (
+  baseSize: number,
+  ringSpacing: number,
+  multiplier: number,
+  baseColor: string,
+  edgeColor: string,
+  opacity: number,
+  pulseSpeed: number,
+  maskInner: number,
+  maskMiddle: number,
+  maskOuter: number
+) => ({
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  width: baseSize + ringSpacing * multiplier,
+  height: baseSize + ringSpacing * multiplier,
+  borderRadius: '50%',
+  background: `radial-gradient(circle, ${baseColor} 60%, ${edgeColor} 100%)`,
+  opacity,
+  transform: 'translate(-50%, -50%) scale(0.95)',
+  animation: `apulser-fade-${multiplier} ${pulseSpeed}ms ease-in-out infinite`,
+  WebkitMaskImage: `radial-gradient(circle, black calc(100% - ${maskInner}px), rgba(0,0,0,0.8) calc(100% - ${maskMiddle}px), transparent calc(100% - ${maskOuter}px))`,
+  WebkitMaskRepeat: 'no-repeat',
+  WebkitMaskPosition: 'center',
+  WebkitMaskComposite: 'destination-out',
+  maskImage: `radial-gradient(circle, black calc(100% - ${maskInner}px), rgba(0,0,0,0.8) calc(100% - ${maskMiddle}px), transparent calc(100% - ${maskOuter}px))`,
+  maskRepeat: 'no-repeat',
+  maskPosition: 'center',
+  maskComposite: 'exclude', // Firefox's equivalent for 'destination-out'
+});
 
 export function PulseRings({
   baseSize,
@@ -20,23 +57,22 @@ export function PulseRings({
   edgeColor,
   opacity,
   disabledOnMobile = true,
+  maskInner = 35,
+  maskMiddle = 25,
+  maskOuter = 15,
 }: PulseRingsProps) {
-  const makeRing = (multiplier: number) => ({
-    position: 'absolute' as const,
-    top: '50%',
-    left: '50%',
-    width: baseSize + ringSpacing * multiplier,
-    height: baseSize + ringSpacing * multiplier,
-    borderRadius: '50%',
-    background: `radial-gradient(circle, ${baseColor} 60%, ${edgeColor} 100%)`,
+  const makeRing = (multiplier: number) => createRingStyles(
+    baseSize,
+    ringSpacing,
+    multiplier,
+    baseColor,
+    edgeColor,
     opacity,
-    transform: 'translate(-50%, -50%) scale(0.95)',
-    animation: `apulser-fade-${multiplier} ${pulseSpeed}ms ease-in-out infinite`,
-    WebkitMaskImage: `radial-gradient(circle, black calc(100% - 35px), rgba(0,0,0,0.8) calc(100% - 25px), transparent calc(100% - 15px))`,
-    WebkitMaskRepeat: 'no-repeat',
-    WebkitMaskPosition: 'center',
-    WebkitMaskComposite: 'destination-out',
-  });
+    pulseSpeed,
+    maskInner,
+    maskMiddle,
+    maskOuter
+  );
 
   return (
     <div
@@ -67,40 +103,7 @@ export function PulseRings({
       <div style={makeRing(2)} />
       <div style={makeRing(3)} />
 
-      <style>{`
-        @keyframes apulser-fade-1 {
-          0%, 100% {
-            transform: translate(-50%, -50%) scale(0.95);
-            opacity: 1;
-          }
-          50% {
-            transform: translate(-50%, -50%) scale(1.08);
-            opacity: 0.7;
-          }
-        }
-        
-        @keyframes apulser-fade-2 {
-          0%, 100% {
-            transform: translate(-50%, -50%) scale(0.95);
-            opacity: 1;
-          }
-          50% {
-            transform: translate(-50%, -50%) scale(1.08);
-            opacity: 0.5;
-          }
-        }
-        
-        @keyframes apulser-fade-3 {
-          0%, 100% {
-            transform: translate(-50%, -50%) scale(0.95);
-            opacity: 1;
-          }
-          50% {
-            transform: translate(-50%, -50%) scale(1.08);
-            opacity: 0.2;
-          }
-        }
-      `}</style>
+
     </div>
   );
 }

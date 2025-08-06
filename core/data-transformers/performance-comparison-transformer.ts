@@ -88,6 +88,9 @@ const DEFAULT_WHEEL_CONFIG = {
   mobileOffsetY: 0,
 };
 
+// Each RGBA has 3 commas (r,g,b,a), two RGBAs = 6 commas, plus 1 separator = 7 minimum
+const MIN_COMMA_COUNT_FOR_RGBA = 7;
+
 /**
  * Parse a performance metric string from BigCommerce custom field
  * Format: "Label:Percentage:Sublabel:Value"
@@ -116,7 +119,7 @@ function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
   const middlePart = fieldValue.substring(firstColonIndex + 1, lastColonIndex);
   
   // Find the percentage (should be a number)
-  const percentageMatch = /^(\d+):(.+)$/.exec(middlePart);
+  const percentageMatch = /^(\d{1,3}):(.+)$/.exec(middlePart);
   
   if (!percentageMatch) {
     return null;
@@ -184,26 +187,22 @@ function parseWheelColors(colorsStr?: string): { baseColor: string; edgeColor: s
   const commaMatches = colorsStr.match(/,/g);
   const commaCount = commaMatches ? commaMatches.length : 0;
   
-  if (commaCount < 7) { // Each RGBA has 3 commas, need at least 7 total
+  if (commaCount < MIN_COMMA_COUNT_FOR_RGBA) {
     return { baseColor: DEFAULT_WHEEL_CONFIG.baseColor, edgeColor: DEFAULT_WHEEL_CONFIG.edgeColor };
   }
   
   // Find the 4th comma (the separator between colors)
-  let commaIndex = -1;
-  let commaCount2 = 0;
+  const commaIndices = [];
 
   for (let i = 0; i < colorsStr.length; i += 1) {
     if (colorsStr[i] === ',') {
-      commaCount2 += 1;
-
-      if (commaCount2 === 4) {
-        commaIndex = i;
-        break;
-      }
+      commaIndices.push(i);
     }
   }
+
+  const commaIndex = commaIndices[3]; // Get the 4th comma (0-indexed)
   
-  if (commaIndex === -1) {
+  if (commaIndex === undefined) {
     return { baseColor: DEFAULT_WHEEL_CONFIG.baseColor, edgeColor: DEFAULT_WHEEL_CONFIG.edgeColor };
   }
   

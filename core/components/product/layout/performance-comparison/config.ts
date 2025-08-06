@@ -45,25 +45,31 @@ export interface ImageConfig {
   zIndex: number;
 }
 
+export interface PerformanceMetricsConfig {
+  trackingMultiplier: number;
+  zIndex: number;
+  gapFromWheel: number;  // Gap from wheel edge to metrics center
+  lineSpacing: number;   // Space between metrics
+  barWidth: number;      // Progress bar width
+  containerWidth: number; // Container width for metrics
+  containerHeight: number; // Container height for metrics
+  topOffset: number;     // Top offset for metrics container
+  curveRadiusMultiplier: number; // Multiplier for curve radius
+}
+
 export interface PerformanceComparisonConfig {
   wheel: WheelConfig;
   image: ImageConfig;
-  performanceMetrics: {
-    trackingMultiplier: number;
-    zIndex: number;
-    gapFromWheel: number;  // Gap from wheel edge to metrics center
-    lineSpacing: number;   // Space between metrics
-    barWidth: number;      // Progress bar width
-    containerWidth: number; // Container width for metrics
-    containerHeight: number; // Container height for metrics
-    topOffset: number;     // Top offset for metrics container
-    curveRadiusMultiplier: number; // Multiplier for curve radius
-  };
+  performanceMetrics: PerformanceMetricsConfig;
   disabledOnMobile: boolean;
 }
 
-// Default configurations for different bike types
+/**
+ * Default wheel configuration optimized for standard bike layout
+ * Position values are calibrated for typical product image dimensions
+ */
 export const DEFAULT_WHEEL_CONFIG: WheelConfig = {
+  // Positioned for center-right wheel placement in standard 2200x1650 image
   centerX: 750,
   centerY: 180,
   radius: 150,
@@ -189,8 +195,7 @@ export function getBikeConfig(modelSlug?: string): PerformanceComparisonConfig {
 
 
 
-// Helper function to create custom configuration for any product
-export function createProductConfig(options: {
+export interface CreateProductConfigOptions {
   modelSlug?: string;
   wheelCenterX?: number;
   wheelCenterY?: number;
@@ -206,7 +211,10 @@ export function createProductConfig(options: {
   containerWidth?: number;
   containerHeight?: number;
   topOffset?: number;
-}): PerformanceComparisonConfig {
+}
+
+// Helper function to create custom configuration for any product
+export function createProductConfig(options: CreateProductConfigOptions): PerformanceComparisonConfig {
   const baseConfig = getBikeConfig(options.modelSlug);
   
   return {

@@ -519,14 +519,16 @@ export default async function Product({ params, searchParams }: Props) {
                   return null;
                 }
                 
+                const configKey = customFields.edges?.find(edge => edge.node.name === 'performance_config_key')?.node.value || product.sku || 'default';
+                
                 return (
                   <PerformanceComparison
-                    config={getBikeConfig('super73-rx')}
+                    config={getBikeConfig(configKey)}
                     dynamicData={dynamicData}
                     metrics={dynamicData.metrics}
                     productImage={performanceImage || {
-                      src: '/images/backgrounds/S73-RX-RED-performance.webp',
-                      alt: 'SUPER73 RX Performance',
+                      src: product.defaultImage?.url || '/images/default-performance.webp',
+                      alt: product.defaultImage?.altText || `${product.name} Performance`,
                     }}
                     productTitle={baseProduct.name}
                   />

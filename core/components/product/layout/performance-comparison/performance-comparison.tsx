@@ -10,6 +10,11 @@ import { PerformanceMetrics } from './performance-metrics';
 import { PulseRings } from './pulse-rings';
 import { PerformanceComparisonProps } from './types';
 
+// Helper function to merge configuration objects
+const mergeConfig = <T extends object>(defaultConfig: T, dynamicConfig?: Partial<T>): T => {
+  return dynamicConfig ? { ...defaultConfig, ...dynamicConfig } : defaultConfig;
+};
+
 export function PerformanceComparison({
   productTitle,
   productImage,
@@ -27,26 +32,9 @@ export function PerformanceComparison({
   const finalMetrics = dynamicData?.metrics || metrics;
   const finalProductImage = productImage;
   
-  // Merge dynamic wheel config with default config
-  const mergedWheelConfig = dynamicData?.wheelConfig 
-    ? { ...performanceConfig.wheel, ...dynamicData.wheelConfig }
-    : performanceConfig.wheel;
-  
-  // Merge dynamic metrics config with default config
-  const mergedMetricsConfig = dynamicData?.metricsConfig
-    ? { ...performanceConfig.performanceMetrics, ...dynamicData.metricsConfig }
-    : performanceConfig.performanceMetrics;
-  
-  // Merge dynamic image config with default config
-  const mergedImageConfig = dynamicData?.imageConfig
-    ? { ...performanceConfig.image, ...dynamicData.imageConfig }
-    : performanceConfig.image;
-  
-
-  
-
-  
-
+  const mergedWheelConfig = mergeConfig(performanceConfig.wheel, dynamicData?.wheelConfig);
+  const mergedMetricsConfig = mergeConfig(performanceConfig.performanceMetrics, dynamicData?.metricsConfig);
+  const mergedImageConfig = mergeConfig(performanceConfig.image, dynamicData?.imageConfig);
 
   const scaleWrapperRef = useRef<HTMLDivElement>(null);
   const [measuredHeight, setMeasuredHeight] = useState(0);
@@ -245,6 +233,10 @@ export function PerformanceComparison({
                       WebkitMaskRepeat: 'no-repeat',
                       WebkitMaskPosition: 'center',
                       WebkitMaskComposite: 'destination-out',
+                      maskImage: `radial-gradient(circle, black calc(100% - 35px), rgba(0,0,0,0.8) calc(100% - 25px), transparent calc(100% - 15px))`,
+                      maskRepeat: 'no-repeat',
+                      maskPosition: 'center',
+                      maskComposite: 'exclude',
                     }}
                   />
                 ))}
