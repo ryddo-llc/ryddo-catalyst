@@ -9,6 +9,8 @@ import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/load
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
+import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import {
   getProductDetailVariant,
   ProductDetailBike,
@@ -18,6 +20,7 @@ import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
+import { findPerformanceImage, transformPerformanceComparisonData } from '~/data-transformers/performance-comparison-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
@@ -497,6 +500,42 @@ export default async function Product({ params, searchParams }: Props) {
             images={streamableImages}
             productName={baseProduct.name}
           />
+          {/* Performance Comparison section */}
+          <div className="bg-white px-4 py-8 md:px-8">
+            <Stream
+              fallback={null}
+              value={Streamable.all([streamableProduct, streamableImages])}
+            >
+              {([product, images]) => {
+                const customFields = product.customFields;
+                const dynamicData = transformPerformanceComparisonData(customFields);
+                
+                const performanceImage = findPerformanceImage(
+                  images,
+                  dynamicData.performanceImageDescription
+                );
+                
+                if (dynamicData.metrics.length === 0) {
+                  return null;
+                }
+                
+                const configKey = customFields.edges?.find(edge => edge.node.name === 'performance_config_key')?.node.value || product.sku || 'default';
+                
+                return (
+                  <PerformanceComparison
+                    config={getBikeConfig(configKey)}
+                    dynamicData={dynamicData}
+                    metrics={dynamicData.metrics}
+                    productImage={performanceImage || {
+                      src: product.defaultImage?.url || '/images/default-performance.webp',
+                      alt: product.defaultImage?.altText || `${product.name} Performance`,
+                    }}
+                    productTitle={baseProduct.name}
+                  />
+                );
+              }}
+            </Stream>
+          </div>
           <TechSpecs powerSpecs={streamableTechSpecFields} />
         </>
       )}

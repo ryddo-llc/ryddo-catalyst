@@ -51,6 +51,13 @@ export interface BikeProductData {
     isInStock: boolean;
     status: 'Available' | 'Unavailable' | 'Preorder';
   };
+  wheelSpecs?: {
+    centerX: number;
+    centerY: number;
+    radius: number;
+    lineSpacing: number;
+    barWidth: number;
+  };
 }
 
 export function bikeProductTransformer(product: ProductWithOptions): BikeProductData {
@@ -142,10 +149,55 @@ export function bikeProductTransformer(product: ProductWithOptions): BikeProduct
         }
       : undefined;
 
+  // Extract wheel specs from custom fields or use defaults
+  const wheelSpecsField = customFields.find(field => 
+    field.name.toLowerCase() === 'wheel_specs' || 
+    field.name.toLowerCase() === 'wheel_specifications'
+  );
+  
+  const isWheelSpecsObject = (obj: unknown): obj is Record<string, unknown> => {
+    return typeof obj === 'object' && obj !== null && !Array.isArray(obj) && Object.prototype.toString.call(obj) === '[object Object]';
+  };
+
+  const parseWheelSpecs = (value: string): {
+    centerX?: number;
+    centerY?: number;
+    radius?: number;
+    lineSpacing?: number;
+    barWidth?: number;
+  } | null => {
+    try {
+      const parsed = JSON.parse(value);
+
+      if (isWheelSpecsObject(parsed)) {
+        return {
+          centerX: typeof parsed.centerX === 'number' ? parsed.centerX : undefined,
+          centerY: typeof parsed.centerY === 'number' ? parsed.centerY : undefined,
+          radius: typeof parsed.radius === 'number' ? parsed.radius : undefined,
+          lineSpacing: typeof parsed.lineSpacing === 'number' ? parsed.lineSpacing : undefined,
+          barWidth: typeof parsed.barWidth === 'number' ? parsed.barWidth : undefined,
+        };
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const dynamicWheelSpecs = wheelSpecsField ? parseWheelSpecs(wheelSpecsField.value) : null;
+
   return {
     backgroundImage,
     bikeSpecs: bikeSpecs.length > 0 ? bikeSpecs : undefined,
     colors: colors.length > 0 ? colors : undefined,
     inventoryStatus,
+    wheelSpecs: {
+      centerX: dynamicWheelSpecs?.centerX ?? 1650,
+      centerY: dynamicWheelSpecs?.centerY ?? 825,
+      radius: dynamicWheelSpecs?.radius ?? 150,
+      lineSpacing: dynamicWheelSpecs?.lineSpacing ?? 48,
+      barWidth: dynamicWheelSpecs?.barWidth ?? 350,
+    },
   };
 }

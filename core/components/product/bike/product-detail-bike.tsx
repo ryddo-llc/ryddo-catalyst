@@ -20,6 +20,7 @@ import {
 } from '../shared/product-detail-skeletons';
 import { AuthorizedDealerCard, OffersCard } from '../shared/product-side-cards';
 
+
 import { BikeAddToCartForm } from './bike-add-to-cart-form';
 import { BikeSpecsIcons } from './bike-specifications';
 
