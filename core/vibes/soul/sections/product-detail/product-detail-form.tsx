@@ -69,6 +69,16 @@ export interface ProductDetailFormProps<F extends Field> {
   prefetch?: boolean;
   additionalActions?: ReactNode;
   price?: Price | null;
+  // New prop to allow external rendering of variants
+  renderVariantsExternally?: boolean;
+}
+
+// Export form context for external variant usage
+export interface ProductFormContext<F extends Field> {
+  fields: F[];
+  formFields: Record<string, FieldMetadata<string | number | boolean | Date | undefined>>;
+  onPrefetch: (fieldName: string, value: string) => void;
+  emptySelectPlaceholder?: string;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -81,6 +91,7 @@ export function ProductDetailForm<F extends Field>({
   prefetch = false,
   additionalActions,
   price,
+ 
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -172,66 +183,73 @@ export function ProductDetailForm<F extends Field>({
   return (
     <FormProvider context={form.context}>
       <FormStateInput />
-      <form {...getFormProps(form)} action={formAction} className="py-8">
+      <form {...getFormProps(form)} action={formAction} className="space-y-8">
         <input name="id" type="hidden" value={productId} />
+        
+        {/* Price Display */}
+        {price ? (
+          <div className="rounded-lg bg-white/90 p-6 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-600 uppercase tracking-wider">Price</span>
+              <span className="text-3xl font-black text-gray-900 @xl:text-4xl" style={{ fontFamily: 'Nunito' }}>
+                {renderPrice(price)}
+              </span>
+            </div>
+          </div>
+        ) : null}
+
+        {/* Regular fields (non-variant) */}
         <div className="space-y-6">
-          {/* Regular fields (non-variant) */}
           {fields
             .filter((field) => !isVariantField(field))
             .map((field) => {
               return (
-                <FormField
-                  emptySelectPlaceholder={emptySelectPlaceholder}
-                  field={field}
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  formField={formFields[field.name]!}
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  key={formFields[field.name]!.id}
-                  onPrefetch={onPrefetch}
-                />
+                <div className="rounded-lg bg-white/90 p-6 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm" key={formFields[field.name]?.id}>
+                  <FormField
+                    emptySelectPlaceholder={emptySelectPlaceholder}
+                    field={field}
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    formField={formFields[field.name]!}
+                    onPrefetch={onPrefetch}
+                  />
+                </div>
               );
             })}
+        </div>
           
-          {/* Variant fields at the bottom */}
-          {fields.filter((field) => isVariantField(field)).length > 0 && (
-            <div className="space-y-4 pt-4 border-t border-gray-200">
-              {fields
-                .filter((field) => isVariantField(field))
-                .map((field) => {
-                  return (
-                    <FormField
-                      emptySelectPlaceholder={emptySelectPlaceholder}
-                      field={field}
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      formField={formFields[field.name]!}
-                      isVariant={true}
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      key={formFields[field.name]!.id}
-                      onPrefetch={onPrefetch}
-                    />
-                  );
-                })}
-            </div>
-          )}
-          {form.errors?.map((error, index) => (
-            <FormStatus className="pt-3" key={index} type="error">
-              {error}
-            </FormStatus>
-          ))}
-          <div className="flex items-center gap-x-6 pt-3">
-            {/* Hidden quantity input with default value of 1 */}
+        {/* Variant fields - hidden inputs only for form submission */}
+        {fields
+          .filter((field) => isVariantField(field))
+          .map((field) => (
             <input
-              name={formFields.quantity.name}
+              key={formFields[field.name]?.id}
+              name={formFields[field.name]?.name}
               type="hidden"
-              value="1"
+              value={formFields[field.name]?.value ?? ''}
             />
-            {price ? (
-              <span className="text-4xl font-black text-gray-900 @xl:text-5xl" style={{ fontFamily: 'Nunito' }}>
-                {renderPrice(price)}
-              </span>
-            ) : null}
-            <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
-            {additionalActions}
+          ))}
+
+        {/* Form Errors */}
+        {form.errors?.map((error, index) => (
+          <FormStatus className="rounded-lg bg-red-50 p-4" key={index} type="error">
+            {error}
+          </FormStatus>
+        ))}
+
+        {/* Add to Cart Section */}
+        <div className="rounded-lg bg-white/90 p-6 shadow-sm ring-1 ring-gray-200 backdrop-blur-sm">
+          {/* Hidden quantity input with default value of 1 */}
+          <input
+            name={formFields.quantity.name}
+            type="hidden"
+            value="1"
+          />
+          
+          <div className="flex flex-col gap-4 @sm:flex-row @sm:items-center @sm:justify-between">
+            <div className="flex items-center gap-4">
+              <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+              {additionalActions}
+            </div>
           </div>
         </div>
       </form>
@@ -244,10 +262,10 @@ function SubmitButton({ children, disabled }: { children: ReactNode; disabled?: 
 
   return (
     <Button
-      className="w-auto text-white @xl:w-32"
+      className="flex-1 bg-[#F92F7B] text-white hover:bg-[#e01b5f] focus:ring-2 focus:ring-[#F92F7B] focus:ring-offset-2 disabled:bg-gray-300 @sm:flex-none @sm:min-w-[200px]"
       disabled={disabled}
       loading={pending}
-      size="small"
+      size="large"
       type="submit"
     >
       {children}
@@ -280,9 +298,9 @@ function FormField({
       // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
       const fieldValue = value || params[field.name];
 
-      void setParams({ [field.name]: fieldValue || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+      void setParams({ [field.name]: fieldValue || null }); // Passing `null` to remove the value from the query params if fieldValue is falsy
 
-      controls.change(fieldValue ?? ''); // If fieldValue is falsey, we set it to an empty string
+      controls.change(fieldValue ?? ''); // If fieldValue is falsy, we set it to an empty string
     },
     [setParams, field, controls, params],
   );
@@ -464,77 +482,151 @@ function FormField({
   }
 }
 
-// Add custom styles for square variant styling
+// Standalone Variant Selector Component for Specifications Section
+export interface ProductVariantSelectorProps {
+  fields: Field[];
+  formFields: Record<string, FieldMetadata<string | number | boolean | Date | undefined>>;
+  onPrefetch: (fieldName: string, value: string) => void;
+  emptySelectPlaceholder?: string;
+}
+
+export function ProductVariantSelector({
+  fields,
+  formFields,
+  onPrefetch,
+  emptySelectPlaceholder,
+}: ProductVariantSelectorProps) {
+  const variantFields = fields.filter((field) => isVariantField(field));
+
+  if (variantFields.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-6">
+      <h3 className="text-xl font-bold text-gray-900">Available Options</h3>
+      <div className="grid gap-6 @md:grid-cols-2">
+        {variantFields.map((field) => {
+          const formField = formFields[field.name];
+          
+          if (!formField) return null;
+
+          return (
+            <div className="space-y-3" key={formField.id}>
+              <FormField
+                emptySelectPlaceholder={emptySelectPlaceholder}
+                field={field}
+                formField={formField}
+                isVariant={true}
+                onPrefetch={onPrefetch}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Add custom styles for modern variant styling
 const variantStyles = `
-  /* Swatch radio group styling for colors and sizes */
+  /* Modern swatch radio group styling for colors and sizes */
   .variant-swatch-group [role="radiogroup"] > [role="radio"] {
-    border-radius: 0.375rem !important; /* rounded-md instead of rounded-full */
-    width: 3rem !important; /* w-12 */
-    height: 3rem !important; /* h-12 */
-    min-width: 3rem !important; /* Minimum width */
+    border-radius: 0.5rem !important; /* rounded-lg for modern look */
+    width: 3.5rem !important; /* w-14 - slightly larger */
+    height: 3.5rem !important; /* h-14 - slightly larger */
+    min-width: 3.5rem !important;
+    border: 2px solid transparent !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .variant-swatch-group [role="radiogroup"] > [role="radio"]:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .variant-swatch-group [role="radiogroup"] > [role="radio"][data-state="checked"] {
+    border-color: #F92F7B !important;
+    box-shadow: 0 0 0 3px rgba(249, 47, 123, 0.2) !important;
   }
   
   .variant-swatch-group [role="radiogroup"] > [role="radio"] > span {
-    border-radius: 0.25rem !important; /* rounded instead of rounded-full */
+    border-radius: 0.375rem !important; /* rounded-md */
   }
   
   /* Special styling for text-based swatch options (sizes) */
   .variant-swatch-group [role="radiogroup"] > [role="radio"] .swatch-text-option {
-    border-radius: 0.25rem !important; /* rounded instead of rounded-full */
-    font-size: 0.75rem !important; /* text-xs */
-    font-weight: 700 !important; /* font-bold */
-    line-height: 1.1 !important; /* tight line height */
+    border-radius: 0.375rem !important;
+    font-size: 0.875rem !important; /* text-sm for better readability */
+    font-weight: 600 !important; /* font-semibold */
+    line-height: 1.2 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.025em !important;
+    letter-spacing: 0.05em !important;
     white-space: nowrap !important;
   }
   
-  /* Allow text swatches to grow wider for longer size names while keeping consistent height */
+  /* Allow text swatches to grow wider for longer size names */
   .variant-swatch-group [role="radiogroup"] > [role="radio"] {
     width: auto !important;
-    min-width: 3rem !important;
-    max-width: 5rem !important; /* Limit maximum width for text options */
+    min-width: 3.5rem !important;
+    max-width: 6rem !important;
   }
   
-  /* Ensure proper spacing and alignment */
+  /* Modern spacing */
   .variant-swatch-group [role="radiogroup"] {
-    gap: 0.5rem !important; /* Add some spacing between swatches */
+    gap: 0.75rem !important;
   }
   
-  /* Button radio group styling for sizes - multiple selector patterns to ensure coverage */
+  /* Modern button radio group styling */
   .variant-button-group [role="radiogroup"] > [role="radio"],
   .variant-button-group .button-radio-group [role="radiogroup"] > [role="radio"],
   .button-radio-group.variant-button-group [role="radiogroup"] > [role="radio"] {
-    border-radius: 0.375rem !important; /* rounded-md instead of rounded-full */
-    min-width: 3rem !important; /* Minimum width for small sizes */
-    width: auto !important; /* Allow width to grow for longer text */
-    height: 3rem !important; /* h-12 */
-    padding: 0.25rem 0.5rem !important; /* Horizontal padding for text */
+    border-radius: 0.5rem !important; /* rounded-lg */
+    min-width: 3.5rem !important;
+    width: auto !important;
+    height: 3.5rem !important;
+    padding: 0.5rem 1rem !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 0.875rem !important; /* text-sm for better readability */
-    font-weight: 600 !important; /* font-semibold for better visibility */
-    line-height: 1.2 !important; /* Better line height for readability */
-    text-transform: uppercase !important; /* Uppercase for better visibility */
-    letter-spacing: 0.025em !important; /* Slight letter spacing */
-    white-space: nowrap !important; /* Prevent text wrapping */
-    overflow: visible !important; /* Ensure text is not cut off */
-    color: inherit !important; /* Ensure text color is inherited properly */
-    text-align: center !important; /* Center the text */
+    font-size: 0.875rem !important; /* text-sm */
+    font-weight: 600 !important; /* font-semibold */
+    line-height: 1.2 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-align: center !important;
+    border: 2px solid transparent !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
   }
   
-  /* Ensure text is visible in both checked and unchecked states */
-  .variant-button-group [role="radiogroup"] > [role="radio"]:not([data-state="checked"]),
-  .variant-button-group .button-radio-group [role="radiogroup"] > [role="radio"]:not([data-state="checked"]),
-  .button-radio-group.variant-button-group [role="radiogroup"] > [role="radio"]:not([data-state="checked"]) {
-    color: var(--button-radio-group-light-unchecked-text, hsl(var(--foreground))) !important;
+  .variant-button-group [role="radiogroup"] > [role="radio"]:hover,
+  .variant-button-group .button-radio-group [role="radiogroup"] > [role="radio"]:hover,
+  .button-radio-group.variant-button-group [role="radiogroup"] > [role="radio"]:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
   }
   
+  /* Modern checked state styling */
   .variant-button-group [role="radiogroup"] > [role="radio"][data-state="checked"],
   .variant-button-group .button-radio-group [role="radiogroup"] > [role="radio"][data-state="checked"],
   .button-radio-group.variant-button-group [role="radiogroup"] > [role="radio"][data-state="checked"] {
-    color: var(--button-radio-group-light-checked-text, hsl(var(--background))) !important;
+    border-color: #F92F7B !important;
+    background-color: #F92F7B !important;
+    color: white !important;
+    box-shadow: 0 0 0 3px rgba(249, 47, 123, 0.2) !important;
+  }
+  
+  /* Unchecked state */
+  .variant-button-group [role="radiogroup"] > [role="radio"]:not([data-state="checked"]),
+  .variant-button-group .button-radio-group [role="radiogroup"] > [role="radio"]:not([data-state="checked"]),
+  .button-radio-group.variant-button-group [role="radiogroup"] > [role="radio"]:not([data-state="checked"]) {
+    background-color: white !important;
+    color: #374151 !important;
+    border-color: #D1D5DB !important;
   }
 `;
 

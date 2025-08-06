@@ -10,6 +10,58 @@ import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gal
 import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
 
+// Helper function to identify variant fields (color/size)
+const isVariantField = (field: Field): boolean => {
+  const variantTypes = ['swatch-radio-group', 'button-radio-group', 'card-radio-group'];
+  const variantNames = ['color', 'colour', 'size', 'variant'];
+
+  return (
+    variantTypes.includes(field.type) ||
+    variantNames.some((name) => field.name.toLowerCase().includes(name))
+  );
+};
+
+// Helper function to render color swatch as small square
+const renderColorSwatch = (field: Field, option: unknown, label: string) => {
+  if (field.type === 'swatch-radio-group' &&
+      typeof option === 'object' &&
+      option !== null &&
+      'type' in option &&
+      option.type === 'color' &&
+      'color' in option) {
+    return (
+      <div
+        className="mx-auto h-6 w-6 rounded border border-gray-300 shadow-sm"
+        style={{
+          backgroundColor: 'color' in option ? String(option.color) : '#ccc',
+        }}
+        title={label}
+      />
+    );
+  }
+
+  return <span className="text-base font-medium text-gray-600">{label}</span>;
+};
+
+// Helper function to render size badge
+const renderSizeBadge = (label: string) => {
+  return (
+    <div className="mx-auto flex h-6 w-6 items-center justify-center rounded border border-gray-300 bg-white shadow-sm">
+      <span className="text-xs font-bold uppercase text-gray-700">
+        {label}
+      </span>
+    </div>
+  );
+};
+
+// Helper function to create specification item
+const createSpecificationItem = (title: string, content: React.ReactNode) => (
+  <div className="text-center">
+    <div className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-900">{title}</div>
+    {content}
+  </div>
+);
+
 interface ProductDetailProduct {
   id: string;
   title: string;
@@ -73,147 +125,216 @@ export function ProductDetail<F extends Field>({
   additionalActions,
 }: ProductDetailProps<F>) {
   return (
-    <section className="relative overflow-hidden bg-[#F5F5F5] @container">
-      {/* Colored background section */}
+    <section className="relative min-h-screen overflow-hidden bg-white @container">
+      {/* Dynamic background with gradient */}
       <div
         className="absolute inset-0 z-0"
-        style={{ clipPath: 'polygon(0 0, 160% 0, 0 80%)', backgroundColor: '#E5F3F9' }}
+        style={{
+          clipPath: 'polygon(0 0, 100% 0, 100% 60%, 0 80%)',
+          background: 'linear-gradient(135deg, #E5F3F9 0%, #F0F8FF 100%)',
+        }}
       />
-      v
-      <div className="group/product-detail z-5 relative mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
+
+      <div className="group/product-detail relative z-10 mx-auto w-full max-w-screen-2xl px-4 py-8 @xl:px-6 @xl:py-12 @4xl:px-8 @4xl:py-16">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">
             <Breadcrumbs breadcrumbs={breadcrumbs} />
           </div>
         )}
-        <Stream fallback={<ProductDetailSkeleton />} value={streamableProduct}>
-          {(product) =>
+
+        <Stream 
+          fallback={<ProductDetailSkeleton />} 
+          value={Streamable.all([streamableProduct, streamableFields])}
+        >
+          {([product, fields]) =>
             product && (
-              <div className="grid grid-cols-1 items-stretch gap-x-8 gap-y-8 @2xl:grid-cols-2 @5xl:gap-x-12">
-                <div className="group/product-gallery hidden @2xl:block">
-                  <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
-                    {(images) => <ProductGallery images={images} productTitle={product.title} />}
-                  </Stream>
-                </div>
-                {/* Product Details */}
-                <div className="-mt-16 text-[var(--product-detail-primary-text,hsl(var(--foreground)))] @2xl:-mt-14">
-                  {/* Ryddo Recommended Banner */}
-                  <div className="mb-3 inline-block rounded border border-gray-300 bg-transparent px-3 py-0">
-                    <span className="text-xs font-medium text-gray-700">Ryddo Recommended</span>
-                  </div>
-                  {Boolean(product.subtitle) && (
-                    <p className="font-[family-name:var(--product-detail-subtitle-font-family,var(--font-family-mono))] text-sm uppercase">
-                      {product.subtitle}
-                    </p>
-                  )}
-                  <h1
-                    className="mb-3 mt-2 text-3xl font-black leading-none @xl:mb-4 @xl:text-4xl @4xl:text-5xl"
-                    style={{ fontFamily: 'Nunito' }}
-                  >
-                    <span className="text-[#F92F7B]">{product.title.split(' ')[0]}</span>
-                    {product.title.split(' ').length > 1 && (
-                      <span className="text-black">{` ${product.title.split(' ')[1]}`}</span>
-                    )}
-                    {product.title.split(' ').length > 2 && (
-                      <>
-                        <br />
-                        <span className="text-black">
-                          {product.title.split(' ').slice(2).join(' ')}
-                        </span>
-                      </>
-                    )}
-                  </h1>
-                  <div className="group/product-summary mb-4">
-                    <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
-                      {(summary) =>
-                        Boolean(summary) && (
-                          <p className="mb-4 text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
-                            {summary}
-                          </p>
-                        )
-                      }
-                    </Stream>
-                  </div>
-                  <div className="group/product-description">
-                    <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
-                      {(description) =>
-                        Boolean(description) && (
-                          <div className="line-clamp-3 max-w-xs pb-1 pt-4 text-[#757575]">
-                            {description}
-                          </div>
-                        )
-                      }
-                    </Stream>
-                  </div>
-                  <div className="group/product-detail-form">
-                    <Stream
-                      fallback={<ProductDetailFormSkeleton />}
-                      value={Streamable.all([
-                        streamableFields,
-                        streamableCtaLabel,
-                        streamableCtaDisabled,
-                        product.price,
-                      ])}
-                    >
-                      {([fields, ctaLabel, ctaDisabled, price]) => (
-                        <ProductDetailForm
-                          action={action}
-                          additionalActions={additionalActions}
-                          ctaDisabled={ctaDisabled ?? undefined}
-                          ctaLabel={ctaLabel ?? undefined}
-                          emptySelectPlaceholder={emptySelectPlaceholder}
-                          fields={fields}
-                          prefetch={prefetch}
-                          price={price}
-                          productId={product.id}
-                        />
-                      )}
-                    </Stream>
-                  </div>
-                  <div className="group/product-rating">
-                    <Stream fallback={<RatingSkeleton />} value={product.rating}>
-                      {(rating) => <Rating rating={rating ?? 0} />}
-                    </Stream>
-                  </div>
-                  <div className="group/product-gallery mb-8 @2xl:hidden">
+              <div className="space-y-16">
+                <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2 @2xl:gap-16 @5xl:gap-20">
+                  {/* Product Gallery - Left Side */}
+                  <div className="group/product-gallery order-2 @2xl:order-1">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(images) => (
-                        <ProductGallery
-                          images={images}
-                          productTitle={product.title}
-                          thumbnailLabel={thumbnailLabel}
-                        />
+                        <div className="sticky top-8">
+                          <ProductGallery
+                            aspectRatio="4:5"
+                            images={images}
+                            productTitle={product.title}
+                            thumbnailLabel={thumbnailLabel}
+                          />
+                        </div>
                       )}
                     </Stream>
                   </div>
+
+                  {/* Product Information - Right Side */}
+                  <div className="group/product-info order-1 space-y-6 @2xl:order-2 @2xl:pt-8">
+                    {/* Badge */}
+                    <div className="inline-flex items-center rounded-full border border-[#F92F7B]/20 bg-white/80 px-4 py-2 shadow-sm backdrop-blur-sm">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-[#F92F7B]">
+                        Ryddo Recommended
+                      </span>
+                    </div>
+
+                    {/* Subtitle */}
+                    {Boolean(product.subtitle) && (
+                      <p className="font-mono text-sm font-medium uppercase tracking-wider text-gray-600">
+                        {product.subtitle}
+                      </p>
+                    )}
+
+                    {/* Product Title */}
+                    <div className="space-y-2">
+                      <h1
+                        className="text-4xl font-black leading-tight text-gray-900 @xl:text-5xl @4xl:text-6xl"
+                        style={{ fontFamily: 'Nunito' }}
+                      >
+                        <span className="text-[#F92F7B]">{product.title.split(' ')[0]}</span>
+                        {product.title.split(' ').length > 1 && (
+                          <span className="text-gray-900">{` ${product.title.split(' ').slice(1).join(' ')}`}</span>
+                        )}
+                      </h1>
+                    </div>
+
+                    {/* Summary */}
+                    <div className="group/product-summary">
+                      <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
+                        {(summary) =>
+                          Boolean(summary) && (
+                            <p className="text-base leading-relaxed text-gray-600 @xl:text-lg">
+                              {summary}
+                            </p>
+                          )
+                        }
+                      </Stream>
+                    </div>
+
+                    {/* Rating */}
+                    <div className="group/product-rating">
+                      <Stream fallback={<RatingSkeleton />} value={product.rating}>
+                        {(rating) => rating && <Rating rating={rating} />}
+                      </Stream>
+                    </div>
+
+                    {/* Product Form - Non-variant fields only */}
+                    <div className="group/product-detail-form">
+                      <Stream
+                        fallback={<ProductDetailFormSkeleton />}
+                        value={Streamable.all([
+                          streamableFields,
+                          streamableCtaLabel,
+                          streamableCtaDisabled,
+                          product.price,
+                        ])}
+                      >
+                        {([formFields, ctaLabel, ctaDisabled, price]) => (
+                          <ProductDetailForm
+                            action={action}
+                            additionalActions={additionalActions}
+                            ctaDisabled={ctaDisabled ?? undefined}
+                            ctaLabel={ctaLabel ?? undefined}
+                            emptySelectPlaceholder={emptySelectPlaceholder}
+                            fields={formFields}
+                            prefetch={prefetch}
+                            price={price}
+                            productId={product.id}
+                          />
+                        )}
+                      </Stream>
+                    </div>
+
+                    {/* Description */}
+                    <div className="group/product-description">
+                      <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
+                        {(description) =>
+                          Boolean(description) && (
+                            <div className="rounded-lg bg-gray-50 p-6">
+                              <h3 className="mb-3 text-lg font-semibold text-gray-900">
+                                Description
+                              </h3>
+                              <div className="prose prose-gray max-w-none text-sm leading-relaxed text-gray-700">
+                                {description}
+                              </div>
+                            </div>
+                          )
+                        }
+                      </Stream>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product Specifications & Options - Single Row Layout */}
+                <div className="group/product-specifications">
+                  {(() => {
+                    const variantFields = fields.filter(isVariantField);
+                      
+                      // Find color and size fields
+                      const colorField = variantFields.find(
+                        (field) =>
+                          field.name.toLowerCase().includes('color') ||
+                          field.name.toLowerCase().includes('colour'),
+                      ) || variantFields[0]; // Fallback to first variant field
+                      
+                      const sizeField = variantFields.find((field) =>
+                        field.name.toLowerCase().includes('size'),
+                      ) || variantFields[1]; // Fallback to second variant field
+
+                      const specifications = [];
+
+                      // Add Colors section
+                      if (colorField && 'options' in colorField && colorField.options.length > 0) {
+                        const colorSwatches = colorField.options.map((option) => {
+                          const label = typeof option === 'string' ? option : option.label;
+
+                          return renderColorSwatch(colorField, option, label);
+                        });
+                        
+                        specifications.push(
+                          createSpecificationItem('Colors', 
+                            <div className="flex flex-wrap justify-center gap-0.5">
+                              {colorSwatches}
+                            </div>
+                          )
+                        );
+                      }
+
+                      // Add Sizes section  
+                      if (sizeField && 'options' in sizeField && sizeField.options.length > 0) {
+                        const sizeBadges = sizeField.options.map((option) => {
+                          const label = typeof option === 'string' ? option : option.label;
+
+                          return renderSizeBadge(label);
+                        });
+                        
+                        specifications.push(
+                          createSpecificationItem('Size',
+                            <div className="flex flex-wrap justify-center gap-0.5">
+                              {sizeBadges}
+                            </div>
+                          )
+                        );
+                      }
+
+                      // Add static specifications
+                      specifications.push(
+                        createSpecificationItem('Weight', <span className="text-base font-medium text-gray-600">2.5 lbs</span>),
+                        createSpecificationItem('Construction', <span className="text-base font-medium text-gray-600">Aluminum Frame</span>),
+                        createSpecificationItem('Color Finish', <span className="text-base font-medium text-gray-600">Powder Coated</span>),
+                        createSpecificationItem('Certifications', <span className="text-base font-medium text-gray-600">CE, UL Listed</span>)
+                      );
+
+                    return (
+                      <div className="grid grid-cols-2 gap-8 @md:grid-cols-4 @xl:grid-cols-6">
+                        {specifications.map((spec, index) => (
+                          <div key={index}>{spec}</div>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             )
           }
         </Stream>
-        {/* Product Specifications - Full Width */}
-        <div className="group/product-specifications mt-12">
-          <div className="pt-1">
-            <div className="flex flex-wrap justify-center gap-x-12 gap-y-2 text-sm">
-              <div className="flex flex-col text-center">
-                <span className="font-semibold text-gray-900">Weight:</span>
-                <span className="text-gray-600">2.5 lbs</span>
-              </div>
-              <div className="flex flex-col text-center">
-                <span className="font-semibold text-gray-900">Construction:</span>
-                <span className="text-gray-600">Aluminum Frame</span>
-              </div>
-              <div className="flex flex-col text-center">
-                <span className="font-semibold text-gray-900">Color Finish:</span>
-                <span className="text-gray-600">Powder Coated</span>
-              </div>
-              <div className="flex flex-col text-center">
-                <span className="font-semibold text-gray-900">Certifications:</span>
-                <span className="text-gray-600">CE, UL Listed</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

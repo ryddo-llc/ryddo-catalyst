@@ -72,90 +72,99 @@ export function ProductGallery({
   const firstWord = productTitle?.split(' ')[0] || '';
 
   return (
-    <div className={clsx('sticky top-0 flex flex-col gap-2 @2xl:flex-row @2xl:items-start', className)}>
-      <div
-        className="w-full overflow-hidden rounded-xl @xl:rounded-2xl @2xl:order-2 @2xl:-mt-24"
-        ref={emblaRef}
-      >
-        <div className="flex">
-          {images.map((image, idx) => (
-            <div
-              className={clsx(
-                'relative w-full shrink-0 grow-0 basis-full',
-                {
-                  '5:6': 'aspect-[5/6]',
-                  '3:4': 'aspect-[3/4]',
-                  '4:5': 'aspect-[4/5]',
-                  '3:2': 'aspect-[3/2]',
-                  '2:3': 'aspect-[2/3]',
-                  '16:9': 'aspect-[16/9]',
-                  '9:16': 'aspect-[9/16]',
-                  '6:5': 'aspect-[6/5]',
-                  '5:4': 'aspect-[5/4]',
-                  '4:3': 'aspect-[4/3]',
-                  '1:1': 'aspect-square',
-                }[aspectRatio],
-              )}
-              key={idx}
-            >
-              <Image
-                alt={image.alt}
+    <div className={clsx('flex flex-col gap-6', className)}>
+      {/* Main Image */}
+      <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-white shadow-xl ring-1 ring-gray-200">
+        <div
+          className="w-full overflow-hidden"
+          ref={emblaRef}
+        >
+          <div className="flex">
+            {images.map((image, idx) => (
+              <div
                 className={clsx(
+                  'relative w-full shrink-0 grow-0 basis-full p-8',
                   {
-                    contain: 'object-contain',
-                    cover: 'object-cover',
-                  }[fit],
+                    '5:6': 'aspect-[5/6]',
+                    '3:4': 'aspect-[3/4]',
+                    '4:5': 'aspect-[4/5]',
+                    '3:2': 'aspect-[3/2]',
+                    '2:3': 'aspect-[2/3]',
+                    '16:9': 'aspect-[16/9]',
+                    '9:16': 'aspect-[9/16]',
+                    '6:5': 'aspect-[6/5]',
+                    '5:4': 'aspect-[5/4]',
+                    '4:3': 'aspect-[4/3]',
+                    '1:1': 'aspect-square',
+                  }[aspectRatio],
                 )}
-                fill
-                priority={idx === 0}
-                sizes="(min-width: 42rem) 50vw, 100vw"
-                src={image.src}
-              />
-            </div>
-          ))}
+                key={idx}
+              >
+                <Image
+                  alt={image.alt}
+                  className={clsx(
+                    'transition-transform duration-300 group-hover:scale-105',
+                    {
+                      contain: 'object-contain',
+                      cover: 'object-cover',
+                    }[fit],
+                  )}
+                  fill
+                  priority={idx === 0}
+                  sizes="(min-width: 42rem) 50vw, 100vw"
+                  src={image.src}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="relative flex max-w-full shrink-0 flex-row gap-2 @2xl:order-1 @2xl:flex-col @2xl:overflow-visible">
-        {/* Vertical text behind thumbnails */}
+
+      {/* Thumbnail Gallery */}
+      <div className="relative flex gap-3 overflow-x-auto pb-2">
+        {/* Vertical text behind thumbnails - now more subtle */}
         {Boolean(firstWord) && (
-          <div className="pointer-events-none absolute inset-0 hidden items-start justify-center pt-48 @2xl:flex">
+          <div className="pointer-events-none absolute inset-0 hidden items-center justify-start pl-2 @lg:flex">
             <span 
-              className="select-none text-[12rem] font-black uppercase tracking-widest text-gray-300 opacity-50"
+              className="select-none text-8xl font-black uppercase tracking-widest text-gray-100 opacity-30"
               style={{ 
                 writingMode: 'vertical-rl', 
                 textOrientation: 'mixed',
-                transform: 'rotate(180deg) translateY(60%)'
+                transform: 'rotate(180deg)'
               }}
             >
               {firstWord}
             </span>
           </div>
         )}
+        
         {images.map((image, index) => (
           <button
             aria-label={`${thumbnailLabel} ${index + 1}`}
             className={clsx(
-              'relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border bg-white transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 @md:h-20 @md:w-28',
+              'group relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white shadow-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 @md:h-24 @md:w-24',
               index === previewImage
-                ? 'border-[var(--product-gallery-image-border-active,hsl(var(--foreground)))]'
-                : 'border-transparent',
+                ? 'border-[#F92F7B] shadow-lg ring-2 ring-[#F92F7B]/20'
+                : 'border-gray-200 hover:border-gray-300',
             )}
             key={index}
             onClick={() => selectImage(index)}
           >
-            <div
-              className={clsx(
-                index === previewImage ? 'opacity-100' : 'opacity-50',
-                'transition-all duration-300 hover:opacity-100',
-              )}
-            >
-              <Image
-                alt={image.alt}
-                className="object-contain"
-                fill
-                sizes="(min-width: 28rem) 4rem, 3rem"
-                src={image.src}
-              />
+            <div className="p-2">
+              <div
+                className={clsx(
+                  'transition-all duration-300',
+                  index === previewImage ? 'opacity-100 scale-100' : 'opacity-60 group-hover:opacity-100 group-hover:scale-105',
+                )}
+              >
+                <Image
+                  alt={image.alt}
+                  className="object-contain"
+                  fill
+                  sizes="6rem"
+                  src={image.src}
+                />
+              </div>
             </div>
           </button>
         ))}
