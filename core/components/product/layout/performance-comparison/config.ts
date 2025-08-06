@@ -119,7 +119,8 @@ export const DEFAULT_PERFORMANCE_CONFIG: PerformanceComparisonConfig = {
 
 // Helper function to get configuration for a specific bike model
 // Now fully dynamic - pulls all config from BigCommerce custom fields via transformers
-export function getBikeConfig(): PerformanceComparisonConfig {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function getBikeConfig(modelSlug?: string): PerformanceComparisonConfig {
   // Always return the default configuration
   // The actual dynamic configuration is handled by the transformers:
   // - performance-comparison-transformer.ts pulls wheel, image, and metrics config from custom fields
