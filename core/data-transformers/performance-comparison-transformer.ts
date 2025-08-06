@@ -248,16 +248,16 @@ function parsePerformanceMetrics(flattenedFields: FlattenedCustomFields): Perfor
   const metrics: PerformanceMetric[] = [];
   
   const metricFields = [
-    { field: flattenedFields.performance_range, category: 'range' },
-    { field: flattenedFields.performance_power, category: 'power' },
-    { field: flattenedFields.performance_speed, category: 'speed' },
-    { field: flattenedFields.performance_brakes, category: 'brakes' },
-    { field: flattenedFields.performance_portability, category: 'portability' },
-    { field: flattenedFields.performance_comfort, category: 'comfort' },
-    { field: flattenedFields.performance_tech, category: 'tech' },
+    flattenedFields.performance_range,
+    flattenedFields.performance_power,
+    flattenedFields.performance_speed,
+    flattenedFields.performance_brakes,
+    flattenedFields.performance_portability,
+    flattenedFields.performance_comfort,
+    flattenedFields.performance_tech,
   ];
 
-  metricFields.forEach(({ field }) => {
+  metricFields.forEach((field) => {
     if (field) {
       const metric = parsePerformanceMetric(field);
 
