@@ -119,7 +119,7 @@ function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
   const middlePart = fieldValue.substring(firstColonIndex + 1, lastColonIndex);
   
   // Find the percentage (should be a number)
-  const percentageMatch = /^(\d{1,3}):(.+)$/.exec(middlePart);
+  const percentageMatch = /^(\d{1,2}|100):(.+)$/.exec(middlePart);
   
   if (!percentageMatch) {
     return null;
@@ -226,8 +226,7 @@ function flattenCustomFields(customFields: BigCommerceCustomFields): FlattenedCu
   
   customFields.edges.forEach(({ node }) => {
     if (node.name && node.value) {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      (flattened as Record<string, string>)[node.name] = node.value;
+      Object.assign(flattened, { [node.name]: node.value });
     }
   });
   
