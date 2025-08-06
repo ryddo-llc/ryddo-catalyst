@@ -151,12 +151,12 @@ export function bikeProductTransformer(product: ProductWithOptions): BikeProduct
 
   // Extract wheel specs from custom fields or use defaults
   const wheelSpecsField = customFields.find(field => 
-    field.name.toLowerCase().includes('wheel') && 
-    field.name.toLowerCase().includes('spec')
+    field.name.toLowerCase() === 'wheel_specs' || 
+    field.name.toLowerCase() === 'wheel_specifications'
   );
   
   const isWheelSpecsObject = (obj: unknown): obj is Record<string, unknown> => {
-    return typeof obj === 'object' && obj !== null;
+    return typeof obj === 'object' && obj !== null && !Array.isArray(obj) && Object.prototype.toString.call(obj) === '[object Object]';
   };
 
   const parseWheelSpecs = (value: string): {

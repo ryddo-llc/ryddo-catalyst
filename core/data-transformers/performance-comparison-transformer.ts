@@ -301,11 +301,11 @@ function parseWheelConfiguration(flattenedFields: FlattenedCustomFields) {
  * @returns {Object} Image configuration object
  */
 function parseImageConfiguration(flattenedFields: FlattenedCustomFields) {
-  const containerScale = parseFloat(flattenedFields.image_container_scale || '0.9') || 0.9;
-  const offsetX = parseFloat(flattenedFields.image_offset_x || '0') || 0;
-  const offsetY = parseFloat(flattenedFields.image_offset_y || '0') || 0;
-  const maxWidth = parseFloat(flattenedFields.image_max_width || '1800') || 1800;
-  const maxHeight = parseFloat(flattenedFields.image_max_height || '1000') || 1000;
+  const containerScale = flattenedFields.image_container_scale ? parseFloat(flattenedFields.image_container_scale) : 0.9;
+  const offsetX = flattenedFields.image_offset_x ? parseFloat(flattenedFields.image_offset_x) : 0;
+  const offsetY = flattenedFields.image_offset_y ? parseFloat(flattenedFields.image_offset_y) : 0;
+  const maxWidth = flattenedFields.image_max_width ? parseFloat(flattenedFields.image_max_width) : 1800;
+  const maxHeight = flattenedFields.image_max_height ? parseFloat(flattenedFields.image_max_height) : 1000;
 
   return {
     containerScale,
@@ -322,14 +322,14 @@ function parseImageConfiguration(flattenedFields: FlattenedCustomFields) {
  * @returns {Object} Metrics configuration object
  */
 function parseMetricsConfiguration(flattenedFields: FlattenedCustomFields) {
-  const gapFromWheel = parseFloat(flattenedFields.metrics_gap_from_wheel || '25') || 25;
-  const lineSpacing = parseFloat(flattenedFields.metrics_line_spacing || '48') || 48;
-  const barWidth = parseFloat(flattenedFields.metrics_bar_width || '350') || 350;
-  const containerWidth = parseFloat(flattenedFields.metrics_container_width || '800') || 800;
-  const containerHeight = parseFloat(flattenedFields.metrics_container_height || '1000') || 1000;
-  const topOffset = parseFloat(flattenedFields.metrics_top_offset || '0') || 0;
-  const trackingMultiplier = parseFloat(flattenedFields.metrics_tracking_multiplier || '0.3') || 0.3;
-  const curveRadiusMultiplier = parseFloat(flattenedFields.metrics_curve_radius_multiplier || '0.6') || 0.6;
+  const gapFromWheel = flattenedFields.metrics_gap_from_wheel ? parseFloat(flattenedFields.metrics_gap_from_wheel) : 25;
+  const lineSpacing = flattenedFields.metrics_line_spacing ? parseFloat(flattenedFields.metrics_line_spacing) : 48;
+  const barWidth = flattenedFields.metrics_bar_width ? parseFloat(flattenedFields.metrics_bar_width) : 350;
+  const containerWidth = flattenedFields.metrics_container_width ? parseFloat(flattenedFields.metrics_container_width) : 800;
+  const containerHeight = flattenedFields.metrics_container_height ? parseFloat(flattenedFields.metrics_container_height) : 1000;
+  const topOffset = flattenedFields.metrics_top_offset ? parseFloat(flattenedFields.metrics_top_offset) : 0;
+  const trackingMultiplier = flattenedFields.metrics_tracking_multiplier ? parseFloat(flattenedFields.metrics_tracking_multiplier) : 0.3;
+  const curveRadiusMultiplier = flattenedFields.metrics_curve_radius_multiplier ? parseFloat(flattenedFields.metrics_curve_radius_multiplier) : 0.6;
 
   return {
     trackingMultiplier,

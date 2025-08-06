@@ -64,6 +64,10 @@ export interface PerformanceComparisonConfig {
   disabledOnMobile: boolean;
 }
 
+// Transform calculation constants
+const TRANSFORM_BASE_VW = 22;
+const TRANSFORM_BASE_PX = 625;
+
 /**
  * Default wheel configuration optimized for standard bike layout
  * Position values are calibrated for typical product image dimensions
@@ -113,83 +117,14 @@ export const DEFAULT_PERFORMANCE_CONFIG: PerformanceComparisonConfig = {
   disabledOnMobile: true,
 };
 
-// Predefined configurations for different bike models
-export const BIKE_CONFIGS = {
-  'super73-rx': {
-    wheel: {
-      ...DEFAULT_WHEEL_CONFIG,
-      centerX: 1362,
-      centerY: 824,
-      radius: 235,
-      mobileOffsetX: 145,
-      mobileOffsetY: 0,
-    },
-    image: {
-      ...DEFAULT_IMAGE_CONFIG,
-      src: '/images/backgrounds/S73-RX-RED-performance.webp',
-      alt: 'SUPER73 RX Performance',
-      maxWidth: 1800,
-      maxHeight: 1000,
-      containerScale: 0.9,
-      offsetX: -350,
-      offsetY: 0,
-    },
-    performanceMetrics: {
-      trackingMultiplier: 0.3,
-      zIndex: 3,
-      gapFromWheel: 25,
-      lineSpacing: 48,
-      barWidth: 350,
-      containerWidth: 800,
-      containerHeight: 1000,
-      topOffset: 0,
-      curveRadiusMultiplier: 0.6,
-    },
-    disabledOnMobile: true,
-  },
-  'eagle-pro': {
-    wheel: {
-      ...DEFAULT_WHEEL_CONFIG,
-      centerX: 800,
-      centerY: 200,
-      radius: 160,
-    },
-    image: {
-      ...DEFAULT_IMAGE_CONFIG,
-      src: '/images/backgrounds/S73-RX-RED-performance.webp',
-      alt: 'SUPER73 RX Performance',
-      maxWidth: 1800,
-      maxHeight: 1000,
-      containerScale: 0.8,
-      offsetX: 50,
-      offsetY: -20,
-    },
-    performanceMetrics: {
-      trackingMultiplier: 0.3,
-      zIndex: 3,
-      gapFromWheel: 20,
-      lineSpacing: 48,
-      barWidth: 350,
-      containerWidth: 800,
-      containerHeight: 1000,
-      topOffset: 0,
-      curveRadiusMultiplier: 0.6,
-    },
-    disabledOnMobile: true,
-  },
-} as const;
-
-// Type guard to check if a string is a valid bike config key
-function isBikeConfigKey(key: string): key is keyof typeof BIKE_CONFIGS {
-  return key in BIKE_CONFIGS;
-}
-
 // Helper function to get configuration for a specific bike model
-export function getBikeConfig(modelSlug?: string): PerformanceComparisonConfig {
-  if (modelSlug && isBikeConfigKey(modelSlug)) {
-    return BIKE_CONFIGS[modelSlug];
-  }
-  
+// Now fully dynamic - pulls all config from BigCommerce custom fields via transformers
+export function getBikeConfig(): PerformanceComparisonConfig {
+  // Always return the default configuration
+  // The actual dynamic configuration is handled by the transformers:
+  // - performance-comparison-transformer.ts pulls wheel, image, and metrics config from custom fields
+  // - bike-product-transformer.ts handles product-specific wheel specs
+  // This approach eliminates the need to hardcode every bike model
   return DEFAULT_PERFORMANCE_CONFIG;
 }
 
@@ -214,6 +149,8 @@ export interface CreateProductConfigOptions {
 }
 
 // Helper function to create custom configuration for any product
+// This is primarily used for manual overrides. For fully dynamic configs from BigCommerce,
+// use the performance-comparison-transformer.ts which reads from custom fields
 export function createProductConfig(options: CreateProductConfigOptions): PerformanceComparisonConfig {
   const baseConfig = getBikeConfig(options.modelSlug);
   
@@ -255,11 +192,8 @@ export function getContainerTransform(config: ImageConfig): string {
 
 // Helper function to calculate performance metrics transform with tracking
 export function getPerformanceMetricsTransform(imageConfig: ImageConfig, trackingMultiplier: number): string {
-  const baseTransform = imageConfig.containerTransform;
-  const trackedTransform = baseTransform.replace(
-    'translateX(calc(22vw - 625px))',
-    `translateX(calc(22vw - 625px) * ${trackingMultiplier})`
-  );
-
+  // Build transform string from constants
+  const trackedTransform = `translateX(calc((${TRANSFORM_BASE_VW}vw - ${TRANSFORM_BASE_PX}px) * ${trackingMultiplier}))`;
+  
   return `${trackedTransform} scale(${imageConfig.containerScale})`;
 }
