@@ -1,6 +1,7 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
+import styles from './product-features.module.css';
 import type { ProductFeature, ProductFeaturesData } from '~/data-transformers/product-features-transformer';
 
 
@@ -41,24 +42,11 @@ function ProductFeatureItem({ feature, index }: ProductFeatureItemProps) {
             maxWidth: 'min(90%, 700px)'
           }}
         >
-          <h3 
-            className="font-extrabold mb-2"
-            style={{
-              color: 'hsl(var(--primary))',
-              fontSize: 'clamp(1.5rem, 8cqi, 2.5rem)',
-              lineHeight: '0.8'
-            }}
-          >
+          <h3 className={styles.featureTitlePrimary}>
             {firstWord}
           </h3>
           {remainingWords && (
-            <h3 
-              className="font-extrabold text-gray-900 mb-3 -mt-1"
-              style={{
-                fontSize: 'clamp(1.5rem, 8cqi, 2.5rem)',
-                lineHeight: '0.8'
-              }}
-            >
+            <h3 className={styles.featureTitleSecondary}>
               {remainingWords}
             </h3>
           )}

@@ -36,24 +36,24 @@
 }
 
 .featureTitlePrimary {
-  @apply font-bold mb-2;
+  @apply font-extrabold mb-2;
   color: hsl(var(--primary));
-  font-size: 8cqi;
-  line-height: 1.1;
+  font-size: clamp(1.5rem, 9cqi, 2rem);
+  line-height: 0.8;
 }
 
 .featureTitleSecondary {
-  @apply font-bold text-gray-900 mb-3;
+  @apply font-extrabold text-gray-900 mb-3;
   @apply -mt-1;
-  font-size: 8cqi;
-  line-height: 1.1;
+  font-size: clamp(1.5rem, 9cqi, 2rem);
+  line-height: 0.8;
 }
 
-/* Container query for the square text container */
-@container (min-width: 0px) {
-  .squareTextContainer .featureTitlePrimary,
-  .squareTextContainer .featureTitleSecondary {
-    font-size: 8cqi;
+/* Desktop sizes */
+@media (min-width: 768px) {
+  .featureTitlePrimary,
+  .featureTitleSecondary {
+    font-size: clamp(2.5rem, 14cqi, 4rem);
   }
 }
 
