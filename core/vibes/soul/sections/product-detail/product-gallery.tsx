@@ -98,15 +98,62 @@ export function ProductGallery({
         </div>
       )}
 
-      {/* Thumbnail Gallery with Natural Arrow Flow */}
-      <div className="flex w-full flex-row @md:ml-4 @md:w-24 @md:flex-col @md:items-center @lg:ml-6 @lg:w-28 @xl:ml-8 @xl:w-32">
+      {/* Main Image - Mobile First, Desktop maintains original order */}
+      <div className="order-1 w-full @md:order-2 @md:w-[calc(100%-7rem)] @lg:w-[calc(100%-8rem)] @xl:w-[calc(100%-9rem)]">
+        <div className="group relative overflow-hidden">
+          <div className="w-full overflow-hidden" ref={emblaRef}>
+            <div className="flex">
+              {images.map((image, idx) => (
+                <div
+                  className={clsx(
+                    'relative w-full shrink-0 grow-0 basis-full',
+                    {
+                      '5:6': 'aspect-[5/6]',
+                      '3:4': 'aspect-[3/4]',
+                      '4:5': 'aspect-[4/5]',
+                      '3:2': 'aspect-[3/2]',
+                      '2:3': 'aspect-[2/3]',
+                      '16:9': 'aspect-[16/9]',
+                      '9:16': 'aspect-[9/16]',
+                      '6:5': 'aspect-[6/5]',
+                      '5:4': 'aspect-[5/4]',
+                      '4:3': 'aspect-[4/3]',
+                      '1:1': 'aspect-square',
+                    }[aspectRatio],
+                  )}
+                  key={idx}
+                >
+                  <Image
+                    alt={image.alt}
+                    className={clsx(
+                      'transition-transform duration-300',
+                      {
+                        contain: 'object-contain',
+                        cover: 'object-cover',
+                      }[fit],
+                    )}
+                    fill
+                    loading={idx === 0 ? "eager" : "lazy"}
+                    priority={priority && idx === 0}
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    src={image.src}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Thumbnail Gallery with Natural Arrow Flow - Mobile Second, Desktop maintains original order */}
+      <div className="order-2 flex w-full flex-row @md:order-1 @md:ml-4 @md:w-24 @md:flex-col @md:items-center @lg:ml-6 @lg:w-28 @xl:ml-8 @xl:w-32">
         {/* Up Arrow */}
         <button
           aria-label="Previous image"
-          className="hidden items-center justify-center @md:flex @md:pb-2"
+          className="hidden min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 @md:flex"
           onClick={() => selectImage(Math.max(0, previewImage - 1))}
         >
-          <svg className="h-6 w-6" fill="none" stroke="#F92F7B" strokeWidth={3} viewBox="0 0 24 24">
+          <svg className="h-6 w-6" fill="none" stroke="#E6275D" strokeWidth={3} viewBox="0 0 24 24">
             <path d="M5 15l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
@@ -124,7 +171,7 @@ export function ProductGallery({
             <button
               aria-label={`${thumbnailLabel} ${index + 1}`}
               className={clsx(
-                '@lg:h-22 group relative z-10 h-16 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white shadow-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 @md:h-20 @md:w-24 @lg:w-28 @xl:h-24 @xl:w-32',
+                '@lg:h-22 group relative z-10 h-16 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white shadow-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 @md:h-20 @md:w-24 @lg:w-28 @xl:h-24 @xl:w-32',
                 index === previewImage
                   ? 'border-gray-400'
                   : 'border-gray-200 hover:border-gray-300',
@@ -143,6 +190,7 @@ export function ProductGallery({
                     alt={image.alt}
                     className="object-contain"
                     fill
+                    loading={index < 3 ? "eager" : "lazy"}
                     sizes="(max-width: 768px) 6rem, (max-width: 1280px) 8rem, 9rem"
                     src={image.src}
                   />
@@ -155,57 +203,13 @@ export function ProductGallery({
         {/* Down Arrow */}
         <button
           aria-label="Next image"
-          className="hidden items-center justify-center @md:flex @md:pt-2"
+          className="hidden min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 @md:flex"
           onClick={() => selectImage(Math.min(images.length - 1, previewImage + 1))}
         >
-          <svg className="h-6 w-6" fill="none" stroke="#F92F7B" strokeWidth={3} viewBox="0 0 24 24">
+          <svg className="h-6 w-6" fill="none" stroke="#E6275D" strokeWidth={3} viewBox="0 0 24 24">
             <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-      </div>
-
-      {/* Main Image */}
-      <div className="group relative -mt-16 overflow-hidden @md:-mt-12 @md:w-[calc(100%-7rem)] @md:pt-[2rem] @lg:w-[calc(100%-8rem)] @xl:w-[calc(100%-9rem)]">
-        <div className="w-full overflow-hidden" ref={emblaRef}>
-          <div className="flex">
-            {images.map((image, idx) => (
-              <div
-                className={clsx(
-                  'relative w-full shrink-0 grow-0 basis-full',
-                  {
-                    '5:6': 'aspect-[5/6]',
-                    '3:4': 'aspect-[3/4]',
-                    '4:5': 'aspect-[4/5]',
-                    '3:2': 'aspect-[3/2]',
-                    '2:3': 'aspect-[2/3]',
-                    '16:9': 'aspect-[16/9]',
-                    '9:16': 'aspect-[9/16]',
-                    '6:5': 'aspect-[6/5]',
-                    '5:4': 'aspect-[5/4]',
-                    '4:3': 'aspect-[4/3]',
-                    '1:1': 'aspect-square',
-                  }[aspectRatio],
-                )}
-                key={idx}
-              >
-                <Image
-                  alt={image.alt}
-                  className={clsx(
-                    'transition-transform duration-300',
-                    {
-                      contain: 'object-contain',
-                      cover: 'object-cover',
-                    }[fit],
-                  )}
-                  fill
-                  priority={priority && idx === 0}
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  src={image.src}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

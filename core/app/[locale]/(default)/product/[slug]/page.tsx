@@ -20,7 +20,10 @@ import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
-import { findPerformanceImage, transformPerformanceComparisonData } from '~/data-transformers/performance-comparison-transformer';
+import {
+  findPerformanceImage,
+  transformPerformanceComparisonData,
+} from '~/data-transformers/performance-comparison-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
@@ -155,25 +158,25 @@ export default async function Product({ params, searchParams }: Props) {
   // Derived streams from consolidated data
   const streamableProduct = Streamable.from(async () => {
     const data = await streamableAllProductData;
-    
+
     return data.product;
   });
 
   const streamableProductSku = Streamable.from(async () => {
     const data = await streamableAllProductData;
-    
+
     return data.product.sku;
   });
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
     const data = await streamableAllProductData;
-    
+
     return data.pricingData;
   });
 
   const streamablePrices = Streamable.from(async () => {
     const data = await streamableAllProductData;
-    
+
     if (!data.pricingData) {
       return null;
     }
@@ -513,34 +516,37 @@ export default async function Product({ params, searchParams }: Props) {
           />
           {/* Performance Comparison section */}
           <div className="bg-white px-4 py-8 md:px-8">
-            <Stream
-              fallback={null}
-              value={Streamable.all([streamableProduct, streamableImages])}
-            >
+            <Stream fallback={null} value={Streamable.all([streamableProduct, streamableImages])}>
               {([product, images]) => {
                 const customFields = product.customFields;
                 const dynamicData = transformPerformanceComparisonData(customFields);
-                
+
                 const performanceImage = findPerformanceImage(
                   images,
-                  dynamicData.performanceImageDescription
+                  dynamicData.performanceImageDescription,
                 );
-                
+
                 if (dynamicData.metrics.length === 0) {
                   return null;
                 }
-                
-                const configKey = customFields.edges?.find(edge => edge.node.name === 'performance_config_key')?.node.value || product.sku || 'default';
-                
+
+                const configKey =
+                  customFields.edges?.find((edge) => edge.node.name === 'performance_config_key')
+                    ?.node.value ||
+                  product.sku ||
+                  'default';
+
                 return (
                   <PerformanceComparison
                     config={getBikeConfig(configKey)}
                     dynamicData={dynamicData}
                     metrics={dynamicData.metrics}
-                    productImage={performanceImage || {
-                      src: product.defaultImage?.url || '/images/default-performance.webp',
-                      alt: product.defaultImage?.altText || `${product.name} Performance`,
-                    }}
+                    productImage={
+                      performanceImage || {
+                        src: product.defaultImage?.url || '/images/default-performance.webp',
+                        alt: product.defaultImage?.altText || `${product.name} Performance`,
+                      }
+                    }
                     productTitle={baseProduct.name}
                   />
                 );

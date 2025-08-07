@@ -234,7 +234,7 @@ function SubmitButton({ children, disabled, optimistic }: { children: ReactNode;
 
   return (
     <Button
-      className="flex-1 bg-[#F92F7B] text-white hover:bg-[#e01b5f] focus:ring-2 focus:ring-[#F92F7B] focus:ring-offset-2 disabled:bg-gray-300 @sm:min-w-[200px] @sm:flex-none"
+      className="min-h-[44px] w-full bg-[#E6275D] text-white hover:bg-[#d01548] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 disabled:bg-gray-300 @sm:w-auto @sm:min-w-[200px]"
       disabled={disabled}
       loading={isLoading}
       size="medium"

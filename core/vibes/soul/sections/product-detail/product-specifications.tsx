@@ -3,6 +3,7 @@
 import { ReactNode, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
 import { Field } from './schema';
 import { SpecificationColorSwatches, SpecificationSizeBadges } from './specification-islands';
@@ -26,6 +27,58 @@ const createSpecificationItem = (title: string, content: ReactNode, index: numbe
   </div>
 );
 
+// Skeleton component for mobile variant interactions
+const MobileVariantInteractionsSkeleton = () => (
+  <div className="space-y-4">
+    {/* Color swatches skeleton */}
+    <div className="space-y-2">
+      <Skeleton.Text characterCount={5} className="text-sm font-medium" />
+      <div className="flex gap-2">
+        {[1, 2, 3, 4].map((_, i) => (
+          <Skeleton.Box className="h-8 w-8 rounded-full" key={i} />
+        ))}
+      </div>
+    </div>
+    {/* Size badges skeleton */}
+    <div className="space-y-2">
+      <Skeleton.Text characterCount={4} className="text-sm font-medium" />
+      <div className="flex gap-2">
+        {[1, 2, 3].map((_, i) => (
+          <Skeleton.Box className="h-10 w-12 rounded-md" key={i} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// Skeleton component for desktop variant interactions
+const DesktopVariantInteractionsSkeleton = () => (
+  <>
+    {/* Colors section skeleton */}
+    <div className="flex-shrink-0">
+      <div className="space-y-2">
+        <Skeleton.Text characterCount={5} className="text-sm font-medium" />
+        <div className="flex gap-2">
+          {[1, 2, 3, 4].map((_, i) => (
+            <Skeleton.Box className="h-8 w-8 rounded-full" key={i} />
+          ))}
+        </div>
+      </div>
+    </div>
+    {/* Sizes section skeleton */}
+    <div className="flex-shrink-0">
+      <div className="space-y-2">
+        <Skeleton.Text characterCount={4} className="text-sm font-medium" />
+        <div className="flex gap-2">
+          {[1, 2, 3].map((_, i) => (
+            <Skeleton.Box className="h-10 w-12 rounded-md" key={i} />
+          ))}
+        </div>
+      </div>
+    </div>
+  </>
+);
+
 export interface ProductSpecificationsProps {
   fields?: Streamable<Field[]>;
   customSpecs?: Array<{
@@ -41,7 +94,7 @@ export function ProductSpecifications({
   showVariantInteractions = true,
 }: ProductSpecificationsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   // Default specifications when no custom ones provided
   const allSpecs = [
     {
@@ -74,43 +127,40 @@ export function ProductSpecifications({
   const specsToShow = customSpecs.length > 0 ? customSpecs : defaultSpecs;
   // Show fewer specs on tablet to fit in one line
   const desktopSpecs = specsToShow.slice(0, 4);
-  
+
   // Show only key specs on mobile when collapsed
   const mobileSpecs = specsToShow.slice(0, 3);
 
   return (
     <section className="w-full">
-      <div className="mx-auto max-w-screen-2xl px-4 py-4 @md:px-10 @md:py-8 @xl:px-6 @4xl:px-8">
+      <div className="mx-auto max-w-screen-2xl px-4 py-10 @md:px-10 @md:py-20 @xl:px-6 @4xl:px-8">
         {/* Mobile Layout - Stacked */}
         <div className="space-y-4 @md:hidden">
           {/* Variant sections for mobile */}
           {fields && showVariantInteractions && (
-            <Stream fallback={null} value={fields}>
+            <Stream fallback={<MobileVariantInteractionsSkeleton />} value={fields}>
               {(fieldsData) => {
                 const variantFields = fieldsData.filter(isVariantField);
-                const colorField = variantFields.find(
-                  (field) =>
-                    field.name.toLowerCase().includes('color') ||
-                    field.name.toLowerCase().includes('colour'),
-                ) || variantFields[0];
-                const sizeField = variantFields.find((field) => 
-                  field.name.toLowerCase().includes('size')
-                ) || variantFields[1];
+                const colorField =
+                  variantFields.find(
+                    (field) =>
+                      field.name.toLowerCase().includes('color') ||
+                      field.name.toLowerCase().includes('colour'),
+                  ) || variantFields[0];
+                const sizeField =
+                  variantFields.find((field) => field.name.toLowerCase().includes('size')) ||
+                  variantFields[1];
 
                 return (
                   <div className="space-y-4">
-                    {colorField && (
-                      <SpecificationColorSwatches field={colorField} />
-                    )}
-                    {sizeField && (
-                      <SpecificationSizeBadges field={sizeField} />
-                    )}
+                    {colorField && <SpecificationColorSwatches field={colorField} />}
+                    {sizeField && <SpecificationSizeBadges field={sizeField} />}
                   </div>
                 );
               }}
             </Stream>
           )}
-          
+
           {/* Collapsible specifications for mobile */}
           <div className="border-t border-gray-200 pt-4">
             <button
@@ -127,10 +177,15 @@ export function ProductSpecifications({
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+                <path
+                  d="M19 9l-7 7-7-7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                />
               </svg>
             </button>
-            
+
             {/* Specs content */}
             <div className={`mt-3 grid grid-cols-2 gap-3 ${isExpanded ? 'block' : 'hidden'}`}>
               {specsToShow.map((spec, index) => (
@@ -140,7 +195,7 @@ export function ProductSpecifications({
                 </div>
               ))}
             </div>
-            
+
             {/* Show preview when collapsed */}
             {!isExpanded && (
               <div className="mt-3 flex gap-4 text-xs text-gray-600">
@@ -159,7 +214,7 @@ export function ProductSpecifications({
           <div className="flex items-start justify-between gap-3">
             {/* Interactive variant sections - only show if fields provided and interactions enabled */}
             {fields && showVariantInteractions && (
-              <Stream fallback={null} value={fields}>
+              <Stream fallback={<DesktopVariantInteractionsSkeleton />} value={fields}>
                 {(fieldsData) => {
                   const variantFields = fieldsData.filter(isVariantField);
 
@@ -198,7 +253,7 @@ export function ProductSpecifications({
 
             {/* Static specifications - single row, limited items */}
             {desktopSpecs.map((spec, index) => (
-              <div className="flex-1 min-w-0" key={index}>
+              <div className="min-w-0 flex-1" key={index}>
                 {createSpecificationItem(spec.title, spec.content, index)}
               </div>
             ))}
