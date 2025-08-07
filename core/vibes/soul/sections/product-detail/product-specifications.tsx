@@ -35,7 +35,7 @@ const MobileVariantInteractionsSkeleton = () => (
       <Skeleton.Text characterCount={5} className="text-sm font-medium" />
       <div className="flex gap-2">
         {[1, 2, 3, 4].map((_, i) => (
-          <Skeleton.Box key={i} className="h-8 w-8 rounded-full" />
+          <Skeleton.Box className="h-8 w-8 rounded-full" key={i} />
         ))}
       </div>
     </div>
@@ -44,7 +44,7 @@ const MobileVariantInteractionsSkeleton = () => (
       <Skeleton.Text characterCount={4} className="text-sm font-medium" />
       <div className="flex gap-2">
         {[1, 2, 3].map((_, i) => (
-          <Skeleton.Box key={i} className="h-10 w-12 rounded-md" />
+          <Skeleton.Box className="h-10 w-12 rounded-md" key={i} />
         ))}
       </div>
     </div>
@@ -60,7 +60,7 @@ const DesktopVariantInteractionsSkeleton = () => (
         <Skeleton.Text characterCount={5} className="text-sm font-medium" />
         <div className="flex gap-2">
           {[1, 2, 3, 4].map((_, i) => (
-            <Skeleton.Box key={i} className="h-8 w-8 rounded-full" />
+            <Skeleton.Box className="h-8 w-8 rounded-full" key={i} />
           ))}
         </div>
       </div>
@@ -71,7 +71,7 @@ const DesktopVariantInteractionsSkeleton = () => (
         <Skeleton.Text characterCount={4} className="text-sm font-medium" />
         <div className="flex gap-2">
           {[1, 2, 3].map((_, i) => (
-            <Skeleton.Box key={i} className="h-10 w-12 rounded-md" />
+            <Skeleton.Box className="h-10 w-12 rounded-md" key={i} />
           ))}
         </div>
       </div>
