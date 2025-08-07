@@ -15,12 +15,14 @@ import {
   getProductDetailVariant,
   ProductDetailBike,
   ProductDetailScooter,
-} from '~/components/product/layout/product-detail-router';
+  ProductFeatures,
+} from '~/components/product';
 import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { findPerformanceImage, transformPerformanceComparisonData } from '~/data-transformers/performance-comparison-transformer';
+import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
@@ -353,6 +355,20 @@ export default async function Product({ params, searchParams }: Props) {
         })
       : null;
 
+  // Create streamable product features data for bikes and scooters
+  const streamableProductFeatures =
+    (productDetailVariant === 'bike' || productDetailVariant === 'scooter')
+      ? Streamable.from(async () => {
+          const [product, images] = await Streamable.all([streamableProduct, streamableImages]);
+          
+          // Transform features from custom fields
+          const featuresData = productFeaturesTransformer(product.customFields);
+          
+          // Resolve image descriptors to actual BigCommerce images
+          return resolveFeatureImages(featuresData, images);
+        })
+      : null;
+
   // Create streamable inventory status for all products
   const streamableInventoryStatus = Streamable.from(async () => {
     const product = await streamableProduct;
@@ -536,6 +552,12 @@ export default async function Product({ params, searchParams }: Props) {
               }}
             </Stream>
           </div>
+          {/* Product Features section */}
+          {streamableProductFeatures && (
+            <div className="bg-gray-50">
+              <ProductFeatures features={streamableProductFeatures} />
+            </div>
+          )}
           <TechSpecs powerSpecs={streamableTechSpecFields} />
         </>
       )}
