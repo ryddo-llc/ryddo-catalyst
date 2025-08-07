@@ -3,6 +3,7 @@
 import { ReactNode, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
 import { Field } from './schema';
 import { SpecificationColorSwatches, SpecificationSizeBadges } from './specification-islands';
@@ -24,6 +25,58 @@ const createSpecificationItem = (title: string, content: ReactNode, index: numbe
     <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-900">{title}</div>
     <div className="text-xs font-medium text-gray-600">{content}</div>
   </div>
+);
+
+// Skeleton component for mobile variant interactions
+const MobileVariantInteractionsSkeleton = () => (
+  <div className="space-y-4">
+    {/* Color swatches skeleton */}
+    <div className="space-y-2">
+      <Skeleton.Text characterCount={5} className="text-sm font-medium" />
+      <div className="flex gap-2">
+        {[1, 2, 3, 4].map((_, i) => (
+          <Skeleton.Box key={i} className="h-8 w-8 rounded-full" />
+        ))}
+      </div>
+    </div>
+    {/* Size badges skeleton */}
+    <div className="space-y-2">
+      <Skeleton.Text characterCount={4} className="text-sm font-medium" />
+      <div className="flex gap-2">
+        {[1, 2, 3].map((_, i) => (
+          <Skeleton.Box key={i} className="h-10 w-12 rounded-md" />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// Skeleton component for desktop variant interactions
+const DesktopVariantInteractionsSkeleton = () => (
+  <>
+    {/* Colors section skeleton */}
+    <div className="flex-shrink-0">
+      <div className="space-y-2">
+        <Skeleton.Text characterCount={5} className="text-sm font-medium" />
+        <div className="flex gap-2">
+          {[1, 2, 3, 4].map((_, i) => (
+            <Skeleton.Box key={i} className="h-8 w-8 rounded-full" />
+          ))}
+        </div>
+      </div>
+    </div>
+    {/* Sizes section skeleton */}
+    <div className="flex-shrink-0">
+      <div className="space-y-2">
+        <Skeleton.Text characterCount={4} className="text-sm font-medium" />
+        <div className="flex gap-2">
+          {[1, 2, 3].map((_, i) => (
+            <Skeleton.Box key={i} className="h-10 w-12 rounded-md" />
+          ))}
+        </div>
+      </div>
+    </div>
+  </>
 );
 
 export interface ProductSpecificationsProps {
@@ -85,7 +138,7 @@ export function ProductSpecifications({
         <div className="space-y-4 @md:hidden">
           {/* Variant sections for mobile */}
           {fields && showVariantInteractions && (
-            <Stream fallback={null} value={fields}>
+            <Stream fallback={<MobileVariantInteractionsSkeleton />} value={fields}>
               {(fieldsData) => {
                 const variantFields = fieldsData.filter(isVariantField);
                 const colorField =
@@ -161,7 +214,7 @@ export function ProductSpecifications({
           <div className="flex items-start justify-between gap-3">
             {/* Interactive variant sections - only show if fields provided and interactions enabled */}
             {fields && showVariantInteractions && (
-              <Stream fallback={null} value={fields}>
+              <Stream fallback={<DesktopVariantInteractionsSkeleton />} value={fields}>
                 {(fieldsData) => {
                   const variantFields = fieldsData.filter(isVariantField);
 
