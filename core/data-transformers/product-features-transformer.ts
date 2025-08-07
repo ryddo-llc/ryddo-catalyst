@@ -1,5 +1,3 @@
-import type { ResultOf } from 'gql.tada';
-
 export interface ProductFeature {
   title: string;
   description: string;
@@ -32,6 +30,8 @@ interface ProductImage {
 
 /**
  * Flatten BigCommerce custom fields from edges/nodes format to key-value pairs
+ * @param {BigCommerceCustomFields} customFields - BigCommerce custom fields data
+ * @returns {Record<string, string>} Flattened key-value pairs
  */
 function flattenCustomFields(customFields: BigCommerceCustomFields): Record<string, string> {
   const flattened: Record<string, string> = {};
@@ -51,26 +51,26 @@ function flattenCustomFields(customFields: BigCommerceCustomFields): Record<stri
 
 /**
  * Parse layout pattern string into array
- * @param layoutPattern - String like "normal,reverse,normal"
- * @returns Array of layout values
+ * @param {string} layoutPattern - String like "normal,reverse,normal"
+ * @returns {Array<'normal' | 'reverse'>} Array of layout values
  */
-function parseLayoutPattern(layoutPattern?: string): ('normal' | 'reverse')[] {
+function parseLayoutPattern(layoutPattern?: string): Array<'normal' | 'reverse'> {
   if (!layoutPattern) {
     return ['normal', 'reverse', 'normal']; // default pattern
   }
   
   return layoutPattern
     .split(',')
-    .map(layout => layout.trim() as 'normal' | 'reverse')
-    .filter(layout => layout === 'normal' || layout === 'reverse');
+    .map(layout => layout.trim())
+    .filter((layout): layout is 'normal' | 'reverse' => layout === 'normal' || layout === 'reverse');
 }
 
 /**
  * Find a feature image from product images based on descriptor (alt text)
  * Similar to findPerformanceImage but for feature images
- * @param images - Array of product images from BigCommerce
- * @param descriptor - Image descriptor/alt text to search for
- * @returns Matching image object or null if not found
+ * @param {ProductImage[]} images - Array of product images from BigCommerce
+ * @param {string} descriptor - Image descriptor/alt text to search for
+ * @returns {ProductImage | null} Matching image object or null if not found
  */
 function findFeatureImage(
   images: ProductImage[],
@@ -82,6 +82,7 @@ function findFeatureImage(
 
   // Try exact match first
   const exactMatch = images.find(img => img.alt === descriptor);
+
   if (exactMatch) {
     return exactMatch;
   }
@@ -91,6 +92,7 @@ function findFeatureImage(
     img.alt.toLowerCase().includes(descriptor.toLowerCase()) ||
     descriptor.toLowerCase().includes(img.alt.toLowerCase())
   );
+
   if (partialMatch) {
     return partialMatch;
   }
@@ -100,13 +102,11 @@ function findFeatureImage(
 
 /**
  * Extract product features from BigCommerce custom fields and images
- * @param customFields - BigCommerce custom fields
- * @param images - BigCommerce product images (optional, for descriptor-based image lookup)
- * @returns Transformed product features data
+ * @param {BigCommerceCustomFields} customFields - BigCommerce custom fields
+ * @returns {ProductFeaturesData} Transformed product features data
  */
 export function productFeaturesTransformer(
   customFields: BigCommerceCustomFields,
-  images?: ProductImage[]
 ): ProductFeaturesData {
   const flattenedFields = flattenCustomFields(customFields);
   const features: ProductFeature[] = [];
@@ -115,7 +115,7 @@ export function productFeaturesTransformer(
   const layoutPattern = parseLayoutPattern(flattenedFields.feature_layout_pattern);
   
   // Extract up to 6 features (can be extended)
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 6; i += 1) {
     const titleKey = `feature_${i}_title`;
     const descriptionKey = `feature_${i}_description`;
     const imageDescriptorKey = `feature_${i}_image_descriptor`; // Image descriptor (like performance_image_description)
@@ -147,6 +147,7 @@ export function productFeaturesTransformer(
         featureImageAlt = customAlt || `${title} feature image`;
       } else {
         // Skip this feature if no image source is provided
+        // eslint-disable-next-line no-continue
         continue;
       }
       
@@ -169,9 +170,9 @@ export function productFeaturesTransformer(
 /**
  * Resolve feature images by finding them in the product images array
  * This function should be called after productFeaturesTransformer to resolve image descriptors
- * @param featuresData - Product features data with descriptors
- * @param images - BigCommerce product images
- * @returns Features data with resolved image URLs
+ * @param {ProductFeaturesData} featuresData - Product features data with descriptors
+ * @param {ProductImage[]} images - BigCommerce product images
+ * @returns {ProductFeaturesData} Features data with resolved image URLs
  */
 export function resolveFeatureImages(
   featuresData: ProductFeaturesData,
@@ -186,6 +187,7 @@ export function resolveFeatureImages(
     // Try to resolve imageDescriptor to actual image
     if (feature.imageDescriptor) {
       const foundImage = findFeatureImage(images, feature.imageDescriptor);
+
       if (foundImage) {
         return {
           ...feature,

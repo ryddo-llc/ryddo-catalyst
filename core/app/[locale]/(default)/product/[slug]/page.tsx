@@ -9,22 +9,22 @@ import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/load
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
-import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import {
   getProductDetailVariant,
   ProductDetailBike,
   ProductDetailScooter,
   ProductFeatures,
 } from '~/components/product';
+import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
+import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import { findPerformanceImage, transformPerformanceComparisonData } from '~/data-transformers/performance-comparison-transformer';
-import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
+import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 

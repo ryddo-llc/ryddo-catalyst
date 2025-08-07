@@ -1,10 +1,9 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
-import styles from './product-features.module.css';
 import type { ProductFeature, ProductFeaturesData } from '~/data-transformers/product-features-transformer';
 
-
+import styles from './product-features.module.css';
 
 interface ProductFeaturesProps {
   features: Streamable<ProductFeaturesData | null>;
@@ -17,7 +16,10 @@ interface ProductFeatureItemProps {
 }
 
 /**
- * Individual feature item component
+ * Individual feature item component that displays a product feature with image and text
+ * @param {ProductFeature} feature - The feature data to display
+ * @param {number} index - The index of the feature in the list
+ * @returns {JSX.Element} A React component displaying the feature
  */
 function ProductFeatureItem({ feature, index }: ProductFeatureItemProps) {
   const isReverse = feature.layout === 'reverse';
@@ -45,11 +47,11 @@ function ProductFeatureItem({ feature, index }: ProductFeatureItemProps) {
           <h3 className={styles.featureTitlePrimary}>
             {firstWord}
           </h3>
-          {remainingWords && (
+                      {remainingWords ? (
             <h3 className={styles.featureTitleSecondary}>
               {remainingWords}
             </h3>
-          )}
+          ) : null}
           <p className="text-lg sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-500 leading-relaxed pt-4 sm:pt-6">
             {feature.description}
           </p>
@@ -64,12 +66,12 @@ function ProductFeatureItem({ feature, index }: ProductFeatureItemProps) {
       >
         {feature.imageUrl ? (
           <Image
-            src={feature.imageUrl}
             alt={feature.imageAlt}
-            fill
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            fill
             priority={index === 0}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            src={feature.imageUrl}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
@@ -85,13 +87,15 @@ function ProductFeatureItem({ feature, index }: ProductFeatureItemProps) {
 
 /**
  * Skeleton loading component for product features
+ * @param {number} count - Number of skeleton items to display
+ * @returns {JSX.Element} A React component showing loading state
  */
 export function ProductFeaturesSkeleton({ count = 3 }: { count?: number }) {
   return (
     <div className="w-full bg-gray-50">
       <div className="w-full">
         {Array.from({ length: count }, (_, index) => (
-          <div key={index} className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]" key={index}>
             {/* Text Content Skeleton */}
             <div
               className={`bg-white p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 2xl:p-32 flex flex-col justify-center items-center ${
@@ -139,8 +143,9 @@ export function ProductFeaturesSkeleton({ count = 3 }: { count?: number }) {
  * Displays a series of product features in an alternating two-column layout.
  * Features are loaded from BigCommerce custom fields and rendered with the Stream pattern.
  * 
- * @param features - Streamable product features data from BigCommerce
- * @param className - Optional additional CSS classes
+ * @param {Streamable<ProductFeaturesData | null>} features - Product features data from BigCommerce
+ * @param {string} className - Optional additional CSS classes
+ * @returns {JSX.Element} A React component displaying product features
  */
 export function ProductFeatures({ features, className = '' }: ProductFeaturesProps) {
   return (
@@ -148,7 +153,7 @@ export function ProductFeatures({ features, className = '' }: ProductFeaturesPro
       <div className="w-full">
         <Stream fallback={<ProductFeaturesSkeleton />} value={features}>
           {(featuresData) => {
-            if (!featuresData || !featuresData.features.length) {
+            if (!featuresData?.features.length) {
               return null;
             }
 
@@ -156,9 +161,9 @@ export function ProductFeatures({ features, className = '' }: ProductFeaturesPro
               <>
                 {featuresData.features.map((feature, index) => (
                   <ProductFeatureItem
-                    key={`feature-${index}`}
                     feature={feature}
                     index={index}
+                    key={`feature-${index}`}
                   />
                 ))}
               </>
