@@ -21,7 +21,10 @@ import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
-import { findPerformanceImage, transformPerformanceComparisonData } from '~/data-transformers/performance-comparison-transformer';
+import {
+  findPerformanceImage,
+  transformPerformanceComparisonData,
+} from '~/data-transformers/performance-comparison-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
@@ -116,36 +119,8 @@ export default async function Product({ params, searchParams }: Props) {
     return notFound();
   }
 
-  const streamableProduct = Streamable.from(async () => {
-    const options = await searchParams;
-
-    const optionValueIds = Object.keys(options)
-      .map((option) => ({
-        optionEntityId: Number(option),
-        valueEntityId: Number(options[option]),
-      }))
-      .filter(
-        (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-      );
-
-    const variables = {
-      entityId: Number(productId),
-      optionValueIds,
-      useDefaultOptionSelections: true,
-    };
-
-    const product = await getStreamableProduct(variables, customerAccessToken);
-
-    if (!product) {
-      return notFound();
-    }
-
-    return product;
-  });
-
-  const streamableProductSku = Streamable.from(async () => (await streamableProduct).sku);
-
-  const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
+  // Consolidated stream for all product data to eliminate duplicate API calls
+  const streamableAllProductData = Streamable.from(async () => {
     const options = await searchParams;
 
     const optionValueIds = Object.keys(options)
@@ -166,21 +141,54 @@ export default async function Product({ params, searchParams }: Props) {
       currencyCode,
     };
 
-    return await getProductPricingAndRelatedProducts(variables, customerAccessToken);
+    // Fetch both product and pricing data simultaneously
+    const [product, pricingData] = await Promise.all([
+      getStreamableProduct(variables, customerAccessToken),
+      getProductPricingAndRelatedProducts(variables, customerAccessToken),
+    ]);
+
+    if (!product) {
+      return notFound();
+    }
+
+    return {
+      product,
+      pricingData,
+    };
+  });
+
+  // Derived streams from consolidated data
+  const streamableProduct = Streamable.from(async () => {
+    const data = await streamableAllProductData;
+
+    return data.product;
+  });
+
+  const streamableProductSku = Streamable.from(async () => {
+    const data = await streamableAllProductData;
+
+    return data.product.sku;
+  });
+
+  const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
+    const data = await streamableAllProductData;
+
+    return data.pricingData;
   });
 
   const streamablePrices = Streamable.from(async () => {
-    const product = await streamableProductPricingAndRelatedProducts;
+    const data = await streamableAllProductData;
 
-    if (!product) {
+    if (!data.pricingData) {
       return null;
     }
 
-    return pricesTransformer(product.prices, format) ?? null;
+    return pricesTransformer(data.pricingData.prices, format) ?? null;
   });
 
   const streamableImages = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const data = await streamableAllProductData;
+    const product = data.product;
 
     // Get all images without filtering out the default image
     const allImages = removeEdgesAndNodes(product.images).map((image) => ({
@@ -211,7 +219,8 @@ export default async function Product({ params, searchParams }: Props) {
 
   // Consolidated CTA data - combines label and disabled state
   const streamableCtaData = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const data = await streamableAllProductData;
+    const product = data.product;
 
     if (product.availabilityV2.status === 'Unavailable') {
       return {
@@ -244,7 +253,8 @@ export default async function Product({ params, searchParams }: Props) {
   const streameableCtaDisabled = Streamable.from(async () => (await streamableCtaData).disabled);
 
   const streameableAccordions = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const data = await streamableAllProductData;
+    const product = data.product;
 
     const customFields = removeEdgesAndNodes(product.customFields);
 
@@ -303,13 +313,14 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streameableRelatedProducts = Streamable.from(async () => {
-    const product = await streamableProductPricingAndRelatedProducts;
+    const data = await streamableAllProductData;
+    const pricingData = data.pricingData;
 
-    if (!product) {
+    if (!pricingData) {
       return [];
     }
 
-    const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
+    const relatedProducts = removeEdgesAndNodes(pricingData.relatedProducts);
 
     return productCardTransformer(relatedProducts, format);
   });
@@ -327,18 +338,17 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamableAnalyticsData = Streamable.from(async () => {
-    const [extendedProduct, pricingProduct] = await Streamable.all([
-      streamableProduct,
-      streamableProductPricingAndRelatedProducts,
-    ]);
+    const data = await streamableAllProductData;
+    const product = data.product;
+    const pricingData = data.pricingData;
 
     return {
-      id: extendedProduct.entityId,
-      name: extendedProduct.name,
-      sku: extendedProduct.sku,
-      brand: extendedProduct.brand?.name ?? '',
-      price: pricingProduct?.prices?.price.value ?? 0,
-      currency: pricingProduct?.prices?.price.currencyCode ?? '',
+      id: product.entityId,
+      name: product.name,
+      sku: product.sku,
+      brand: product.brand?.name ?? '',
+      price: pricingData?.prices?.price.value ?? 0,
+      currency: pricingData?.prices?.price.currencyCode ?? '',
     };
   });
 
@@ -349,7 +359,8 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableBikeData =
     productDetailVariant === 'bike'
       ? Streamable.from(async () => {
-          const product = await streamableProduct;
+          const data = await streamableAllProductData;
+          const product = data.product;
 
           return bikeProductTransformer(product);
         })
@@ -371,7 +382,8 @@ export default async function Product({ params, searchParams }: Props) {
 
   // Create streamable inventory status for all products
   const streamableInventoryStatus = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const data = await streamableAllProductData;
+    const product = data.product;
 
     return {
       isInStock: product.inventory.isInStock,
@@ -404,7 +416,8 @@ export default async function Product({ params, searchParams }: Props) {
 
   // Direct custom field filtering for TechSpecs (eliminates dependency chain)
   const streamableTechSpecFields = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const data = await streamableAllProductData;
+    const product = data.product;
     const customFields = removeEdgesAndNodes(product.customFields);
 
     const fieldNames = {
@@ -444,6 +457,8 @@ export default async function Product({ params, searchParams }: Props) {
     inventoryStatus: streamableInventoryStatus,
   };
 
+  const defaultProductData = baseProductData;
+
   // Enhanced product data for bike components
   const bikeProductData = streamableBikeData
     ? Streamable.from(async () => {
@@ -458,7 +473,7 @@ export default async function Product({ params, searchParams }: Props) {
       })
     : baseProductData;
 
-  const productDetailProps = {
+  const baseProps = {
     action: addToCart,
     additionalActions: (
       <WishlistButton
@@ -474,12 +489,11 @@ export default async function Product({ params, searchParams }: Props) {
     ctaLabel: streameableCtaLabel,
     decrementLabel: t('ProductDetails.decreaseQuantity'),
     emptySelectPlaceholder: t('ProductDetails.emptySelectPlaceholder'),
-    fields: productOptionsTransformer(baseProduct.productOptions),
+    fields: Streamable.from(() => productOptionsTransformer(baseProduct.productOptions)),
     incrementLabel: t('ProductDetails.increaseQuantity'),
     maxCompareItems: 3,
     maxCompareLimitMessage: "You've reached the maximum number of products for comparison.",
     prefetch: true,
-    product: productDetailVariant === 'bike' ? bikeProductData : baseProductData,
     quantityLabel: t('ProductDetails.quantity'),
     thumbnailLabel: t('ProductDetails.thumbnail'),
     relatedProducts: streameableRelatedProducts,
@@ -489,14 +503,14 @@ export default async function Product({ params, searchParams }: Props) {
   const renderProductDetail = () => {
     switch (productDetailVariant) {
       case 'bike':
-        return <ProductDetailBike {...productDetailProps} />;
+        return <ProductDetailBike {...baseProps} product={bikeProductData} />;
 
       case 'scooter':
-        return <ProductDetailScooter {...productDetailProps} />;
+        return <ProductDetailScooter {...baseProps} product={baseProductData} />;
 
       case 'default':
       default:
-        return <ProductDetail {...productDetailProps} />;
+        return <ProductDetail {...baseProps} product={defaultProductData} />;
     }
   };
 
@@ -518,34 +532,37 @@ export default async function Product({ params, searchParams }: Props) {
           />
           {/* Performance Comparison section */}
           <div className="bg-white px-4 py-8 md:px-8">
-            <Stream
-              fallback={null}
-              value={Streamable.all([streamableProduct, streamableImages])}
-            >
+            <Stream fallback={null} value={Streamable.all([streamableProduct, streamableImages])}>
               {([product, images]) => {
                 const customFields = product.customFields;
                 const dynamicData = transformPerformanceComparisonData(customFields);
-                
+
                 const performanceImage = findPerformanceImage(
                   images,
-                  dynamicData.performanceImageDescription
+                  dynamicData.performanceImageDescription,
                 );
-                
+
                 if (dynamicData.metrics.length === 0) {
                   return null;
                 }
-                
-                const configKey = customFields.edges?.find(edge => edge.node.name === 'performance_config_key')?.node.value || product.sku || 'default';
-                
+
+                const configKey =
+                  customFields.edges?.find((edge) => edge.node.name === 'performance_config_key')
+                    ?.node.value ||
+                  product.sku ||
+                  'default';
+
                 return (
                   <PerformanceComparison
                     config={getBikeConfig(configKey)}
                     dynamicData={dynamicData}
                     metrics={dynamicData.metrics}
-                    productImage={performanceImage || {
-                      src: product.defaultImage?.url || '/images/default-performance.webp',
-                      alt: product.defaultImage?.altText || `${product.name} Performance`,
-                    }}
+                    productImage={
+                      performanceImage || {
+                        src: product.defaultImage?.url || '/images/default-performance.webp',
+                        alt: product.defaultImage?.altText || `${product.name} Performance`,
+                      }
+                    }
                     productTitle={baseProduct.name}
                   />
                 );

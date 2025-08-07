@@ -2,7 +2,7 @@
 
 import { clsx } from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Image } from '~/components/image';
 
@@ -10,6 +10,8 @@ export interface ProductGalleryProps {
   images: Array<{ alt: string; src: string }>;
   className?: string;
   thumbnailLabel?: string;
+  productTitle?: string;
+  priority?: boolean;
   aspectRatio?:
     | '1:1'
     | '4:5'
@@ -43,11 +45,14 @@ export function ProductGallery({
   images,
   className,
   thumbnailLabel = 'View image number',
+  productTitle,
+  priority = false,
   aspectRatio = '4:5',
   fit = 'contain',
 }: ProductGalleryProps) {
   const [previewImage, setPreviewImage] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
+  const thumbnailContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -66,80 +71,145 @@ export function ProductGallery({
     if (emblaApi) emblaApi.scrollTo(index);
   };
 
+
+  // Get first word of product title
+  const firstWord = productTitle?.split(' ')[0] || '';
+
   return (
-    <div className={clsx('sticky top-4 flex flex-col gap-2 @2xl:flex-row', className)}>
-      <div
-        className="w-full overflow-hidden rounded-xl @xl:rounded-2xl @2xl:order-2"
-        ref={emblaRef}
-      >
-        <div className="flex">
-          {images.map((image, idx) => (
-            <div
-              className={clsx(
-                'relative w-full shrink-0 grow-0 basis-full',
-                {
-                  '5:6': 'aspect-[5/6]',
-                  '3:4': 'aspect-[3/4]',
-                  '4:5': 'aspect-[4/5]',
-                  '3:2': 'aspect-[3/2]',
-                  '2:3': 'aspect-[2/3]',
-                  '16:9': 'aspect-[16/9]',
-                  '9:16': 'aspect-[9/16]',
-                  '6:5': 'aspect-[6/5]',
-                  '5:4': 'aspect-[5/4]',
-                  '4:3': 'aspect-[4/3]',
-                  '1:1': 'aspect-square',
-                }[aspectRatio],
-              )}
-              key={idx}
-            >
-              <Image
-                alt={image.alt}
-                className={clsx(
-                  'bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))]',
-                  {
-                    contain: 'object-contain',
-                    cover: 'object-cover',
-                  }[fit],
-                )}
-                fill
-                priority={idx === 0}
-                sizes="(min-width: 42rem) 50vw, 100vw"
-                src={image.src}
-              />
+    <div
+      className={clsx('relative flex flex-col items-start gap-4 @md:flex-row @md:gap-6', className)}
+    >
+      {/* Brand name background text - behind thumbnails only */}
+      {Boolean(firstWord) && (
+        <div
+          className="pointer-events-none absolute left-0 top-[-12px] hidden items-center justify-center @md:ml-2 @md:flex @md:min-h-[300px] @md:w-24 @lg:ml-3 @lg:w-28 @xl:ml-4 @xl:w-32"
+          style={{ zIndex: 1 }}
+        >
+          <span
+            className="select-none text-[8rem] font-black uppercase tracking-widest text-gray-400 opacity-15 @md:text-[6rem] @lg:text-[8rem] @xl:text-[10rem] @2xl:text-[12rem]"
+            style={{
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed',
+              transform: 'rotate(180deg)',
+            }}
+          >
+            {firstWord}
+          </span>
+        </div>
+      )}
+
+      {/* Main Image - Mobile First, Desktop maintains original order */}
+      <div className="order-1 w-full @md:order-2 @md:w-[calc(100%-7rem)] @lg:w-[calc(100%-8rem)] @xl:w-[calc(100%-9rem)]">
+        <div className="group relative overflow-hidden">
+          <div className="w-full overflow-hidden" ref={emblaRef}>
+            <div className="flex">
+              {images.map((image, idx) => (
+                <div
+                  className={clsx(
+                    'relative w-full shrink-0 grow-0 basis-full',
+                    {
+                      '5:6': 'aspect-[5/6]',
+                      '3:4': 'aspect-[3/4]',
+                      '4:5': 'aspect-[4/5]',
+                      '3:2': 'aspect-[3/2]',
+                      '2:3': 'aspect-[2/3]',
+                      '16:9': 'aspect-[16/9]',
+                      '9:16': 'aspect-[9/16]',
+                      '6:5': 'aspect-[6/5]',
+                      '5:4': 'aspect-[5/4]',
+                      '4:3': 'aspect-[4/3]',
+                      '1:1': 'aspect-square',
+                    }[aspectRatio],
+                  )}
+                  key={idx}
+                >
+                  <Image
+                    alt={image.alt}
+                    className={clsx(
+                      'transition-transform duration-300',
+                      {
+                        contain: 'object-contain',
+                        cover: 'object-cover',
+                      }[fit],
+                    )}
+                    fill
+                    loading={idx === 0 ? "eager" : "lazy"}
+                    priority={priority && idx === 0}
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    src={image.src}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
-      <div className="flex max-w-full shrink-0 flex-row gap-2 overflow-x-auto p-1 @2xl:order-1 @2xl:flex-col">
-        {images.map((image, index) => (
-          <button
-            aria-label={`${thumbnailLabel} ${index + 1}`}
-            className={clsx(
-              'relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 @md:h-16 @md:w-16',
-              index === previewImage
-                ? 'border-[var(--product-gallery-image-border-active,hsl(var(--foreground)))]'
-                : 'border-transparent',
-            )}
-            key={index}
-            onClick={() => selectImage(index)}
-          >
-            <div
+
+      {/* Thumbnail Gallery with Natural Arrow Flow - Mobile Second, Desktop maintains original order */}
+      <div className="order-2 flex w-full flex-row @md:order-1 @md:ml-4 @md:w-24 @md:flex-col @md:items-center @lg:ml-6 @lg:w-28 @xl:ml-8 @xl:w-32">
+        {/* Up Arrow */}
+        <button
+          aria-label="Previous image"
+          className="hidden min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 @md:flex"
+          onClick={() => selectImage(Math.max(0, previewImage - 1))}
+        >
+          <svg className="h-6 w-6" fill="none" stroke="#E6275D" strokeWidth={3} viewBox="0 0 24 24">
+            <path d="M5 15l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        {/* Thumbnails Container */}
+        <div
+          className="flex flex-row gap-3 overflow-x-auto pb-2 @md:flex-col @md:overflow-y-auto @md:pb-0 [&::-webkit-scrollbar]:hidden"
+          ref={thumbnailContainerRef}
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
+          {images.map((image, index) => (
+            <button
+              aria-label={`${thumbnailLabel} ${index + 1}`}
               className={clsx(
-                index === previewImage ? 'opacity-100' : 'opacity-50',
-                'transition-all duration-300 hover:opacity-100',
+                '@lg:h-22 group relative z-10 h-16 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white shadow-md transition-all duration-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 @md:h-20 @md:w-24 @lg:w-28 @xl:h-24 @xl:w-32',
+                index === previewImage
+                  ? 'border-gray-400'
+                  : 'border-gray-200 hover:border-gray-300',
               )}
+              key={index}
+              onClick={() => selectImage(index)}
             >
-              <Image
-                alt={image.alt}
-                className="bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))] object-cover"
-                fill
-                sizes="(min-width: 28rem) 4rem, 3rem"
-                src={image.src}
-              />
-            </div>
-          </button>
-        ))}
+              <div className="p-3">
+                <div
+                  className={clsx(
+                    'h-full w-full transition-opacity duration-300',
+                    index === previewImage ? 'opacity-100' : 'opacity-60 group-hover:opacity-90',
+                  )}
+                >
+                  <Image
+                    alt={image.alt}
+                    className="object-contain"
+                    fill
+                    loading={index < 3 ? "eager" : "lazy"}
+                    sizes="(max-width: 768px) 6rem, (max-width: 1280px) 8rem, 9rem"
+                    src={image.src}
+                  />
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Down Arrow */}
+        <button
+          aria-label="Next image"
+          className="hidden min-h-[44px] min-w-[44px] items-center justify-center rounded-lg transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 @md:flex"
+          onClick={() => selectImage(Math.min(images.length - 1, previewImage + 1))}
+        >
+          <svg className="h-6 w-6" fill="none" stroke="#E6275D" strokeWidth={3} viewBox="0 0 24 24">
+            <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
       </div>
     </div>
   );
