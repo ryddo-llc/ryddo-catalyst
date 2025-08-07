@@ -6,18 +6,23 @@ import React, { useCallback } from 'react';
 import { Field } from './schema';
 
 export interface SpecificationItemProps {
-  title: string;
   field: Field;
 }
 
-export function SpecificationColorSwatches({ title, field }: SpecificationItemProps) {
+export function SpecificationColorSwatches({ field }: SpecificationItemProps) {
   const [params, setParams] = useQueryStates(
-    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: true }) } : {},
+    { shallow: true } // Use shallow navigation for smooth transitions
   );
 
   const handleColorSelect = useCallback(
-    (value: string) => {
-      void setParams({ [field.name]: value || null });
+    async (value: string) => {
+      try {
+        await setParams({ [field.name]: value || null });
+      } catch {
+        // Silently handle navigation errors to maintain smooth UX
+        // The UI will remain in its current state if update fails
+      }
     },
     [setParams, field],
   );
@@ -27,31 +32,32 @@ export function SpecificationColorSwatches({ title, field }: SpecificationItemPr
   const currentValue = params[field.name];
 
   return (
-    <div className="text-left">
-      <div className="mb-2 @md:mb-3 text-xs @md:text-sm font-semibold uppercase tracking-wider text-gray-900">{title}</div>
-      <div className="flex flex-wrap gap-2 @md:gap-3">
-        {field.options.map((option, index) => {
+    <div className="w-full @md:w-auto">
+      <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-900">
+        Colors
+      </div>
+      <div className="flex flex-nowrap gap-1 @md:gap-2">
+        {field.options.slice(0, 4).map((option, index) => {
           const label = typeof option === 'string' ? option : option.label;
           const value = typeof option === 'string' ? option : option.value;
           const isSelected = currentValue === value;
 
           return (
             <button
-              className={`group flex flex-col items-center gap-1 @md:gap-2 rounded-lg p-2 @md:p-3 min-h-[44px] transition-all ${
-                isSelected 
-                  ? 'bg-pink-50 ring-2 ring-[#F92F7B]' 
-                  : 'hover:bg-gray-50'
+              aria-label={label}
+              className={`group h-8 w-8 @md:h-9 @md:w-9 rounded-lg transition-all duration-200 ${
+                isSelected ? 'bg-pink-50' : 'hover:bg-gray-50'
               }`}
               key={value || index}
               onClick={() => handleColorSelect(String(value))}
               type="button"
             >
               <div
-                className={`h-6 w-6 @md:h-8 @md:w-8 rounded-md border shadow-sm transition-all ${
-                  isSelected ? 'ring-2 ring-[#F92F7B] ring-offset-2' : 'border-gray-300'
+                className={`h-full w-full rounded-md shadow-sm transition-all ${
+                  isSelected ? 'ring-2 ring-[#F92F7B] ring-offset-1' : 'border border-gray-300'
                 }`}
                 style={{
-                  backgroundColor: 
+                  backgroundColor:
                     field.type === 'swatch-radio-group' &&
                     typeof option === 'object' &&
                     'type' in option &&
@@ -62,13 +68,6 @@ export function SpecificationColorSwatches({ title, field }: SpecificationItemPr
                 }}
                 title={label}
               />
-              <span 
-                className={`text-xs font-medium transition-colors ${
-                  isSelected ? 'text-[#F92F7B]' : 'text-gray-500'
-                }`}
-              >
-                {label}
-              </span>
             </button>
           );
         })}
@@ -77,14 +76,20 @@ export function SpecificationColorSwatches({ title, field }: SpecificationItemPr
   );
 }
 
-export function SpecificationSizeBadges({ title, field }: SpecificationItemProps) {
+export function SpecificationSizeBadges({ field }: SpecificationItemProps) {
   const [params, setParams] = useQueryStates(
-    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: true }) } : {},
+    { shallow: true } // Use shallow navigation for smooth transitions
   );
 
   const handleSizeSelect = useCallback(
-    (value: string) => {
-      void setParams({ [field.name]: value || null });
+    async (value: string) => {
+      try {
+        await setParams({ [field.name]: value || null });
+      } catch {
+        // Silently handle navigation errors to maintain smooth UX
+        // The UI will remain in its current state if update fails
+      }
     },
     [setParams, field],
   );
@@ -94,41 +99,29 @@ export function SpecificationSizeBadges({ title, field }: SpecificationItemProps
   const currentValue = params[field.name];
 
   return (
-    <div className="text-left">
-      <div className="mb-2 @md:mb-3 text-xs @md:text-sm font-semibold uppercase tracking-wider text-gray-900">{title}</div>
-      <div className="flex flex-wrap gap-2 @md:gap-3">
-        {field.options.map((option, index) => {
+    <div className="w-full @md:w-auto">
+      <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-900">
+        Sizes
+      </div>
+      <div className="flex flex-nowrap gap-1 @md:gap-2">
+        {field.options.slice(0, 5).map((option, index) => {
           const label = typeof option === 'string' ? option : option.label;
           const value = typeof option === 'string' ? option : option.value;
           const isSelected = currentValue === value;
 
           return (
             <button
-              className={`group flex flex-col items-center gap-1 @md:gap-2 rounded-lg p-2 @md:p-3 min-h-[44px] transition-all ${
-                isSelected 
-                  ? 'bg-pink-50 ring-2 ring-[#F92F7B]' 
-                  : 'hover:bg-gray-50'
+              aria-label={`Size ${label}`}
+              className={`flex h-8 w-8 @md:h-9 @md:w-9 items-center justify-center rounded-md text-xs font-bold uppercase shadow-sm transition-all duration-200 ${
+                isSelected
+                  ? 'bg-[#F92F7B] text-white ring-2 ring-[#F92F7B] ring-offset-1'
+                  : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
               }`}
               key={value || index}
               onClick={() => handleSizeSelect(String(value))}
               type="button"
             >
-              <div
-                className={`flex h-6 w-6 @md:h-8 @md:w-8 items-center justify-center rounded-md border shadow-sm transition-all ${
-                  isSelected 
-                    ? 'border-[#F92F7B] bg-[#F92F7B] text-white' 
-                    : 'border-gray-300 bg-white text-gray-700'
-                }`}
-              >
-                <span className="text-xs font-bold uppercase">{label}</span>
-              </div>
-              <span 
-                className={`text-xs font-medium transition-colors ${
-                  isSelected ? 'text-[#F92F7B]' : 'text-gray-500'
-                }`}
-              >
-                {label}
-              </span>
+              {label}
             </button>
           );
         })}
@@ -141,13 +134,12 @@ export function SpecificationSizeBadges({ title, field }: SpecificationItemProps
 export function SpecificationFeatureList({ features }: { features: string[] }) {
   return (
     <div className="text-left">
-      <div className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-900">Key Features</div>
+      <div className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-900">
+        Key Features
+      </div>
       <ul className="space-y-2">
         {features.map((feature, index) => (
-          <li 
-            className="flex items-center gap-2 text-sm text-gray-600"
-            key={index}
-          >
+          <li className="flex items-center gap-2 text-sm text-gray-600" key={index}>
             <div className="h-1.5 w-1.5 rounded-full bg-[#F92F7B]" />
             {feature}
           </li>
@@ -157,20 +149,19 @@ export function SpecificationFeatureList({ features }: { features: string[] }) {
   );
 }
 
-export function SpecificationTechDetails({ 
-  details 
-}: { 
-  details: Array<{ label: string; value: string }> 
+export function SpecificationTechDetails({
+  details,
+}: {
+  details: Array<{ label: string; value: string }>;
 }) {
   return (
     <div className="text-left">
-      <div className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-900">Technical Details</div>
+      <div className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-900">
+        Technical Details
+      </div>
       <div className="space-y-2">
         {details.map((detail, index) => (
-          <div 
-            className="flex justify-between items-center text-sm"
-            key={index}
-          >
+          <div className="flex items-center justify-between text-sm" key={index}>
             <span className="text-gray-600">{detail.label}:</span>
             <span className="font-medium text-gray-900">{detail.value}</span>
           </div>

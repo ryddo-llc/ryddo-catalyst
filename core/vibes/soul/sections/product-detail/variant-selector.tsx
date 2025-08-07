@@ -102,6 +102,7 @@ export function VariantSelector({
         {/* Variant fields */}
         {variantFields.map((field) => {
           const formField = formFields[field.name];
+
           if (!formField) return null;
 
           return (

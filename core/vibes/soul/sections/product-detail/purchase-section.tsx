@@ -9,7 +9,7 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { parseAsString, useQueryStates } from 'nuqs';
-import React, { ReactNode, startTransition, useActionState, useEffect } from 'react';
+import React, { ReactNode, startTransition, useActionState, useEffect, useOptimistic, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -78,6 +78,8 @@ export function PurchaseSection<F extends Field>({
 }: PurchaseSectionProps<F>) {
   const router = useRouter();
   const events = useEvents();
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 2;
 
   // Get search params for variant fields only
   const variantFields = fields.filter(isVariantField);
@@ -102,15 +104,28 @@ export function PurchaseSection<F extends Field>({
     lastResult: null,
   });
 
+  // Optimistic state for better UX
+  const [optimisticAddingToCart, addOptimisticAction] = useOptimistic(
+    false,
+    (state, addingToCart: boolean) => addingToCart,
+  );
+
   useEffect(() => {
     if (lastResult?.status === 'success') {
       toast.success(successMessage);
+      // Reset optimistic state after successful submission
+      addOptimisticAction(false);
 
       startTransition(async () => {
         await revalidateCart();
       });
+    } else if (lastResult?.status === 'error') {
+      // Reset optimistic state on error
+      addOptimisticAction(false);
+      // Show error message
+      toast.error(lastResult.error?.message || 'Failed to add item to cart. Please try again.');
     }
-  }, [lastResult, successMessage, router]);
+  }, [lastResult, successMessage, router, addOptimisticAction]);
 
   const [form, formFields] = useForm({
     lastResult,
@@ -120,10 +135,28 @@ export function PurchaseSection<F extends Field>({
     },
     onSubmit(event, { formData }) {
       event.preventDefault();
-
+      
       startTransition(() => {
-        formAction(formData);
-        events.onAddToCart?.(formData);
+        // Set optimistic state inside transition
+        addOptimisticAction(true);
+        
+        try {
+          formAction(formData);
+          events.onAddToCart?.(formData);
+          setRetryCount(0); // Reset retry count on successful submission
+        } catch {
+          if (retryCount < MAX_RETRIES) {
+            setRetryCount(prev => prev + 1);
+            // Retry after a short delay
+            setTimeout(() => {
+              formAction(formData);
+              events.onAddToCart?.(formData);
+            }, 1000 * (retryCount + 1)); // Exponential backoff
+          } else {
+            addOptimisticAction(false);
+            toast.error('Failed to add item to cart after multiple attempts. Please try again.');
+          }
+        }
       });
     },
     // @ts-expect-error: `defaultValue` types are conflicting with `onValidate`.
@@ -184,8 +217,9 @@ export function PurchaseSection<F extends Field>({
           {/* Add to Cart Button */}
           <SubmitButton 
             disabled={ctaDisabled || hasRequiredVariantFieldErrors(variantFields, params)}
+            optimistic={optimisticAddingToCart}
           >
-            {ctaLabel}
+            {optimisticAddingToCart ? 'Adding to Cart...' : ctaLabel}
           </SubmitButton>
           {additionalActions}
         </div>
@@ -194,14 +228,15 @@ export function PurchaseSection<F extends Field>({
   );
 }
 
-function SubmitButton({ children, disabled }: { children: ReactNode; disabled?: boolean }) {
+function SubmitButton({ children, disabled, optimistic }: { children: ReactNode; disabled?: boolean; optimistic?: boolean }) {
   const { pending } = useFormStatus();
+  const isLoading = pending || optimistic;
 
   return (
     <Button
       className="flex-1 bg-[#F92F7B] text-white hover:bg-[#e01b5f] focus:ring-2 focus:ring-[#F92F7B] focus:ring-offset-2 disabled:bg-gray-300 @sm:min-w-[200px] @sm:flex-none"
       disabled={disabled}
-      loading={pending}
+      loading={isLoading}
       size="medium"
       type="submit"
     >

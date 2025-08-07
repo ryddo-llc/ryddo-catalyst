@@ -12,6 +12,11 @@ import { ProductSpecifications } from './product-specifications';
 import { PurchaseSection } from './purchase-section';
 import { Field } from './schema';
 
+interface InventoryStatus {
+  isInStock: boolean;
+  status: 'Available' | 'Unavailable' | 'Preorder';
+}
+
 interface ProductDetailProduct {
   id: string;
   title: string;
@@ -23,6 +28,7 @@ interface ProductDetailProduct {
   rating?: Streamable<number | null>;
   summary?: Streamable<string>;
   description?: Streamable<string | ReactNode | null>;
+  inventoryStatus?: Streamable<InventoryStatus>;
   accordions?: Streamable<
     Array<{
       title: string;
@@ -100,6 +106,7 @@ export function ProductDetail<F extends Field>({
                             <ProductGallery
                               aspectRatio="4:5"
                               images={images}
+                              priority={true}
                               productTitle={product.title}
                               thumbnailLabel={thumbnailLabel}
                             />
@@ -177,6 +184,17 @@ export function ProductDetail<F extends Field>({
                         </Stream>
                       </div>
 
+                      {/* Inventory Status */}
+                      {product.inventoryStatus && (
+                        <div className="group/inventory-status">
+                          <Stream fallback={<InventoryStatusSkeleton />} value={product.inventoryStatus}>
+                            {(inventory) => (
+                              <InventoryStatusIndicator inventory={inventory} />
+                            )}
+                          </Stream>
+                        </div>
+                      )}
+
                       {/* Purchase Section - Client Component */}
                       <div className="group/purchase-section">
                         <Stream
@@ -206,11 +224,10 @@ export function ProductDetail<F extends Field>({
                 </div>
 
                 {/* Product Specifications - Sticky positioning on desktop, natural flow on mobile */}
-                <div className="@lg:z-5 mt-4 @lg:sticky @lg:bottom-0">
+                <div className="@lg:z-5 @lg:sticky @lg:bottom-0">
                   <ProductSpecifications fields={streamableFields} showVariantInteractions={true} />
                 </div>
               </div>
-              
             )
           }
         </Stream>
@@ -222,22 +239,30 @@ export function ProductDetail<F extends Field>({
 function ProductGallerySkeleton() {
   return (
     <Skeleton.Root className="group-has-[[data-pending]]/product-gallery:animate-pulse" pending>
-      <div className="w-full overflow-hidden rounded-xl @xl:rounded-2xl">
-        <div className="flex">
-          <Skeleton.Box className="aspect-[4/5] h-full w-full shrink-0 grow-0 basis-full" />
+      {/* Match actual layout structure */}
+      <div className="relative flex flex-col items-start gap-4 @md:flex-row @md:gap-6">
+        {/* Thumbnails skeleton */}
+        <div className="flex w-full flex-row @md:ml-4 @md:w-24 @md:flex-col @md:items-center @lg:ml-6 @lg:w-28 @xl:ml-8 @xl:w-32">
+          <div className="mt-2 flex max-w-full gap-2 overflow-x-auto @md:flex-col">
+            {Array.from({ length: 5 }).map((_, idx) => (
+              <Skeleton.Box className="h-16 w-20 shrink-0 rounded-xl @md:h-20 @md:w-24 @lg:h-22 @lg:w-28 @xl:h-24 @xl:w-32" key={idx} />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="mt-2 flex max-w-full gap-2 overflow-x-auto">
-        {Array.from({ length: 5 }).map((_, idx) => (
-          <Skeleton.Box className="h-12 w-12 shrink-0 rounded-lg @md:h-16 @md:w-16" key={idx} />
-        ))}
+        
+        {/* Main image skeleton */}
+        <div className="group relative -mt-16 overflow-hidden @md:-mt-12 @md:w-[calc(100%-7rem)] @md:pt-[2rem] @lg:w-[calc(100%-8rem)] @xl:w-[calc(100%-9rem)]">
+          <div className="w-full overflow-hidden rounded-xl @xl:rounded-2xl">
+            <Skeleton.Box className="aspect-[4/5] h-full w-full" />
+          </div>
+        </div>
       </div>
     </Skeleton.Root>
   );
 }
 
 function PriceLabelSkeleton() {
-  return <Skeleton.Box className="my-5 h-4 w-20 rounded-md" />;
+  return <Skeleton.Box className="my-5 h-12 w-32 rounded-md @md:h-16 @md:w-40 @lg:h-20 @lg:w-48" />;
 }
 
 function RatingSkeleton() {
@@ -285,8 +310,55 @@ function PurchaseSectionSkeleton() {
       className="flex flex-col gap-4 group-has-[[data-pending]]/purchase-section:animate-pulse @sm:flex-row @sm:items-center @sm:gap-6"
       pending
     >
-      <Skeleton.Box className="h-12 w-32 rounded-md" />
-      <Skeleton.Box className="h-12 w-[200px] rounded-full" />
+      <Skeleton.Box className="h-12 w-8 rounded-md" /> {/* Inventory status */}
+      <Skeleton.Box className="h-12 w-32 rounded-md @md:h-16 @md:w-40 @lg:h-20 @lg:w-48" /> {/* Price */}
+      <Skeleton.Box className="h-12 w-[200px] rounded-full @sm:min-w-[200px] @sm:flex-none" /> {/* Button */}
+    </Skeleton.Root>
+  );
+}
+
+function InventoryStatusIndicator({ inventory }: { inventory: InventoryStatus }) {
+  const getStatusConfig = () => {
+    if (!inventory.isInStock || inventory.status === 'Unavailable') {
+      return {
+        text: 'Out of Stock',
+        className: 'bg-red-50 text-red-700 border-red-200',
+        icon: '❌',
+      };
+    }
+
+    if (inventory.status === 'Preorder') {
+      return {
+        text: 'Available for Pre-order',
+        className: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+        icon: '⏳',
+      };
+    }
+
+    return {
+      text: 'In Stock',
+      className: 'bg-green-50 text-green-700 border-green-200',
+      icon: '✅',
+    };
+  };
+
+  const config = getStatusConfig();
+
+  return (
+    <div className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium ${config.className}`}>
+      <span>{config.icon}</span>
+      <span>{config.text}</span>
+    </div>
+  );
+}
+
+function InventoryStatusSkeleton() {
+  return (
+    <Skeleton.Root
+      className="group-has-[[data-pending]]/inventory-status:animate-pulse"
+      pending
+    >
+      <Skeleton.Box className="h-8 w-24 rounded-lg" />
     </Skeleton.Root>
   );
 }
@@ -306,6 +378,7 @@ export function ProductDetailSkeleton() {
         <RatingSkeleton />
         <PriceLabelSkeleton />
         <ProductSummarySkeleton />
+        <InventoryStatusSkeleton />
         <div className="mb-8 @2xl:hidden">
           <ProductGallerySkeleton />
         </div>
