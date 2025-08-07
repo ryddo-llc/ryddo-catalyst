@@ -187,10 +187,11 @@ export function ProductDetail<F extends Field>({
                       {/* Inventory Status */}
                       {product.inventoryStatus && (
                         <div className="group/inventory-status">
-                          <Stream fallback={<InventoryStatusSkeleton />} value={product.inventoryStatus}>
-                            {(inventory) => (
-                              <InventoryStatusIndicator inventory={inventory} />
-                            )}
+                          <Stream
+                            fallback={<InventoryStatusSkeleton />}
+                            value={product.inventoryStatus}
+                          >
+                            {(inventory) => <InventoryStatusIndicator inventory={inventory} />}
                           </Stream>
                         </div>
                       )}
@@ -224,7 +225,7 @@ export function ProductDetail<F extends Field>({
                 </div>
 
                 {/* Product Specifications - Sticky positioning on desktop, natural flow on mobile */}
-                <div className="@lg:z-5 @lg:sticky @lg:bottom-0">
+                <div>
                   <ProductSpecifications fields={streamableFields} showVariantInteractions={true} />
                 </div>
               </div>
@@ -241,19 +242,22 @@ function ProductGallerySkeleton() {
     <Skeleton.Root className="group-has-[[data-pending]]/product-gallery:animate-pulse" pending>
       {/* Match actual layout structure */}
       <div className="relative flex flex-col items-start gap-4 @md:flex-row @md:gap-6">
-        {/* Thumbnails skeleton */}
-        <div className="flex w-full flex-row @md:ml-4 @md:w-24 @md:flex-col @md:items-center @lg:ml-6 @lg:w-28 @xl:ml-8 @xl:w-32">
-          <div className="mt-2 flex max-w-full gap-2 overflow-x-auto @md:flex-col">
-            {Array.from({ length: 5 }).map((_, idx) => (
-              <Skeleton.Box className="h-16 w-20 shrink-0 rounded-xl @md:h-20 @md:w-24 @lg:h-22 @lg:w-28 @xl:h-24 @xl:w-32" key={idx} />
-            ))}
-          </div>
-        </div>
-        
-        {/* Main image skeleton */}
-        <div className="group relative -mt-16 overflow-hidden @md:-mt-12 @md:w-[calc(100%-7rem)] @md:pt-[2rem] @lg:w-[calc(100%-8rem)] @xl:w-[calc(100%-9rem)]">
+        {/* Main image skeleton - Mobile First */}
+        <div className="order-1 w-full @md:order-2 @md:w-[calc(100%-7rem)] @lg:w-[calc(100%-8rem)] @xl:w-[calc(100%-9rem)]">
           <div className="w-full overflow-hidden rounded-xl @xl:rounded-2xl">
             <Skeleton.Box className="aspect-[4/5] h-full w-full" />
+          </div>
+        </div>
+
+        {/* Thumbnails skeleton - Mobile Second */}
+        <div className="order-2 flex w-full flex-row @md:order-1 @md:ml-4 @md:w-24 @md:flex-col @md:items-center @lg:ml-6 @lg:w-28 @xl:ml-8 @xl:w-32">
+          <div className="flex max-w-full gap-2 overflow-x-auto @md:flex-col">
+            {Array.from({ length: 5 }).map((_, idx) => (
+              <Skeleton.Box
+                className="@lg:h-22 h-16 w-20 shrink-0 rounded-xl @md:h-20 @md:w-24 @lg:w-28 @xl:h-24 @xl:w-32"
+                key={idx}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -311,8 +315,10 @@ function PurchaseSectionSkeleton() {
       pending
     >
       <Skeleton.Box className="h-12 w-8 rounded-md" /> {/* Inventory status */}
-      <Skeleton.Box className="h-12 w-32 rounded-md @md:h-16 @md:w-40 @lg:h-20 @lg:w-48" /> {/* Price */}
-      <Skeleton.Box className="h-12 w-[200px] rounded-full @sm:min-w-[200px] @sm:flex-none" /> {/* Button */}
+      <Skeleton.Box className="h-12 w-32 rounded-md @md:h-16 @md:w-40 @lg:h-20 @lg:w-48" />{' '}
+      {/* Price */}
+      <Skeleton.Box className="h-12 w-[200px] rounded-full @sm:min-w-[200px] @sm:flex-none" />{' '}
+      {/* Button */}
     </Skeleton.Root>
   );
 }
@@ -345,7 +351,9 @@ function InventoryStatusIndicator({ inventory }: { inventory: InventoryStatus })
   const config = getStatusConfig();
 
   return (
-    <div className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium ${config.className}`}>
+    <div
+      className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium ${config.className}`}
+    >
       <span>{config.icon}</span>
       <span>{config.text}</span>
     </div>
@@ -354,10 +362,7 @@ function InventoryStatusIndicator({ inventory }: { inventory: InventoryStatus })
 
 function InventoryStatusSkeleton() {
   return (
-    <Skeleton.Root
-      className="group-has-[[data-pending]]/inventory-status:animate-pulse"
-      pending
-    >
+    <Skeleton.Root className="group-has-[[data-pending]]/inventory-status:animate-pulse" pending>
       <Skeleton.Box className="h-8 w-24 rounded-lg" />
     </Skeleton.Root>
   );
