@@ -21,7 +21,7 @@ interface ProductFeatureItemProps {
  * @param {number} index - The index of the feature in the list
  * @returns {JSX.Element} A React component displaying the feature
  */
-function ProductFeatureItem({ feature, index }: ProductFeatureItemProps) {
+function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
   const isReverse = feature.layout === 'reverse';
   
   // Split title into two parts for styling (first word gets primary color)
@@ -69,7 +69,6 @@ function ProductFeatureItem({ feature, index }: ProductFeatureItemProps) {
             alt={feature.imageAlt}
             className="object-cover"
             fill
-            priority={index === 0}
             sizes="(max-width: 768px) 100vw, 50vw"
             src={feature.imageUrl}
           />
@@ -87,51 +86,60 @@ function ProductFeatureItem({ feature, index }: ProductFeatureItemProps) {
 
 /**
  * Skeleton loading component for product features
- * @param {number} count - Number of skeleton items to display
  * @returns {JSX.Element} A React component showing loading state
  */
-export function ProductFeaturesSkeleton({ count = 3 }: { count?: number }) {
+function ProductFeatureItemSkeleton({ isReverse = false }: { isReverse?: boolean }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]">
+      {/* Text Content Skeleton */}
+      <div
+        className={`bg-white p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 2xl:p-32 flex flex-col justify-center items-center ${
+          isReverse ? 'md:order-2' : ''
+        }`}
+      >
+        <div 
+          className="flex flex-col justify-start items-start"
+          style={{
+            maxWidth: 'min(90%, 700px)'
+          }}
+        >
+          <Skeleton.Root pending>
+            <Skeleton.Box className="h-8 w-3/5 mb-2" />
+            <Skeleton.Box className="h-8 w-4/5 mb-3" />
+            <div className="space-y-2 w-full pt-4 sm:pt-6">
+              <Skeleton.Box className="h-4 w-full" />
+              <Skeleton.Box className="h-4 w-[85%]" />
+              <Skeleton.Box className="h-4 w-[70%]" />
+            </div>
+          </Skeleton.Root>
+        </div>
+      </div>
+
+      {/* Image Skeleton */}
+      <div
+        className={`relative overflow-hidden aspect-square ${
+          isReverse ? 'md:order-1' : ''
+        }`}
+      >
+        <Skeleton.Root className="animate-pulse" pending>
+          <Skeleton.Box className="w-full h-full bg-gray-300" />
+        </Skeleton.Root>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Skeleton loading component for product features section
+ * @returns {JSX.Element} A React component showing loading state
+ */
+export function ProductFeaturesSkeleton() {
   return (
     <div className="w-full bg-gray-50">
       <div className="w-full">
-        {Array.from({ length: count }, (_, index) => (
-          <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]" key={index}>
-            {/* Text Content Skeleton */}
-            <div
-              className={`bg-white p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 2xl:p-32 flex flex-col justify-center items-center ${
-                index % 2 === 1 ? 'md:order-2' : ''
-              }`}
-            >
-              <div 
-                className="flex flex-col justify-start items-start"
-                style={{
-                  maxWidth: 'min(90%, 700px)'
-                }}
-              >
-                <Skeleton.Root pending>
-                  <div className="h-8 bg-gray-300 mb-2" style={{ width: '60%' }} />
-                  <div className="h-8 bg-gray-300 mb-3" style={{ width: '80%' }} />
-                  <div className="space-y-2">
-                    <div className="h-4 bg-gray-300 w-full" />
-                    <div className="h-4 bg-gray-300" style={{ width: '85%' }} />
-                    <div className="h-4 bg-gray-300" style={{ width: '70%' }} />
-                  </div>
-                </Skeleton.Root>
-              </div>
-            </div>
-
-            {/* Image Skeleton */}
-            <div
-              className={`bg-gray-300 relative overflow-hidden aspect-square ${
-                index % 2 === 1 ? 'md:order-1' : ''
-              }`}
-            >
-              <Skeleton.Root pending>
-                <Skeleton.Box className="w-full h-full" />
-              </Skeleton.Root>
-            </div>
-          </div>
-        ))}
+        <ProductFeatureItemSkeleton />
+        <ProductFeatureItemSkeleton isReverse />
+        <ProductFeatureItemSkeleton />
       </div>
     </div>
   );
@@ -149,9 +157,14 @@ export function ProductFeaturesSkeleton({ count = 3 }: { count?: number }) {
  */
 export function ProductFeatures({ features, className = '' }: ProductFeaturesProps) {
   return (
-    <div className={`w-full bg-gray-50 ${className}`}>
+    <section
+      className={`w-full bg-gray-50 font-[family-name:var(--product-features-font-family,var(--font-family-body))] ${className}`}
+    >
       <div className="w-full">
-        <Stream fallback={<ProductFeaturesSkeleton />} value={features}>
+        <Stream
+          fallback={<ProductFeaturesSkeleton />}
+          value={features}
+        >
           {(featuresData) => {
             if (!featuresData?.features.length) {
               return null;
@@ -171,7 +184,7 @@ export function ProductFeatures({ features, className = '' }: ProductFeaturesPro
           }}
         </Stream>
       </div>
-    </div>
+    </section>
   );
 }
 
