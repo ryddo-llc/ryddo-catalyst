@@ -11,7 +11,7 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
+import React, { createContext, ReactNode, startTransition, useActionState, useCallback, useContext, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -35,6 +35,26 @@ import { usePathname, useRouter } from '~/i18n/routing';
 import { revalidateCart } from './actions/revalidate-cart';
 import { Field, schema, SchemaRawShape } from './schema';
 
+// Create context to share form state with external components
+interface ProductFormContextType {
+  fields: Field[];
+  formFields: Record<string, FieldMetadata<string | number | boolean | Date | undefined>>;
+  onPrefetch: (fieldName: string, value: string) => void;
+  emptySelectPlaceholder?: string;
+}
+
+const ProductFormContext = createContext<ProductFormContextType | null>(null);
+
+export const useProductFormContext = () => {
+  const context = useContext(ProductFormContext);
+  
+  if (!context) {
+    throw new Error('useProductFormContext must be used within ProductFormProvider');
+  }
+  
+  return context;
+};
+
 // Helper function to identify variant fields (color/size)
 const isVariantField = (field: Field): boolean => {
   const variantTypes = ['swatch-radio-group', 'button-radio-group', 'card-radio-group'];
@@ -44,6 +64,20 @@ const isVariantField = (field: Field): boolean => {
     variantTypes.includes(field.type) ||
     variantNames.some((name) => field.name.toLowerCase().includes(name))
   );
+};
+
+// Helper function to check if required variant fields have values
+const hasRequiredVariantFieldErrors = (
+  fields: Field[],
+  formFields: Record<string, FieldMetadata<string | number | boolean | Date | undefined>>
+): boolean => {
+  return fields
+    .filter((field) => isVariantField(field) && field.required)
+    .some((field) => {
+      const formField = formFields[field.name];
+      
+      return !formField?.value || formField.value === '';
+    });
 };
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
@@ -69,8 +103,6 @@ export interface ProductDetailFormProps<F extends Field> {
   prefetch?: boolean;
   additionalActions?: ReactNode;
   price?: Price | null;
-  // New prop to allow external rendering of variants
-  renderVariantsExternally?: boolean;
 }
 
 // Export form context for external variant usage
@@ -178,11 +210,19 @@ export function ProductDetailForm<F extends Field>({
     }
   };
 
+  const contextValue: ProductFormContextType = {
+    fields,
+    formFields,
+    onPrefetch,
+    emptySelectPlaceholder,
+  };
+
   return (
-    <FormProvider context={form.context}>
-      <FormStateInput />
-      <form {...getFormProps(form)} action={formAction} className="space-y-8">
-        <input name="id" type="hidden" value={productId} />
+    <ProductFormContext.Provider value={contextValue}>
+      <FormProvider context={form.context}>
+        <FormStateInput />
+        <form {...getFormProps(form)} action={formAction} className="space-y-8">
+          <input name="id" type="hidden" value={productId} />
 
         {/* Regular fields (non-variant) */}
         <div className="space-y-6">
@@ -206,12 +246,13 @@ export function ProductDetailForm<F extends Field>({
             })}
         </div>
 
-        {/* Variant fields - hidden inputs only for form submission */}
+
+        {/* Variant fields - hidden inputs for form submission */}
         {fields
           .filter((field) => isVariantField(field))
           .map((field) => (
             <input
-              key={formFields[field.name]?.id}
+              key={`${formFields[field.name]?.id}-hidden`}
               name={formFields[field.name]?.name}
               type="hidden"
               value={formFields[field.name]?.value ?? ''}
@@ -224,6 +265,21 @@ export function ProductDetailForm<F extends Field>({
             {error}
           </FormStatus>
         ))}
+        
+        {/* Variant Field Errors */}
+        {fields
+          .filter((field) => isVariantField(field) && field.required)
+          .map((field) => {
+            const formField = formFields[field.name];
+            
+            if (!formField?.errors?.length) return null;
+            
+            return (
+              <FormStatus className="rounded-lg bg-red-50 p-4" key={field.name} type="error">
+                {field.label}: {formField.errors.join(', ')}
+              </FormStatus>
+            );
+          })}
 
         {/* Price and Add to Cart Section */}
         <div className="flex flex-col gap-4 @sm:flex-row @sm:items-center @sm:gap-6">
@@ -241,11 +297,80 @@ export function ProductDetailForm<F extends Field>({
           ) : null}
 
           {/* Add to Cart Button */}
-          <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+          <SubmitButton 
+            disabled={ctaDisabled || hasRequiredVariantFieldErrors(fields, formFields)}
+          >
+            {ctaLabel}
+          </SubmitButton>
           {additionalActions}
         </div>
+
       </form>
+
+      {/* Interactive Specifications Section - Inside form context */}
+      <div className="mt-16">
+        <div className="w-full">
+          <div className="bg-gradient-to-r from-gray-50 to-white border-t border-gray-200 py-12 px-4 @xl:px-6 @4xl:px-8">
+            <div className="mx-auto max-w-screen-2xl">
+              <InteractiveSpecificationsSection 
+                fields={fields}
+                formFields={formFields}
+                onPrefetch={onPrefetch}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
     </FormProvider>
+    </ProductFormContext.Provider>
+  );
+}
+
+// Client component for interactive specifications that can be used in server components
+export function SpecificationsClient() {
+  const { fields, formFields, onPrefetch } = useProductFormContext();
+  
+  return (
+    <div className="w-full">
+      <div className="bg-gradient-to-r from-gray-50 to-white border-t border-gray-200 py-12 px-4 @xl:px-6 @4xl:px-8">
+        <div className="mx-auto max-w-screen-2xl">
+          <InteractiveSpecificationsSection 
+            fields={fields}
+            formFields={formFields}
+            onPrefetch={onPrefetch}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Export the context provider to be used at a higher level
+export function ProductFormContextProvider({ 
+  children, 
+  fields, 
+  formFields, 
+  onPrefetch, 
+  emptySelectPlaceholder 
+}: { 
+  children: ReactNode;
+  fields: Field[];
+  formFields: Record<string, FieldMetadata<string | number | boolean | Date | undefined>>;
+  onPrefetch: (fieldName: string, value: string) => void;
+  emptySelectPlaceholder?: string;
+}) {
+  const contextValue: ProductFormContextType = {
+    fields,
+    formFields,
+    onPrefetch,
+    emptySelectPlaceholder,
+  };
+
+  return (
+    <ProductFormContext.Provider value={contextValue}>
+      {children}
+    </ProductFormContext.Provider>
   );
 }
 
@@ -474,51 +599,259 @@ function FormField({
   }
 }
 
-// Standalone Variant Selector Component for Specifications Section
-export interface ProductVariantSelectorProps {
+// Helper function to create specification item for horizontal layout
+const createSpecificationItem = (title: string, content: React.ReactNode) => (
+  <div className="text-center min-w-[80px]">
+    <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-900">{title}</div>
+    {content}
+  </div>
+);
+
+// Interactive Specifications Section Component
+interface InteractiveSpecificationsSectionProps {
   fields: Field[];
-  formFields: Record<string, FieldMetadata<string | number | boolean | Date | undefined>>;
-  onPrefetch: (fieldName: string, value: string) => void;
-  emptySelectPlaceholder?: string;
+  formFields?: Record<string, FieldMetadata<string | number | boolean | Date | undefined>>;
+  onPrefetch?: (fieldName: string, value: string) => void;
 }
 
-export function ProductVariantSelector({
+// Interactive specifications component (with optional form context)
+export function InteractiveSpecificationsSection({
   fields,
   formFields,
   onPrefetch,
-  emptySelectPlaceholder,
-}: ProductVariantSelectorProps) {
-  const variantFields = fields.filter((field) => isVariantField(field));
+}: InteractiveSpecificationsSectionProps) {
+  const variantFields = fields.filter(isVariantField);
 
-  if (variantFields.length === 0) {
-    return null;
-  }
+  // Find color and size fields
+  const colorField =
+    variantFields.find(
+      (field) =>
+        field.name.toLowerCase().includes('color') ||
+        field.name.toLowerCase().includes('colour'),
+    ) || variantFields[0]; // Fallback to first variant field
+
+  const sizeField =
+    variantFields.find((field) => field.name.toLowerCase().includes('size')) ||
+    variantFields[1]; // Fallback to second variant field
+
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-xl font-bold text-gray-900">Available Options</h3>
-      <div className="grid gap-6 @md:grid-cols-2">
-        {variantFields.map((field) => {
-          const formField = formFields[field.name];
+    <div className="space-y-8">
+      {/* Title for specifications section */}
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Specifications</h2>
+        <p className="text-gray-600">Select your options and view product details</p>
+      </div>
 
-          if (!formField) return null;
+      {/* Full-width horizontal layout for variants and specifications */}
+      <div className="flex flex-wrap items-center justify-center gap-12 @lg:gap-16">
+        {/* Colors section - interactive when form context available */}
+        {colorField && formFields && (() => {
+          const colorFormField = formFields[colorField.name];
 
-          return (
-            <div className="space-y-3" key={formField.id}>
-              <FormField
-                emptySelectPlaceholder={emptySelectPlaceholder}
-                field={field}
-                formField={formField}
-                isVariant={true}
-                onPrefetch={onPrefetch}
+          return colorFormField ? (
+            <div className="flex-shrink-0">
+              <InteractiveColorSwatches
+                field={colorField}
+                formField={colorFormField}
+                onPrefetch={onPrefetch || (() => { /* no-op */ })}
+                title="Available Colors"
               />
             </div>
+          ) : null;
+        })()}
+        
+        {/* Sizes section - interactive when form context available */}
+        {sizeField && formFields && (() => {
+          const sizeFormField = formFields[sizeField.name];
+
+          return sizeFormField ? (
+            <div className="flex-shrink-0">
+              <InteractiveSizeBadges
+                field={sizeField}
+                formField={sizeFormField}
+                onPrefetch={onPrefetch || (() => { /* no-op */ })}
+                title="Available Sizes"
+              />
+            </div>
+          ) : null;
+        })()}
+
+        {/* Static specifications - horizontal layout */}
+        <div className="flex flex-wrap gap-8 justify-center">
+          {createSpecificationItem(
+            'Weight',
+            <span className="text-sm font-medium text-gray-600">2.5 lbs</span>,
+          )}
+          {createSpecificationItem(
+            'Construction',
+            <span className="text-sm font-medium text-gray-600">
+              Aluminum Frame
+            </span>,
+          )}
+          {createSpecificationItem(
+            'Finish',
+            <span className="text-sm font-medium text-gray-600">
+              Powder Coated
+            </span>,
+          )}
+          {createSpecificationItem(
+            'Certified',
+            <span className="text-sm font-medium text-gray-600">
+              CE, UL Listed
+            </span>,
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Interactive Specifications Components for rendering within form context
+export interface InteractiveSpecificationItemProps {
+  title: string;
+  field: Field;
+  formField: FieldMetadata<string | number | boolean | Date | undefined>;
+  onPrefetch: (fieldName: string, value: string) => void;
+}
+
+export function InteractiveColorSwatches({
+  title,
+  field,
+  formField,
+  onPrefetch,
+}: InteractiveSpecificationItemProps) {
+  const controls = useInputControl(formField);
+  const [params, setParams] = useQueryStates(
+    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+  );
+
+  const handleColorSelect = useCallback(
+    (value: string) => {
+      const fieldValue = value || params[field.name];
+
+      void setParams({ [field.name]: fieldValue || null });
+      controls.change(fieldValue ?? '');
+
+      if (field.persist === true) {
+        onPrefetch(field.name, value);
+      }
+    },
+    [setParams, field, controls, params, onPrefetch],
+  );
+
+  if (!('options' in field) || field.options.length === 0) return null;
+
+  return (
+    <div className="text-left">
+      <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-900">{title}</div>
+      <div className="flex flex-wrap gap-2">
+        {field.options.map((option, index) => {
+          const label = typeof option === 'string' ? option : option.label;
+          const value = typeof option === 'string' ? option : option.value;
+          const isSelected = controls.value === value;
+
+          return (
+            <button
+              className={`flex flex-col items-center gap-1 rounded-lg p-2 transition-all ${
+                isSelected 
+                  ? 'bg-pink-50 ring-2 ring-[#F92F7B]' 
+                  : 'hover:bg-gray-50'
+              }`}
+              key={value || index}
+              onClick={() => handleColorSelect(String(value))}
+              type="button"
+            >
+              <div
+                className={`h-6 w-6 rounded border shadow-sm transition-all ${
+                  isSelected ? 'ring-2 ring-[#F92F7B] ring-offset-2' : 'border-gray-300'
+                }`}
+                style={{
+                  backgroundColor: 
+                    field.type === 'swatch-radio-group' &&
+                    typeof option === 'object' &&
+                    'type' in option &&
+                    option.type === 'color' &&
+                    'color' in option
+                      ? String(option.color)
+                      : '#ccc',
+                }}
+                title={label}
+              />
+              <span className="text-xs text-gray-500">{label}</span>
+            </button>
           );
         })}
       </div>
     </div>
   );
 }
+
+export function InteractiveSizeBadges({
+  title,
+  field,
+  formField,
+  onPrefetch,
+}: InteractiveSpecificationItemProps) {
+  const controls = useInputControl(formField);
+  const [params, setParams] = useQueryStates(
+    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+  );
+
+  const handleSizeSelect = useCallback(
+    (value: string) => {
+      const fieldValue = value || params[field.name];
+
+      void setParams({ [field.name]: fieldValue || null });
+      controls.change(fieldValue ?? '');
+
+      if (field.persist === true) {
+        onPrefetch(field.name, value);
+      }
+    },
+    [setParams, field, controls, params, onPrefetch],
+  );
+
+  if (!('options' in field) || field.options.length === 0) return null;
+
+  return (
+    <div className="text-left">
+      <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-900">{title}</div>
+      <div className="flex flex-wrap gap-2">
+        {field.options.map((option, index) => {
+          const label = typeof option === 'string' ? option : option.label;
+          const value = typeof option === 'string' ? option : option.value;
+          const isSelected = controls.value === value;
+
+          return (
+            <button
+              className={`flex flex-col items-center gap-1 rounded-lg p-2 transition-all ${
+                isSelected 
+                  ? 'bg-pink-50 ring-2 ring-[#F92F7B]' 
+                  : 'hover:bg-gray-50'
+              }`}
+              key={value || index}
+              onClick={() => handleSizeSelect(String(value))}
+              type="button"
+            >
+              <div
+                className={`flex h-6 w-6 items-center justify-center rounded border shadow-sm transition-all ${
+                  isSelected 
+                    ? 'border-[#F92F7B] bg-[#F92F7B] text-white' 
+                    : 'border-gray-300 bg-white text-gray-700'
+                }`}
+              >
+                <span className="text-xs font-bold uppercase">{label}</span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+
 
 // Add custom styles for modern variant styling
 const variantStyles = `

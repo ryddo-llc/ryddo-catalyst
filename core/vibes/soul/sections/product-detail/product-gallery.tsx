@@ -2,7 +2,7 @@
 
 import { clsx } from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Image } from '~/components/image';
 
@@ -50,8 +50,6 @@ export function ProductGallery({
 }: ProductGalleryProps) {
   const [previewImage, setPreviewImage] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
-  const [canScrollUp, setCanScrollUp] = useState(false);
-  const [canScrollDown, setCanScrollDown] = useState(false);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -71,43 +69,6 @@ export function ProductGallery({
     if (emblaApi) emblaApi.scrollTo(index);
   };
 
-  const checkScrollButtons = () => {
-    if (!thumbnailContainerRef.current) return;
-
-    const container = thumbnailContainerRef.current;
-    const scrollTop = container.scrollTop;
-    const scrollHeight = container.scrollHeight;
-    const clientHeight = container.clientHeight;
-
-    setCanScrollUp(scrollTop > 0);
-    setCanScrollDown(scrollTop < scrollHeight - clientHeight - 1);
-  };
-
-  const scrollThumbnails = (direction: 'up' | 'down') => {
-    if (!thumbnailContainerRef.current) return;
-
-    const container = thumbnailContainerRef.current;
-    const scrollAmount = container.clientHeight * 0.7; // Scroll 70% of container height
-
-    container.scrollBy({
-      top: direction === 'down' ? scrollAmount : -scrollAmount,
-      behavior: 'smooth',
-    });
-  };
-
-  useEffect(() => {
-    checkScrollButtons();
-    const container = thumbnailContainerRef.current;
-    if (container) {
-      container.addEventListener('scroll', checkScrollButtons);
-      window.addEventListener('resize', checkScrollButtons);
-
-      return () => {
-        container.removeEventListener('scroll', checkScrollButtons);
-        window.removeEventListener('resize', checkScrollButtons);
-      };
-    }
-  }, [images]);
 
   // Get first word of product title
   const firstWord = productTitle?.split(' ')[0] || '';
@@ -139,19 +100,19 @@ export function ProductGallery({
       <div className="flex w-full flex-row @md:ml-4 @md:w-24 @md:flex-col @md:items-center @lg:ml-6 @lg:w-28 @xl:ml-8 @xl:w-32">
         {/* Up Arrow */}
         <button
-          onClick={() => selectImage(Math.max(0, previewImage - 1))}
-          className="hidden items-center justify-center @md:flex @md:pb-2"
           aria-label="Previous image"
+          className="hidden items-center justify-center @md:flex @md:pb-2"
+          onClick={() => selectImage(Math.max(0, previewImage - 1))}
         >
           <svg className="h-6 w-6" fill="none" stroke="#F92F7B" strokeWidth={3} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+            <path d="M5 15l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
 
         {/* Thumbnails Container */}
         <div
-          ref={thumbnailContainerRef}
           className="flex flex-row gap-3 overflow-x-auto pb-2 @md:flex-col @md:overflow-y-auto @md:pb-0 [&::-webkit-scrollbar]:hidden"
+          ref={thumbnailContainerRef}
           style={{
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
@@ -191,12 +152,12 @@ export function ProductGallery({
 
         {/* Down Arrow */}
         <button
-          onClick={() => selectImage(Math.min(images.length - 1, previewImage + 1))}
-          className="hidden items-center justify-center @md:flex @md:pt-2"
           aria-label="Next image"
+          className="hidden items-center justify-center @md:flex @md:pt-2"
+          onClick={() => selectImage(Math.min(images.length - 1, previewImage + 1))}
         >
           <svg className="h-6 w-6" fill="none" stroke="#F92F7B" strokeWidth={3} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>

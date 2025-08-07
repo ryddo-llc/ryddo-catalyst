@@ -152,16 +152,19 @@ export default async function Product({ params, searchParams }: Props) {
   // Derived streams from consolidated data
   const streamableProduct = Streamable.from(async () => {
     const data = await streamableAllProductData;
+    
     return data.product;
   });
 
   const streamableProductSku = Streamable.from(async () => {
     const data = await streamableAllProductData;
+    
     return data.product.sku;
   });
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
     const data = await streamableAllProductData;
+    
     return data.pricingData;
   });
 
