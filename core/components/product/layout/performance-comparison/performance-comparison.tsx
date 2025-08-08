@@ -1,11 +1,10 @@
 'use client';
 
-import { useLayoutEffect, useRef, useState } from 'react';
 
 import { Image } from '~/components/image';
 import type { TransformedPerformanceData } from '~/data-transformers/performance-comparison-transformer';
 
-import { getBikeConfig, type PerformanceComparisonConfig } from './config';
+import { getPerformanceConfig, type PerformanceComparisonConfig } from './config';
 import { PerformanceMetrics } from './performance-metrics';
 import { PulseRings } from './pulse-rings';
 import { PerformanceComparisonProps } from './types';
@@ -24,9 +23,9 @@ export function PerformanceComparison({
   dynamicData,
 }: PerformanceComparisonProps & { 
   config?: PerformanceComparisonConfig;
-  dynamicData?: TransformedPerformanceData;
+  dynamicData?: TransformedPerformanceData | null;
 }) {
-  const performanceConfig = config || getBikeConfig();
+  const performanceConfig = config || getPerformanceConfig();
   
   // Use dynamic data if available, otherwise fall back to props
   const finalMetrics = dynamicData?.metrics || metrics;
@@ -36,36 +35,53 @@ export function PerformanceComparison({
   const mergedMetricsConfig = mergeConfig(performanceConfig.performanceMetrics, dynamicData?.metricsConfig);
   const mergedImageConfig = mergeConfig(performanceConfig.image, dynamicData?.imageConfig);
 
-  const scaleWrapperRef = useRef<HTMLDivElement>(null);
-  const [measuredHeight, setMeasuredHeight] = useState(0);
-
-  // Measure actual height of scaled content
-  useLayoutEffect(() => {
-    if (scaleWrapperRef.current) {
-      const rect = scaleWrapperRef.current.getBoundingClientRect();
-
-      setMeasuredHeight(rect.height);
-    }
-  }, [mergedImageConfig.containerScale]);
-
   return (
-    <div className={`bg-gray-50 w-full h-auto relative flex flex-col ${className}`} style={{ zIndex: 0 }}>
-      <div className="absolute inset-0 pointer-events-none z-0">
+          <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0 }}>
+        <div aria-hidden="true" className="absolute inset-0 z-0">
+          {/* Venn diagram background circles */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div 
+              className="absolute rounded-full border-gray-400 opacity-10"
+              style={{
+                width: 'clamp(1200px, 90vw, 3000px)',
+                height: 'clamp(1200px, 90vw, 3000px)',
+                left: 'clamp(-300px, 0vw, 0px)',
+                top: '60%',
+                transform: 'translate(0%, -50%)',
+                borderWidth: 'clamp(1px, 2vw, 2px)',
+                borderStyle: 'solid',
+              }}
+            />
+            <div 
+              className="absolute rounded-full border-gray-500 opacity-10"
+              style={{
+                width: 'clamp(1200px, 90vw, 3000px)',
+                height: 'clamp(1200px, 90vw, 3000px)',
+                left: 'clamp(400px, 30vw, 1200px)',
+                top: '60%',
+                transform: 'translate(0%, -50%)',
+                borderWidth: 'clamp(1px, 2vw, 2px)',
+                borderStyle: 'solid',
+              }}
+            />
+          </div>
+        
         <Image
           alt=""
-          className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 h-full w-auto object-contain"
+          className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 w-auto object-contain"
           height={600}
           src="/images/backgrounds/PERFORM.webp"
+          style={{ maxHeight: '100%', height: 'auto', padding: '30px 0' }}
           width={200}
         />
       </div>
 
-      <div className="relative px-8 pt-2 pb-2">
+      <div className="relative px-8 pt-20 pb-2">
         <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Compare <span className="text-[#F92F7B]">Performance</span>
-          </h1>
-          <p className="text-gray-600 text-lg sm:text-xl mt-1">
+          </h2>
+          <p className="text-gray-500 text-lg sm:text-xl mt-1">
             Compare the {productTitle} to its competition
           </p>
         </div>
@@ -73,30 +89,35 @@ export function PerformanceComparison({
 
       {/* Desktop Layout (xl and above) */}
       <div
-        className="relative hidden xl:flex flex-col justify-end"
+        className="relative hidden xl:flex flex-col"
         style={{
-          height: measuredHeight ? `${measuredHeight}px` : 'auto',
+          height: 'auto',
+          flex: '0 0 auto',
+          overflow: 'hidden',
+          marginTop: '0',
+          minHeight: '0',
+          paddingTop: '0',
         }}
       >
         <div
-          className="relative flex items-center justify-center pointer-events-none"
-          ref={scaleWrapperRef}
+          className="relative flex items-center justify-center pointer-events-none xl:max-h-[65vh] lg:max-h-[75vh] md:max-h-[80vh] sm:max-h-[85vh]"
           style={{
+            height: 'auto',
+            minHeight: '800px',
+            marginTop: '0',
             transform: `scale(${mergedImageConfig.containerScale})`,
-            transformOrigin: 'bottom center',
+            transformOrigin: 'center center',
           }}
         >
           <Image
             alt={productImage.alt || mergedImageConfig.alt}
             className="object-contain w-auto h-auto relative z-10"
             height={mergedImageConfig.height}
-            priority
             src={productImage.src || mergedImageConfig.src}
             style={{
               maxWidth: `${mergedImageConfig.maxWidth || performanceConfig.image.maxWidth}px`,
               maxHeight: `${mergedImageConfig.maxHeight || performanceConfig.image.maxHeight}px`,
               transform: `translate(${mergedImageConfig.offsetX || performanceConfig.image.offsetX}px, ${mergedImageConfig.offsetY || performanceConfig.image.offsetY}px)`,
-              zIndex: performanceConfig.image.zIndex || 10,
             }}
             width={mergedImageConfig.width}
           />
@@ -107,7 +128,6 @@ export function PerformanceComparison({
               left: '50%',
               top: '50%',
               transform: `translate(-50%, -50%) translate(${mergedWheelConfig.centerX - mergedImageConfig.width / 2}px, ${mergedWheelConfig.centerY - mergedImageConfig.height / 2}px)`,
-              zIndex: 1,
             }}
           >
 
@@ -128,7 +148,6 @@ export function PerformanceComparison({
               left: '50%',
               top: '50%',
               transform: `translate(-50%, -50%) translate(${mergedWheelConfig.centerX - mergedImageConfig.width / 2 + mergedWheelConfig.radius * 1.2 + mergedMetricsConfig.gapFromWheel}px, ${mergedWheelConfig.centerY - mergedImageConfig.height / 2}px)`,
-              zIndex: 1,
             }}
           >
             <PerformanceMetrics
@@ -156,7 +175,6 @@ export function PerformanceComparison({
               alt={finalProductImage.alt || mergedImageConfig.alt}
               className="object-contain w-full h-auto relative z-10"
               height={mergedImageConfig.height}
-              priority
               src={finalProductImage.src || mergedImageConfig.src}
               style={{
                 maxHeight: '60vh',
@@ -229,6 +247,9 @@ export function PerformanceComparison({
                       background: `radial-gradient(circle, ${mergedWheelConfig.baseColor} 60%, ${mergedWheelConfig.edgeColor} 100%)`,
                       opacity: mergedWheelConfig.opacity,
                       transform: 'translate(-50%, -50%) scale(0.95)',
+                      // Fallback for browsers that don't support mask-composite
+                      backgroundColor: mergedWheelConfig.baseColor,
+                      // Modern browsers: use mask-composite for ring effect
                       WebkitMaskImage: `radial-gradient(circle, black calc(100% - 35px), rgba(0,0,0,0.8) calc(100% - 25px), transparent calc(100% - 15px))`,
                       WebkitMaskRepeat: 'no-repeat',
                       WebkitMaskPosition: 'center',
@@ -264,3 +285,7 @@ export function PerformanceComparison({
     </div>
   );
 }
+
+
+
+

@@ -58,11 +58,7 @@ export function PerformanceMetrics({
         if (entries[0]?.isIntersecting) {
           setIsVisible(true);
           clearTimeout(fallbackTimer); // Clear fallback if intersection works
-
-          // Stop observing after first trigger
-          if (ref.current) {
-            observer.unobserve(ref.current);
-          }
+          observer.disconnect(); // Stop observing after first trigger
         }
       },
       {
@@ -72,17 +68,12 @@ export function PerformanceMetrics({
     );
 
     const currentRef = ref.current;
-
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+    
+    if (currentRef) observer.observe(currentRef);
 
     return () => {
       clearTimeout(fallbackTimer);
-      
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      observer.disconnect();
     };
   }, []);
 

@@ -15,8 +15,9 @@ import {
   ProductDetailScooter,
   ProductFeatures,
 } from '~/components/product';
-import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
+import { getPerformanceConfig } from '~/components/product/layout/performance-comparison/config';
 import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
+import { PerformanceComparisonSkeleton } from '~/components/product/layout/performance-comparison/performance-comparison-skeleton';
 import Addons from '~/components/product/shared/addons';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
@@ -380,6 +381,31 @@ export default async function Product({ params, searchParams }: Props) {
         })
       : null;
 
+  // Create streamable performance comparison data for bikes and scooters
+  const streamablePerformanceComparison =
+    (productDetailVariant === 'bike' || productDetailVariant === 'scooter')
+      ? Streamable.from(async () => {
+          const [product, images] = await Streamable.all([streamableProduct, streamableImages]);
+          const dynamicData = transformPerformanceComparisonData(product.customFields);
+          
+          if (dynamicData.metrics.length === 0) return null;
+          
+          const configKey = product.customFields.edges?.find((edge) => edge.node.name === 'performance_config_key')?.node.value || product.sku || 'default';
+          const performanceImage = findPerformanceImage(images, dynamicData.performanceImageDescription);
+
+          return {
+            config: getPerformanceConfig(configKey),
+            dynamicData,
+            metrics: dynamicData.metrics,
+            productImage: performanceImage || {
+              src: product.defaultImage?.url || '/images/default-performance.webp',
+              alt: product.defaultImage?.altText || `${product.name} Performance`,
+            },
+            productTitle: product.name,
+          };
+        })
+      : null;
+
   // Create streamable inventory status for all products
   const streamableInventoryStatus = Streamable.from(async () => {
     const data = await streamableAllProductData;
@@ -531,44 +557,19 @@ export default async function Product({ params, searchParams }: Props) {
             productName={baseProduct.name}
           />
           {/* Performance Comparison section */}
-          <div className="bg-white px-4 py-8 md:px-8">
-            <Stream fallback={null} value={Streamable.all([streamableProduct, streamableImages])}>
-              {([product, images]) => {
-                const customFields = product.customFields;
-                const dynamicData = transformPerformanceComparisonData(customFields);
-
-                const performanceImage = findPerformanceImage(
-                  images,
-                  dynamicData.performanceImageDescription,
-                );
-
-                if (dynamicData.metrics.length === 0) {
-                  return null;
-                }
-
-                const configKey =
-                  customFields.edges?.find((edge) => edge.node.name === 'performance_config_key')
-                    ?.node.value ||
-                  product.sku ||
-                  'default';
-
-                return (
-                  <PerformanceComparison
-                    config={getBikeConfig(configKey)}
-                    dynamicData={dynamicData}
-                    metrics={dynamicData.metrics}
-                    productImage={
-                      performanceImage || {
-                        src: product.defaultImage?.url || '/images/default-performance.webp',
-                        alt: product.defaultImage?.altText || `${product.name} Performance`,
-                      }
-                    }
-                    productTitle={baseProduct.name}
-                  />
-                );
-              }}
+          {streamablePerformanceComparison && (
+            <Stream fallback={<PerformanceComparisonSkeleton />} value={streamablePerformanceComparison}>
+              {(performanceData) => performanceData && (
+                <PerformanceComparison
+                  config={performanceData.config}
+                  dynamicData={performanceData.dynamicData}
+                  metrics={performanceData.metrics}
+                  productImage={performanceData.productImage}
+                  productTitle={performanceData.productTitle}
+                />
+              )}
             </Stream>
-          </div>
+          )}
           {/* Product Features section */}
           {streamableProductFeatures && (
             <div className="bg-gray-50">
