@@ -160,6 +160,7 @@ export function productFeaturesTransformer(
   // Extract up to 6 features (can be extended)
   for (let i = 1; i <= 6; i += 1) {
     const feature = createFeature(i, flattenedFields, layoutPattern);
+    
     if (feature) {
       features.push(feature);
     }
