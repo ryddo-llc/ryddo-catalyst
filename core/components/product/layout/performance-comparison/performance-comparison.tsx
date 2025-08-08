@@ -38,7 +38,7 @@ export function PerformanceComparison({
 
   return (
           <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0 }}>
-        <div className="absolute inset-0 z-0">
+        <div aria-hidden="true" className="absolute inset-0 z-0">
           {/* Venn diagram background circles */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div 
@@ -79,9 +79,9 @@ export function PerformanceComparison({
 
       <div className="relative px-8 pt-20 pb-2">
         <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Compare <span className="text-[#F92F7B]">Performance</span>
-          </h1>
+          </h2>
           <p className="text-gray-500 text-lg sm:text-xl mt-1">
             Compare the {productTitle} to its competition
           </p>
