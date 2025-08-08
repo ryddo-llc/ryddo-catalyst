@@ -19,6 +19,17 @@
   container-type: inline-size;
 }
 
+.featureContentContainer {
+  @apply bg-white p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 2xl:p-32;
+  @apply flex flex-col justify-center items-center;
+  container-type: inline-size;
+}
+
+.featureContentInner {
+  @apply flex flex-col justify-start items-start;
+  max-width: min(90%, 700px);
+}
+
 .squareTextContainer {
   @apply flex flex-col justify-center items-center;
   @apply w-full h-full;
@@ -119,8 +130,7 @@
 
 /* Accessibility improvements */
 .featureImage:focus-within {
-  @apply ring-2 ring-offset-2;
-  ring-color: hsl(var(--primary));
+  @apply ring-2 ring-offset-2 ring-primary;
 }
 
 /* Removed hover effects as requested */

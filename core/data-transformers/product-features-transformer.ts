@@ -62,7 +62,10 @@ function parseLayoutPattern(layoutPattern?: string): Array<'normal' | 'reverse'>
   return layoutPattern
     .split(',')
     .map(layout => layout.trim())
-    .filter((layout): layout is 'normal' | 'reverse' => layout === 'normal' || layout === 'reverse');
+    .filter((layout): layout is 'normal' | 'reverse' => {
+      const validLayouts = ['normal', 'reverse'] as const;
+      return validLayouts.includes(layout as 'normal' | 'reverse');
+    });
 }
 
 /**
@@ -88,10 +91,13 @@ function findFeatureImage(
   }
 
   // Try partial match (case-insensitive)
-  const partialMatch = images.find(img => 
-    img.alt.toLowerCase().includes(descriptor.toLowerCase()) ||
-    descriptor.toLowerCase().includes(img.alt.toLowerCase())
-  );
+  const partialMatch = images.find(img => {
+    const imgAlt = img.alt.toLowerCase();
+    const desc = descriptor.toLowerCase();
+    
+    // Prefer descriptor being contained in alt text over the reverse
+    return imgAlt.includes(desc);
+  });
 
   if (partialMatch) {
     return partialMatch;
@@ -105,6 +111,45 @@ function findFeatureImage(
  * @param {BigCommerceCustomFields} customFields - BigCommerce custom fields
  * @returns {ProductFeaturesData} Transformed product features data
  */
+/**
+ * Create a product feature from flattened fields
+ * @param {number} i - Feature index
+ * @param {Record<string, string>} flattenedFields - Flattened custom fields
+ * @param {Array<'normal' | 'reverse'>} layoutPattern - Layout pattern array
+ * @returns {ProductFeature | null} Created feature or null if invalid
+ */
+function createFeature(
+  i: number,
+  flattenedFields: Record<string, string>,
+  layoutPattern: Array<'normal' | 'reverse'>
+): ProductFeature | null {
+  const title = flattenedFields[`feature_${i}_title`];
+  const description = flattenedFields[`feature_${i}_description`];
+  
+  if (!title || !description) {
+    return null;
+  }
+  
+  const imageDescriptor = flattenedFields[`feature_${i}_image_descriptor`];
+  const imageUrl = flattenedFields[`feature_${i}_image_url`];
+  const customAlt = flattenedFields[`feature_${i}_image_alt`];
+  
+  if (!imageDescriptor && !imageUrl) {
+    return null;
+  }
+  
+  const layoutIndex = (i - 1) % layoutPattern.length;
+  
+  return {
+    title: title.trim(),
+    description: description.trim(),
+    imageDescriptor: imageDescriptor?.trim(),
+    imageUrl: imageUrl?.trim(),
+    imageAlt: customAlt || imageDescriptor?.trim() || `${title} feature image`,
+    layout: layoutPattern[layoutIndex] || 'normal',
+  };
+}
+
 export function productFeaturesTransformer(
   customFields: BigCommerceCustomFields,
 ): ProductFeaturesData {
@@ -116,49 +161,9 @@ export function productFeaturesTransformer(
   
   // Extract up to 6 features (can be extended)
   for (let i = 1; i <= 6; i += 1) {
-    const titleKey = `feature_${i}_title`;
-    const descriptionKey = `feature_${i}_description`;
-    const imageDescriptorKey = `feature_${i}_image_descriptor`; // Image descriptor (like performance_image_description)
-    const imageUrlKey = `feature_${i}_image_url`; // Fallback: direct URL
-    const imageAltKey = `feature_${i}_image_alt`; // Optional: custom alt text
-    
-    const title = flattenedFields[titleKey];
-    const description = flattenedFields[descriptionKey];
-    const imageDescriptor = flattenedFields[imageDescriptorKey];
-    const imageUrl = flattenedFields[imageUrlKey];
-    const customAlt = flattenedFields[imageAltKey];
-    
-    // Only add feature if title and description are present
-    if (title && description) {
-      const layoutIndex = (i - 1) % layoutPattern.length;
-      
-      // Try to find image by descriptor first, then fall back to URL
-      let featureImageDescriptor: string | undefined;
-      let featureImageUrl: string | undefined;
-      let featureImageAlt: string;
-
-      if (imageDescriptor) {
-        // Use descriptor to find image in BigCommerce images
-        featureImageDescriptor = imageDescriptor.trim();
-        featureImageAlt = customAlt || imageDescriptor.trim();
-      } else if (imageUrl) {
-        // Fall back to direct URL
-        featureImageUrl = imageUrl.trim();
-        featureImageAlt = customAlt || `${title} feature image`;
-      } else {
-        // Skip this feature if no image source is provided
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-      
-      features.push({
-        title: title.trim(),
-        description: description.trim(),
-        imageDescriptor: featureImageDescriptor,
-        imageUrl: featureImageUrl,
-        imageAlt: featureImageAlt,
-        layout: layoutPattern[layoutIndex] || 'normal',
-      });
+    const feature = createFeature(i, flattenedFields, layoutPattern);
+    if (feature) {
+      features.push(feature);
     }
   }
   

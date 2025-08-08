@@ -65,7 +65,7 @@ For each feature, create these custom fields:
 
 If you prefer to use external images or can't use the descriptor method:
 
-#### Feature 1 (URL Method)
+### Feature 1 (URL Method)
 - **Field Name**: `feature_1_title`
 - **Field Type**: Text
 - **Example Value**: `"Headlight & Tail Light"`
@@ -149,8 +149,8 @@ The transformer supports up to **6 features** per product. Simply continue the p
 
 ### Method 1: Using BigCommerce Images with Descriptors
 
-**Step 1: Upload Images to Product Gallery**
-```
+### Step 1: Upload Images to Product Gallery
+```text
 Product: "Ryddo Elite E-Bike" - Image Gallery:
 ├── Image 1: src="https://cdn.bigcommerce.com/.../lighting.jpg", alt="S73-RX-RED-lighting"
 ├── Image 2: src="https://cdn.bigcommerce.com/.../suspension.jpg", alt="S73-RX-RED-suspension"
@@ -158,8 +158,8 @@ Product: "Ryddo Elite E-Bike" - Image Gallery:
 └── ... (other product images)
 ```
 
-**Step 2: Create Custom Fields**
-```
+### Step 2: Create Custom Fields
+```text
 Custom Fields:
 ├── feature_1_title: "Advanced LED Lighting"
 ├── feature_1_description: "Premium 600-lumen headlight with integrated brake lights..."
@@ -175,7 +175,7 @@ Custom Fields:
 
 ### Method 2: Using Direct URLs (Fallback)
 
-```
+```text
 Custom Fields:
 ├── feature_1_title: "Advanced LED Lighting"
 ├── feature_1_description: "Premium 600-lumen headlight..."

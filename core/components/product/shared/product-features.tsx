@@ -33,17 +33,11 @@ function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]">
       {/* Text Content */}
       <div
-        className={`bg-white p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 2xl:p-32 flex flex-col justify-center items-center ${
+        className={`${styles.featureContentContainer} ${
           isReverse ? 'md:order-2' : ''
         }`}
-        style={{ containerType: 'inline-size' }}
       >
-        <div 
-          className="flex flex-col justify-start items-start"
-          style={{
-            maxWidth: 'min(90%, 700px)'
-          }}
-        >
+        <div className={styles.featureContentInner}>
           <h3 className={styles.featureTitlePrimary}>
             {firstWord}
           </h3>
