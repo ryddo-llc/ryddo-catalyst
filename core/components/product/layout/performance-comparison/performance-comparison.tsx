@@ -24,7 +24,7 @@ export function PerformanceComparison({
   dynamicData,
 }: PerformanceComparisonProps & { 
   config?: PerformanceComparisonConfig;
-  dynamicData?: TransformedPerformanceData;
+  dynamicData?: TransformedPerformanceData | null;
 }) {
   const performanceConfig = config || getPerformanceConfig();
   

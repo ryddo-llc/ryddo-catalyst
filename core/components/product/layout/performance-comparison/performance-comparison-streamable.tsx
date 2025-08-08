@@ -12,7 +12,7 @@ interface PerformanceComparisonStreamableProps {
   metrics: Streamable<PerformanceComparisonProps['metrics']>;
   className?: string;
   config?: PerformanceComparisonConfig;
-  dynamicData?: Streamable<TransformedPerformanceData>;
+  dynamicData?: Streamable<TransformedPerformanceData | null>;
 }
 
 export function PerformanceComparisonStreamable({
@@ -32,7 +32,7 @@ export function PerformanceComparisonStreamable({
         <PerformanceComparison
           className={className}
           config={config}
-          dynamicData={dynamicDataResolved || undefined}
+          dynamicData={dynamicDataResolved}
           metrics={metricsData}
           productImage={image}
           productTitle={title}
