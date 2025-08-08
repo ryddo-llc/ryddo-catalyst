@@ -1,11 +1,10 @@
 'use client';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+
 import { Image } from '~/components/image';
 import type { TransformedPerformanceData } from '~/data-transformers/performance-comparison-transformer';
 
 import { getPerformanceConfig, type PerformanceComparisonConfig } from './config';
-import { PerformanceComparisonSkeleton } from './performance-comparison-skeleton';
 import { PerformanceMetrics } from './performance-metrics';
 import { PulseRings } from './pulse-rings';
 import { PerformanceComparisonProps } from './types';

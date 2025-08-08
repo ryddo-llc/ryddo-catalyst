@@ -68,6 +68,7 @@ export function PerformanceMetrics({
     );
 
     const currentRef = ref.current;
+    
     if (currentRef) observer.observe(currentRef);
 
     return () => {
