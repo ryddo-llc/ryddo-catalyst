@@ -61,7 +61,9 @@ function parseLayoutPattern(layoutPattern?: string): Array<'normal' | 'reverse'>
   
   const trimmedLayouts = layoutPattern.split(',').map(layout => layout.trim());
 
-  return trimmedLayouts.filter((layout): layout is 'normal' | 'reverse' => layout === 'normal' || layout === 'reverse');
+  const validLayouts = trimmedLayouts.filter((layout): layout is 'normal' | 'reverse' => layout === 'normal' || layout === 'reverse');
+
+  return validLayouts;
 }
 
 /**
