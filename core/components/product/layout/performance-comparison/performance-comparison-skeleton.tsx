@@ -33,7 +33,7 @@ export function PerformanceComparisonSkeleton() {
         </div>
       </div>
 
-      {/* PERFORM background image skeletone */}
+      {/* PERFORM background image skeleton */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 w-auto object-contain z-20">
         <div className="w-[200px] h-[600px] bg-gray-300 animate-pulse rounded" />
       </div>

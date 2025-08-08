@@ -1,12 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
-
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Image } from '~/components/image';
 import type { TransformedPerformanceData } from '~/data-transformers/performance-comparison-transformer';
 
-import { getBikeConfig, type PerformanceComparisonConfig } from './config';
+import { getPerformanceConfig, type PerformanceComparisonConfig } from './config';
 import { PerformanceComparisonSkeleton } from './performance-comparison-skeleton';
 import { PerformanceMetrics } from './performance-metrics';
 import { PulseRings } from './pulse-rings';
@@ -28,7 +26,7 @@ function PerformanceComparisonInternal({
   config?: PerformanceComparisonConfig;
   dynamicData?: TransformedPerformanceData;
 }) {
-  const performanceConfig = config || getBikeConfig();
+  const performanceConfig = config || getPerformanceConfig();
   
   // Use dynamic data if available, otherwise fall back to props
   const finalMetrics = dynamicData?.metrics || metrics;
@@ -37,8 +35,6 @@ function PerformanceComparisonInternal({
   const mergedWheelConfig = mergeConfig(performanceConfig.wheel, dynamicData?.wheelConfig);
   const mergedMetricsConfig = mergeConfig(performanceConfig.performanceMetrics, dynamicData?.metricsConfig);
   const mergedImageConfig = mergeConfig(performanceConfig.image, dynamicData?.imageConfig);
-
-  const scaleWrapperRef = useRef<HTMLDivElement>(null);
 
   return (
           <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0 }}>
@@ -106,7 +102,6 @@ function PerformanceComparisonInternal({
       >
         <div
           className="relative flex items-center justify-center pointer-events-none xl:max-h-[65vh] lg:max-h-[75vh] md:max-h-[80vh] sm:max-h-[85vh]"
-          ref={scaleWrapperRef}
           style={{
             height: 'auto',
             minHeight: '800px',

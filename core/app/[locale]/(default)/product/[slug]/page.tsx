@@ -15,7 +15,7 @@ import {
   ProductDetailScooter,
   ProductFeatures,
 } from '~/components/product';
-import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
+import { getPerformanceConfig } from '~/components/product/layout/performance-comparison/config';
 import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import { PerformanceComparisonSkeleton } from '~/components/product/layout/performance-comparison/performance-comparison-skeleton';
 import Addons from '~/components/product/shared/addons';
@@ -394,14 +394,14 @@ export default async function Product({ params, searchParams }: Props) {
           const performanceImage = findPerformanceImage(images, dynamicData.performanceImageDescription);
 
           return {
-            config: getBikeConfig(configKey),
+            config: getPerformanceConfig(configKey),
             dynamicData,
             metrics: dynamicData.metrics,
             productImage: performanceImage || {
               src: product.defaultImage?.url || '/images/default-performance.webp',
               alt: product.defaultImage?.altText || `${product.name} Performance`,
             },
-            productTitle: baseProduct.name,
+            productTitle: product.name,
           };
         })
       : null;
