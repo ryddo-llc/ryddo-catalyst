@@ -531,44 +531,42 @@ export default async function Product({ params, searchParams }: Props) {
             productName={baseProduct.name}
           />
           {/* Performance Comparison section */}
-          <div className="bg-white px-4 py-8 md:px-8">
-            <Stream fallback={null} value={Streamable.all([streamableProduct, streamableImages])}>
-              {([product, images]) => {
-                const customFields = product.customFields;
-                const dynamicData = transformPerformanceComparisonData(customFields);
+          <Stream fallback={null} value={Streamable.all([streamableProduct, streamableImages])}>
+            {([product, images]) => {
+              const customFields = product.customFields;
+              const dynamicData = transformPerformanceComparisonData(customFields);
 
-                const performanceImage = findPerformanceImage(
-                  images,
-                  dynamicData.performanceImageDescription,
-                );
+              const performanceImage = findPerformanceImage(
+                images,
+                dynamicData.performanceImageDescription,
+              );
 
-                if (dynamicData.metrics.length === 0) {
-                  return null;
-                }
+              if (dynamicData.metrics.length === 0) {
+                return null;
+              }
 
-                const configKey =
-                  customFields.edges?.find((edge) => edge.node.name === 'performance_config_key')
-                    ?.node.value ||
-                  product.sku ||
-                  'default';
+              const configKey =
+                customFields.edges?.find((edge) => edge.node.name === 'performance_config_key')
+                  ?.node.value ||
+                product.sku ||
+                'default';
 
-                return (
-                  <PerformanceComparison
-                    config={getBikeConfig(configKey)}
-                    dynamicData={dynamicData}
-                    metrics={dynamicData.metrics}
-                    productImage={
-                      performanceImage || {
-                        src: product.defaultImage?.url || '/images/default-performance.webp',
-                        alt: product.defaultImage?.altText || `${product.name} Performance`,
-                      }
+              return (
+                <PerformanceComparison
+                  config={getBikeConfig(configKey)}
+                  dynamicData={dynamicData}
+                  metrics={dynamicData.metrics}
+                  productImage={
+                    performanceImage || {
+                      src: product.defaultImage?.url || '/images/default-performance.webp',
+                      alt: product.defaultImage?.altText || `${product.name} Performance`,
                     }
-                    productTitle={baseProduct.name}
-                  />
-                );
-              }}
-            </Stream>
-          </div>
+                  }
+                  productTitle={baseProduct.name}
+                />
+              );
+            }}
+          </Stream>
           {/* Product Features section */}
           {streamableProductFeatures && (
             <div className="bg-gray-50">

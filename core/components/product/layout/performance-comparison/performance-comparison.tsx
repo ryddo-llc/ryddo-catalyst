@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import { Image } from '~/components/image';
 import type { TransformedPerformanceData } from '~/data-transformers/performance-comparison-transformer';
@@ -37,26 +37,17 @@ export function PerformanceComparison({
   const mergedImageConfig = mergeConfig(performanceConfig.image, dynamicData?.imageConfig);
 
   const scaleWrapperRef = useRef<HTMLDivElement>(null);
-  const [measuredHeight, setMeasuredHeight] = useState(0);
-
-  // Measure actual height of scaled content
-  useLayoutEffect(() => {
-    if (scaleWrapperRef.current) {
-      const rect = scaleWrapperRef.current.getBoundingClientRect();
-
-      setMeasuredHeight(rect.height);
-    }
-  }, [mergedImageConfig.containerScale]);
 
   return (
-    <div className={`bg-gray-50 w-full h-auto relative flex flex-col ${className}`} style={{ zIndex: 0 }}>
+    <div className={`bg-gray-50 w-full relative flex flex-col ${className}`} style={{ zIndex: 0, margin: 0, padding: 0 }}>
       <div className="absolute inset-0 pointer-events-none z-0">
         <Image
           alt=""
-          className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 h-full w-auto object-contain"
+          className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 w-auto object-contain"
           height={600}
           src="/images/backgrounds/PERFORM.webp"
           width={200}
+          style={{ maxHeight: '100%', height: 'auto', margin: 0, padding: 0 }}
         />
       </div>
 
@@ -65,7 +56,7 @@ export function PerformanceComparison({
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Compare <span className="text-[#F92F7B]">Performance</span>
           </h1>
-          <p className="text-gray-600 text-lg sm:text-xl mt-1">
+          <p className="text-gray-500 text-lg sm:text-xl mt-1">
             Compare the {productTitle} to its competition
           </p>
         </div>
@@ -73,17 +64,25 @@ export function PerformanceComparison({
 
       {/* Desktop Layout (xl and above) */}
       <div
-        className="relative hidden xl:flex flex-col justify-end"
+        className="relative hidden xl:flex flex-col"
         style={{
-          height: measuredHeight ? `${measuredHeight}px` : 'auto',
+          height: 'auto',
+          flex: '0 0 auto',
+          overflow: 'hidden',
+          marginTop: '0',
+          minHeight: '0',
+          paddingTop: '0',
         }}
       >
         <div
-          className="relative flex items-center justify-center pointer-events-none"
+          className="relative flex items-center justify-center pointer-events-none xl:max-h-[65vh] lg:max-h-[75vh] md:max-h-[80vh] sm:max-h-[85vh]"
           ref={scaleWrapperRef}
           style={{
+            height: 'auto',
+            minHeight: '800px',
+            marginTop: '0',
             transform: `scale(${mergedImageConfig.containerScale})`,
-            transformOrigin: 'bottom center',
+            transformOrigin: 'center center',
           }}
         >
           <Image
