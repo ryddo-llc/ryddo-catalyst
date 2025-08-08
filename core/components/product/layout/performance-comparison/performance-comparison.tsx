@@ -15,7 +15,7 @@ const mergeConfig = <T extends object>(defaultConfig: T, dynamicConfig?: Partial
   return dynamicConfig ? { ...defaultConfig, ...dynamicConfig } : defaultConfig;
 };
 
-function PerformanceComparisonInternal({
+export function PerformanceComparison({
   productTitle,
   productImage,
   metrics,
@@ -287,30 +287,6 @@ function PerformanceComparisonInternal({
   );
 }
 
-// Streamable wrapper component
-export function PerformanceComparison({
-  productTitle,
-  productImage,
-  metrics,
-  className = '',
-  config,
-  dynamicData,
-}: PerformanceComparisonProps & { 
-  config?: PerformanceComparisonConfig;
-  dynamicData?: TransformedPerformanceData;
-}) {
-  return (
-    <Stream fallback={<PerformanceComparisonSkeleton />} value={Streamable.from(() => Promise.resolve({ productTitle, productImage, metrics, className, config, dynamicData }))}>
-      {(data) => (
-        <PerformanceComparisonInternal
-          className={data.className}
-          config={data.config}
-          dynamicData={data.dynamicData}
-          metrics={data.metrics}
-          productImage={data.productImage}
-          productTitle={data.productTitle}
-        />
-      )}
-    </Stream>
-  );
-}
+
+
+
