@@ -64,6 +64,7 @@ function parseLayoutPattern(layoutPattern?: string): Array<'normal' | 'reverse'>
     .map(layout => layout.trim())
     
     .filter((layout): layout is 'normal' | 'reverse' => {
+
       return layout === 'normal' || layout === 'reverse';
     });
 }
