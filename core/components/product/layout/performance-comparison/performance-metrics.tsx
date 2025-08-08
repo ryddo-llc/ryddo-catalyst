@@ -84,7 +84,7 @@ export function PerformanceMetrics({
         observer.unobserve(currentRef);
       }
     };
-  }, []);
+  }, [metrics]);
 
   return (
     <div 

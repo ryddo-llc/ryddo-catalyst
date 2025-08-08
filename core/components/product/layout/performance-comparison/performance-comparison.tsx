@@ -39,8 +39,32 @@ export function PerformanceComparison({
   const scaleWrapperRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={`bg-gray-50 w-full relative flex flex-col ${className}`} style={{ zIndex: 0, margin: 0, padding: 0 }}>
-      <div className="absolute inset-0 pointer-events-none z-0">
+          <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0 }}>
+        <div className="absolute inset-0 z-0">
+          {/* Venn diagram background circles */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div 
+              className="absolute rounded-full border-2 border-gray-400 opacity-20"
+              style={{
+                width: 'min(130vw, 1300px)',
+                height: 'min(125vw, 1250px)',
+                left: '40%',
+                top: '61%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
+            <div 
+              className="absolute rounded-full border-2 border-gray-400 opacity-20"
+              style={{
+                width: 'min(130vw, 1300px)',
+                height: 'min(125vw, 1250px)',
+                left: '75%',
+                top: '61%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
+          </div>
+        
         <Image
           alt=""
           className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 w-auto object-contain"
@@ -89,13 +113,11 @@ export function PerformanceComparison({
             alt={productImage.alt || mergedImageConfig.alt}
             className="object-contain w-auto h-auto relative z-10"
             height={mergedImageConfig.height}
-            priority
             src={productImage.src || mergedImageConfig.src}
             style={{
               maxWidth: `${mergedImageConfig.maxWidth || performanceConfig.image.maxWidth}px`,
               maxHeight: `${mergedImageConfig.maxHeight || performanceConfig.image.maxHeight}px`,
               transform: `translate(${mergedImageConfig.offsetX || performanceConfig.image.offsetX}px, ${mergedImageConfig.offsetY || performanceConfig.image.offsetY}px)`,
-              zIndex: performanceConfig.image.zIndex || 10,
             }}
             width={mergedImageConfig.width}
           />
@@ -106,7 +128,6 @@ export function PerformanceComparison({
               left: '50%',
               top: '50%',
               transform: `translate(-50%, -50%) translate(${mergedWheelConfig.centerX - mergedImageConfig.width / 2}px, ${mergedWheelConfig.centerY - mergedImageConfig.height / 2}px)`,
-              zIndex: 1,
             }}
           >
 
@@ -127,7 +148,6 @@ export function PerformanceComparison({
               left: '50%',
               top: '50%',
               transform: `translate(-50%, -50%) translate(${mergedWheelConfig.centerX - mergedImageConfig.width / 2 + mergedWheelConfig.radius * 1.2 + mergedMetricsConfig.gapFromWheel}px, ${mergedWheelConfig.centerY - mergedImageConfig.height / 2}px)`,
-              zIndex: 1,
             }}
           >
             <PerformanceMetrics
@@ -155,7 +175,6 @@ export function PerformanceComparison({
               alt={finalProductImage.alt || mergedImageConfig.alt}
               className="object-contain w-full h-auto relative z-10"
               height={mergedImageConfig.height}
-              priority
               src={finalProductImage.src || mergedImageConfig.src}
               style={{
                 maxHeight: '60vh',
