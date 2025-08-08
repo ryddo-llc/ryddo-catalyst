@@ -1,0 +1,185 @@
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { Image } from '~/components/image';
+import type { ProductFeature, ProductFeaturesData } from '~/data-transformers/product-features-transformer';
+
+import styles from './product-features.module.css';
+
+interface ProductFeaturesProps {
+  features: Streamable<ProductFeaturesData | null>;
+  className?: string;
+}
+
+interface ProductFeatureItemProps {
+  feature: ProductFeature;
+  index: number;
+}
+
+/**
+ * Individual feature item component that displays a product feature with image and text
+ * @param {ProductFeature} feature - The feature data to display
+ * @param {number} index - The index of the feature in the list
+ * @returns {JSX.Element} A React component displaying the feature
+ */
+function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
+  const isReverse = feature.layout === 'reverse';
+  
+  // Split title into two parts for styling (first word gets primary color)
+  const titleWords = feature.title.split(' ');
+  const firstWord = titleWords[0];
+  const remainingWords = titleWords.slice(1).join(' ');
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]">
+      {/* Text Content */}
+      <div
+        className={`${styles.featureContentContainer} ${
+          isReverse ? 'md:order-2' : ''
+        }`}
+      >
+        <div className={styles.featureContentInner}>
+          <h3 className={styles.featureTitlePrimary}>
+            {firstWord}
+          </h3>
+                      {remainingWords ? (
+            <h3 className={styles.featureTitleSecondary}>
+              {remainingWords}
+            </h3>
+          ) : null}
+          <p className="text-lg sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-500 leading-relaxed pt-4 sm:pt-6">
+            {feature.description}
+          </p>
+        </div>
+      </div>
+
+      {/* Image */}
+      <div
+        className={`bg-black relative overflow-hidden aspect-square ${
+          isReverse ? 'md:order-1' : ''
+        }`}
+      >
+        {feature.imageUrl ? (
+          <Image
+            alt={feature.imageAlt}
+            className="object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            src={feature.imageUrl}
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+            <span className="text-sm">
+              Image not found: {feature.imageDescriptor || 'No image specified'}
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Skeleton loading component for product features
+ * @returns {JSX.Element} A React component showing loading state
+ */
+function ProductFeatureItemSkeleton({ isReverse = false }: { isReverse?: boolean }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]">
+      {/* Text Content Skeleton */}
+      <div
+        className={`bg-white p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 2xl:p-32 flex flex-col justify-center items-center ${
+          isReverse ? 'md:order-2' : ''
+        }`}
+      >
+        <div 
+          className="flex flex-col justify-start items-start"
+          style={{
+            maxWidth: 'min(90%, 700px)'
+          }}
+        >
+          <Skeleton.Root pending>
+            <Skeleton.Box className="h-8 w-3/5 mb-2" />
+            <Skeleton.Box className="h-8 w-4/5 mb-3" />
+            <div className="space-y-2 w-full pt-4 sm:pt-6">
+              <Skeleton.Box className="h-4 w-full" />
+              <Skeleton.Box className="h-4 w-[85%]" />
+              <Skeleton.Box className="h-4 w-[70%]" />
+            </div>
+          </Skeleton.Root>
+        </div>
+      </div>
+
+      {/* Image Skeleton */}
+      <div
+        className={`relative overflow-hidden aspect-square ${
+          isReverse ? 'md:order-1' : ''
+        }`}
+      >
+        <Skeleton.Root className="animate-pulse" pending>
+          <Skeleton.Box className="w-full h-full bg-gray-300" />
+        </Skeleton.Root>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Skeleton loading component for product features section
+ * @returns {JSX.Element} A React component showing loading state
+ */
+export function ProductFeaturesSkeleton() {
+  return (
+    <div className="w-full bg-gray-50">
+      <div className="w-full">
+        <ProductFeatureItemSkeleton />
+        <ProductFeatureItemSkeleton isReverse />
+        <ProductFeatureItemSkeleton />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Main ProductFeatures component
+ * 
+ * Displays a series of product features in an alternating two-column layout.
+ * Features are loaded from BigCommerce custom fields and rendered with the Stream pattern.
+ * 
+ * @param {Streamable<ProductFeaturesData | null>} features - Product features data from BigCommerce
+ * @param {string} className - Optional additional CSS classes
+ * @returns {JSX.Element} A React component displaying product features
+ */
+export function ProductFeatures({ features, className = '' }: ProductFeaturesProps) {
+  return (
+    <section
+      className={`w-full bg-gray-50 font-[family-name:var(--product-features-font-family,var(--font-family-body))] ${className}`}
+    >
+      <div className="w-full">
+        <Stream
+          fallback={<ProductFeaturesSkeleton />}
+          value={features}
+        >
+          {(featuresData) => {
+            if (!featuresData?.features.length) {
+              return null;
+            }
+
+            return (
+              <>
+                {featuresData.features.map((feature, index) => (
+                  <ProductFeatureItem
+                    feature={feature}
+                    index={index}
+                    key={`feature-${index}`}
+                  />
+                ))}
+              </>
+            );
+          }}
+        </Stream>
+      </div>
+    </section>
+  );
+}
+
+export type { ProductFeaturesProps, ProductFeature, ProductFeaturesData };
