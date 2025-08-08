@@ -253,6 +253,9 @@ function PerformanceComparisonInternal({
                       background: `radial-gradient(circle, ${mergedWheelConfig.baseColor} 60%, ${mergedWheelConfig.edgeColor} 100%)`,
                       opacity: mergedWheelConfig.opacity,
                       transform: 'translate(-50%, -50%) scale(0.95)',
+                      // Fallback for browsers that don't support mask-composite
+                      backgroundColor: mergedWheelConfig.baseColor,
+                      // Modern browsers: use mask-composite for ring effect
                       WebkitMaskImage: `radial-gradient(circle, black calc(100% - 35px), rgba(0,0,0,0.8) calc(100% - 25px), transparent calc(100% - 15px))`,
                       WebkitMaskRepeat: 'no-repeat',
                       WebkitMaskPosition: 'center',
