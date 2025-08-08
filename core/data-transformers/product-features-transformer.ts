@@ -59,10 +59,11 @@ function parseLayoutPattern(layoutPattern?: string): Array<'normal' | 'reverse'>
     return ['normal', 'reverse', 'normal']; // default pattern
   }
   
-  return layoutPattern
+  const trimmedLayouts = layoutPattern
     .split(',')
-    .map(layout => layout.trim())
-    .filter((layout): layout is 'normal' | 'reverse' => layout === 'normal' || layout === 'reverse');
+    .map(layout => layout.trim());
+
+  return trimmedLayouts.filter((layout): layout is 'normal' | 'reverse' => layout === 'normal' || layout === 'reverse');
 }
 
 /**
