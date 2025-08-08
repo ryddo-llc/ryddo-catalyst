@@ -44,23 +44,27 @@ export function PerformanceComparison({
           {/* Venn diagram background circles */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div 
-              className="absolute rounded-full border-2 border-gray-400 opacity-20"
+              className="absolute rounded-full border-gray-400 opacity-10"
               style={{
-                width: 'min(130vw, 1300px)',
-                height: 'min(125vw, 1250px)',
-                left: '40%',
-                top: '61%',
-                transform: 'translate(-50%, -50%)',
+                width: 'clamp(1200px, 90vw, 3000px)',
+                height: 'clamp(1200px, 90vw, 3000px)',
+                left: 'clamp(-300px, 0vw, 0px)',
+                top: '65%',
+                transform: 'translate(0%, -50%)',
+                borderWidth: 'clamp(1px, 2vw, 2px)',
+                borderStyle: 'solid',
               }}
             />
             <div 
-              className="absolute rounded-full border-2 border-gray-400 opacity-20"
+              className="absolute rounded-full border-gray-500 opacity-10"
               style={{
-                width: 'min(130vw, 1300px)',
-                height: 'min(125vw, 1250px)',
-                left: '75%',
-                top: '61%',
-                transform: 'translate(-50%, -50%)',
+                width: 'clamp(1200px, 90vw, 3000px)',
+                height: 'clamp(1200px, 90vw, 3000px)',
+                left: 'clamp(400px, 30vw, 1200px)',
+                top: '65%',
+                transform: 'translate(0%, -50%)',
+                borderWidth: 'clamp(1px, 2vw, 2px)',
+                borderStyle: 'solid',
               }}
             />
           </div>
