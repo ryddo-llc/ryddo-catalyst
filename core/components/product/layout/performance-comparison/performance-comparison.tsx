@@ -2,10 +2,12 @@
 
 import { useRef } from 'react';
 
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Image } from '~/components/image';
 import type { TransformedPerformanceData } from '~/data-transformers/performance-comparison-transformer';
 
 import { getBikeConfig, type PerformanceComparisonConfig } from './config';
+import { PerformanceComparisonSkeleton } from './performance-comparison-skeleton';
 import { PerformanceMetrics } from './performance-metrics';
 import { PulseRings } from './pulse-rings';
 import { PerformanceComparisonProps } from './types';
@@ -15,7 +17,7 @@ const mergeConfig = <T extends object>(defaultConfig: T, dynamicConfig?: Partial
   return dynamicConfig ? { ...defaultConfig, ...dynamicConfig } : defaultConfig;
 };
 
-export function PerformanceComparison({
+function PerformanceComparisonInternal({
   productTitle,
   productImage,
   metrics,
@@ -74,8 +76,8 @@ export function PerformanceComparison({
           className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 w-auto object-contain"
           height={600}
           src="/images/backgrounds/PERFORM.webp"
-          width={200}
           style={{ maxHeight: '100%', height: 'auto', padding: '30px 0' }}
+          width={200}
         />
       </div>
 
@@ -284,5 +286,33 @@ export function PerformanceComparison({
         </div>
       </div>
     </div>
+  );
+}
+
+// Streamable wrapper component
+export function PerformanceComparison({
+  productTitle,
+  productImage,
+  metrics,
+  className = '',
+  config,
+  dynamicData,
+}: PerformanceComparisonProps & { 
+  config?: PerformanceComparisonConfig;
+  dynamicData?: TransformedPerformanceData;
+}) {
+  return (
+    <Stream fallback={<PerformanceComparisonSkeleton />} value={Streamable.from(() => Promise.resolve({ productTitle, productImage, metrics, className, config, dynamicData }))}>
+      {(data) => (
+        <PerformanceComparisonInternal
+          className={data.className}
+          config={data.config}
+          dynamicData={data.dynamicData}
+          metrics={data.metrics}
+          productImage={data.productImage}
+          productTitle={data.productTitle}
+        />
+      )}
+    </Stream>
   );
 }
