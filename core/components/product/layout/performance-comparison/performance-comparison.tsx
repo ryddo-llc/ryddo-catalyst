@@ -47,11 +47,11 @@ export function PerformanceComparison({
           height={600}
           src="/images/backgrounds/PERFORM.webp"
           width={200}
-          style={{ maxHeight: '100%', height: 'auto', margin: 0, padding: 0 }}
+          style={{ maxHeight: '100%', height: 'auto', padding: '30px 0' }}
         />
       </div>
 
-      <div className="relative px-8 pt-2 pb-2">
+      <div className="relative px-8 pt-20 pb-2">
         <div className="text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Compare <span className="text-[#F92F7B]">Performance</span>
