@@ -340,7 +340,6 @@ const ProductsByCategoryQuery = graphql(
   `
     query ProductsByCategoryQuery(
       $categoryEntityId: Int!
-      $currencyCode: currencyCode
     ) {
       site {
         search {
@@ -375,7 +374,6 @@ export const getProductsByCategory = cache(
       document: ProductsByCategoryQuery,
       variables: {
         categoryEntityId,
-        currencyCode,
       },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },

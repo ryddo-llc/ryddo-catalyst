@@ -330,16 +330,19 @@ export default async function Product({ params, searchParams }: Props) {
     const categories = removeEdgesAndNodes(pricingData.categories);
     
     if (categories.length > 0) {
-      const categoryId = categories[0].entityId; // Use first category
-      const currencyCode = await getPreferredCurrencyCode();
-      const categoryProducts = await getProductsByCategory(
-        categoryId,
-        productId,
-        currencyCode,
-        customerAccessToken
-      );
+      const categoryId = categories[0]?.entityId; // Use first category
       
-      return productCardTransformer(categoryProducts, format);
+      if (categoryId) {
+        const currencyCode = await getPreferredCurrencyCode();
+        const categoryProducts = await getProductsByCategory(
+          categoryId,
+          productId,
+          currencyCode,
+          customerAccessToken
+        );
+      
+        return productCardTransformer(categoryProducts, format);
+      }
     }
     
     return [];
