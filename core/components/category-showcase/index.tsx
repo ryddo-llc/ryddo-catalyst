@@ -54,7 +54,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
       {layout === 'center' && (
         /* Center layout - button above text */
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <ArrowButton className="text-[#FFFFFF]">
+          <ArrowButton className="text-[#FFFFFF] pointer-events-none" aria-hidden="true" tabIndex={-1}>
             Shop
           </ArrowButton>
           <h3 className="font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-4xl font-extrabold text-[#333333]">
@@ -74,7 +74,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
               .
             </span>
           </h3>
-          <ArrowButton className="text-[#FFFFFF]">
+          <ArrowButton className="text-[#FFFFFF] pointer-events-none" aria-hidden="true" tabIndex={-1}>
             Book now
           </ArrowButton>
         </div>
@@ -91,7 +91,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
             </h3>
           </div>
           <div className="absolute bottom-4 left-4">
-            <ArrowButton>
+            <ArrowButton className="pointer-events-none" aria-hidden="true" tabIndex={-1}>
               Shop
             </ArrowButton>
           </div>
