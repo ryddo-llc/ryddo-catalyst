@@ -705,7 +705,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         </div>
       </div>
 
-      <div className="perspective-[2000px] absolute left-0 right-0 top-full z-50 flex w-full justify-center">
+      <div className="perspective-[2000px] absolute left-0 right-0 top-full z-[110] flex w-full justify-center">
         <NavigationMenu.Viewport className="relative mt-2 w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95" />
       </div>
     </NavigationMenu.Root>
@@ -989,7 +989,7 @@ function LocaleSwitcher({
         <DropdownMenu.Portal>
           <DropdownMenu.Content
             align="end"
-            className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+            className="z-[110] max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
             sideOffset={16}
           >
             {locales.map(({ id, label }) => (
@@ -1055,7 +1055,7 @@ function CurrencyForm({
         <DropdownMenu.Portal>
           <DropdownMenu.Content
             align="end"
-            className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+            className="z-[110] max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
             sideOffset={16}
           >
             {currencies.map((currency) => (

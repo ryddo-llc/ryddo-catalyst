@@ -6,7 +6,6 @@ import { SearchParams } from 'nuqs/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
-import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
 import {
@@ -19,6 +18,7 @@ import { getPerformanceConfig } from '~/components/product/layout/performance-co
 import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import { PerformanceComparisonSkeleton } from '~/components/product/layout/performance-comparison/performance-comparison-skeleton';
 import Addons from '~/components/product/shared/addons';
+import RelatedProducts from '~/components/product/shared/related-products';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
@@ -46,6 +46,7 @@ import {
   getProduct,
   getProductPageMetadata,
   getProductPricingAndRelatedProducts,
+  getProductsByCategory,
   getStreamableProduct,
 } from './page-data';
 
@@ -322,8 +323,30 @@ export default async function Product({ params, searchParams }: Props) {
     }
 
     const relatedProducts = removeEdgesAndNodes(pricingData.relatedProducts);
-
-    return productCardTransformer(relatedProducts, format);
+    
+    // If we have related products, return them
+    if (relatedProducts.length > 0) {
+      return productCardTransformer(relatedProducts, format);
+    }
+    
+    // Otherwise, fetch products from the same category as fallback
+    const categories = removeEdgesAndNodes(pricingData.categories);
+    
+    if (categories.length > 0) {
+      const categoryId = categories[0]?.entityId; // Use first category
+      
+      if (categoryId) {
+        const categoryProducts = await getProductsByCategory(
+          categoryId,
+          productId,
+          customerAccessToken
+        );
+      
+        return productCardTransformer(categoryProducts, format);
+      }
+    }
+    
+    return [];
   });
 
   const streamablePopularAccessories = Streamable.from(async () => {
@@ -580,16 +603,14 @@ export default async function Product({ params, searchParams }: Props) {
         </>
       )}
 
-      {/* Common sections for all products */}
-      <FeaturedProductCarousel
-        cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
-        emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
-        emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
-        nextLabel={t('RelatedProducts.nextProducts')}
-        previousLabel={t('RelatedProducts.previousProducts')}
+      {/* Related Products section with same styling as popular products */}
+      <RelatedProducts 
+        compareLabel="Compare"
+        compareProducts={streamableCompareProducts}
+        maxCompareLimitMessage="You've reached the maximum number of products for comparison."
+        maxItems={3}
         products={streameableRelatedProducts}
-        scrollbarLabel={t('RelatedProducts.scrollbar')}
-        title={t('RelatedProducts.title')}
+        showCompare={true}
       />
 
       <Reviews productId={productId} searchParams={searchParams} />
