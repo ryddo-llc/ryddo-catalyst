@@ -84,15 +84,21 @@ export function ProductCard({
           )}
         </div>
         <div className="relative w-full p-1">
-          <Image
-            alt={productName || 'Product image'}
-            className="w-full object-contain"
-            height={200}
-            priority={imagePriority}
-            sizes={imageSizes ?? '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px'}
-            src={imageUrl || ''}
-            width={200}
-          />
+          {imageUrl ? (
+            <Image
+              alt={productName || 'Product image'}
+              className="w-full object-contain"
+              height={200}
+              priority={imagePriority}
+              sizes={imageSizes ?? '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px'}
+              src={imageUrl}
+              width={200}
+            />
+          ) : (
+            <div className="flex aspect-square w-full items-center justify-center bg-gray-100 text-gray-400">
+              No image available
+            </div>
+          )}
           {showCompare && (
             <div className="absolute bottom-3 left-3 right-3 z-20 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
               <Compare
