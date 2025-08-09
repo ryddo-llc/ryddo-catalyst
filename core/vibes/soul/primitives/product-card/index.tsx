@@ -82,7 +82,7 @@ export function ProductCard({
             </Badge>
           )}
         </div>
-        <div className="relative w-full p-2">
+        <div className="relative w-full p-4">
           <Image
             alt={productName || 'Product image'}
             className="w-full rounded-[10px] object-contain"
@@ -92,7 +92,7 @@ export function ProductCard({
             width={600}
           />
           {showCompare && (
-            <div className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <div className="absolute bottom-6 left-8 right-8 z-20 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
               <Compare
                 label={compareLabel}
                 paramName={compareParamName}
