@@ -82,21 +82,21 @@ function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
  */
 function ProductFeatureItemSkeleton({ isReverse = false }: { isReverse?: boolean }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1">
       {/* Text Content Skeleton */}
       <div
-        className={`bg-white p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 2xl:p-16 flex flex-col justify-center items-center md:aspect-square ${
+        className={`bg-white p-10 xl:p-12 2xl:p-16 flex flex-col justify-center items-center md:aspect-square ${
           isReverse ? 'md:order-2' : ''
         }`}
       >
-        <div className="flex flex-col justify-start items-start max-w-[min(90%,700px)] w-full">
+        <div className="flex flex-col justify-start items-start max-w-md mx-auto md:mx-0 w-full">
           <Skeleton.Root pending>
-            <Skeleton.Box className="h-6 sm:h-8 w-3/5 mb-1 sm:mb-2" />
-            <Skeleton.Box className="h-6 sm:h-8 w-4/5 mb-2 sm:mb-3" />
+            <Skeleton.Box className="h-8 sm:h-10 w-3/5 mb-1 sm:mb-2" />
+            <Skeleton.Box className="h-8 sm:h-10 w-4/5 mb-2 sm:mb-3" />
             <div className="space-y-2 w-full pt-2 sm:pt-4 md:pt-6">
-              <Skeleton.Box className="h-3 sm:h-4 w-full" />
-              <Skeleton.Box className="h-3 sm:h-4 w-[85%]" />
-              <Skeleton.Box className="h-3 sm:h-4 w-[70%]" />
+              <Skeleton.Box className="h-4 sm:h-5 w-full" />
+              <Skeleton.Box className="h-4 sm:h-5 w-[85%]" />
+              <Skeleton.Box className="h-4 sm:h-5 w-[70%]" />
             </div>
           </Skeleton.Root>
         </div>
@@ -104,7 +104,7 @@ function ProductFeatureItemSkeleton({ isReverse = false }: { isReverse?: boolean
 
       {/* Image Skeleton */}
       <div
-        className={`relative overflow-hidden md:aspect-square ${
+        className={`bg-black relative overflow-hidden aspect-square ${
           isReverse ? 'md:order-1' : ''
         }`}
       >
@@ -154,7 +154,11 @@ export function ProductFeatures({ features, className = '' }: ProductFeaturesPro
         >
           {(featuresData) => {
             if (!featuresData?.features.length) {
-              return null;
+              return (
+                <div className="relative flex h-[50vh] items-center justify-center text-gray-500">
+                  No features found
+                </div>
+              );
             }
 
             return (
