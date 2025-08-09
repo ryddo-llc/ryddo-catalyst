@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -5,6 +6,7 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import { ProductCardFragment } from '~/components/product-card/fragment';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -299,6 +301,13 @@ const ProductPricingAndRelatedProductsQuery = graphql(
           useDefaultOptionSelections: $useDefaultOptionSelections
         ) {
           ...PricingFragment
+          categories {
+            edges {
+              node {
+                entityId
+              }
+            }
+          }
           relatedProducts(first: 4) {
             edges {
               node {
@@ -323,5 +332,61 @@ export const getProductPricingAndRelatedProducts = cache(
     });
 
     return data.site.product;
+  },
+);
+
+// Query to fetch products from the same category
+const ProductsByCategoryQuery = graphql(
+  `
+    query ProductsByCategoryQuery(
+      $categoryEntityId: Int!
+      $currencyCode: currencyCode
+    ) {
+      site {
+        search {
+          searchProducts(
+            filters: { categoryEntityId: $categoryEntityId }
+            sort: RELEVANCE
+          ) {
+            products(first: 5) {
+              edges {
+                node {
+                  entityId
+                  ...ProductCardFragment
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  [ProductCardFragment],
+);
+
+export const getProductsByCategory = cache(
+  async (
+    categoryEntityId: number,
+    excludeProductId: number,
+    currencyCode?: string,
+    customerAccessToken?: string,
+  ) => {
+    const { data } = await client.fetch({
+      document: ProductsByCategoryQuery,
+      variables: {
+        categoryEntityId,
+        currencyCode,
+      },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    if (!data.site.search.searchProducts.products) {
+      return [];
+    }
+
+    // Remove the current product from results and limit to 4
+    const products = removeEdgesAndNodes(data.site.search.searchProducts.products);
+    return products.filter((p) => p.entityId !== excludeProductId).slice(0, 4);
   },
 );

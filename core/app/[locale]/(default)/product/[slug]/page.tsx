@@ -43,6 +43,7 @@ import {
   getProduct,
   getProductPageMetadata,
   getProductPricingAndRelatedProducts,
+  getProductsByCategory,
   getStreamableProduct,
 } from './page-data';
 
@@ -319,8 +320,29 @@ export default async function Product({ params, searchParams }: Props) {
     }
 
     const relatedProducts = removeEdgesAndNodes(pricingData.relatedProducts);
-
-    return productCardTransformer(relatedProducts, format);
+    
+    // If we have related products, return them
+    if (relatedProducts.length > 0) {
+      return productCardTransformer(relatedProducts, format);
+    }
+    
+    // Otherwise, fetch products from the same category as fallback
+    const categories = pricingData.categories ? removeEdgesAndNodes(pricingData.categories) : [];
+    
+    if (categories.length > 0) {
+      const categoryId = categories[0].entityId; // Use first category
+      const currencyCode = await getPreferredCurrencyCode();
+      const categoryProducts = await getProductsByCategory(
+        categoryId,
+        productId,
+        currencyCode,
+        customerAccessToken
+      );
+      
+      return productCardTransformer(categoryProducts, format);
+    }
+    
+    return [];
   });
 
   const streamablePopularAccessories = Streamable.from(async () => {
@@ -558,7 +580,14 @@ export default async function Product({ params, searchParams }: Props) {
       )}
 
       {/* Related Products section with same styling as popular products */}
-      <RelatedProducts products={streameableRelatedProducts} name={baseProduct.name} />
+      <RelatedProducts 
+        products={streameableRelatedProducts}
+        compareProducts={streamableCompareProducts}
+        showCompare={true}
+        compareLabel="Compare"
+        maxItems={3}
+        maxCompareLimitMessage="You've reached the maximum number of products for comparison."
+      />
 
       <Reviews productId={productId} searchParams={searchParams} />
 
