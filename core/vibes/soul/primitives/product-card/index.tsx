@@ -58,6 +58,7 @@ export interface ProductCardProps {
 export function ProductCard({
   product: { id, title, price, image, href, onSale, outOfStock, name },
   imagePriority = false,
+  imageSizes,
   showCompare = false,
   compareLabel,
   compareParamName,
@@ -88,6 +89,7 @@ export function ProductCard({
             className="w-full object-contain"
             height={200}
             priority={imagePriority}
+            sizes={imageSizes ?? '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px'}
             src={imageUrl || ''}
             width={200}
           />

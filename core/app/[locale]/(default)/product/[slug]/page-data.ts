@@ -367,7 +367,6 @@ export const getProductsByCategory = cache(
   async (
     categoryEntityId: number,
     excludeProductId: number,
-    currencyCode?: string,
     customerAccessToken?: string,
   ) => {
     const { data } = await client.fetch({
