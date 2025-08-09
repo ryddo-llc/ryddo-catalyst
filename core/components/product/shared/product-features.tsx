@@ -3,8 +3,6 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import type { ProductFeature, ProductFeaturesData } from '~/data-transformers/product-features-transformer';
 
-import styles from './product-features.module.css';
-
 interface ProductFeaturesProps {
   features: Streamable<ProductFeaturesData | null>;
   className?: string;
@@ -30,23 +28,23 @@ function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
   const remainingWords = titleWords.slice(1).join(' ');
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]">
+    <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1">
       {/* Text Content */}
       <div
-        className={`${styles.featureContentContainer} ${
+        className={`bg-white p-10 xl:p-12 2xl:p-16 flex flex-col justify-center items-center md:aspect-square ${
           isReverse ? 'md:order-2' : ''
         }`}
       >
-        <div className={styles.featureContentInner}>
-          <h3 className={styles.featureTitlePrimary}>
+        <div className="flex flex-col justify-start items-start max-w-md mx-auto md:mx-0 w-full">
+          <h3 className="font-extrabold mb-1 sm:mb-2 text-[#F92F7B] leading-[0.9] text-[clamp(2rem,8vw,3rem)] xl:text-[clamp(2.5rem,10vw,4rem)]">
             {firstWord}
           </h3>
-                      {remainingWords ? (
-            <h3 className={styles.featureTitleSecondary}>
+          {remainingWords ? (
+            <h3 className="font-extrabold text-gray-900 mb-2 sm:mb-3 -mt-1 leading-[0.9] text-[clamp(2rem,8vw,3rem)] xl:text-[clamp(2.5rem,10vw,4rem)]">
               {remainingWords}
             </h3>
           ) : null}
-          <p className="text-lg sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-500 leading-relaxed pt-4 sm:pt-6">
+          <p className="text-lg lg:text-xl xl:text-2xl text-gray-500 leading-relaxed pt-2 sm:pt-4 md:pt-6">
             {feature.description}
           </p>
         </div>
@@ -61,7 +59,7 @@ function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
         {feature.imageUrl ? (
           <Image
             alt={feature.imageAlt}
-            className="object-cover"
+            className="object-cover object-center"
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             src={feature.imageUrl}
@@ -84,26 +82,21 @@ function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
  */
 function ProductFeatureItemSkeleton({ isReverse = false }: { isReverse?: boolean }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[800px]">
+    <div className="grid grid-cols-1 md:grid-cols-2">
       {/* Text Content Skeleton */}
       <div
-        className={`bg-white p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 2xl:p-32 flex flex-col justify-center items-center ${
+        className={`bg-white p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 2xl:p-16 flex flex-col justify-center items-center md:aspect-square ${
           isReverse ? 'md:order-2' : ''
         }`}
       >
-        <div 
-          className="flex flex-col justify-start items-start"
-          style={{
-            maxWidth: 'min(90%, 700px)'
-          }}
-        >
+        <div className="flex flex-col justify-start items-start max-w-[min(90%,700px)] w-full">
           <Skeleton.Root pending>
-            <Skeleton.Box className="h-8 w-3/5 mb-2" />
-            <Skeleton.Box className="h-8 w-4/5 mb-3" />
-            <div className="space-y-2 w-full pt-4 sm:pt-6">
-              <Skeleton.Box className="h-4 w-full" />
-              <Skeleton.Box className="h-4 w-[85%]" />
-              <Skeleton.Box className="h-4 w-[70%]" />
+            <Skeleton.Box className="h-6 sm:h-8 w-3/5 mb-1 sm:mb-2" />
+            <Skeleton.Box className="h-6 sm:h-8 w-4/5 mb-2 sm:mb-3" />
+            <div className="space-y-2 w-full pt-2 sm:pt-4 md:pt-6">
+              <Skeleton.Box className="h-3 sm:h-4 w-full" />
+              <Skeleton.Box className="h-3 sm:h-4 w-[85%]" />
+              <Skeleton.Box className="h-3 sm:h-4 w-[70%]" />
             </div>
           </Skeleton.Root>
         </div>
@@ -111,7 +104,7 @@ function ProductFeatureItemSkeleton({ isReverse = false }: { isReverse?: boolean
 
       {/* Image Skeleton */}
       <div
-        className={`relative overflow-hidden aspect-square ${
+        className={`relative overflow-hidden md:aspect-square ${
           isReverse ? 'md:order-1' : ''
         }`}
       >
