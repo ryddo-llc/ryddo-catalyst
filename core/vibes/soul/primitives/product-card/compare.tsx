@@ -3,7 +3,6 @@
 import { useQueryState } from 'nuqs';
 import { startTransition } from 'react';
 
-import { Button } from '@/vibes/soul/primitives/button';
 import { useCompareDrawer } from '@/vibes/soul/primitives/compare-drawer';
 import { compareParser } from '@/vibes/soul/primitives/compare-drawer/loader';
 

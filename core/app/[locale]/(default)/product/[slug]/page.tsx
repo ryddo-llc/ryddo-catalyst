@@ -327,7 +327,7 @@ export default async function Product({ params, searchParams }: Props) {
     }
     
     // Otherwise, fetch products from the same category as fallback
-    const categories = pricingData.categories ? removeEdgesAndNodes(pricingData.categories) : [];
+    const categories = removeEdgesAndNodes(pricingData.categories);
     
     if (categories.length > 0) {
       const categoryId = categories[0].entityId; // Use first category
@@ -581,12 +581,12 @@ export default async function Product({ params, searchParams }: Props) {
 
       {/* Related Products section with same styling as popular products */}
       <RelatedProducts 
-        products={streameableRelatedProducts}
-        compareProducts={streamableCompareProducts}
-        showCompare={true}
         compareLabel="Compare"
-        maxItems={3}
+        compareProducts={streamableCompareProducts}
         maxCompareLimitMessage="You've reached the maximum number of products for comparison."
+        maxItems={3}
+        products={streameableRelatedProducts}
+        showCompare={true}
       />
 
       <Reviews productId={productId} searchParams={searchParams} />

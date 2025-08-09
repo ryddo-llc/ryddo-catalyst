@@ -2,11 +2,10 @@ import { clsx } from 'clsx';
 import { ArrowRight } from 'lucide-react';
 import { ComponentPropsWithoutRef } from 'react';
 
-import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
-
-interface ArrowButtonProps extends Omit<ButtonProps, 'children'> {
+interface ArrowButtonProps {
   children: string;
   arrowClassName?: string;
+  className?: string;
 }
 
 export function ArrowButton({

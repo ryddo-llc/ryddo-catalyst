@@ -381,12 +381,16 @@ export const getProductsByCategory = cache(
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
-    if (!data.site.search.searchProducts.products) {
+    const searchResults = data.site.search.searchProducts;
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!searchResults?.products) {
       return [];
     }
 
     // Remove the current product from results and limit to 4
-    const products = removeEdgesAndNodes(data.site.search.searchProducts.products);
+    const products = removeEdgesAndNodes(searchResults.products);
+
     return products.filter((p) => p.entityId !== excludeProductId).slice(0, 4);
   },
 );
