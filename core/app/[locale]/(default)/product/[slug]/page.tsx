@@ -6,7 +6,6 @@ import { SearchParams } from 'nuqs/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
-import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { getBikeConfig } from '~/components/product/layout/performance-comparison/config';
@@ -17,6 +16,7 @@ import {
   ProductDetailScooter,
 } from '~/components/product/layout/product-detail-router';
 import Addons from '~/components/product/shared/addons';
+import RelatedProducts from '~/components/product/shared/related-products';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
@@ -557,17 +557,8 @@ export default async function Product({ params, searchParams }: Props) {
         </>
       )}
 
-      {/* Common sections for all products */}
-      <FeaturedProductCarousel
-        cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
-        emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
-        emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
-        nextLabel={t('RelatedProducts.nextProducts')}
-        previousLabel={t('RelatedProducts.previousProducts')}
-        products={streameableRelatedProducts}
-        scrollbarLabel={t('RelatedProducts.scrollbar')}
-        title={t('RelatedProducts.title')}
-      />
+      {/* Related Products section with same styling as popular products */}
+      <RelatedProducts products={streameableRelatedProducts} name={baseProduct.name} />
 
       <Reviews productId={productId} searchParams={searchParams} />
 

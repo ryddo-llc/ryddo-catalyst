@@ -299,7 +299,7 @@ const ProductPricingAndRelatedProductsQuery = graphql(
           useDefaultOptionSelections: $useDefaultOptionSelections
         ) {
           ...PricingFragment
-          relatedProducts(first: 8) {
+          relatedProducts(first: 4) {
             edges {
               node {
                 ...FeaturedProductsCarouselFragment
