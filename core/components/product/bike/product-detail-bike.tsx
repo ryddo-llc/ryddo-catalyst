@@ -12,7 +12,6 @@ import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 import { ProductBadges } from '../shared/product-badges';
 import {
   BikeImageSkeleton,
-  BikeSpecsSkeleton,
   ProductDetailBikeSkeleton,
   ProductDetailFormSkeleton,
   ProductSummarySkeleton,
@@ -20,9 +19,9 @@ import {
 } from '../shared/product-detail-skeletons';
 import { AuthorizedDealerCard } from '../shared/product-side-cards';
 
-
 import { BikeAddToCartForm } from './bike-add-to-cart-form';
-import { BikeSpecsIcons } from './bike-specifications';
+import { BikeMobileSpecs } from './bike-mobile-specs';
+import { BikeSpecialOffers } from './bike-special-offers';
 
 interface BaseProductDetailProduct {
   id: string;
@@ -193,25 +192,10 @@ export function ProductDetailBike<F extends Field>({
                           </div>
 
                           {/* Left side - Special Offers Content */}
-                          <div className="absolute left-0 top-0 z-5 hidden md:block">
-                            <div className="w-full max-w-[479.98px] flex-col justify-start items-start gap-8 md:gap-16 flex">
-                              <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
-                                <div className="justify-center text-zinc-800 text-xl md:text-2xl font-black font-['Inter'] leading-normal">Special Offers</div>
-                                <div className="justify-center text-stone-400 text-base md:text-lg font-medium font-['Inter'] leading-snug">Receive 20% OFF on all of<br/>your accessory purchases<br/>at time of sale.</div>
-                              </div>
-                              <div className="self-stretch py-0.5 flex flex-col justify-start items-start gap-[3px]">
-                                <div className="justify-center text-pink-600 text-xl md:text-2xl font-black font-['Inter'] leading-loose">5400 Watts of peak power</div>
-                                <div className="justify-center text-zinc-800 text-lg md:text-xl font-medium font-['Inter'] leading-relaxed">Long Range Bike - 80+ miles*</div>
-                              </div>
-                              <div className="flex flex-col justify-start items-start gap-1.5">
-                                <div className="justify-center text-zinc-800 text-2xl md:text-4xl font-black font-['Inter'] leading-10">Stability & Power</div>
-                                <div className="justify-center text-neutral-500 text-xl md:text-2xl font-medium font-['Inter'] leading-loose">Ultra large deck & tires</div>
-                              </div>
-                            </div>
-                          </div>
+                          <BikeSpecialOffers />
 
                           {/* Right side - PriceCard */}
-                          <div className="absolute right-0 top-0 z-5 hidden md:block">
+                          <div className="absolute right-0 top-[-100px] z-5 hidden md:block">
                             <Stream
                               fallback={<ProductDetailFormSkeleton />}
                               value={Streamable.all([
@@ -243,12 +227,7 @@ export function ProductDetailBike<F extends Field>({
                           </div>
                         </div>
 
-                        {/* Bottom Section - Specs Grid */}
-                        <div className="mt-auto">
-                          <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
-                            {(specs) => specs && <BikeSpecsIcons specs={specs} />}
-                          </Stream>
-                        </div>
+                        {/* Bottom Section - Removed specs, now in sidebar/mobile accordion */}
                       </div>
                     </div>
 
@@ -346,6 +325,9 @@ export function ProductDetailBike<F extends Field>({
                             )}
                           </Stream>
                         </div>
+
+                        {/* Mobile Specifications */}
+                        <BikeMobileSpecs bikeSpecs={product.bikeSpecs} />
                       </div>
                     </div>
                   </div>
