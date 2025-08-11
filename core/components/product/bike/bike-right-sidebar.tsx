@@ -35,15 +35,10 @@ export function BikeRightSidebar<F extends Field>({
   additionalActions,
 }: BikeRightSidebarProps<F>) {
   return (
-    <div className="absolute right-0 top-[-100px] z-10 hidden md:block">
+    <div className="absolute right-0 top-[-20px] z-10 hidden md:block">
       <Stream
         fallback={<ProductDetailFormSkeleton />}
-        value={Streamable.all([
-          product.images,
-          fields,
-          ctaLabel,
-          ctaDisabled,
-        ])}
+        value={Streamable.all([product.images, fields, ctaLabel, ctaDisabled])}
       >
         {([images, streamedFields, streamedCtaLabel, streamedCtaDisabled]) => (
           <AuthorizedDealerCard
