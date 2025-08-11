@@ -336,9 +336,11 @@ export default async function Product({ params, searchParams }: Props) {
       const categoryId = categories[0]?.entityId; // Use first category
       
       if (categoryId) {
+        const currencyCode = await getPreferredCurrencyCode();
         const categoryProducts = await getProductsByCategory(
           categoryId,
           productId,
+          currencyCode,
           customerAccessToken
         );
       
