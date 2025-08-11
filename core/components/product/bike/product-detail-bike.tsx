@@ -161,13 +161,13 @@ export function ProductDetailBike<F extends Field>({
                         </div>
 
                         {/* Middle Section - CSS Grid Layout for Better Responsiveness */}
-                        <div className="mb-8 grid min-h-0 flex-1 grid-cols-1 gap-2 sm:gap-4 md:grid-cols-[240px_1fr_280px] md:gap-6 lg:grid-cols-[260px_1fr_280px] lg:gap-6 xl:grid-cols-[260px_1fr_280px] xl:gap-6 2xl:grid-cols-[260px_1fr_280px]">
+                        <div className="mb-8 grid min-h-0 flex-1 grid-cols-1 gap-2 sm:gap-4 md:grid-cols-[200px_1fr_260px] md:gap-4 lg:grid-cols-[220px_1fr_260px] lg:gap-5 xl:grid-cols-[240px_1fr_280px] xl:gap-6 2xl:grid-cols-[260px_1fr_280px]">
                           {/* Left Sidebar - Special Offers */}
                           <BikeLeftSidebar />
 
                           {/* Center - Bike Image */}
                           <div className="flex items-center justify-center px-1 sm:px-2 md:px-0 lg:px-0 xl:px-0">
-                            <div className="w-full max-w-lg transition-all duration-300 ease-in-out sm:max-w-xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
+                            <div className="w-full max-w-2xl transition-all duration-300 ease-in-out sm:max-w-3xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-full">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const bikeImage = images[2] ?? images[0];

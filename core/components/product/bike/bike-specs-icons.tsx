@@ -99,7 +99,7 @@ export function BikeSpecsIcons({ specs }: BikeSpecsIconsProps) {
             role="img"
           >
             <div className="mb-2">
-              <Image alt={alt} height={44} src={iconSrc} width={44} />
+              <Image alt={alt} height={50} src={iconSrc} width={50} />
             </div>
             <span className="text-xs font-bold text-gray-800">{spec.name}</span>
             <span className="text-xs font-medium text-gray-600">{spec.value}</span>
