@@ -5,7 +5,7 @@ import { CompareDrawer, CompareDrawerProvider } from '@/vibes/soul/primitives/co
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
-import { type ProductSpecification, ProductSpecsIcons } from '~/components/product/shared/product-specifications';
+import { type ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 
 import { ProductBadges } from '../shared/product-badges';
@@ -18,6 +18,7 @@ import {
 import { BikeLeftSidebar } from './bike-left-sidebar';
 import { BikeMobileSection } from './bike-mobile-section';
 import { BikeRightSidebar } from './bike-right-sidebar';
+import { BikeSpecsIcons } from './bike-specifications';
 
 interface BaseProductDetailProduct {
   id: string;
@@ -216,7 +217,7 @@ export function ProductDetailBike<F extends Field>({
 
                               return (
                                 <div className="mx-auto max-w-4xl">
-                                  <ProductSpecsIcons specs={specs} />
+                                  <BikeSpecsIcons specs={specs} />
                                 </div>
                               );
                             }}

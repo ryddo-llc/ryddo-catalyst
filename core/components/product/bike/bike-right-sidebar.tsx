@@ -8,13 +8,15 @@ import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 import { ProductDetailFormSkeleton } from '../shared/product-detail-skeletons';
 import { AuthorizedDealerCard } from '../shared/product-side-cards';
 
+import { ProductPrice } from './types';
+
 interface BikeRightSidebarProps<F extends Field> {
   product: {
     id: string;
     title: string;
     href: string;
     images: Streamable<Array<{ src: string; alt: string }>>;
-    price?: any;
+    price?: ProductPrice;
     colors?: ColorOption[];
   };
   action: ProductDetailFormAction<F>;

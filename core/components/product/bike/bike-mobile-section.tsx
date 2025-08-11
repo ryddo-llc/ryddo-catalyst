@@ -15,6 +15,7 @@ import {
 
 import { BikeAddToCartForm } from './bike-add-to-cart-form';
 import { BikeMobileSpecs } from './bike-mobile-specs';
+import { ProductPrice } from './types';
 
 interface BikeMobileSectionProps<F extends Field> {
   product: {
@@ -24,7 +25,7 @@ interface BikeMobileSectionProps<F extends Field> {
     images: Streamable<Array<{ src: string; alt: string }>>;
     rating?: Streamable<number | null>;
     summary?: Streamable<string>;
-    price?: Streamable<any>;
+    price?: ProductPrice;
     bikeSpecs?: Streamable<ProductSpecification[] | null>;
     colors?: ColorOption[];
   };
