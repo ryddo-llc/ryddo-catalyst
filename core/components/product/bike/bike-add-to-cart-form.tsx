@@ -107,11 +107,13 @@ export function BikeAddToCartForm<F extends Field>({
           if (shouldRenderField(field)) return false;
           // Exclude color fields
           if (field.name.toLowerCase() === 'color') return false;
+
           return true;
         })
         .map((field) => {
           // Get field value
           let value = '';
+
           if ('defaultValue' in field && field.defaultValue) {
             value = String(field.defaultValue);
           } else if ('options' in field && field.options.length > 0) {
@@ -148,7 +150,7 @@ export function BikeAddToCartForm<F extends Field>({
       {fields.filter(shouldRenderField).map((field) => {
         if (field.type === 'swatch-radio-group') {
           return (
-            <div key={field.name} className="flex flex-col items-center mb-6 sm:items-end">
+            <div className="flex flex-col items-center mb-6 sm:items-end" key={field.name}>
               <p className="mb-4 text-base font-bold tracking-wide text-gray-900 text-center sm:text-right">
                 {field.label || 'COLOR'}
               </p>
@@ -161,6 +163,7 @@ export function BikeAddToCartForm<F extends Field>({
             </div>
           );
         }
+
         // Handle other interactive field types here if needed
         return null;
       })}
