@@ -68,6 +68,8 @@ export function ProductShowcase({
   productName,
   description,
 }: ProductShowcaseProps) {
+  const startingImageIndex = 2;
+  const endingImageIndex = 5;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState<ReturnType<typeof useEmblaCarousel>[1]>();
 
@@ -154,7 +156,7 @@ export function ProductShowcase({
               setApi={setCarouselApi}
             >
               <CarouselContent className="h-full w-full">
-                {imagesData.slice(2).map((image, index) => (
+                {imagesData.slice(startingImageIndex, endingImageIndex).map((image, index) => (
                   <CarouselItem
                     className="relative flex h-full w-full items-center justify-center"
                     key={index}
