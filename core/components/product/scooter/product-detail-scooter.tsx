@@ -12,16 +12,15 @@ import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 import { ProductBadges } from '../shared/product-badges';
 import {
   BikeImageSkeleton,
-  BikeSpecsSkeleton,
   ProductDetailBikeSkeleton,
   ProductDetailFormSkeleton,
   ProductSummarySkeleton,
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
-import { AuthorizedDealerCard } from '../shared/product-side-cards';
 
 import { ScooterAddToCartForm } from './scooter-add-to-cart-form';
-import { ScooterSpecsIcons } from './scooter-specifications';
+import { ScooterPriceCard } from './scooter-price-card';
+import { ScooterSpecialOffers } from './scooter-special-offers';
 
 // Define the skeleton alias
 const ProductDetailScooterSkeleton = ProductDetailBikeSkeleton;
@@ -105,7 +104,7 @@ export function ProductDetailScooter<F extends Field>({
             <Stream fallback={<ProductDetailScooterSkeleton />} value={streamableProduct}>
               {(product) =>
                 product && (
-                  <div className="relative min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh]">
+                  <div className="relative max-h-[85vh] min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh]">
                     {/* Background Image */}
                     <div className="absolute inset-0 h-full w-full">
                       <Stream
@@ -167,10 +166,10 @@ export function ProductDetailScooter<F extends Field>({
                         </div>
 
                         {/* Middle Section - Scooter Image Centered with Cards on Sides */}
-                        <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-hidden">
+                        <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-visible">
                           {/* Centered Scooter Image */}
                           <div className="flex items-center justify-center">
-                            <div className="mx-auto w-full max-w-xs px-4 sm:max-w-sm md:max-w-lg lg:max-w-3xl xl:max-w-4xl">
+                            <div className="mx-auto w-full max-w-xs px-4 sm:max-w-sm md:max-w-xs lg:max-w-sm xl:max-w-md">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const scooterImage = images[2] ?? images[0];
@@ -195,60 +194,41 @@ export function ProductDetailScooter<F extends Field>({
                           </div>
 
                           {/* Left side - Special Offers Content */}
-                          <div className="absolute left-0 top-0 z-0 hidden lg:block">
-                            <div className="w-[479.98px] flex-col justify-start items-start gap-16 flex">
-                              <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
-                                <div className="w-44 h-6 justify-center text-zinc-800 text-2xl font-black font-['Inter'] leading-normal">Special Offers</div>
-                                <div className="justify-center text-stone-400 text-lg font-medium font-['Inter'] leading-snug">Receive 20% OFF on all of<br/>your accessory purchases<br/>at time of sale.</div>
-                              </div>
-                              <div className="self-stretch py-0.5 flex flex-col justify-start items-start gap-[3px]">
-                                <div className="w-96 h-7 justify-center text-pink-600 text-2xl font-black font-['Inter'] leading-loose">5400 Watts of peak power</div>
-                                <div className="w-96 justify-center text-zinc-800 text-xl font-medium font-['Inter'] leading-relaxed">Long Range Scooter - 80+ miles*</div>
-                              </div>
-                              <div className="w-64 flex flex-col justify-start items-start gap-1.5">
-                                <div className="justify-center text-zinc-800 text-4xl font-black font-['Inter'] leading-10">Stability & Power</div>
-                                <div className="justify-center text-neutral-500 text-2xl font-medium font-['Inter'] leading-loose">Ultra large deck & tires</div>
-                              </div>
-                            </div>
-                          </div>
+                          <ScooterSpecialOffers scooterSpecs={product.scooterSpecs} />
 
                           {/* Right side - PriceCard */}
-                          <div className="absolute right-0 top-0 z-0 hidden lg:block">
-                            <Stream
-                              fallback={<ProductDetailFormSkeleton />}
-                              value={Streamable.all([
-                                product.images,
-                                streamableFields,
-                                streamableCtaLabel,
-                                streamableCtaDisabled,
-                              ])}
-                            >
-                              {([images, fields, ctaLabel, ctaDisabled]) => (
-                                <AuthorizedDealerCard
-                                  product={{
-                                    id: product.id,
-                                    title: product.title,
-                                    href: product.href,
-                                    images,
-                                    price: product.price,
-                                    colors: product.colors,
-                                    action,
-                                    fields,
-                                    ctaLabel: ctaLabel || undefined,
-                                    ctaDisabled: ctaDisabled || undefined,
-                                    additionalActions,
-                                  }}
-                                />
-                              )}
-                            </Stream>
-                          </div>
+                          <Stream
+                            fallback={<ProductDetailFormSkeleton />}
+                            value={Streamable.all([
+                              product.images,
+                              streamableFields,
+                              streamableCtaLabel,
+                              streamableCtaDisabled,
+                            ])}
+                          >
+                            {([images, fields, ctaLabel, ctaDisabled]) => (
+                              <ScooterPriceCard
+                                action={action}
+                                additionalActions={additionalActions}
+                                ctaDisabled={ctaDisabled || false}
+                                ctaLabel={ctaLabel || 'Add to cart'}
+                                fields={fields}
+                                product={{
+                                  id: product.id,
+                                  title: product.title,
+                                  href: product.href,
+                                  images,
+                                  price: product.price,
+                                  colors: product.colors,
+                                }}
+                              />
+                            )}
+                          </Stream>
                         </div>
 
-                        {/* Bottom Section - Specs Grid */}
+                        {/* Bottom Section - Specs Grid - Now moved to left sidebar */}
                         <div className="mt-auto">
-                          <Stream fallback={<BikeSpecsSkeleton />} value={product.scooterSpecs}>
-                            {(specs) => specs && <ScooterSpecsIcons specs={specs} />}
-                          </Stream>
+                          {/* Specifications moved to left sidebar under special offers */}
                         </div>
                       </div>
                     </div>

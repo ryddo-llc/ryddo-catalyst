@@ -123,6 +123,23 @@ export const ProductOptionsFragment = graphql(
           }
         }
       }
+      options(first: 50) {
+        edges {
+          node {
+            entityId
+            displayName
+            isRequired
+            values(first: 50) {
+              edges {
+                node {
+                  entityId
+                  label
+                }
+              }
+            }
+          }
+        }
+      }
     }
   `,
   [

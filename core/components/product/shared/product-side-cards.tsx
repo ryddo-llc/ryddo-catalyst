@@ -10,6 +10,7 @@ import { Field } from '@/vibes/soul/sections/product-detail/schema';
 
 import { ColorOption } from '../../../data-transformers/bike-product-transformer';
 import { BikeAddToCartForm } from '../../product/bike/bike-add-to-cart-form';
+import { ScooterAddToCartForm } from '../../product/scooter/scooter-add-to-cart-form';
 
 interface ProductPrice {
   type?: 'sale' | 'range';
@@ -30,6 +31,7 @@ interface ProductWithSideCardData<F extends Field = Field> {
   ctaLabel?: string;
   ctaDisabled?: boolean;
   additionalActions?: ReactNode;
+  productType?: 'bike' | 'scooter';
 }
 
 // Offers Card Component
@@ -72,8 +74,8 @@ export function AuthorizedDealerCard<F extends Field = Field>({ product }: { pro
     <div className="max-w-sm text-right">
       {/* Authorized Dealer Header */}
       <div className="mb-6">
-        <h3 className="text-md mb-1 font-bold text-gray-900">Authorized Dealer</h3>
-        <p className="text-xs leading-relaxed text-[#AE9D77]">
+        <h3 className="text-xl mb-1 font-black font-['Inter'] text-zinc-800">Authorized Dealer</h3>
+        <p className="text-base font-medium font-['Inter'] leading-snug text-stone-400">
           Specializing in service
           <br />& custom modifications
         </p>
@@ -88,12 +90,12 @@ export function AuthorizedDealerCard<F extends Field = Field>({ product }: { pro
 
             return (
               <>
-                <div className="mb-2 text-4xl font-black text-gray-900">{displayPrice}</div>
-                <div className="text-xs leading-relaxed text-gray-600">
+                <div className="mb-2 text-4xl font-black font-['Inter'] text-zinc-800">{displayPrice}</div>
+                <div className="text-base font-medium font-['Inter'] leading-snug text-stone-400">
                   <span>Payment options available </span>
-                  <span className="font-medium text-pink-500">with Affirm, Klarna</span>
+                  <span className="font-black font-['Inter'] text-pink-600">with Affirm, Klarna</span>
                   <br />
-                  <span className="cursor-pointer font-medium text-pink-500 underline">
+                  <span className="cursor-pointer font-black font-['Inter'] text-pink-600 underline">
                     Learn more
                   </span>
                 </div>
@@ -106,24 +108,45 @@ export function AuthorizedDealerCard<F extends Field = Field>({ product }: { pro
       {/* Action Buttons - Side by Side */}
       <div className="mb-6">
         {product.action && product.fields ? (
-          <BikeAddToCartForm
-            action={product.action}
-            additionalActions={product.additionalActions}
-            colors={product.colors}
-            compareProduct={{
-              id: product.id,
-              title: product.title,
-              href: product.href,
-              image: product.images?.[0]
-            }}
-            ctaLabel={product.ctaLabel || "Add to cart"}
-            disabled={product.ctaDisabled}
-            fields={product.fields}
-            productId={product.id}
-          />
+          <>
+            {product.productType === 'scooter' ? (
+              <ScooterAddToCartForm
+                action={product.action}
+                additionalActions={product.additionalActions}
+                colors={product.colors}
+                compareProduct={{
+                  id: product.id,
+                  title: product.title,
+                  href: product.href,
+                  image: product.images?.[0]
+                }}
+                ctaLabel={product.ctaLabel || "Add to cart"}
+                disabled={product.ctaDisabled}
+                fields={product.fields}
+                productId={product.id}
+              />
+            ) : (
+              <BikeAddToCartForm
+                action={product.action}
+                additionalActions={product.additionalActions}
+                colors={product.colors}
+                compareProduct={{
+                  id: product.id,
+                  title: product.title,
+                  href: product.href,
+                  image: product.images?.[0]
+                }}
+                ctaLabel={product.ctaLabel || "Add to cart"}
+                disabled={product.ctaDisabled}
+                fields={product.fields}
+                productId={product.id}
+              />
+            )}
+          </>
         ) : (
-          <div className="flex gap-3 justify-end">
+          <div className="flex gap-3 justify-end items-stretch">
             <Compare
+              className="w-24 bg-black/[.62] text-white min-h-[43px] px-4 py-2.5 rounded-full text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed"
               label="Compare"
               product={{
                 id: product.id,
@@ -133,7 +156,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({ product }: { pro
               }}
             />
             <button 
-              className="bg-[#F92F7B] text-white py-2 px-5 rounded-full font-semibold hover:bg-pink-600 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-24 bg-[#F92F7B] text-white min-h-[43px] px-4 py-2.5 rounded-full font-bold hover:bg-pink-600 transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={product.ctaDisabled}
             >
               {product.ctaLabel || "Add to cart"}
