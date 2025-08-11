@@ -99,7 +99,7 @@ export function ProductDetailBike<F extends Field>({
             <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
               {(product) =>
                 product && (
-                  <div className="relative max-h-[85vh] min-h-[60vh] md:min-h-[70vh]">
+                  <div className="relative min-h-[60vh] md:max-h-[85vh] md:min-h-[70vh]">
                     {/* Background Image */}
                     <div className="absolute inset-0 h-full w-full">
                       <Stream
