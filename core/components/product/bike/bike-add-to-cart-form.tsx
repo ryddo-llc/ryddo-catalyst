@@ -35,7 +35,7 @@ function SubmitButton({ children, disabled }: { children: string; disabled?: boo
 
   return (
     <button
-      className="bg-[#F92F7B] text-white py-2 px-5 rounded-full font-semibold hover:bg-pink-600 transition-colors text-sm disabled:opacity-50 min-h-[44px] active:scale-95"
+      className="flex justify-center items-center flex-1 self-stretch bg-[#F92F7B] shadow-[0_12px_18px_-6px_rgba(0,0,0,0.12)] px-4 sm:pl-4 sm:pr-[15.5px] py-2.5 sm:pt-[9px] sm:pb-2.5 rounded-[50px] min-h-[43px] text-sm sm:text-base text-white font-semibold hover:bg-pink-600 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
       disabled={disabled || pending}
       type="submit"
     >
@@ -123,6 +123,7 @@ export function BikeAddToCartForm<F extends Field>({
       <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:gap-3 sm:justify-end">
         {compareProduct && (
           <Compare
+            className="flex h-[43px] justify-center items-center flex-1 min-w-0 px-4 sm:pl-[31px] sm:pr-[29.83px] py-3 rounded-[50px] border-2 border-solid border-[#757575] text-[#757575] font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#757575] hover:text-white transition-colors"
             label="Compare"
             product={compareProduct}
           />
