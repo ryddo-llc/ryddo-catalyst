@@ -166,21 +166,21 @@ export function ProductDetailBike<F extends Field>({
                           <BikeLeftSidebar />
 
                           {/* Center - Bike Image - Smaller constrained width with sidebar spacing */}
-                          <div className="flex items-center justify-center px-4 md:px-60 lg:px-64 xl:px-72">
-                            <div className="w-full max-w-sm transition-all duration-300 ease-in-out sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl">
+                          <div className="flex items-center justify-center px-6 sm:px-8 md:px-16 lg:px-20 xl:px-24">
+                            <div className="flex h-64 w-full max-w-lg items-center justify-center transition-all duration-300 ease-in-out md:h-80 lg:h-96 xl:h-[500px] xl:max-w-xl 2xl:max-w-2xl">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
-                                  const bikeImage = images[2] ?? images[0];
+                                  const bikeImage = images[2];
 
                                   return bikeImage ? (
                                     <Image
                                       alt={bikeImage.alt}
                                       className="h-auto w-full object-contain transition-all duration-300"
-                                      height={2500}
+                                      height={1000}
                                       priority
                                       sizes="(max-width: 640px) 384px, (max-width: 768px) 448px, (max-width: 1024px) 512px, (max-width: 1280px) 576px, 672px"
                                       src={bikeImage.src}
-                                      width={2500}
+                                      width={1000}
                                     />
                                   ) : (
                                     <div className="text-center text-gray-500">
