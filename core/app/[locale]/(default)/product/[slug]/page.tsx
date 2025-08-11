@@ -22,6 +22,7 @@ import RelatedProducts from '~/components/product/shared/related-products';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
+import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
 import {
   findPerformanceImage,
   transformPerformanceComparisonData,
@@ -392,6 +393,17 @@ export default async function Product({ params, searchParams }: Props) {
         })
       : null;
 
+  // Create streamable scooter-specific data for scooter products
+  const streamableScooterData =
+    productDetailVariant === 'scooter'
+      ? Streamable.from(async () => {
+          const data = await streamableAllProductData;
+          const product = data.product;
+
+          return scooterProductTransformer(product);
+        })
+      : null;
+
   // Create streamable product features data for bikes and scooters
   const streamableProductFeatures =
     (productDetailVariant === 'bike' || productDetailVariant === 'scooter')
@@ -524,6 +536,20 @@ export default async function Product({ params, searchParams }: Props) {
       })
     : baseProductData;
 
+  // Enhanced product data for scooter components
+  const scooterProductData = streamableScooterData
+    ? Streamable.from(async () => {
+        const scooterData = await streamableScooterData;
+
+        return {
+          ...baseProductData,
+          backgroundImage: scooterData.backgroundImage,
+          scooterSpecs: Streamable.from(() => Promise.resolve(scooterData.scooterSpecs || null)),
+          colors: scooterData.colors,
+        };
+      })
+    : baseProductData;
+
   const baseProps = {
     action: addToCart,
     additionalActions: (
@@ -557,7 +583,7 @@ export default async function Product({ params, searchParams }: Props) {
         return <ProductDetailBike {...baseProps} product={bikeProductData} />;
 
       case 'scooter':
-        return <ProductDetailScooter {...baseProps} product={baseProductData} />;
+        return <ProductDetailScooter {...baseProps} product={scooterProductData} />;
 
       case 'default':
       default:
