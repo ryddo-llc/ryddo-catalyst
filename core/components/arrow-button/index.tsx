@@ -23,7 +23,7 @@ export function ArrowButton({
         <span>{children}</span>
         <ArrowRight
           className={clsx(
-            'h-2 w-0 transform opacity-0 transition-all duration-200 group-hover/arrow-btn:w-2 group-hover/arrow-btn:translate-x-0.5 group-hover/arrow-btn:opacity-100',
+            'h-4 w-0 transform opacity-0 transition-all duration-200 group-hover/arrow-btn:w-4 group-hover/arrow-btn:translate-x-0.5 group-hover/arrow-btn:opacity-100',
             arrowClassName,
           )}
         />
