@@ -19,6 +19,8 @@ import {
 } from '../shared/product-detail-skeletons';
 
 import { ScooterAddToCartForm } from './scooter-add-to-cart-form';
+import { ScooterMobileSpecialOffers } from './scooter-mobile-special-offers';
+import { ScooterMobileSpecs } from './scooter-mobile-specs';
 import { ScooterPriceCard } from './scooter-price-card';
 import { ScooterSpecialOffers } from './scooter-special-offers';
 
@@ -157,7 +159,7 @@ export function ProductDetailScooter<F extends Field>({
                           >
                             {(description) =>
                               Boolean(description) && (
-                                <div className="justify-center self-stretch text-center font-['Nunito'] text-3xl font-medium leading-loose text-neutral-500">
+                                <div className="justify-center self-stretch text-center font-['Nunito'] text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium leading-loose text-neutral-500">
                                   {description}
                                 </div>
                               )
@@ -169,7 +171,7 @@ export function ProductDetailScooter<F extends Field>({
                         <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-visible">
                           {/* Centered Scooter Image */}
                           <div className="flex items-center justify-center">
-                            <div className="mx-auto w-full max-w-xs px-4 sm:max-w-sm md:max-w-xs lg:max-w-sm xl:max-w-md">
+                            <div className="mx-auto w-full max-w-[280px] px-4 sm:max-w-sm md:max-w-xs lg:max-w-sm xl:max-w-md">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const scooterImage = images[2] ?? images[0];
@@ -236,6 +238,9 @@ export function ProductDetailScooter<F extends Field>({
                     {/* Additional Content Below - Only show on mobile or when needed */}
                     <div className="bg-white p-4 lg:hidden">
                       <div className="mx-auto max-w-2xl space-y-6">
+                        {/* Mobile Special Offers - Show first for better engagement */}
+                        <ScooterMobileSpecialOffers />
+                        
                         <div className="group/product-rating text-center">
                           <Stream fallback={<RatingSkeleton />} value={product.rating}>
                             {(rating) => <Rating rating={rating ?? 0} />}
@@ -246,7 +251,7 @@ export function ProductDetailScooter<F extends Field>({
                           <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
                             {(summary) =>
                               Boolean(summary) && (
-                                <p className="text-lg text-neutral-600">{summary}</p>
+                                <p className="text-base sm:text-lg text-neutral-600">{summary}</p>
                               )
                             }
                           </Stream>
@@ -299,7 +304,7 @@ export function ProductDetailScooter<F extends Field>({
                                       }
 
                                       return (
-                                        <div className="text-3xl font-black text-gray-900">
+                                        <div className="text-2xl sm:text-3xl font-black text-gray-900">
                                           {displayPrice}
                                         </div>
                                       );
@@ -327,6 +332,9 @@ export function ProductDetailScooter<F extends Field>({
                             )}
                           </Stream>
                         </div>
+                        
+                        {/* Mobile Specifications */}
+                        <ScooterMobileSpecs scooterSpecs={product.scooterSpecs} />
                       </div>
                     </div>
                   </div>

@@ -132,7 +132,7 @@ export function ScooterAddToCartForm<F extends Field>({
         {/* Color Selection */}
         {colors && colors.length > 0 && (
           <div>
-            <span className="block text-sm font-medium text-gray-700 mb-2">Color</span>
+            <span className="block text-sm sm:text-base md:text-lg font-medium text-gray-700 mb-2">Color</span>
             <SwatchRadioGroup
               defaultValue={colors[0]?.entityId.toString()}
               name="color"
@@ -217,10 +217,12 @@ export function ScooterAddToCartForm<F extends Field>({
             const radioGroupClassName = isOptions 
               ? `options-grid-layout
                 [&_.button-radio-group_[role='radiogroup']]:grid 
-                [&_.button-radio-group_[role='radiogroup']]:grid-cols-2
+                [&_.button-radio-group_[role='radiogroup']]:grid-cols-1 
+                [&_.button-radio-group_[role='radiogroup']]:sm:grid-cols-2
                 [&_.button-radio-group_[role='radiogroup']]:gap-x-3
                 [&_.button-radio-group_[role='radiogroup']]:gap-y-4
-                [&_.button-radio-group_[role='radiogroup']]:w-[260px]
+                [&_.button-radio-group_[role='radiogroup']]:w-full 
+                [&_.button-radio-group_[role='radiogroup']]:sm:w-[260px]
                 [&_[role='radio'][data-state='checked']]:!border-[#F92F7B]
                 [&_[role='radio'][data-state='checked']]:!border-2
                 [&_[role='radio'][data-state='checked']]:!text-[#F92F7B]
@@ -231,9 +233,12 @@ export function ScooterAddToCartForm<F extends Field>({
                 [&_[role='radio']]:!font-bold
                 [&_[role='radio']]:!text-[14px]
                 [&_[role='radio']]:!leading-[17px]
-                [&_[role='radio']]:!px-4
-                [&_[role='radio']]:!py-2
-                [&_[role='radio']]:!min-h-[36px]
+                [&_[role='radio']]:!px-6 
+                [&_[role='radio']]:!sm:px-4
+                [&_[role='radio']]:!py-3 
+                [&_[role='radio']]:!sm:py-2
+                [&_[role='radio']]:!min-h-[44px] 
+                [&_[role='radio']]:!sm:min-h-[36px]
                 [&_[role='radio']]:!bg-transparent
                 [&_[role='radio']]:!font-inter
                 [&_[role='radio']]:!transition-colors
@@ -241,9 +246,11 @@ export function ScooterAddToCartForm<F extends Field>({
                 [&_[role='radio']:hover[data-state='unchecked']]:!bg-gray-50`.replace(/\s+/g, ' ').trim()
               : `battery-size-layout
                 [&_.button-radio-group_[role='radiogroup']]:flex 
-                [&_.button-radio-group_[role='radiogroup']]:flex-row
+                [&_.button-radio-group_[role='radiogroup']]:flex-col 
+                [&_.button-radio-group_[role='radiogroup']]:sm:flex-row
                 [&_.button-radio-group_[role='radiogroup']]:gap-3
-                [&_.button-radio-group_[role='radiogroup']]:w-[260px]
+                [&_.button-radio-group_[role='radiogroup']]:w-full 
+                [&_.button-radio-group_[role='radiogroup']]:sm:w-[260px]
                 [&_[role='radio'][data-state='checked']]:!border-[#F92F7B]
                 [&_[role='radio'][data-state='checked']]:!border-2
                 [&_[role='radio'][data-state='checked']]:!text-[#F92F7B]
@@ -254,9 +261,12 @@ export function ScooterAddToCartForm<F extends Field>({
                 [&_[role='radio']]:!font-bold
                 [&_[role='radio']]:!text-[14px]
                 [&_[role='radio']]:!leading-[17px]
-                [&_[role='radio']]:!px-4
-                [&_[role='radio']]:!py-2
-                [&_[role='radio']]:!min-h-[36px]
+                [&_[role='radio']]:!px-6 
+                [&_[role='radio']]:!sm:px-4
+                [&_[role='radio']]:!py-3 
+                [&_[role='radio']]:!sm:py-2
+                [&_[role='radio']]:!min-h-[44px] 
+                [&_[role='radio']]:!sm:min-h-[36px]
                 [&_[role='radio']]:!bg-transparent
                 [&_[role='radio']]:!font-inter
                 [&_[role='radio']]:!transition-colors
@@ -265,7 +275,7 @@ export function ScooterAddToCartForm<F extends Field>({
 
             return (
               <div className="mb-6" key={field.name}>
-                <div className="flex h-[32px] flex-col justify-center text-[#333] font-inter text-sm sm:text-base not-italic font-extrabold leading-4 uppercase mb-2 text-left">
+                <div className="flex h-[32px] flex-col justify-center text-[#333] font-inter text-sm sm:text-base md:text-lg not-italic font-extrabold leading-4 uppercase mb-2 text-left">
                   {field.label}
                 </div>
                 <div className={radioGroupClassName}>
@@ -283,7 +293,7 @@ export function ScooterAddToCartForm<F extends Field>({
           if (field.type === 'select') {
             return (
               <div key={field.name}>
-                <span className="block text-[20px] font-[800] text-[#333333] mb-2 uppercase font-inter leading-[24px] tracking-wide">
+                <span className="block text-base sm:text-lg md:text-xl font-[800] text-[#333333] mb-2 uppercase font-inter leading-[24px] tracking-wide">
                   {field.label}
                 </span>
                 <SelectField
@@ -301,7 +311,7 @@ export function ScooterAddToCartForm<F extends Field>({
           if (field.type === 'card-radio-group') {
             return (
               <div key={field.name}>
-                <span className="block text-[20px] font-[800] text-[#333333] mb-2 uppercase font-inter leading-[24px] tracking-wide">
+                <span className="block text-base sm:text-lg md:text-xl font-[800] text-[#333333] mb-2 uppercase font-inter leading-[24px] tracking-wide">
                   {field.label}
                 </span>
                 <CardRadioGroup
@@ -318,7 +328,7 @@ export function ScooterAddToCartForm<F extends Field>({
           if (field.type === 'swatch-radio-group') {
             return (
               <div key={field.name}>
-                <span className="block text-[20px] font-[800] text-[#333333] mb-2 uppercase font-inter leading-[24px] tracking-wide">
+                <span className="block text-base sm:text-lg md:text-xl font-[800] text-[#333333] mb-2 uppercase font-inter leading-[24px] tracking-wide">
                   {field.label}
                 </span>
                 <SwatchRadioGroup
