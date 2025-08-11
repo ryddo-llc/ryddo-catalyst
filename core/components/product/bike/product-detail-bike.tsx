@@ -130,7 +130,7 @@ export function ProductDetailBike<F extends Field>({
                     </div>
 
                     {/* Content Container */}
-                    <div className="relative z-0 flex h-full flex-col justify-start px-4 py-4 md:px-8 md:py-6">
+                    <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 md:px-8 md:py-6">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
                         {/* Top Section - Product Name & Stock */}
                         <div className="mb-4 text-center md:mb-8">
@@ -165,10 +165,10 @@ export function ProductDetailBike<F extends Field>({
                         </div>
 
                         {/* Middle Section - Bike Image Centered with Cards on Sides */}
-                        <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-hidden">
+                        <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-hidden md:overflow-visible">
                           {/* Centered Bike Image */}
                           <div className="flex items-center justify-center">
-                            <div className="mx-auto w-full max-w-xs px-4 sm:max-w-sm md:max-w-lg lg:max-w-3xl xl:max-w-4xl">
+                            <div className="mx-auto w-full max-w-sm px-4 sm:max-w-md md:max-w-lg lg:max-w-3xl xl:max-w-4xl">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const bikeImage = images[2] ?? images[0];
@@ -193,25 +193,25 @@ export function ProductDetailBike<F extends Field>({
                           </div>
 
                           {/* Left side - Special Offers Content */}
-                          <div className="absolute left-0 top-0 z-0 hidden lg:block">
-                            <div className="w-[479.98px] flex-col justify-start items-start gap-16 flex">
+                          <div className="absolute left-0 top-0 z-5 hidden md:block">
+                            <div className="w-full max-w-[479.98px] flex-col justify-start items-start gap-8 md:gap-16 flex">
                               <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
-                                <div className="w-44 h-6 justify-center text-zinc-800 text-2xl font-black font-['Inter'] leading-normal">Special Offers</div>
-                                <div className="justify-center text-stone-400 text-lg font-medium font-['Inter'] leading-snug">Receive 20% OFF on all of<br/>your accessory purchases<br/>at time of sale.</div>
+                                <div className="justify-center text-zinc-800 text-xl md:text-2xl font-black font-['Inter'] leading-normal">Special Offers</div>
+                                <div className="justify-center text-stone-400 text-base md:text-lg font-medium font-['Inter'] leading-snug">Receive 20% OFF on all of<br/>your accessory purchases<br/>at time of sale.</div>
                               </div>
                               <div className="self-stretch py-0.5 flex flex-col justify-start items-start gap-[3px]">
-                                <div className="w-96 h-7 justify-center text-pink-600 text-2xl font-black font-['Inter'] leading-loose">5400 Watts of peak power</div>
-                                <div className="w-96 justify-center text-zinc-800 text-xl font-medium font-['Inter'] leading-relaxed">Long Range Bike - 80+ miles*</div>
+                                <div className="justify-center text-pink-600 text-xl md:text-2xl font-black font-['Inter'] leading-loose">5400 Watts of peak power</div>
+                                <div className="justify-center text-zinc-800 text-lg md:text-xl font-medium font-['Inter'] leading-relaxed">Long Range Bike - 80+ miles*</div>
                               </div>
-                              <div className="w-64 flex flex-col justify-start items-start gap-1.5">
-                                <div className="justify-center text-zinc-800 text-4xl font-black font-['Inter'] leading-10">Stability & Power</div>
-                                <div className="justify-center text-neutral-500 text-2xl font-medium font-['Inter'] leading-loose">Ultra large deck & tires</div>
+                              <div className="flex flex-col justify-start items-start gap-1.5">
+                                <div className="justify-center text-zinc-800 text-2xl md:text-4xl font-black font-['Inter'] leading-10">Stability & Power</div>
+                                <div className="justify-center text-neutral-500 text-xl md:text-2xl font-medium font-['Inter'] leading-loose">Ultra large deck & tires</div>
                               </div>
                             </div>
                           </div>
 
                           {/* Right side - PriceCard */}
-                          <div className="absolute right-0 top-0 z-0 hidden lg:block">
+                          <div className="absolute right-0 top-0 z-5 hidden md:block">
                             <Stream
                               fallback={<ProductDetailFormSkeleton />}
                               value={Streamable.all([
@@ -252,8 +252,8 @@ export function ProductDetailBike<F extends Field>({
                       </div>
                     </div>
 
-                    {/* Additional Content Below - Only show on mobile or when needed */}
-                    <div className="bg-white p-4 lg:hidden">
+                    {/* Additional Content Below - Only show on mobile */}
+                    <div className="relative z-20 bg-white p-4 md:hidden">
                       <div className="mx-auto max-w-2xl space-y-6">
                         <div className="group/product-rating text-center">
                           <Stream fallback={<RatingSkeleton />} value={product.rating}>

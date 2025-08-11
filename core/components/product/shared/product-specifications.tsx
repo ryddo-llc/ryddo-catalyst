@@ -85,7 +85,7 @@ export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
   return (
     <div
       aria-label="Product specifications"
-      className="grid grid-cols-3 gap-1"
+      className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8"
       role="region"
     >
       {specs.slice(0, 6).map((spec) => {
