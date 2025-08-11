@@ -18,7 +18,7 @@ import {
 import { BikeLeftSidebar } from './bike-left-sidebar';
 import { BikeMobileSection } from './bike-mobile-section';
 import { BikeRightSidebar } from './bike-right-sidebar';
-import { BikeSpecsIcons } from './bike-specifications';
+import { BikeSpecsIcons } from './bike-specs-icons';
 
 interface BaseProductDetailProduct {
   id: string;
@@ -178,6 +178,7 @@ export function ProductDetailBike<F extends Field>({
                                       className="h-auto w-full object-contain transition-all duration-300"
                                       height={2500}
                                       priority
+                                      sizes="(max-width: 640px) 384px, (max-width: 768px) 448px, (max-width: 1024px) 512px, (max-width: 1280px) 576px, 672px"
                                       src={bikeImage.src}
                                       width={2500}
                                     />

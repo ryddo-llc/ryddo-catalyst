@@ -34,6 +34,7 @@ interface BikeMobileSectionProps<F extends Field> {
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
   additionalActions?: ReactNode;
+  defaultPrice?: string;
 }
 
 export function BikeMobileSection<F extends Field>({
@@ -43,6 +44,7 @@ export function BikeMobileSection<F extends Field>({
   ctaLabel,
   ctaDisabled,
   additionalActions,
+  defaultPrice = '$0',
 }: BikeMobileSectionProps<F>) {
   return (
     <div className="relative z-20 bg-white p-4 md:hidden">
@@ -84,7 +86,7 @@ export function BikeMobileSection<F extends Field>({
                     value={product.price}
                   >
                     {(price) => {
-                      let displayPrice = '$3,695';
+                      let displayPrice = defaultPrice;
 
                       if (typeof price === 'string') {
                         displayPrice = price;

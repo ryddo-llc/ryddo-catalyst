@@ -35,7 +35,7 @@ function SubmitButton({ children, disabled }: { children: string; disabled?: boo
 
   return (
     <button
-      className="flex justify-center items-center flex-1 self-stretch bg-[#F92F7B] shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] px-4 sm:pl-4 sm:pr-[15.5px] py-2.5 sm:pt-[9px] sm:pb-2.5 rounded-[50px] min-h-[43px] text-base font-bold font-['Inter'] leading-normal tracking-wide text-white hover:bg-[#d41f63] hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 overflow-hidden"
+      className="flex min-h-[43px] flex-1 items-center justify-center self-stretch overflow-hidden rounded-[50px] bg-[#F92F7B] px-4 py-2.5 font-['Inter'] text-base font-bold leading-normal tracking-wide text-white shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] transition-all hover:bg-[#d41f63] hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:pb-2.5 sm:pl-4 sm:pr-[15.5px] sm:pt-[9px]"
       disabled={disabled || pending}
       type="submit"
     >
@@ -54,7 +54,6 @@ export function BikeAddToCartForm<F extends Field>({
   disabled = false,
   additionalActions,
 }: BikeAddToCartFormProps<F>) {
-  
   const [state, formAction] = useActionState(action, {
     fields,
     lastResult: null,
@@ -74,16 +73,21 @@ export function BikeAddToCartForm<F extends Field>({
     }
   }, [state.lastResult, state.successMessage]);
 
+  // Helper function to check if a field is a color field
+  const isColorField = (field: F): boolean => {
+    return field.name.toLowerCase() === 'color';
+  };
+
   // Helper function to check if field should be rendered as interactive element
   const shouldRenderField = (field: F): boolean => {
     // Skip color field since it's handled by the SwatchRadioGroup
-    if (field.name.toLowerCase() === 'color') {
+    if (isColorField(field)) {
       return false;
     }
-    
+
     // Render all interactive field types (including swatch-radio-group)
     if (
-      field.type === 'button-radio-group' || 
+      field.type === 'button-radio-group' ||
       field.type === 'radio-group' ||
       field.type === 'select' ||
       field.type === 'card-radio-group' ||
@@ -91,7 +95,7 @@ export function BikeAddToCartForm<F extends Field>({
     ) {
       return true;
     }
-    
+
     return false;
   };
 
@@ -99,14 +103,14 @@ export function BikeAddToCartForm<F extends Field>({
     <form action={formAction}>
       <input name="id" type="hidden" value={productId} />
       <input name="quantity" type="hidden" value="1" />
-      
+
       {/* Handle non-interactive product option fields as hidden inputs */}
       {fields
         .filter((field) => {
           // Exclude interactive field types
           if (shouldRenderField(field)) return false;
           // Exclude color fields
-          if (field.name.toLowerCase() === 'color') return false;
+          if (isColorField(field)) return false;
 
           return true;
         })
@@ -125,37 +129,37 @@ export function BikeAddToCartForm<F extends Field>({
             <input key={field.name} name={field.name} type="hidden" value={value} />
           ) : null;
         })}
-      
+
       {/* Show any form errors */}
       {state.lastResult?.status === 'error' && state.lastResult.error && (
         <div className="mb-2 text-xs text-red-600">
-          {typeof state.lastResult.error === 'string' ? state.lastResult.error : 'An error occurred'}
+          {typeof state.lastResult.error === 'string'
+            ? state.lastResult.error
+            : 'An error occurred'}
         </div>
       )}
 
-      <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:gap-3 sm:justify-end sm:items-center">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
         {compareProduct && (
           <Compare
-            className="flex justify-center items-center px-4 sm:pl-[31px] sm:pr-[29.83px] py-3 rounded-[50px] border-2 border-solid border-[#757575] text-[#757575] font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#757575] hover:text-white transition-colors min-h-[43px] whitespace-nowrap"
+            className="flex min-h-[43px] items-center justify-center whitespace-nowrap rounded-[50px] border-2 border-solid border-[#757575] px-4 py-3 text-sm font-semibold text-[#757575] transition-colors hover:bg-[#757575] hover:text-white disabled:cursor-not-allowed disabled:opacity-50 sm:pl-[31px] sm:pr-[29.83px]"
             label="Compare"
             product={compareProduct}
           />
         )}
-        <SubmitButton disabled={disabled}>
-          {ctaLabel}
-        </SubmitButton>
+        <SubmitButton disabled={disabled}>{ctaLabel}</SubmitButton>
       </div>
 
       {/* Render interactive fields */}
       {fields.filter(shouldRenderField).map((field) => {
         if (field.type === 'swatch-radio-group') {
           return (
-            <div className="flex flex-col items-center mb-6 sm:items-end" key={field.name}>
-              <p className="mb-4 text-base font-bold tracking-wide text-gray-900 text-center sm:text-right">
+            <div className="mb-6 flex flex-col items-center sm:items-end" key={field.name}>
+              <p className="mb-4 text-center text-base font-bold tracking-wide text-gray-900 sm:text-right">
                 {field.label || 'COLOR'}
               </p>
               <SwatchRadioGroup
-                className="justify-center sm:justify-end [&_label]:border-2 [&_label]:border-gray-300 [&_input:checked+label]:border-4 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-2 [&_input:checked+label]:ring-pink-200 [&_label]:min-h-[44px] [&_label]:min-w-[44px] [&_label]:h-12 [&_label]:w-12 gap-4"
+                className="justify-center gap-4 sm:justify-end [&_input:checked+label]:border-4 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-2 [&_input:checked+label]:ring-pink-200 [&_label]:h-12 [&_label]:min-h-[44px] [&_label]:w-12 [&_label]:min-w-[44px] [&_label]:border-2 [&_label]:border-gray-300"
                 defaultValue={field.defaultValue}
                 name={field.name}
                 options={field.options}
@@ -169,12 +173,14 @@ export function BikeAddToCartForm<F extends Field>({
       })}
 
       {/* Fallback color selection if no swatch field */}
-      {!fields.find(f => f.type === 'swatch-radio-group') && colors && colors.length > 0 && (
-        <div className="flex flex-col items-center mb-6 sm:items-end">
-          <p className="mb-4 text-base font-bold tracking-wide text-gray-900 text-center sm:text-right">COLOR</p>
+      {!fields.find((f) => f.type === 'swatch-radio-group') && colors && colors.length > 0 && (
+        <div className="mb-6 flex flex-col items-center sm:items-end">
+          <p className="mb-4 text-center text-base font-bold tracking-wide text-gray-900 sm:text-right">
+            COLOR
+          </p>
           <SwatchRadioGroup
-            className="justify-center sm:justify-end [&_label]:border-2 [&_label]:border-gray-300 [&_input:checked+label]:border-4 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-2 [&_input:checked+label]:ring-pink-200 [&_label]:min-h-[44px] [&_label]:min-w-[44px] [&_label]:h-12 [&_label]:w-12 gap-4"
-            defaultValue={colors.find(c => c.isSelected || c.isDefault)?.entityId.toString()}
+            className="justify-center gap-4 sm:justify-end [&_input:checked+label]:border-4 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-2 [&_input:checked+label]:ring-pink-200 [&_label]:h-12 [&_label]:min-h-[44px] [&_label]:w-12 [&_label]:min-w-[44px] [&_label]:border-2 [&_label]:border-gray-300"
+            defaultValue={colors.find((c) => c.isSelected || c.isDefault)?.entityId.toString()}
             name="color"
             options={colors.slice(0, 4).map((color) =>
               color.imageUrl
@@ -189,7 +195,7 @@ export function BikeAddToCartForm<F extends Field>({
                     label: color.label,
                     type: 'color' as const,
                     value: color.entityId.toString(),
-                  }
+                  },
             )}
           />
         </div>
@@ -197,10 +203,8 @@ export function BikeAddToCartForm<F extends Field>({
 
       {/* Wishlist Button - positioned below color picker */}
       {additionalActions ? (
-        <div className="flex justify-center sm:justify-end">
-          {additionalActions}
-        </div>
-      ): null}
+        <div className="flex justify-center sm:justify-end">{additionalActions}</div>
+      ) : null}
     </form>
   );
 }
