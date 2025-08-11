@@ -53,18 +53,6 @@ export function BikeMobileSpecs({ bikeSpecs, className = "" }: BikeMobileSpecsPr
           }}
         </Stream>
         
-        {/* Show More Button for additional specs */}
-        <Stream fallback={null} value={bikeSpecs}>
-          {(specs) => {
-            if (!specs || specs.length <= 6) return null;
-            
-            return (
-              <button className="w-full mt-4 px-4 py-2 text-sm font-medium text-pink-600 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors">
-                View All Specifications ({specs.length - 6} more)
-              </button>
-            );
-          }}
-        </Stream>
         </div>
       </AccordionItem>
     </Accordion>
