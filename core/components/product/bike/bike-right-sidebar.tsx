@@ -35,37 +35,35 @@ export function BikeRightSidebar<F extends Field>({
   additionalActions,
 }: BikeRightSidebarProps<F>) {
   return (
-    <div className="hidden md:flex md:justify-end">
-      <div className="sticky top-4">
-        <Stream
-          fallback={<ProductDetailFormSkeleton />}
-          value={Streamable.all([
-            product.images,
-            fields,
-            ctaLabel,
-            ctaDisabled,
-          ])}
-        >
-          {([images, streamedFields, streamedCtaLabel, streamedCtaDisabled]) => (
-            <AuthorizedDealerCard
-              product={{
-                id: product.id,
-                title: product.title,
-                href: product.href,
-                images,
-                price: product.price,
-                colors: product.colors,
-                action,
-                fields: streamedFields,
-                ctaLabel: streamedCtaLabel || undefined,
-                ctaDisabled: streamedCtaDisabled || undefined,
-                additionalActions,
-                productType: 'bike',
-              }}
-            />
-          )}
-        </Stream>
-      </div>
+    <div className="absolute right-0 top-[-100px] z-10 hidden md:block">
+      <Stream
+        fallback={<ProductDetailFormSkeleton />}
+        value={Streamable.all([
+          product.images,
+          fields,
+          ctaLabel,
+          ctaDisabled,
+        ])}
+      >
+        {([images, streamedFields, streamedCtaLabel, streamedCtaDisabled]) => (
+          <AuthorizedDealerCard
+            product={{
+              id: product.id,
+              title: product.title,
+              href: product.href,
+              images,
+              price: product.price,
+              colors: product.colors,
+              action,
+              fields: streamedFields,
+              ctaLabel: streamedCtaLabel || undefined,
+              ctaDisabled: streamedCtaDisabled || undefined,
+              additionalActions,
+              productType: 'bike',
+            }}
+          />
+        )}
+      </Stream>
     </div>
   );
 }

@@ -99,7 +99,7 @@ export function ProductDetailBike<F extends Field>({
             <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
               {(product) =>
                 product && (
-                  <div className="relative min-h-[50vh] md:min-h-[60vh] lg:min-h-[65vh] xl:min-h-[70vh]">
+                  <div className="relative max-h-[85vh] min-h-[60vh] md:min-h-[70vh]">
                     {/* Background Image */}
                     <div className="absolute inset-0 h-full w-full">
                       <Stream
@@ -129,7 +129,7 @@ export function ProductDetailBike<F extends Field>({
                     <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 sm:px-6 md:px-8 md:py-6 lg:px-12 xl:px-16">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
                         {/* Top Section - Product Name & Stock */}
-                        <div className="mb-4 text-center md:mb-8">
+                        <div className="mb-2 text-center md:mb-4">
                           {/* Product Badges */}
                           <ProductBadges
                             inventoryStatus={product.inventoryStatus}
@@ -160,14 +160,14 @@ export function ProductDetailBike<F extends Field>({
                           </Stream>
                         </div>
 
-                        {/* Middle Section - CSS Grid Layout for Better Responsiveness */}
-                        <div className="mb-8 grid min-h-0 flex-1 grid-cols-1 gap-2 sm:gap-4 md:grid-cols-[200px_1fr_260px] md:gap-4 lg:grid-cols-[220px_1fr_260px] lg:gap-5 xl:grid-cols-[240px_1fr_280px] xl:gap-6 2xl:grid-cols-[260px_1fr_280px]">
-                          {/* Left Sidebar - Special Offers */}
+                        {/* Middle Section - Center bike image with absolutely positioned sidebars */}
+                        <div className="relative mb-4 flex min-h-0 flex-1 items-start justify-center pt-4">
+                          {/* Left Sidebar - Special Offers - Absolutely positioned */}
                           <BikeLeftSidebar />
 
-                          {/* Center - Bike Image */}
-                          <div className="flex items-center justify-center px-1 sm:px-2 md:px-0 lg:px-0 xl:px-0">
-                            <div className="w-full max-w-2xl transition-all duration-300 ease-in-out sm:max-w-3xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-full">
+                          {/* Center - Bike Image - Smaller constrained width with sidebar spacing */}
+                          <div className="flex items-center justify-center px-4 md:px-60 lg:px-64 xl:px-72">
+                            <div className="w-full max-w-sm transition-all duration-300 ease-in-out sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const bikeImage = images[2] ?? images[0];
@@ -191,7 +191,7 @@ export function ProductDetailBike<F extends Field>({
                             </div>
                           </div>
 
-                          {/* Right Sidebar - Price Card */}
+                          {/* Right Sidebar - Price Card - Absolutely positioned */}
                           <BikeRightSidebar
                             action={action}
                             additionalActions={additionalActions}
@@ -209,8 +209,8 @@ export function ProductDetailBike<F extends Field>({
                           />
                         </div>
 
-                        {/* Bottom Section - Desktop/Tablet Specifications */}
-                        <div className="-mt-10 hidden md:block">
+                        {/* Bottom Section - Desktop/Tablet Specifications - Natural flow */}
+                        <div className="mt-auto hidden pt-4 md:block">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;
