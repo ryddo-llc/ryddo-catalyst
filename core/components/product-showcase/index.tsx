@@ -68,6 +68,8 @@ export function ProductShowcase({
   productName,
   description,
 }: ProductShowcaseProps) {
+  const startingImageIndex = 2;
+  const endingImageIndex = 5;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState<ReturnType<typeof useEmblaCarousel>[1]>();
 
@@ -142,6 +144,17 @@ export function ProductShowcase({
             );
           }
 
+          const effectiveEndIndex = Math.min(endingImageIndex, imagesData.length);
+          const slicedImages = imagesData.slice(startingImageIndex, effectiveEndIndex);
+          
+          if (slicedImages.length === 0) {
+            return (
+              <div className="relative z-10 flex h-[50vh] items-center justify-center text-gray-500">
+                No images available in the specified range
+              </div>
+            );
+          }
+
           return (
             <Carousel
               className="z-5 relative flex h-full w-full items-center justify-center"
@@ -154,7 +167,7 @@ export function ProductShowcase({
               setApi={setCarouselApi}
             >
               <CarouselContent className="h-full w-full">
-                {imagesData.slice(2).map((image, index) => (
+                {slicedImages.map((image, index) => (
                   <CarouselItem
                     className="relative flex h-full w-full items-center justify-center"
                     key={index}

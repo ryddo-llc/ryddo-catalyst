@@ -14,7 +14,7 @@ interface ProductSpecification {
   value: string;
 }
 
-export interface ProductSpecsIconsProps {
+export interface BikeSpecsIconsProps {
   specs: ProductSpecification[];
 }
 
@@ -24,7 +24,7 @@ interface SpecIconConfig {
   keywords: string[];
 }
 
-// Icon configuration map for both bikes and scooters - using static imports
+// Icon configuration map for bikes - using static imports
 const SPEC_ICON_MAP: SpecIconConfig[] = [
   {
     iconSrc: powerIcon,
@@ -81,10 +81,10 @@ function getSpecIcon(fieldName: string): Omit<SpecIconConfig, 'keywords'> {
   return config || DEFAULT_SPEC_ICON;
 }
 
-export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
+export function BikeSpecsIcons({ specs }: BikeSpecsIconsProps) {
   return (
     <div
-      aria-label="Product specifications"
+      aria-label="Bike specifications"
       className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8"
       role="region"
     >
@@ -99,7 +99,7 @@ export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
             role="img"
           >
             <div className="mb-2">
-              <Image alt={alt} height={44} src={iconSrc} width={44} />
+              <Image alt={alt} height={50} src={iconSrc} width={50} />
             </div>
             <span className="text-xs font-bold text-gray-800">{spec.name}</span>
             <span className="text-xs font-medium text-gray-600">{spec.value}</span>
@@ -111,4 +111,4 @@ export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
 }
 
 // Export types for reuse
-export type { ProductSpecification, SpecIconConfig };
+export type { ProductSpecification as BikeSpecification };

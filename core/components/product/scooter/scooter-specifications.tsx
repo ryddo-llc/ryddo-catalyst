@@ -1,6 +1,6 @@
-// Re-export the shared component with scooter-specific naming
+// Export the scooter-specific component
 export { 
-  ProductSpecsIcons as ScooterSpecsIcons,
-  type ProductSpecsIconsProps as ScooterSpecsIconsProps,
-  type ProductSpecification as ScooterSpecification 
-} from '../shared/product-specifications';
+  ScooterSpecsIcons,
+  type ScooterSpecsIconsProps,
+  type ScooterSpecification 
+} from './scooter-specs-icons';
