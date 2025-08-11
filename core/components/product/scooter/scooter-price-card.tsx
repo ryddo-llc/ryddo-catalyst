@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/scooter-product-transformer';
 
 import { AuthorizedDealerCard } from '../shared/product-side-cards';
 

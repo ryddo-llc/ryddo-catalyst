@@ -7,7 +7,7 @@ import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/pr
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/scooter-product-transformer';
 
 import { ProductBadges } from '../shared/product-badges';
 import {
@@ -120,7 +120,7 @@ export function ProductDetailScooter<F extends Field>({
 
                           return (
                             <Image
-                              alt="detail page background"
+                              alt=""
                               className="object-cover"
                               fill
                               priority

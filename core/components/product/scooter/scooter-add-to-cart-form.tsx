@@ -12,7 +12,7 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 
-import { ColorOption } from '../../../data-transformers/bike-product-transformer';
+import { ColorOption } from '../../../data-transformers/scooter-product-transformer';
 import { revalidateCart } from '../../../vibes/soul/sections/product-detail/actions/revalidate-cart';
 
 interface CompareDrawerItem {
@@ -79,7 +79,7 @@ export function ScooterAddToCartForm<F extends Field>({
   // Helper function to check if field should be rendered as interactive element
   const shouldRenderField = (field: F): boolean => {
     // Skip color field since it's handled by the SwatchRadioGroup
-    if (field.name === 'color') {
+    if (field.name.toLowerCase() === 'color') {
       return false;
     }
     
