@@ -123,6 +123,23 @@ export const ProductOptionsFragment = graphql(
           }
         }
       }
+      options(first: 50) {
+        edges {
+          node {
+            entityId
+            displayName
+            isRequired
+            values(first: 50) {
+              edges {
+                node {
+                  entityId
+                  label
+                }
+              }
+            }
+          }
+        }
+      }
     }
   `,
   [
@@ -367,6 +384,7 @@ export const getProductsByCategory = cache(
   async (
     categoryEntityId: number,
     excludeProductId: number,
+    _currencyCode?: string,
     customerAccessToken?: string,
   ) => {
     const { data } = await client.fetch({

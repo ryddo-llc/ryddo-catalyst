@@ -30,6 +30,7 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
+import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
@@ -336,9 +337,11 @@ export default async function Product({ params, searchParams }: Props) {
       const categoryId = categories[0]?.entityId; // Use first category
       
       if (categoryId) {
+        const currencyCode = await getPreferredCurrencyCode();
         const categoryProducts = await getProductsByCategory(
           categoryId,
           productId,
+          currencyCode,
           customerAccessToken
         );
       
@@ -387,6 +390,17 @@ export default async function Product({ params, searchParams }: Props) {
           const product = data.product;
 
           return bikeProductTransformer(product);
+        })
+      : null;
+
+  // Create streamable scooter-specific data for scooter products
+  const streamableScooterData =
+    productDetailVariant === 'scooter'
+      ? Streamable.from(async () => {
+          const data = await streamableAllProductData;
+          const product = data.product;
+
+          return scooterProductTransformer(product);
         })
       : null;
 
@@ -522,6 +536,20 @@ export default async function Product({ params, searchParams }: Props) {
       })
     : baseProductData;
 
+  // Enhanced product data for scooter components
+  const scooterProductData = streamableScooterData
+    ? Streamable.from(async () => {
+        const scooterData = await streamableScooterData;
+
+        return {
+          ...baseProductData,
+          backgroundImage: scooterData.backgroundImage,
+          scooterSpecs: Streamable.from(() => Promise.resolve(scooterData.scooterSpecs || null)),
+          colors: scooterData.colors,
+        };
+      })
+    : baseProductData;
+
   const baseProps = {
     action: addToCart,
     additionalActions: (
@@ -555,7 +583,7 @@ export default async function Product({ params, searchParams }: Props) {
         return <ProductDetailBike {...baseProps} product={bikeProductData} />;
 
       case 'scooter':
-        return <ProductDetailScooter {...baseProps} product={baseProductData} />;
+        return <ProductDetailScooter {...baseProps} product={scooterProductData} />;
 
       case 'default':
       default:

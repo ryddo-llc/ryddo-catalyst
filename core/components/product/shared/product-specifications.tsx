@@ -85,7 +85,7 @@ export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
   return (
     <div
       aria-label="Product specifications"
-      className="flex flex-wrap justify-center gap-4 space-x-8"
+      className="grid grid-cols-3 gap-1"
       role="region"
     >
       {specs.slice(0, 6).map((spec) => {
@@ -99,9 +99,9 @@ export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
             role="img"
           >
             <div className="mb-2">
-              <Image alt={alt} height={48} src={iconSrc} width={48} />
+              <Image alt={alt} height={44} src={iconSrc} width={44} />
             </div>
-            <span className="text-sm font-bold text-gray-800">{spec.name}</span>
+            <span className="text-xs font-bold text-gray-800">{spec.name}</span>
             <span className="text-xs font-medium text-gray-600">{spec.value}</span>
           </div>
         );

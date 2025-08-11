@@ -18,12 +18,14 @@ interface Props {
   paramName?: string;
   label?: string;
   product: CompareDrawerItem;
+  className?: string;
 }
 
 export const Compare = function Compare({
   paramName = 'compare',
   label = 'Compare',
   product,
+  className,
 }: Props) {
   const [, setParam] = useQueryState(paramName, compareParser);
 
@@ -51,7 +53,7 @@ export const Compare = function Compare({
 
   return (
     <button
-      className="w-full bg-black/[.62] px-2.5 py-[7px] text-white rounded-lg text-sm font-semibold tracking-wider leading-5 disabled:opacity-50 disabled:cursor-not-allowed"
+      className={className || "w-full bg-black/[.62] px-2.5 py-[7px] text-white rounded-lg text-sm font-semibold tracking-wider leading-5 disabled:opacity-50 disabled:cursor-not-allowed"}
       disabled={isDisabled}
       onClick={handleCompare}
       type="button"
