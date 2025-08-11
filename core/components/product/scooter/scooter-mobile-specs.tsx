@@ -1,7 +1,11 @@
+'use client';
+
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 
 import { BikeSpecsSkeleton } from '../shared/product-detail-skeletons';
+
+import { CollapsibleSection } from './collapsible-section';
 
 interface ScooterMobileSpecsProps {
   scooterSpecs?: Streamable<ProductSpecification[] | null>;
@@ -10,14 +14,12 @@ interface ScooterMobileSpecsProps {
 
 export function ScooterMobileSpecs({ scooterSpecs, className = "" }: ScooterMobileSpecsProps) {
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
-      <div className="px-4 py-3 border-b border-gray-200">
-        <h3 className="font-['Inter'] text-base sm:text-lg font-black text-zinc-800">
-          Key Specifications
-        </h3>
-      </div>
-      
-      <div className="p-4">
+    <CollapsibleSection
+      className={className}
+      title="Key Specifications"
+      defaultExpanded={false}
+    >
+      <div className="space-y-3">
         <Stream fallback={<BikeSpecsSkeleton />} value={scooterSpecs}>
           {(specs) => {
             if (!specs || specs.length === 0) {
@@ -61,6 +63,6 @@ export function ScooterMobileSpecs({ scooterSpecs, className = "" }: ScooterMobi
           }}
         </Stream>
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }

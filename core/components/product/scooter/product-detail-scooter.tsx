@@ -18,8 +18,7 @@ import {
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
 
-import { ScooterAddToCartForm } from './scooter-add-to-cart-form';
-import { ScooterMobileSpecialOffers } from './scooter-mobile-special-offers';
+import { ScooterMobileCollapsibleForm } from './scooter-mobile-collapsible-form';
 import { ScooterMobileSpecs } from './scooter-mobile-specs';
 import { ScooterPriceCard } from './scooter-price-card';
 import { ScooterSpecialOffers } from './scooter-special-offers';
@@ -159,7 +158,7 @@ export function ProductDetailScooter<F extends Field>({
                           >
                             {(description) =>
                               Boolean(description) && (
-                                <div className="justify-center self-stretch text-center font-['Nunito'] text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium leading-loose text-neutral-500">
+                                <div className="justify-center self-stretch text-center font-['Nunito'] text-lg font-medium leading-loose text-neutral-500 sm:text-xl md:text-2xl lg:text-3xl">
                                   {description}
                                 </div>
                               )
@@ -180,7 +179,7 @@ export function ProductDetailScooter<F extends Field>({
                                     <Image
                                       alt={scooterImage.alt}
                                       className="h-auto max-h-full w-full object-contain"
-                                      height={2000}
+                                      height={1000}
                                       priority
                                       src={scooterImage.src}
                                       width={2000}
@@ -234,114 +233,117 @@ export function ProductDetailScooter<F extends Field>({
                         </div>
                       </div>
                     </div>
-
-                    {/* Additional Content Below - Only show on mobile or when needed */}
-                    <div className="bg-white p-4 lg:hidden">
-                      <div className="mx-auto max-w-2xl space-y-6">
-                        {/* Mobile Special Offers - Show first for better engagement */}
-                        <ScooterMobileSpecialOffers />
-                        
-                        <div className="group/product-rating text-center">
-                          <Stream fallback={<RatingSkeleton />} value={product.rating}>
-                            {(rating) => <Rating rating={rating ?? 0} />}
-                          </Stream>
-                        </div>
-
-                        <div className="group/product-summary text-center">
-                          <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
-                            {(summary) =>
-                              Boolean(summary) && (
-                                <p className="text-base sm:text-lg text-neutral-600">{summary}</p>
-                              )
-                            }
-                          </Stream>
-                        </div>
-
-                        <div className="group/product-detail-form">
-                          <Stream
-                            fallback={<ProductDetailFormSkeleton />}
-                            value={Streamable.all([
-                              product.images,
-                              streamableFields,
-                              streamableCtaLabel,
-                              streamableCtaDisabled,
-                            ])}
-                          >
-                            {([images, fields, ctaLabel, ctaDisabled]) => (
-                              <div className="space-y-6">
-                                {/* Mobile Price Display */}
-                                <div className="text-center">
-                                  <Stream
-                                    fallback={
-                                      <div className="h-8 w-24 animate-pulse rounded bg-gray-200" />
-                                    }
-                                    value={product.price}
-                                  >
-                                    {(price) => {
-                                      let displayPrice = '$2,495';
-
-                                      if (typeof price === 'string') {
-                                        displayPrice = price;
-                                      } else if (
-                                        price &&
-                                        typeof price === 'object' &&
-                                        'type' in price &&
-                                        price.type === 'sale' &&
-                                        'currentValue' in price &&
-                                        price.currentValue
-                                      ) {
-                                        displayPrice = price.currentValue;
-                                      } else if (
-                                        price &&
-                                        typeof price === 'object' &&
-                                        'type' in price &&
-                                        'minValue' in price &&
-                                        'maxValue' in price &&
-                                        price.minValue &&
-                                        price.maxValue
-                                      ) {
-                                        displayPrice = `${price.minValue} - ${price.maxValue}`;
-                                      }
-
-                                      return (
-                                        <div className="text-2xl sm:text-3xl font-black text-gray-900">
-                                          {displayPrice}
-                                        </div>
-                                      );
-                                    }}
-                                  </Stream>
-                                </div>
-
-                                {/* Mobile Scooter Add to Cart Form with Colors */}
-                                <ScooterAddToCartForm
-                                  action={action}
-                                  additionalActions={additionalActions}
-                                  colors={product.colors}
-                                  compareProduct={{
-                                    id: product.id,
-                                    title: product.title,
-                                    href: product.href,
-                                    image: images[0],
-                                  }}
-                                  ctaLabel={ctaLabel || 'Add to cart'}
-                                  disabled={ctaDisabled || false}
-                                  fields={fields}
-                                  productId={product.id}
-                                />
-                              </div>
-                            )}
-                          </Stream>
-                        </div>
-                        
-                        {/* Mobile Specifications */}
-                        <ScooterMobileSpecs scooterSpecs={product.scooterSpecs} />
-                      </div>
-                    </div>
                   </div>
                 )
               }
             </Stream>
           </section>
+
+          {/* Mobile Content Section - Outside height constraints to prevent overlap with subsequent sections */}
+          <Stream fallback={null} value={streamableProduct}>
+            {(product) =>
+              product && (
+                <div className="bg-white lg:hidden">
+                  <div className="mx-auto max-w-2xl space-y-6 p-4">
+                    <div className="group/product-rating text-center">
+                      <Stream fallback={<RatingSkeleton />} value={product.rating}>
+                        {(rating) => <Rating rating={rating ?? 0} />}
+                      </Stream>
+                    </div>
+
+                    <div className="group/product-summary text-center">
+                      <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
+                        {(summary) =>
+                          Boolean(summary) && (
+                            <p className="text-base text-neutral-600 sm:text-lg">{summary}</p>
+                          )
+                        }
+                      </Stream>
+                    </div>
+
+                    <div className="group/product-detail-form">
+                      <Stream
+                        fallback={<ProductDetailFormSkeleton />}
+                        value={Streamable.all([
+                          product.images,
+                          streamableFields,
+                          streamableCtaLabel,
+                          streamableCtaDisabled,
+                        ])}
+                      >
+                        {([images, fields, ctaLabel, ctaDisabled]) => (
+                          <div className="space-y-6">
+                            {/* Mobile Price Display */}
+                            <div className="text-center">
+                              <Stream
+                                fallback={
+                                  <div className="h-8 w-24 animate-pulse rounded bg-gray-200" />
+                                }
+                                value={product.price}
+                              >
+                                {(price) => {
+                                  let displayPrice = '$2,495';
+
+                                  if (typeof price === 'string') {
+                                    displayPrice = price;
+                                  } else if (
+                                    price &&
+                                    typeof price === 'object' &&
+                                    'type' in price &&
+                                    price.type === 'sale' &&
+                                    'currentValue' in price &&
+                                    price.currentValue
+                                  ) {
+                                    displayPrice = price.currentValue;
+                                  } else if (
+                                    price &&
+                                    typeof price === 'object' &&
+                                    'type' in price &&
+                                    'minValue' in price &&
+                                    'maxValue' in price &&
+                                    price.minValue &&
+                                    price.maxValue
+                                  ) {
+                                    displayPrice = `${price.minValue} - ${price.maxValue}`;
+                                  }
+
+                                  return (
+                                    <div className="text-3xl font-black text-gray-900 sm:text-4xl md:text-5xl">
+                                      {displayPrice}
+                                    </div>
+                                  );
+                                }}
+                              </Stream>
+                            </div>
+
+                            {/* Mobile Scooter Collapsible Form with Colors */}
+                            <ScooterMobileCollapsibleForm
+                              action={action}
+                              additionalActions={additionalActions}
+                              colors={product.colors}
+                              compareProduct={{
+                                id: product.id,
+                                title: product.title,
+                                href: product.href,
+                                image: images[0],
+                              }}
+                              ctaLabel={ctaLabel || 'Add to cart'}
+                              disabled={ctaDisabled || false}
+                              fields={fields}
+                              productId={product.id}
+                            />
+                          </div>
+                        )}
+                      </Stream>
+                    </div>
+
+                    {/* Mobile Specifications */}
+                    <ScooterMobileSpecs scooterSpecs={product.scooterSpecs} />
+                  </div>
+                </div>
+              )
+            }
+          </Stream>
 
           <CompareDrawer href="/compare" submitLabel={compareLabel} />
         </CompareDrawerProvider>
