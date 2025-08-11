@@ -132,7 +132,7 @@ export function ScooterAddToCartForm<F extends Field>({
         {/* Color Selection */}
         {colors && colors.length > 0 && (
           <div>
-            <span className="block text-sm sm:text-base md:text-lg font-medium text-gray-700 mb-2">Color</span>
+            <span className="block text-sm md:text-base font-medium text-gray-700 mb-2">Color</span>
             <SwatchRadioGroup
               defaultValue={colors[0]?.entityId.toString()}
               name="color"

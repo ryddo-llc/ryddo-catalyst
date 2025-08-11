@@ -22,7 +22,6 @@ import RelatedProducts from '~/components/product/shared/related-products';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
-import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
 import {
   findPerformanceImage,
   transformPerformanceComparisonData,
@@ -31,6 +30,7 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
+import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';

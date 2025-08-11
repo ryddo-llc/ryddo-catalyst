@@ -141,11 +141,11 @@ export function scooterProductTransformer(product: ProductWithOptions): ScooterP
   const inventoryStatus = product.inventory?.isInStock
     ? {
         isInStock: true,
-        status: (product.availabilityV2?.status as 'Available' | 'Unavailable' | 'Preorder') || 'Available',
+        status: product.availabilityV2?.status || 'Available',
       }
     : {
         isInStock: false,
-        status: (product.availabilityV2?.status as 'Available' | 'Unavailable' | 'Preorder') || 'Unavailable',
+        status: product.availabilityV2?.status || 'Unavailable',
       };
 
   return {

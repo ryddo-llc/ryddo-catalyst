@@ -108,41 +108,39 @@ export function AuthorizedDealerCard<F extends Field = Field>({ product }: { pro
       {/* Action Buttons - Side by Side */}
       <div className="mb-6">
         {product.action && product.fields ? (
-          <>
-            {product.productType === 'scooter' ? (
-              <ScooterAddToCartForm
-                action={product.action}
-                additionalActions={product.additionalActions}
-                colors={product.colors}
-                compareProduct={{
-                  id: product.id,
-                  title: product.title,
-                  href: product.href,
-                  image: product.images?.[0]
-                }}
-                ctaLabel={product.ctaLabel || "Add to cart"}
-                disabled={product.ctaDisabled}
-                fields={product.fields}
-                productId={product.id}
-              />
-            ) : (
-              <BikeAddToCartForm
-                action={product.action}
-                additionalActions={product.additionalActions}
-                colors={product.colors}
-                compareProduct={{
-                  id: product.id,
-                  title: product.title,
-                  href: product.href,
-                  image: product.images?.[0]
-                }}
-                ctaLabel={product.ctaLabel || "Add to cart"}
-                disabled={product.ctaDisabled}
-                fields={product.fields}
-                productId={product.id}
-              />
-            )}
-          </>
+          product.productType === 'scooter' ? (
+            <ScooterAddToCartForm
+              action={product.action}
+              additionalActions={product.additionalActions}
+              colors={product.colors}
+              compareProduct={{
+                id: product.id,
+                title: product.title,
+                href: product.href,
+                image: product.images?.[0]
+              }}
+              ctaLabel={product.ctaLabel || "Add to cart"}
+              disabled={product.ctaDisabled}
+              fields={product.fields}
+              productId={product.id}
+            />
+          ) : (
+            <BikeAddToCartForm
+              action={product.action}
+              additionalActions={product.additionalActions}
+              colors={product.colors}
+              compareProduct={{
+                id: product.id,
+                title: product.title,
+                href: product.href,
+                image: product.images?.[0]
+              }}
+              ctaLabel={product.ctaLabel || "Add to cart"}
+              disabled={product.ctaDisabled}
+              fields={product.fields}
+              productId={product.id}
+            />
+          )
         ) : (
           <div className="flex gap-3 justify-end items-stretch">
             <Compare

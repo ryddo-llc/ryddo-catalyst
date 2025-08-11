@@ -1,11 +1,10 @@
 'use client';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 
 import { BikeSpecsSkeleton } from '../shared/product-detail-skeletons';
-
-import { CollapsibleSection } from './collapsible-section';
 
 interface ScooterMobileSpecsProps {
   scooterSpecs?: Streamable<ProductSpecification[] | null>;
@@ -14,12 +13,16 @@ interface ScooterMobileSpecsProps {
 
 export function ScooterMobileSpecs({ scooterSpecs, className = "" }: ScooterMobileSpecsProps) {
   return (
-    <CollapsibleSection
-      className={className}
-      title="Key Specifications"
-      defaultExpanded={false}
+    <Accordion 
+      className={`rounded-[50px] border-2 border-[#F92F7B]/20 bg-white p-4 ${className}`}
+      type="multiple"
     >
-      <div className="space-y-3">
+      <AccordionItem 
+        className="[&_[role='button']]:font-['Inter'] [&_[role='button']]:text-[#333] [&_[role='button']]:font-bold [&_[role='button']]:hover:text-[#F92F7B] [&_svg]:stroke-[#757575] [&_[role='button']:hover_svg]:stroke-[#F92F7B]"
+        title="Key Specifications" 
+        value="specifications"
+      >
+        <div className="space-y-3 pt-2">
         <Stream fallback={<BikeSpecsSkeleton />} value={scooterSpecs}>
           {(specs) => {
             if (!specs || specs.length === 0) {
@@ -34,9 +37,9 @@ export function ScooterMobileSpecs({ scooterSpecs, className = "" }: ScooterMobi
             const keySpecs = specs.slice(0, 6); // Limit to most important specs
 
             return (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {keySpecs.map((spec, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <div className="flex justify-between items-center p-2 bg-gray-50 rounded" key={index}>
                     <span className="font-['Inter'] text-sm font-medium text-gray-700">
                       {spec.name}:
                     </span>
@@ -62,7 +65,8 @@ export function ScooterMobileSpecs({ scooterSpecs, className = "" }: ScooterMobi
             );
           }}
         </Stream>
-      </div>
-    </CollapsibleSection>
+        </div>
+      </AccordionItem>
+    </Accordion>
   );
 }

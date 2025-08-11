@@ -1,11 +1,10 @@
 import { ReactNode } from 'react';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 
-import { ProductDetailFormSkeleton } from '../shared/product-detail-skeletons';
 import { AuthorizedDealerCard } from '../shared/product-side-cards';
 
 interface ScooterPriceCardProps<F extends Field> {
@@ -43,7 +42,7 @@ export function ScooterPriceCard<F extends Field>({
   additionalActions,
 }: ScooterPriceCardProps<F>) {
   return (
-    <div className="absolute right-0 top-[-100px] z-10 hidden lg:block">
+    <div className="absolute right-0 top-[-100px] z-10 hidden md:block">
       <AuthorizedDealerCard
         product={{
           id: product.id,

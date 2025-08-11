@@ -105,7 +105,7 @@ export function ProductDetailScooter<F extends Field>({
             <Stream fallback={<ProductDetailScooterSkeleton />} value={streamableProduct}>
               {(product) =>
                 product && (
-                  <div className="relative max-h-[85vh] min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh]">
+                  <div className="relative max-h-[85vh] min-h-[50vh] md:min-h-[60vh]">
                     {/* Background Image */}
                     <div className="absolute inset-0 h-full w-full">
                       <Stream
@@ -144,7 +144,7 @@ export function ProductDetailScooter<F extends Field>({
 
                           {/* Product Title */}
                           <h1
-                            className="px-4 font-['Nunito'] text-2xl font-black leading-tight text-zinc-800 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
+                            className="px-4 font-['Nunito'] text-2xl font-black leading-tight text-zinc-800 md:text-4xl"
                             id="product-heading"
                           >
                             {product.title}
@@ -158,7 +158,7 @@ export function ProductDetailScooter<F extends Field>({
                           >
                             {(description) =>
                               Boolean(description) && (
-                                <div className="justify-center self-stretch text-center font-['Nunito'] text-lg font-medium leading-loose text-neutral-500 sm:text-xl md:text-2xl lg:text-3xl">
+                                <div className="justify-center self-stretch text-center font-['Nunito'] text-lg font-medium leading-loose text-neutral-500 md:text-2xl">
                                   {description}
                                 </div>
                               )
@@ -170,7 +170,7 @@ export function ProductDetailScooter<F extends Field>({
                         <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-visible">
                           {/* Centered Scooter Image */}
                           <div className="flex items-center justify-center">
-                            <div className="mx-auto w-full max-w-[280px] px-4 sm:max-w-sm md:max-w-xs lg:max-w-sm xl:max-w-md">
+                            <div className="mx-auto w-full max-w-[280px] px-4 md:max-w-sm">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const scooterImage = images[2] ?? images[0];
@@ -243,7 +243,7 @@ export function ProductDetailScooter<F extends Field>({
           <Stream fallback={null} value={streamableProduct}>
             {(product) =>
               product && (
-                <div className="bg-white lg:hidden">
+                <div className="bg-white md:hidden">
                   <div className="mx-auto max-w-2xl space-y-6 p-4">
                     <div className="group/product-rating text-center">
                       <Stream fallback={<RatingSkeleton />} value={product.rating}>
@@ -255,7 +255,7 @@ export function ProductDetailScooter<F extends Field>({
                       <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
                         {(summary) =>
                           Boolean(summary) && (
-                            <p className="text-base text-neutral-600 sm:text-lg">{summary}</p>
+                            <p className="text-base text-neutral-600 md:text-lg">{summary}</p>
                           )
                         }
                       </Stream>
@@ -308,7 +308,7 @@ export function ProductDetailScooter<F extends Field>({
                                   }
 
                                   return (
-                                    <div className="text-3xl font-black text-gray-900 sm:text-4xl md:text-5xl">
+                                    <div className="text-3xl font-black text-gray-900 md:text-4xl">
                                       {displayPrice}
                                     </div>
                                   );

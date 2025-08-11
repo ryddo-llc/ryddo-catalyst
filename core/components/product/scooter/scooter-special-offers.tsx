@@ -11,7 +11,7 @@ interface ScooterSpecialOffersProps {
 
 export function ScooterSpecialOffers({ scooterSpecs }: ScooterSpecialOffersProps) {
   return (
-    <div className="absolute left-0 top-[-100px] z-10 hidden lg:block">
+    <div className="absolute left-0 top-[-100px] z-10 hidden md:block">
       <div className="flex w-full max-w-md flex-col items-start justify-start gap-3">
         <div className="flex flex-col items-start justify-start gap-2.5 self-stretch">
           <div className="justify-start font-['Inter'] text-xl font-black leading-normal text-zinc-800">
