@@ -6,12 +6,13 @@ import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
-import type { ProductSpecification } from '~/components/product/shared/product-specifications';
+import { type ProductSpecification, ProductSpecsIcons } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 
 import { ProductBadges } from '../shared/product-badges';
 import {
   BikeImageSkeleton,
+  BikeSpecsSkeleton,
   ProductDetailBikeSkeleton,
   ProductDetailFormSkeleton,
   ProductSummarySkeleton,
@@ -102,7 +103,7 @@ export function ProductDetailBike<F extends Field>({
             <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
               {(product) =>
                 product && (
-                  <div className="relative min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh]">
+                  <div className="relative min-h-[50vh] md:min-h-[60vh] lg:min-h-[65vh] xl:min-h-[70vh]">
                     {/* Background Image */}
                     <div className="absolute inset-0 h-full w-full">
                       <Stream
@@ -129,7 +130,7 @@ export function ProductDetailBike<F extends Field>({
                     </div>
 
                     {/* Content Container */}
-                    <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 md:px-8 md:py-6">
+                    <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 sm:px-6 md:px-8 md:py-6 lg:px-12 xl:px-16">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
                         {/* Top Section - Product Name & Stock */}
                         <div className="mb-4 text-center md:mb-8">
@@ -163,11 +164,18 @@ export function ProductDetailBike<F extends Field>({
                           </Stream>
                         </div>
 
-                        {/* Middle Section - Bike Image Centered with Cards on Sides */}
-                        <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-hidden md:overflow-visible">
-                          {/* Centered Bike Image */}
-                          <div className="flex items-center justify-center">
-                            <div className="mx-auto w-full max-w-sm px-4 sm:max-w-md md:max-w-lg lg:max-w-3xl xl:max-w-4xl">
+                        {/* Middle Section - CSS Grid Layout for Better Responsiveness */}
+                        <div className="mb-8 grid min-h-0 flex-1 grid-cols-1 gap-2 sm:gap-4 md:grid-cols-[280px_1fr_300px] md:gap-6 lg:grid-cols-[280px_1fr_300px] lg:gap-6 xl:grid-cols-[280px_1fr_300px] xl:gap-6 2xl:grid-cols-[280px_1fr_300px]">
+                          {/* Left Sidebar - Special Offers */}
+                          <div className="hidden md:flex">
+                            <div className="sticky top-4">
+                              <BikeSpecialOffers />
+                            </div>
+                          </div>
+
+                          {/* Center - Bike Image */}
+                          <div className="flex items-center justify-center px-1 sm:px-2 md:px-0 lg:px-0 xl:px-0">
+                            <div className="w-full max-w-md transition-all duration-300 ease-in-out sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const bikeImage = images[2] ?? images[0];
@@ -175,7 +183,7 @@ export function ProductDetailBike<F extends Field>({
                                   return bikeImage ? (
                                     <Image
                                       alt={bikeImage.alt}
-                                      className="h-auto max-h-full w-full object-contain"
+                                      className="h-auto w-full object-contain transition-all duration-300"
                                       height={2000}
                                       priority
                                       src={bikeImage.src}
@@ -191,43 +199,55 @@ export function ProductDetailBike<F extends Field>({
                             </div>
                           </div>
 
-                          {/* Left side - Special Offers Content */}
-                          <BikeSpecialOffers />
-
-                          {/* Right side - PriceCard */}
-                          <div className="absolute right-0 top-[-100px] z-5 hidden md:block">
-                            <Stream
-                              fallback={<ProductDetailFormSkeleton />}
-                              value={Streamable.all([
-                                product.images,
-                                streamableFields,
-                                streamableCtaLabel,
-                                streamableCtaDisabled,
-                              ])}
-                            >
-                              {([images, fields, ctaLabel, ctaDisabled]) => (
-                                <AuthorizedDealerCard
-                                  product={{
-                                    id: product.id,
-                                    title: product.title,
-                                    href: product.href,
-                                    images,
-                                    price: product.price,
-                                    colors: product.colors,
-                                    action,
-                                    fields,
-                                    ctaLabel: ctaLabel || undefined,
-                                    ctaDisabled: ctaDisabled || undefined,
-                                    additionalActions,
-                                    productType: 'bike',
-                                  }}
-                                />
-                              )}
-                            </Stream>
+                          {/* Right Sidebar - Price Card */}
+                          <div className="hidden md:flex md:justify-end">
+                            <div className="sticky top-4">
+                              <Stream
+                                fallback={<ProductDetailFormSkeleton />}
+                                value={Streamable.all([
+                                  product.images,
+                                  streamableFields,
+                                  streamableCtaLabel,
+                                  streamableCtaDisabled,
+                                ])}
+                              >
+                                {([images, fields, ctaLabel, ctaDisabled]) => (
+                                  <AuthorizedDealerCard
+                                    product={{
+                                      id: product.id,
+                                      title: product.title,
+                                      href: product.href,
+                                      images,
+                                      price: product.price,
+                                      colors: product.colors,
+                                      action,
+                                      fields,
+                                      ctaLabel: ctaLabel || undefined,
+                                      ctaDisabled: ctaDisabled || undefined,
+                                      additionalActions,
+                                      productType: 'bike',
+                                    }}
+                                  />
+                                )}
+                              </Stream>
+                            </div>
                           </div>
                         </div>
 
-                        {/* Bottom Section - Removed specs, now in sidebar/mobile accordion */}
+                        {/* Bottom Section - Desktop/Tablet Specifications */}
+                        <div className="-mt-10 hidden md:block">
+                          <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
+                            {(specs) => {
+                              if (!specs || specs.length === 0) return null;
+
+                              return (
+                                <div className="mx-auto max-w-4xl">
+                                  <ProductSpecsIcons specs={specs} />
+                                </div>
+                              );
+                            }}
+                          </Stream>
+                        </div>
                       </div>
                     </div>
 
