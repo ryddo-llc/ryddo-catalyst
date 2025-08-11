@@ -235,6 +235,7 @@ export function ProductDetailBike<F extends Field>({
                                     ctaLabel: ctaLabel || undefined,
                                     ctaDisabled: ctaDisabled || undefined,
                                     additionalActions,
+                                    productType: 'bike',
                                   }}
                                 />
                               )}
