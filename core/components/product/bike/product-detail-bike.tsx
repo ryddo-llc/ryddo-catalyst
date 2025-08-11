@@ -166,8 +166,8 @@ export function ProductDetailBike<F extends Field>({
                           <BikeLeftSidebar />
 
                           {/* Center - Bike Image - Smaller constrained width with sidebar spacing */}
-                          <div className="flex items-center justify-center px-6 sm:px-8 md:px-16 lg:px-20 xl:px-24">
-                            <div className="flex h-64 w-full max-w-lg items-center justify-center transition-all duration-300 ease-in-out md:h-80 lg:h-96 xl:h-[500px] xl:max-w-xl 2xl:max-w-2xl">
+                          <div className="flex items-center justify-center px-6 sm:px-8 md:px-16 xl:px-20">
+                            <div className="flex h-64 w-full max-w-lg items-center justify-center transition-all duration-300 ease-in-out md:h-80 md:max-w-xl xl:h-96">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const bikeImage = images[2];
