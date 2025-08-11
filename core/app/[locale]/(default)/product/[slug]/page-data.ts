@@ -6,6 +6,7 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import type { CurrencyCode } from '~/components/header/fragment';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
@@ -357,6 +358,7 @@ const ProductsByCategoryQuery = graphql(
   `
     query ProductsByCategoryQuery(
       $categoryEntityId: Int!
+      $currencyCode: currencyCode
     ) {
       site {
         search {
@@ -384,13 +386,14 @@ export const getProductsByCategory = cache(
   async (
     categoryEntityId: number,
     excludeProductId: number,
-    _currencyCode?: string,
+    currencyCode?: CurrencyCode,
     customerAccessToken?: string,
   ) => {
     const { data } = await client.fetch({
       document: ProductsByCategoryQuery,
       variables: {
         categoryEntityId,
+        currencyCode,
       },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
