@@ -54,6 +54,7 @@ export function BikeAddToCartForm<F extends Field>({
   disabled = false,
   additionalActions,
 }: BikeAddToCartFormProps<F>) {
+  
   const [state, formAction] = useActionState(action, {
     fields,
     lastResult: null,
@@ -73,22 +74,25 @@ export function BikeAddToCartForm<F extends Field>({
     }
   }, [state.lastResult, state.successMessage]);
 
-  // Helper function to get field value
-  const getFieldValue = (field: F): string => {
+  // Helper function to check if field should be rendered as interactive element
+  const shouldRenderField = (field: F): boolean => {
     // Skip color field since it's handled by the SwatchRadioGroup
-    if (field.name === 'color') {
-      return ''; // Let the SwatchRadioGroup handle this
+    if (field.name.toLowerCase() === 'color') {
+      return false;
     }
     
-    if ('defaultValue' in field && field.defaultValue) {
-      return String(field.defaultValue);
+    // Render all interactive field types (including swatch-radio-group)
+    if (
+      field.type === 'button-radio-group' || 
+      field.type === 'radio-group' ||
+      field.type === 'select' ||
+      field.type === 'card-radio-group' ||
+      field.type === 'swatch-radio-group'
+    ) {
+      return true;
     }
     
-    if ('options' in field && field.options.length > 0) {
-      return String(field.options[0]?.value ?? '');
-    }
-    
-    return '';
+    return false;
   };
 
   return (
@@ -96,22 +100,29 @@ export function BikeAddToCartForm<F extends Field>({
       <input name="id" type="hidden" value={productId} />
       <input name="quantity" type="hidden" value="1" />
       
-      {/* Handle product option fields with default/first option values */}
-      {fields.map((field) => {
-        // Skip color field completely - let SwatchRadioGroup handle it
-        if (field.name === 'color') {
-          return null;
-        }
-        
-        return (
-          <input
-            key={field.name}
-            name={field.name}
-            type="hidden"
-            value={getFieldValue(field)}
-          />
-        );
-      })}
+      {/* Handle non-interactive product option fields as hidden inputs */}
+      {fields
+        .filter((field) => {
+          // Exclude interactive field types
+          if (shouldRenderField(field)) return false;
+          // Exclude color fields
+          if (field.name.toLowerCase() === 'color') return false;
+          return true;
+        })
+        .map((field) => {
+          // Get field value
+          let value = '';
+          if ('defaultValue' in field && field.defaultValue) {
+            value = String(field.defaultValue);
+          } else if ('options' in field && field.options.length > 0) {
+            value = String(field.options[0]?.value ?? '');
+          }
+
+          // Only render if we have a value
+          return value ? (
+            <input key={field.name} name={field.name} type="hidden" value={value} />
+          ) : null;
+        })}
       
       {/* Show any form errors */}
       {state.lastResult?.status === 'error' && state.lastResult.error && (
@@ -133,10 +144,31 @@ export function BikeAddToCartForm<F extends Field>({
         </SubmitButton>
       </div>
 
-      {/* Color Selection - integrated into the form */}
-      <div className="flex flex-col items-center mb-6 sm:items-end">
-        <p className="mb-4 text-base font-bold tracking-wide text-gray-900 text-center sm:text-right">COLOR</p>
-        {colors && colors.length > 0 ? (
+      {/* Render interactive fields */}
+      {fields.filter(shouldRenderField).map((field) => {
+        if (field.type === 'swatch-radio-group') {
+          return (
+            <div key={field.name} className="flex flex-col items-center mb-6 sm:items-end">
+              <p className="mb-4 text-base font-bold tracking-wide text-gray-900 text-center sm:text-right">
+                {field.label || 'COLOR'}
+              </p>
+              <SwatchRadioGroup
+                className="justify-center sm:justify-end [&_label]:border-2 [&_label]:border-gray-300 [&_input:checked+label]:border-4 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-2 [&_input:checked+label]:ring-pink-200 [&_label]:min-h-[44px] [&_label]:min-w-[44px] [&_label]:h-12 [&_label]:w-12 gap-4"
+                defaultValue={field.defaultValue}
+                name={field.name}
+                options={field.options}
+              />
+            </div>
+          );
+        }
+        // Handle other interactive field types here if needed
+        return null;
+      })}
+
+      {/* Fallback color selection if no swatch field */}
+      {!fields.find(f => f.type === 'swatch-radio-group') && colors && colors.length > 0 && (
+        <div className="flex flex-col items-center mb-6 sm:items-end">
+          <p className="mb-4 text-base font-bold tracking-wide text-gray-900 text-center sm:text-right">COLOR</p>
           <SwatchRadioGroup
             className="justify-center sm:justify-end [&_label]:border-2 [&_label]:border-gray-300 [&_input:checked+label]:border-4 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-2 [&_input:checked+label]:ring-pink-200 [&_label]:min-h-[44px] [&_label]:min-w-[44px] [&_label]:h-12 [&_label]:w-12 gap-4"
             defaultValue={colors.find(c => c.isSelected || c.isDefault)?.entityId.toString()}
@@ -157,20 +189,8 @@ export function BikeAddToCartForm<F extends Field>({
                   }
             )}
           />
-        ) : (
-          <SwatchRadioGroup
-            className="justify-center sm:justify-end [&_label]:min-h-[44px] [&_label]:min-w-[44px] [&_label]:h-12 [&_label]:w-12 gap-4"
-            defaultValue="black"
-            name="color"
-            options={[
-              { type: 'color' as const, value: 'black', label: 'Black', color: '#000000' },
-              { type: 'color' as const, value: 'white', label: 'White', color: '#ffffff' },
-              { type: 'color' as const, value: 'red', label: 'Red', color: '#ef4444' },
-              { type: 'color' as const, value: 'blue', label: 'Blue', color: '#3b82f6' },
-            ]}
-          />
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Wishlist Button - positioned below color picker */}
       {additionalActions ? (
