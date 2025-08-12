@@ -22,15 +22,15 @@ export function SlideContent({ slide, index, selectedIndex }: SlideItemProps) {
       </div>
 
       <div
-        className={`font-nunito transition-all delay-200 duration-500 ease-out ${
+        className={`transition-all delay-200 duration-500 ease-out ${
           index === selectedIndex ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
       >
         <h1
-          className="text-3xl font-extrabold leading-tight text-[#F92F7B] sm:text-4xl md:text-5xl lg:text-6xl"
+          className="font-[Nunito] text-3xl font-extrabold leading-tight text-[#F92F7B] sm:text-4xl md:text-5xl lg:text-6xl"
           id={index === selectedIndex ? 'hero-heading' : undefined}
         >
-          <span className="block">{title.split(' ')[0]}</span>
+          <span className="-mb-6 block">{title.split(' ')[0]}</span>
           <span className="inline-block text-zinc-800">{title.split(' ').slice(1).join(' ')}</span>
           <span className="text-[#F92F7B]">.</span>
         </h1>
@@ -54,7 +54,7 @@ export function SlideContent({ slide, index, selectedIndex }: SlideItemProps) {
         >
           <ButtonLink
             aria-label={`Shop ${title} - Premium electric bikes and scooters`}
-            className="group min-h-10 text-sm text-white sm:min-h-14 sm:text-base"
+            className="group inline-flex h-10 items-center px-4 text-xs font-bold tracking-wider text-white sm:h-[43px] sm:px-5 sm:text-[13.5px] sm:tracking-[0.074em] sm:shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.13)]"
             href={cta?.href ?? '#'}
             shape={cta?.shape ?? 'pill'}
             size={cta?.size ?? 'small'}
