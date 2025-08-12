@@ -8,19 +8,22 @@ declare const messages: {
         "title": "Performance E-Scooters",
         "description": "Book a test ride at our LA showroom.",
         "alt": "Ryddo performance e-scooter on display in Los Angeles showroom.",
-        "cta": "Book Test Ride"
+        "cta": "Book Test Ride",
+        "src": "/e-bikes"
       },
       "Slide02": {
         "title": "Dealer & Servicing",
         "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
         "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
-        "cta": "Shop Now"
+        "cta": "Shop Now",
+        "src": "/e-bikes"
       },
       "Slide03": {
         "title": "Premium e-bikes",
         "description": "Only THE very best electric rides.",
         "alt": "Premium electric bike positioned against a sleek urban backdrop.",
-        "cta": "Shop Now"
+        "cta": "Shop Now",
+        "src": "/e-bikes"
       }
     },
     "FeaturedProducts": {

@@ -16,7 +16,7 @@ export function Slideshow() {
       },
       description: t('Slide01.description'),
       cta: {
-        href: '/shop-all',
+        href: '/e-scooters',
         label: t('Slide01.cta'),
       },
     },
@@ -29,7 +29,7 @@ export function Slideshow() {
       },
       description: t('Slide02.description'),
       cta: {
-        href: '/shop-all',
+        href: '/service',
         label: t('Slide02.cta'),
       },
     },
@@ -42,7 +42,7 @@ export function Slideshow() {
       },
       description: t('Slide03.description'),
       cta: {
-        href: '/shop-all',
+        href: '/e-bikes',
         label: t('Slide03.cta'),
       },
       contentPosition: 'left' as const,
