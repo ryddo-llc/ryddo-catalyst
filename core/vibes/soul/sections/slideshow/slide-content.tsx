@@ -54,17 +54,17 @@ export function SlideContent({ slide, index, selectedIndex }: SlideItemProps) {
         >
           <ButtonLink
             aria-label={`Shop ${title} - Premium electric bikes and scooters`}
-            className="group text-white"
+            className="group min-h-10 text-sm text-white sm:min-h-14 sm:text-base"
             href={cta?.href ?? '#'}
             shape={cta?.shape ?? 'pill'}
-            size={cta?.size ?? 'large'}
+            size={cta?.size ?? 'small'}
             variant={cta?.variant ?? 'primary'}
           >
             <span className="inline-flex items-center gap-0">
               <span>{cta?.label ?? 'Shop Now'}</span>
-              <ArrowRight 
-                className="ml-0 w-0 flex-shrink-0 translate-y-[1px] opacity-0 transition-all duration-300 group-hover:ml-2 group-hover:w-5 group-hover:opacity-100" 
-                size={18} 
+              <ArrowRight
+                className="ml-0 w-0 flex-shrink-0 translate-y-[1px] opacity-0 transition-all duration-300 group-hover:ml-2 group-hover:w-5 group-hover:opacity-100"
+                size={18}
                 strokeWidth={2}
               />
             </span>
