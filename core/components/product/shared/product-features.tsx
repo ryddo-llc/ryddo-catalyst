@@ -23,10 +23,14 @@ interface ProductFeatureItemProps {
 function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
   const isReverse = feature.layout === 'reverse';
   
-  // Split title into two parts for styling (first word gets primary color)
-  const titleWords = feature.title.split(' ');
-  const firstWord = titleWords[0];
-  const remainingWords = titleWords.slice(1).join(' ');
+  // Split title into parts for styling (robust to multiple spaces/newlines)
+  const words = (feature.title || '').trim().split(/\s+/);
+  const [firstWord = '', secondWord = '', ...restWords] = words;
+  
+  // Determine which words should be pink
+  const isTwoWordPink = firstWord.toLowerCase() === 'a' && !!secondWord;
+  const pinkWords = isTwoWordPink ? `${firstWord} ${secondWord}` : firstWord;
+  const grayWords = isTwoWordPink ? restWords.join(' ') : words.slice(1).join(' ');
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-1">
@@ -38,9 +42,11 @@ function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
       >
         <div className="flex flex-col justify-start items-start max-w-md mx-auto md:mx-0 w-full">
           <h3 className="font-extrabold leading-[0.9] text-[clamp(2rem,8vw,3rem)] xl:text-[clamp(2.5rem,10vw,4rem)]">
-            <span className="block mb-1 sm:mb-2 text-[#F92F7B]">{firstWord}</span>
-            {remainingWords ? (
-              <span className="block text-gray-900 mb-2 sm:mb-3 -mt-1">{remainingWords}</span>
+            {pinkWords ? (
+              <span className="block mb-1 sm:mb-2 text-[#F92F7B]">{pinkWords}</span>
+            ) : null}
+            {grayWords ? (
+              <span className="block text-gray-900 mb-2 sm:mb-3 -mt-1">{grayWords}</span>
             ) : null}
           </h3>
           <p className="text-lg lg:text-xl xl:text-2xl text-gray-500 leading-relaxed pt-2 sm:pt-4 md:pt-6">
