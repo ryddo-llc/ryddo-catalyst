@@ -6,6 +6,23 @@ import { SlideItemProps } from './types';
 export function SlideItem({ slide, index, selectedIndex }: SlideItemProps) {
   const { image } = slide;
 
+  const defaultPosition = index % 2 === 0 ? 'sm:justify-end' : 'sm:justify-start';
+  
+  let desktopPosition = defaultPosition;
+
+  if (slide.contentPosition === 'left') {
+
+    desktopPosition = 'sm:justify-start';
+
+  } else if (slide.contentPosition === 'right') {
+
+    desktopPosition = 'sm:justify-end';
+
+  } else if (slide.contentPosition === 'center') {
+
+    desktopPosition = 'sm:justify-center';
+  }
+
   return (
     <div className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full">
       <div className="absolute inset-0 h-full w-full opacity-80">
@@ -29,9 +46,7 @@ export function SlideItem({ slide, index, selectedIndex }: SlideItemProps) {
 
       <div className="container relative z-10 mx-auto flex h-full items-center px-4 opacity-90 sm:px-6">
         <div
-          className={`flex w-full transition-all duration-700 ease-out ${
-            index % 2 === 0 ? 'justify-end' : 'justify-start'
-          }`}
+          className={`flex w-full justify-center transition-all duration-700 ease-out ${desktopPosition}`}
         >
           <SlideContent index={index} selectedIndex={selectedIndex} slide={slide} />
         </div>
