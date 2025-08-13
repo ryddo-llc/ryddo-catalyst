@@ -3,6 +3,7 @@ import { clsx } from 'clsx';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface PageHeaderProps {
   backgroundImage?: Streamable<{ src: string; alt: string } | null>;
@@ -14,7 +15,7 @@ interface PageHeaderProps {
 export const PageHeader = ({ title, backgroundImage, className, locale }: PageHeaderProps) => {
   const placeholderImage = {
     alt: 'Page header background',
-    src: '/images/backgrounds/newsletter-background.webp'
+    src: imageManagerImageUrl('newsletter-background.png')
   };
 
   return (
