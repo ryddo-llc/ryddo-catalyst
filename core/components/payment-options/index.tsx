@@ -1,8 +1,9 @@
 'use client';
 
-import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-options-accordion';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+
+import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-options-accordion';
 
 export function PaymentOptions() {
   return (
