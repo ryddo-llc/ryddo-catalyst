@@ -3,7 +3,6 @@
 import { useQueryState } from 'nuqs';
 import { startTransition } from 'react';
 
-import { Button } from '@/vibes/soul/primitives/button';
 import { useCompareDrawer } from '@/vibes/soul/primitives/compare-drawer';
 import { compareParser } from '@/vibes/soul/primitives/compare-drawer/loader';
 
@@ -19,12 +18,14 @@ interface Props {
   paramName?: string;
   label?: string;
   product: CompareDrawerItem;
+  className?: string;
 }
 
 export const Compare = function Compare({
   paramName = 'compare',
   label = 'Compare',
   product,
+  className,
 }: Props) {
   const [, setParam] = useQueryState(paramName, compareParser);
 
@@ -51,13 +52,11 @@ export const Compare = function Compare({
   };
 
   return (
-    <Button
-      className="min-w-24 bg-[#0000009e] px-4 text-white hover:bg-[#000000b3]"
+    <button
+      className={className || "w-full bg-black/[.62] px-2.5 py-[7px] text-white rounded-lg text-sm font-semibold tracking-wider leading-5 disabled:opacity-50 disabled:cursor-not-allowed"}
       disabled={isDisabled}
       onClick={handleCompare}
-      shape="rounded"
-      size="small"
-      variant={isInCompare ? 'primary' : 'secondary'}
+      type="button"
     >
       {isInCompare ? (
         <span className="flex items-center gap-1">
@@ -78,6 +77,6 @@ export const Compare = function Compare({
       ) : (
         label
       )}
-    </Button>
+    </button>
   );
 };

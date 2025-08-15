@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -5,6 +6,8 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import type { CurrencyCode } from '~/components/header/fragment';
+import { ProductCardFragment } from '~/components/product-card/fragment';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -118,6 +121,23 @@ export const ProductOptionsFragment = graphql(
             ...TextFieldFragment
             ...MultiLineTextFieldFragment
             ...DateFieldFragment
+          }
+        }
+      }
+      options(first: 50) {
+        edges {
+          node {
+            entityId
+            displayName
+            isRequired
+            values(first: 50) {
+              edges {
+                node {
+                  entityId
+                  label
+                }
+              }
+            }
           }
         }
       }
@@ -299,7 +319,14 @@ const ProductPricingAndRelatedProductsQuery = graphql(
           useDefaultOptionSelections: $useDefaultOptionSelections
         ) {
           ...PricingFragment
-          relatedProducts(first: 8) {
+          categories {
+            edges {
+              node {
+                entityId
+              }
+            }
+          }
+          relatedProducts(first: 4) {
             edges {
               node {
                 ...FeaturedProductsCarouselFragment
@@ -323,5 +350,65 @@ export const getProductPricingAndRelatedProducts = cache(
     });
 
     return data.site.product;
+  },
+);
+
+// Query to fetch products from the same category
+const ProductsByCategoryQuery = graphql(
+  `
+    query ProductsByCategoryQuery(
+      $categoryEntityId: Int!
+      $currencyCode: currencyCode
+    ) {
+      site {
+        search {
+          searchProducts(
+            filters: { categoryEntityId: $categoryEntityId }
+            sort: RELEVANCE
+          ) {
+            products(first: 5) {
+              edges {
+                node {
+                  entityId
+                  ...ProductCardFragment
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  [ProductCardFragment],
+);
+
+export const getProductsByCategory = cache(
+  async (
+    categoryEntityId: number,
+    excludeProductId: number,
+    currencyCode?: CurrencyCode,
+    customerAccessToken?: string,
+  ) => {
+    const { data } = await client.fetch({
+      document: ProductsByCategoryQuery,
+      variables: {
+        categoryEntityId,
+        currencyCode,
+      },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    const searchResults = data.site.search.searchProducts;
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!searchResults?.products) {
+      return [];
+    }
+
+    // Remove the current product from results and limit to 4
+    const products = removeEdgesAndNodes(searchResults.products);
+
+    return products.filter((p) => p.entityId !== excludeProductId).slice(0, 4);
   },
 );

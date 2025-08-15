@@ -18,6 +18,7 @@ export interface Slide {
     shape?: ButtonLinkProps['shape'];
   };
   showCta?: boolean;
+  contentPosition?: 'left' | 'right' | 'center';
 }
 
 export interface SlideItemProps {

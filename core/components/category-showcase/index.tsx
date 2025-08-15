@@ -54,7 +54,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
       {layout === 'center' && (
         /* Center layout - button above text */
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <ArrowButton className="text-[#FFFFFF]" size="small" variant="primary">
+          <ArrowButton aria-hidden="true" className="text-[#FFFFFF]" tabIndex={-1}>
             Shop
           </ArrowButton>
           <h3 className="font-[family-name:var(--category-item-title-font-family,var(--font-family-heading))] text-4xl font-extrabold text-[#333333]">
@@ -74,7 +74,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
               .
             </span>
           </h3>
-          <ArrowButton className="text-[#FFFFFF]" size="small" variant="primary">
+          <ArrowButton aria-hidden="true" className="text-[#FFFFFF]" tabIndex={-1}>
             Book now
           </ArrowButton>
         </div>
@@ -91,7 +91,7 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
             </h3>
           </div>
           <div className="absolute bottom-4 left-4">
-            <ArrowButton size="small" variant="primary">
+            <ArrowButton aria-hidden="true" tabIndex={-1}>
               Shop
             </ArrowButton>
           </div>
@@ -137,7 +137,7 @@ export function CategoryShowcase({
             if (categoriesData.length === 0) return null;
 
             const allCategories = [...categoriesData, SERVICE_CATEGORY];
-            
+
             const topRowCategories = allCategories.slice(0, 3);
             const bottomRowCategories = allCategories.slice(3, 5);
 

@@ -58,6 +58,7 @@ export interface ProductCardProps {
 export function ProductCard({
   product: { id, title, price, image, href, onSale, outOfStock, name },
   imagePriority = false,
+  imageSizes,
   showCompare = false,
   compareLabel,
   compareParamName,
@@ -66,7 +67,7 @@ export function ProductCard({
   const imageUrl = image?.src;
 
   return (
-    <article className="group relative mb-5 flex w-full max-w-md flex-col items-center overflow-hidden rounded-[10px] border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <article className="group relative mb-5 flex w-full max-w-md flex-col items-center overflow-hidden bg-white rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
       <Link className="block h-full w-full" href={href} title={`View details for ${productName}`}>
         <div className="absolute left-4 top-3 z-10">
           {onSale && (
@@ -82,17 +83,24 @@ export function ProductCard({
             </Badge>
           )}
         </div>
-        <div className="relative w-full p-2">
-          <Image
-            alt={productName || 'Product image'}
-            className="w-full rounded-[10px] object-contain"
-            height={600}
-            priority={imagePriority}
-            src={imageUrl || ''}
-            width={600}
-          />
+        <div className="relative w-full p-1">
+          {imageUrl ? (
+            <Image
+              alt={productName || 'Product image'}
+              className="w-full object-contain"
+              height={200}
+              priority={imagePriority}
+              sizes={imageSizes ?? '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px'}
+              src={imageUrl}
+              width={200}
+            />
+          ) : (
+            <div className="flex aspect-square w-full items-center justify-center bg-gray-100 text-gray-400">
+              No image available
+            </div>
+          )}
           {showCompare && (
-            <div className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <div className="absolute bottom-3 left-3 right-3 z-20 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
               <Compare
                 label={compareLabel}
                 paramName={compareParamName}
@@ -101,8 +109,8 @@ export function ProductCard({
             </div>
           )}
         </div>
-        <div className="px-3 pb-3 pt-1 text-center">
-          <h2 className="text-base font-bold text-zinc-800">{productName}</h2>
+        <div className="px-2 pb-2 pt-1 text-center">
+          <h2 className="text-sm font-bold text-zinc-800">{productName}</h2>
           <div>
             {(() => {
               if (!price) return null;

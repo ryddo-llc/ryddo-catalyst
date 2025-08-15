@@ -1,6 +1,6 @@
-// Re-export the shared component with bike-specific naming for backward compatibility
+// Export the bike-specific component
 export { 
-  ProductSpecsIcons as BikeSpecsIcons,
-  type ProductSpecsIconsProps as BikeSpecsIconsProps,
-  type ProductSpecification as BikeSpecification 
-} from '../shared/product-specifications';
+  BikeSpecsIcons,
+  type BikeSpecsIconsProps,
+  type BikeSpecification 
+} from './bike-specs-icons';

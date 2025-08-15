@@ -1,8 +1,10 @@
+'use client';
+
 import { SubmissionResult } from '@conform-to/react';
+import { useEffect, useState } from 'react';
 
 import { NewsletterForm } from '@/vibes/soul/primitives/newsletter-form';
 import { Image } from '~/components/image';
-import { useIsTabletOrLarger } from '~/lib/use-is-tablet-or-larger';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -23,11 +25,26 @@ export function Subscribe({
   submitLabel?: string;
   title: string;
 }) {
-  const isTabletOrLarger = useIsTabletOrLarger();
+  const [isTabletOrLarger, setIsTabletOrLarger] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    
+    const checkScreen = () => setIsTabletOrLarger(window.innerWidth >= 768);
+
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+
+    return () => window.removeEventListener('resize', checkScreen);
+  }, []);
+
   const sectionStyle = image
     ? {
         backgroundImage: `url(${image.src})`,
-        ...(isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        ...(isMounted && isTabletOrLarger ? { backgroundAttachment: 'fixed' } : {}),
       }
     : undefined;
 
