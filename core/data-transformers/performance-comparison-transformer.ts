@@ -13,13 +13,13 @@ export interface BigCommerceCustomFields {
 }
 
 export interface FlattenedCustomFields {
-  performance_range?: string;
-  performance_power?: string;
-  performance_speed?: string;
-  performance_brakes?: string;
-  performance_portability?: string;
-  performance_comfort?: string;
-  performance_tech?: string;
+  performance_metric_1?: string;
+  performance_metric_2?: string;
+  performance_metric_3?: string;
+  performance_metric_4?: string;
+  performance_metric_5?: string;
+  performance_metric_6?: string;
+  performance_metric_7?: string;
   wheel_center?: string;
   wheel_radius?: string;
   wheel_ring_spacing?: string;
@@ -245,20 +245,22 @@ function flattenCustomFields(customFields: BigCommerceCustomFields): FlattenedCu
  */
 function parsePerformanceMetrics(flattenedFields: FlattenedCustomFields): PerformanceMetric[] {
   const metrics: PerformanceMetric[] = [];
-  
-  const metricFields = [
-    flattenedFields.performance_range,
-    flattenedFields.performance_power,
-    flattenedFields.performance_speed,
-    flattenedFields.performance_brakes,
-    flattenedFields.performance_portability,
-    flattenedFields.performance_comfort,
-    flattenedFields.performance_tech,
-  ];
 
-  metricFields.forEach((field) => {
-    if (field) {
-      const metric = parsePerformanceMetric(field);
+  const fieldNames = [
+    'performance_metric_1',
+    'performance_metric_2',
+    'performance_metric_3',
+    'performance_metric_4',
+    'performance_metric_5',
+    'performance_metric_6',
+    'performance_metric_7',
+  ] as const;
+
+  fieldNames.forEach((fieldName) => {
+    const fieldValue = flattenedFields[fieldName];
+
+    if (fieldValue) {
+      const metric = parsePerformanceMetric(fieldValue);
 
       if (metric) {
         metrics.push(metric);
