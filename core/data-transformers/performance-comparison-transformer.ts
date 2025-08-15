@@ -12,14 +12,10 @@ export interface BigCommerceCustomFields {
   }> | null;
 }
 
-export interface FlattenedCustomFields {
-  performance_metric_1?: string;
-  performance_metric_2?: string;
-  performance_metric_3?: string;
-  performance_metric_4?: string;
-  performance_metric_5?: string;
-  performance_metric_6?: string;
-  performance_metric_7?: string;
+export const PERFORMANCE_METRIC_KEYS = Array.from({ length: 7 }, (_, i) => `performance_metric_${i + 1}`);
+export type PerformanceMetricKey = typeof PERFORMANCE_METRIC_KEYS[number];
+
+export interface FlattenedCustomFields extends Partial<Record<PerformanceMetricKey, string>> {
   wheel_center?: string;
   wheel_radius?: string;
   wheel_ring_spacing?: string;
@@ -246,17 +242,7 @@ function flattenCustomFields(customFields: BigCommerceCustomFields): FlattenedCu
 function parsePerformanceMetrics(flattenedFields: FlattenedCustomFields): PerformanceMetric[] {
   const metrics: PerformanceMetric[] = [];
 
-  const fieldNames = [
-    'performance_metric_1',
-    'performance_metric_2',
-    'performance_metric_3',
-    'performance_metric_4',
-    'performance_metric_5',
-    'performance_metric_6',
-    'performance_metric_7',
-  ] as const;
-
-  fieldNames.forEach((fieldName) => {
+  PERFORMANCE_METRIC_KEYS.forEach((fieldName) => {
     const fieldValue = flattenedFields[fieldName];
 
     if (fieldValue) {
