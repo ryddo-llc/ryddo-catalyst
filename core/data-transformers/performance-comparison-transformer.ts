@@ -12,12 +12,18 @@ export interface BigCommerceCustomFields {
   }> | null;
 }
 
-const PERFORMANCE_METRIC_COUNT = 7;
+export const PERFORMANCE_METRIC_KEYS = [
+  'performance_metric_1',
+  'performance_metric_2',
+  'performance_metric_3',
+  'performance_metric_4',
+  'performance_metric_5',
+  'performance_metric_6',
+  'performance_metric_7',
+] as const;
+export type PerformanceMetricKey = typeof PERFORMANCE_METRIC_KEYS[number];
 
-export const PERFORMANCE_METRIC_KEYS = Array.from({ length: PERFORMANCE_METRIC_COUNT }, (_, i) => `performance_metric_${i + 1}`);
-export type PerformanceMetricKey = `performance_metric_${1|2|3|4|5|6|7}`;
-
-export interface FlattenedCustomFields {
+export interface FlattenedCustomFields extends Partial<Record<PerformanceMetricKey, string>> {
   [key: string]: string | undefined;
   wheel_center?: string;
   wheel_radius?: string;
@@ -362,9 +368,9 @@ export function transformPerformanceComparisonData(
  * @returns {Object|null} Matching image object or null if not found
  */
 export function findPerformanceImage(
-  images: Array<{ src: string; alt: string }>,
+  images: Array<{ src: string; alt?: string }>,
   performanceImageDescription?: string
-): { src: string; alt: string } | null {
+): { src: string; alt?: string } | null {
   if (!performanceImageDescription || images.length === 0) {
     // Fallback to first image
     return images[0] || null;
@@ -378,8 +384,8 @@ export function findPerformanceImage(
   }
 
   // Try partial match
-  const partialMatch = images.find(img =>
-    (img.alt || '').toLowerCase().includes(performanceImageDescription.toLowerCase())
+  const partialMatch = images.find(
+    img => (img.alt || '').toLowerCase().includes(performanceImageDescription.toLowerCase())
   );
 
   if (partialMatch) {
