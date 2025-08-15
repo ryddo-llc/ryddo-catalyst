@@ -24,7 +24,6 @@ export const PERFORMANCE_METRIC_KEYS = [
 export type PerformanceMetricKey = typeof PERFORMANCE_METRIC_KEYS[number];
 
 export interface FlattenedCustomFields extends Partial<Record<PerformanceMetricKey, string>> {
-  [key: string]: string | undefined;
   wheel_center?: string;
   wheel_radius?: string;
   wheel_ring_spacing?: string;
@@ -368,7 +367,7 @@ export function transformPerformanceComparisonData(
  * @returns {Object|null} Matching image object or null if not found
  */
 export function findPerformanceImage(
-  images: Array<{ src: string; alt?: string }>,
+  images: ReadonlyArray<{ src: string; alt?: string }>,
   performanceImageDescription?: string
 ): { src: string; alt?: string } | null {
   if (!performanceImageDescription || images.length === 0) {
@@ -376,8 +375,9 @@ export function findPerformanceImage(
     return images[0] || null;
   }
 
-  // Try exact match first
-  const exactMatch = images.find(img => img.alt === performanceImageDescription);
+  // Try exact match first (case-insensitive and trimmed for symmetry)
+  const needle = performanceImageDescription.trim().toLowerCase();
+  const exactMatch = images.find(img => (img.alt || '').trim().toLowerCase() === needle);
   
   if (exactMatch) {
     return exactMatch;
@@ -385,7 +385,7 @@ export function findPerformanceImage(
 
   // Try partial match
   const partialMatch = images.find(
-    img => (img.alt || '').toLowerCase().includes(performanceImageDescription.toLowerCase())
+    img => (img.alt || '').toLowerCase().includes(needle)
   );
 
   if (partialMatch) {
