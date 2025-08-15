@@ -12,14 +12,18 @@ export interface BigCommerceCustomFields {
   }> | null;
 }
 
-export interface FlattenedCustomFields {
-  performance_range?: string;
-  performance_power?: string;
-  performance_speed?: string;
-  performance_brakes?: string;
-  performance_portability?: string;
-  performance_comfort?: string;
-  performance_tech?: string;
+export const PERFORMANCE_METRIC_KEYS = [
+  'performance_metric_1',
+  'performance_metric_2',
+  'performance_metric_3',
+  'performance_metric_4',
+  'performance_metric_5',
+  'performance_metric_6',
+  'performance_metric_7',
+] as const;
+export type PerformanceMetricKey = typeof PERFORMANCE_METRIC_KEYS[number];
+
+export interface FlattenedCustomFields extends Partial<Record<PerformanceMetricKey, string>> {
   wheel_center?: string;
   wheel_radius?: string;
   wheel_ring_spacing?: string;
@@ -245,20 +249,13 @@ function flattenCustomFields(customFields: BigCommerceCustomFields): FlattenedCu
  */
 function parsePerformanceMetrics(flattenedFields: FlattenedCustomFields): PerformanceMetric[] {
   const metrics: PerformanceMetric[] = [];
-  
-  const metricFields = [
-    flattenedFields.performance_range,
-    flattenedFields.performance_power,
-    flattenedFields.performance_speed,
-    flattenedFields.performance_brakes,
-    flattenedFields.performance_portability,
-    flattenedFields.performance_comfort,
-    flattenedFields.performance_tech,
-  ];
 
-  metricFields.forEach((field) => {
-    if (field) {
-      const metric = parsePerformanceMetric(field);
+  PERFORMANCE_METRIC_KEYS.forEach((fieldName) => {
+    const rawValue = flattenedFields[fieldName];
+    const fieldValue = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
+
+    if (fieldValue) {
+      const metric = parsePerformanceMetric(fieldValue);
 
       if (metric) {
         metrics.push(metric);
@@ -370,24 +367,25 @@ export function transformPerformanceComparisonData(
  * @returns {Object|null} Matching image object or null if not found
  */
 export function findPerformanceImage(
-  images: Array<{ src: string; alt: string }>,
+  images: ReadonlyArray<{ src: string; alt?: string }>,
   performanceImageDescription?: string
-): { src: string; alt: string } | null {
+): { src: string; alt?: string } | null {
   if (!performanceImageDescription || images.length === 0) {
     // Fallback to first image
     return images[0] || null;
   }
 
-  // Try exact match first
-  const exactMatch = images.find(img => img.alt === performanceImageDescription);
+  // Try exact match first (case-insensitive and trimmed for symmetry)
+  const needle = performanceImageDescription.trim().toLowerCase();
+  const exactMatch = images.find(img => (img.alt || '').trim().toLowerCase() === needle);
   
   if (exactMatch) {
     return exactMatch;
   }
 
   // Try partial match
-  const partialMatch = images.find(img => 
-    img.alt.toLowerCase().includes(performanceImageDescription.toLowerCase())
+  const partialMatch = images.find(
+    img => (img.alt || '').toLowerCase().includes(needle)
   );
 
   if (partialMatch) {

@@ -427,11 +427,10 @@ export default async function Product({ params, searchParams }: Props) {
           
           if (dynamicData.metrics.length === 0) return null;
           
-          const configKey = product.customFields.edges?.find((edge) => edge.node.name === 'performance_config_key')?.node.value || product.sku || 'default';
           const performanceImage = findPerformanceImage(images, dynamicData.performanceImageDescription);
 
           return {
-            config: getPerformanceConfig(configKey),
+            config: getPerformanceConfig(),
             dynamicData,
             metrics: dynamicData.metrics,
             productImage: performanceImage || {
