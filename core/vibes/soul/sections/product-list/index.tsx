@@ -104,7 +104,7 @@ export function ProductList({
                     colorScheme={colorScheme}
                     compareLabel={compareLabel}
                     compareParamName={compareParamName}
-                    imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
+                    imageSizes="(min-width: 80rem) 15vw, (min-width: 64rem) 20vw, (min-width: 42rem) 25vw, (min-width: 24rem) 40vw, 90vw"
                     key={product.id}
                     product={product}
                     showCompare={showCompare}
