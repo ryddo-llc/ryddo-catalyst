@@ -83,16 +83,16 @@ export function ProductCard({
             </Badge>
           )}
         </div>
-        <div className="relative w-full p-1">
+        <div className="relative aspect-square w-full p-1">
           {imageUrl ? (
             <Image
               alt={productName || 'Product image'}
-              className="w-full object-contain"
-              height={200}
+              className="object-contain"
+              fill
+              loading="lazy"
               priority={imagePriority}
-              sizes={imageSizes ?? '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px'}
+              sizes={imageSizes ?? '(max-width: 640px) 40vw, (max-width: 1024px) 25vw, 180px'}
               src={imageUrl}
-              width={200}
             />
           ) : (
             <div className="flex aspect-square w-full items-center justify-center bg-gray-100 text-gray-400">

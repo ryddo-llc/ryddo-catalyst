@@ -31,7 +31,7 @@ interface CategoryItemProps {
   index?: number;
 }
 
-function CategoryItem({ category, className, layout = 'default' }: CategoryItemProps) {
+function CategoryItem({ category, className, layout = 'default', index = 0 }: CategoryItemProps) {
   return (
     <Link
       className={clsx(
@@ -40,14 +40,15 @@ function CategoryItem({ category, className, layout = 'default' }: CategoryItemP
       )}
       href={category.path}
     >
-      <div className="h-80 overflow-hidden md:h-96 lg:h-[28rem]">
+      <div className="relative h-80 overflow-hidden md:h-96 lg:h-[28rem]">
         {category.image ? (
           <Image
             alt={category.image.altText || category.name}
-            className="h-full w-full object-cover"
-            height={300}
+            className="object-cover"
+            fill
+            priority={index < 3}
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
             src={category.image.url}
-            width={400}
           />
         ) : null}
       </div>
@@ -147,17 +148,17 @@ export function CategoryShowcase({
                 <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-4">
                   {topRowCategories[0] ? (
                     <div className="lg:col-span-2">
-                      <CategoryItem category={topRowCategories[0]} />
+                      <CategoryItem category={topRowCategories[0]} index={0} />
                     </div>
                   ) : null}
                   {topRowCategories[1] ? (
                     <div className="lg:col-span-1">
-                      <CategoryItem category={topRowCategories[1]} />
+                      <CategoryItem category={topRowCategories[1]} index={1} />
                     </div>
                   ) : null}
                   {topRowCategories[2] ? (
                     <div className="lg:col-span-1">
-                      <CategoryItem category={topRowCategories[2]} />
+                      <CategoryItem category={topRowCategories[2]} index={2} />
                     </div>
                   ) : null}
                 </div>

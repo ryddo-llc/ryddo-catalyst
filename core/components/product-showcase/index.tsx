@@ -175,11 +175,10 @@ export function ProductShowcase({
                     <Image
                       alt={image.alt}
                       className="h-auto max-h-[40vh] w-full object-contain sm:max-h-[60vh]"
-                      height={600}
+                      fill
                       priority={index === 0}
-                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 800px"
                       src={image.src}
-                      width={1000}
                     />
                   </CarouselItem>
                 ))}
