@@ -15,6 +15,10 @@ export default function bcCdnImageLoader({ src, width, quality }: ImageLoaderPro
   if (quality && !url.includes('quality=')) {
     const separator = url.includes('?') ? '&' : '?';
     url = `${url}${separator}quality=${quality}`;
+  } else if (!quality && !url.includes('quality=')) {
+    // Add default quality of 85 for better compression if not specified
+    const separator = url.includes('?') ? '&' : '?';
+    url = `${url}${separator}quality=85`;
   }
 
   return url;
