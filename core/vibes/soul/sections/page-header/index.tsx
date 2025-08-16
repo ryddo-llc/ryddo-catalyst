@@ -15,7 +15,7 @@ interface PageHeaderProps {
 export const PageHeader = ({ title, backgroundImage, className, locale }: PageHeaderProps) => {
   const placeholderImage = {
     alt: 'Page header background',
-    src: imageManagerImageUrl('newsletter-background.png')
+    src: imageManagerImageUrl('newsletter-background.png', '{:size}')
   };
 
   return (
@@ -29,7 +29,7 @@ export const PageHeader = ({ title, backgroundImage, className, locale }: PageHe
               className="object-cover"
               fill
               priority
-              sizes="100vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1920px"
               src={placeholderImage.src}
             />
           </div>
@@ -43,7 +43,7 @@ export const PageHeader = ({ title, backgroundImage, className, locale }: PageHe
               className="object-cover"
               fill
               priority
-              sizes="100vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1920px"
               src={image?.src || placeholderImage.src}
             />
           </div>

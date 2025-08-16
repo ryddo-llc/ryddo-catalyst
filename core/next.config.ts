@@ -87,6 +87,11 @@ export default async (): Promise<NextConfig> => {
         'vibes',
       ],
     },
+    
+    images: {
+      formats: ['image/webp', 'image/avif'],
+      minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
+    },
 
     // default URL generation in BigCommerce uses trailing slash
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
