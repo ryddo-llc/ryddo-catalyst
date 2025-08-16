@@ -3,16 +3,19 @@ import { Link } from '~/components/link';
 interface DigitalTagLinkProps {
   productSlug: string;
   className?: string;
+  ariaLabel?: string;
 }
 
-export function DigitalTagLink({ productSlug, className = '' }: DigitalTagLinkProps) {
+export function DigitalTagLink({ productSlug, className = '', ariaLabel = 'View Digital Tag' }: DigitalTagLinkProps) {
   return (
     <Link
-      className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-[#F92F7B] ${className} `}
+      aria-label={ariaLabel}
+      className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-[#F92F7B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 ${className} `}
       href={`/product/${productSlug}/tag`}
-      title="View Digital Tag"
+      title={ariaLabel}
     >
       <svg
+        aria-hidden="true"
         className="h-5 w-5"
         fill="none"
         stroke="currentColor"

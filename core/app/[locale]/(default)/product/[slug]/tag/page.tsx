@@ -1,10 +1,10 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { DigitalTag } from '~/components/product/digital-tag/digital-tag';
+import { transformProductToDigitalTag } from '~/data-transformers/digital-tag-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import {
@@ -68,31 +68,8 @@ export default async function ProductTagPage({ params }: Props) {
     return notFound();
   }
 
-  // Extract custom fields
-  const customFields = removeEdgesAndNodes(detailedProduct.customFields);
-
   // Transform data for the tag
-  const tagData = {
-    brand: baseProduct.brand?.name || 'Unknown Brand',
-    model: baseProduct.name,
-    slug,
-    range: customFields.find(
-      (f) => f.name === 'performance_range' || f.name.toLowerCase().includes('range'),
-    )?.value,
-    speed: customFields.find(
-      (f) => f.name === 'Speed' || f.name === 'Speed-Tech' || f.name === 'Top Speed',
-    )?.value,
-    weight: detailedProduct.weight
-      ? `${detailedProduct.weight.value} ${detailedProduct.weight.unit === 'Pounds' ? 'lbs' : detailedProduct.weight.unit}`
-      : undefined,
-    price: pricingData?.prices?.price.value,
-    currencyCode: pricingData?.prices?.price.currencyCode || 'USD',
-    certClass: customFields.find((f) => f.name === 'Class')?.value,
-    battery: customFields.find((f) => f.name === 'Battery')?.value,
-    motor: customFields.find((f) => f.name === 'Motor/s' || f.name === 'Motor')?.value,
-    chargeTime: customFields.find((f) => f.name === 'Charge Time')?.value,
-    maxLoad: customFields.find((f) => f.name === 'Max Load')?.value,
-  };
+  const tagData = transformProductToDigitalTag(baseProduct, detailedProduct, pricingData, slug);
 
   return <DigitalTag data={tagData} />;
 }
