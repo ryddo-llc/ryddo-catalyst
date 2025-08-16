@@ -14,6 +14,7 @@ import {
   ProductDetailScooter,
   ProductFeatures,
 } from '~/components/product';
+import { DigitalTagLink } from '~/components/product/digital-tag/digital-tag-link';
 import { getPerformanceConfig } from '~/components/product/layout/performance-comparison/config';
 import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import { PerformanceComparisonSkeleton } from '~/components/product/layout/performance-comparison/performance-comparison-skeleton';
@@ -552,11 +553,14 @@ export default async function Product({ params, searchParams }: Props) {
   const baseProps = {
     action: addToCart,
     additionalActions: (
-      <WishlistButton
-        formId={detachedWishlistFormId}
-        productId={productId}
-        productSku={streamableProductSku}
-      />
+      <div className="flex items-center gap-2">
+        <WishlistButton
+          formId={detachedWishlistFormId}
+          productId={productId}
+          productSku={streamableProductSku}
+        />
+        <DigitalTagLink productSlug={slug} />
+      </div>
     ),
     additionalInformationTitle: t('ProductDetails.additionalInformation'),
     compareProducts: streamableCompareProducts,
