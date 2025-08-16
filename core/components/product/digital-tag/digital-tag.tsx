@@ -1,5 +1,9 @@
 'use client';
 
+import { Suspense } from 'react';
+
+import { Stream } from '@/vibes/soul/lib/streamable';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Link } from '~/components/link';
 
 export interface DigitalTagData {
@@ -18,11 +22,78 @@ export interface DigitalTagData {
   maxLoad?: string;
 }
 
-interface DigitalTag3DProps {
-  data: DigitalTagData;
+interface DigitalTagProps {
+  data: DigitalTagData | Promise<DigitalTagData>;
 }
 
-export function DigitalTag3D({ data }: DigitalTag3DProps) {
+export function DigitalTagSkeleton() {
+  return (
+    <div
+      aria-busy="true"
+      aria-label="Loading product tag"
+      aria-live="polite"
+      className="flex h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:min-h-screen sm:overflow-auto sm:p-8"
+      role="status"
+    >
+      <div className="relative w-80">
+        <div
+          className="relative animate-pulse bg-gray-300 text-white shadow-[0_4px_8px_rgba(0,0,0,0.15)]"
+          style={{
+            clipPath:
+              'polygon(10% 0%, 90% 0%, 100% 2%, 100% 64%, 95% 66%, 100% 68%, 100% 100%, 0% 100%, 0% 68%, 5% 66%, 0% 64%, 0% 2%)',
+          }}
+        >
+          {/* Hole punch skeleton */}
+          <div className="absolute left-1/2 top-4 h-8 w-8 -translate-x-1/2 rounded-full bg-gray-200" />
+          
+          {/* Brand section skeleton */}
+          <div className="border-b-2 border-white/20 px-6 pb-4 pt-16">
+            <Skeleton.Box className="mx-auto h-12 w-48" />
+          </div>
+
+          {/* Model section skeleton */}
+          <div className="border-b-2 border-white/20 px-6 py-4">
+            <Skeleton.Text characterCount={5} className="mb-1 text-xs" />
+            <Skeleton.Box className="mx-auto h-7 w-32" />
+          </div>
+
+          {/* Specs sections skeleton */}
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div className="border-b-2 border-white/20 px-6 py-4" key={i}>
+              <Skeleton.Text characterCount={8} className="mb-1 text-xs" />
+              <Skeleton.Box className="h-8 w-24" />
+            </div>
+          ))}
+
+          {/* Notice section skeleton */}
+          <div className="px-6 py-3">
+            <Skeleton.Text characterCount={180} className="text-xs" />
+          </div>
+
+          {/* Price section skeleton */}
+          <div className="mt-px border-b-2 border-white/20 px-6 py-5">
+            <Skeleton.Box className="mx-auto h-9 w-32" />
+          </div>
+
+          {/* Info section skeleton */}
+          <div className="border-b-2 border-white/20 px-6 py-4">
+            <div className="space-y-2">
+              <Skeleton.Text characterCount={30} className="text-sm" />
+              <Skeleton.Text characterCount={25} className="text-sm" />
+            </div>
+          </div>
+
+          {/* CTA section skeleton */}
+          <div className="p-6">
+            <Skeleton.Box className="h-12 w-full rounded-lg" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DigitalTagContent({ data }: { data: DigitalTagData }) {
   // Format price with currency
   const formattedPrice = data.price
     ? new Intl.NumberFormat('en-US', {
@@ -46,7 +117,7 @@ export function DigitalTag3D({ data }: DigitalTag3DProps) {
     if (length <= 8) return 'text-4xl sm:text-5xl';
     if (length <= 12) return 'text-3xl sm:text-4xl';
     if (length <= 16) return 'text-2xl sm:text-3xl';
-    
+
     return 'text-xl sm:text-2xl';
   };
 
@@ -56,43 +127,21 @@ export function DigitalTag3D({ data }: DigitalTag3DProps) {
   };
 
   return (
-    <>
-      <style jsx>{`
-        @keyframes hangingSwing {
-          0%, 100% { transform: rotate(-2.5deg); }
-          50% { transform: rotate(2.5deg); }
-        }
-        @keyframes stringSwing {
-          0%, 100% { transform: translateX(-50%) rotate(-2.5deg); }
-          50% { transform: translateX(-50%) rotate(2.5deg); }
-        }
-        .hanging-tag {
-          transform-origin: 50% 32px;
-          animation: hangingSwing 5s ease-in-out infinite;
-        }
-        .swinging-string {
-          animation: stringSwing 5s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .hanging-tag, .swinging-string {
-            animation: none;
-          }
-        }
-      `}</style>
-      <div className="flex h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:min-h-screen sm:overflow-auto sm:p-8">
-        {/* Container */}
-        <div className="relative">
-          {/* The Tag */}
-          <div
-            className="relative w-80 text-white shadow-[0_4px_8px_rgba(0,0,0,0.15),0_8px_16px_rgba(249,47,123,0.2),0_16px_32px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.3)] hanging-tag"
-            style={{
-              background: 'linear-gradient(135deg, #F92F7B 0%, #E91E63 50%, #C2185B 100%)',
-              boxShadow:
-                'inset 2px 2px 4px rgba(255,255,255,0.1), inset -2px -2px 4px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.15), 0 8px 16px rgba(249,47,123,0.2), 0 16px 32px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.3)',
-              clipPath:
-                'polygon(10% 0%, 90% 0%, 100% 2%, 100% 64%, 95% 66%, 100% 68%, 100% 100%, 0% 100%, 0% 68%, 5% 66%, 0% 64%, 0% 2%)',
-            }}
-          >
+    <div className="flex h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:min-h-screen sm:overflow-auto sm:p-8">
+      {/* Container */}
+      <div className="relative">
+        {/* The Tag with swinging animation */}
+        <div
+          className="relative w-80 animate-swing text-white shadow-[0_4px_8px_rgba(0,0,0,0.15),0_8px_16px_rgba(249,47,123,0.2),0_16px_32px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.3)] motion-reduce:animate-none"
+          style={{
+            background: 'linear-gradient(135deg, #F92F7B 0%, #E91E63 50%, #C2185B 100%)',
+            boxShadow:
+              'inset 2px 2px 4px rgba(255,255,255,0.1), inset -2px -2px 4px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.15), 0 8px 16px rgba(249,47,123,0.2), 0 16px 32px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.3)',
+            clipPath:
+              'polygon(10% 0%, 90% 0%, 100% 2%, 100% 64%, 95% 66%, 100% 68%, 100% 100%, 0% 100%, 0% 68%, 5% 66%, 0% 64%, 0% 2%)',
+            transformOrigin: '50% 32px',
+          }}
+        >
           {/* Hole punch at top */}
           <div
             className="absolute left-1/2 top-4 h-8 w-8 -translate-x-1/2 rounded-full bg-gradient-to-br from-gray-50 to-gray-100"
@@ -102,7 +151,7 @@ export function DigitalTag3D({ data }: DigitalTag3DProps) {
           />
 
           {/* Optional hanging string effect */}
-          <div className="absolute left-1/2 top-0 h-4 w-px bg-gray-400 opacity-30 swinging-string" />
+          <div className="absolute left-1/2 top-0 h-4 w-px animate-swing bg-gray-400 opacity-30 motion-reduce:animate-none" style={{ transformOrigin: '50% 0' }} />
 
           {/* Brand Section */}
           <div className={`border-b-2 border-white/90 ${getBrandPadding(data.brand)} flex items-center justify-center`}>
@@ -237,6 +286,23 @@ export function DigitalTag3D({ data }: DigitalTag3DProps) {
         </div>
       </div>
     </div>
-    </>
+  );
+}
+
+export function DigitalTag({ data }: DigitalTagProps) {
+  // Handle streaming data
+  if (data instanceof Promise) {
+    return (
+      <Stream fallback={<DigitalTagSkeleton />} value={data}>
+        {(resolvedData) => <DigitalTagContent data={resolvedData} />}
+      </Stream>
+    );
+  }
+
+  // Handle direct data
+  return (
+    <Suspense fallback={<DigitalTagSkeleton />}>
+      <DigitalTagContent data={data} />
+    </Suspense>
   );
 }

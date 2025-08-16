@@ -4,10 +4,14 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
-import { DigitalTag3D } from '~/components/product/digital-tag/digital-tag-3d';
+import { DigitalTag } from '~/components/product/digital-tag/digital-tag';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
-import { getProduct, getProductPricingAndRelatedProducts, getStreamableProduct } from '../page-data';
+import {
+  getProduct,
+  getProductPricingAndRelatedProducts,
+  getStreamableProduct,
+} from '../page-data';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -33,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductTagPage({ params }: Props) {
   const { locale, slug } = await params;
   const customerAccessToken = await getSessionCustomerAccessToken();
-  
+
   setRequestLocale(locale);
 
   const productId = Number(slug);
@@ -72,29 +76,23 @@ export default async function ProductTagPage({ params }: Props) {
     brand: baseProduct.brand?.name || 'Unknown Brand',
     model: baseProduct.name,
     slug,
-    range: customFields.find(f => 
-      f.name === 'performance_range' || 
-      f.name.toLowerCase().includes('range')
+    range: customFields.find(
+      (f) => f.name === 'performance_range' || f.name.toLowerCase().includes('range'),
     )?.value,
-    speed: customFields.find(f => 
-      f.name === 'Speed' || 
-      f.name === 'Speed-Tech' ||
-      f.name === 'Top Speed'
+    speed: customFields.find(
+      (f) => f.name === 'Speed' || f.name === 'Speed-Tech' || f.name === 'Top Speed',
     )?.value,
-    weight: detailedProduct.weight 
+    weight: detailedProduct.weight
       ? `${detailedProduct.weight.value} ${detailedProduct.weight.unit === 'Pounds' ? 'lbs' : detailedProduct.weight.unit}`
       : undefined,
     price: pricingData?.prices?.price.value,
     currencyCode: pricingData?.prices?.price.currencyCode || 'USD',
-    certClass: customFields.find(f => f.name === 'Class')?.value,
-    battery: customFields.find(f => f.name === 'Battery')?.value,
-    motor: customFields.find(f => 
-      f.name === 'Motor/s' || 
-      f.name === 'Motor'
-    )?.value,
-    chargeTime: customFields.find(f => f.name === 'Charge Time')?.value,
-    maxLoad: customFields.find(f => f.name === 'Max Load')?.value,
+    certClass: customFields.find((f) => f.name === 'Class')?.value,
+    battery: customFields.find((f) => f.name === 'Battery')?.value,
+    motor: customFields.find((f) => f.name === 'Motor/s' || f.name === 'Motor')?.value,
+    chargeTime: customFields.find((f) => f.name === 'Charge Time')?.value,
+    maxLoad: customFields.find((f) => f.name === 'Max Load')?.value,
   };
 
-  return <DigitalTag3D data={tagData} />;
+  return <DigitalTag data={tagData} />;
 }
