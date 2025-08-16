@@ -45,7 +45,7 @@ export function DigitalTagSkeleton() {
         >
           {/* Hole punch skeleton */}
           <div className="absolute left-1/2 top-4 h-8 w-8 -translate-x-1/2 rounded-full bg-gray-200" />
-          
+
           {/* Brand section skeleton */}
           <div className="border-b-2 border-white/20 px-6 pb-4 pt-16">
             <Skeleton.Box className="mx-auto h-12 w-48" />
@@ -132,7 +132,7 @@ function DigitalTagContent({ data }: { data: DigitalTagData }) {
       <div className="relative">
         {/* The Tag with swinging animation */}
         <div
-          className="relative w-80 animate-swing text-white shadow-[0_4px_8px_rgba(0,0,0,0.15),0_8px_16px_rgba(249,47,123,0.2),0_16px_32px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.3)] motion-reduce:animate-none"
+          className="animate-swing relative w-80 text-white shadow-[0_4px_8px_rgba(0,0,0,0.15),0_8px_16px_rgba(249,47,123,0.2),0_16px_32px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.3)] motion-reduce:animate-none"
           style={{
             background: 'linear-gradient(135deg, #F92F7B 0%, #E91E63 50%, #C2185B 100%)',
             boxShadow:
@@ -151,10 +151,15 @@ function DigitalTagContent({ data }: { data: DigitalTagData }) {
           />
 
           {/* Optional hanging string effect */}
-          <div className="absolute left-1/2 top-0 h-4 w-px animate-swing bg-gray-400 opacity-30 motion-reduce:animate-none" style={{ transformOrigin: '50% 0' }} />
+          <div
+            className="animate-swing absolute left-1/2 top-0 h-4 w-px bg-gray-400 opacity-30 motion-reduce:animate-none"
+            style={{ transformOrigin: '50% 0' }}
+          />
 
           {/* Brand Section */}
-          <div className={`border-b-2 border-white/90 ${getBrandPadding(data.brand)} flex items-center justify-center`}>
+          <div
+            className={`border-b-2 border-white/90 ${getBrandPadding(data.brand)} flex items-center justify-center`}
+          >
             <h1
               className={`text-center ${getBrandTextClasses(data.brand)} font-black uppercase tracking-wider text-black`}
               style={{
@@ -273,11 +278,12 @@ function DigitalTagContent({ data }: { data: DigitalTagData }) {
           </div>
 
           {/* CTA Section */}
-          <div className="p-6">
-            <Link href={`/product/${data.slug}`}>
-              <button className="w-full transform rounded-lg bg-white px-4 py-3 font-bold text-[#F92F7B] shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-xl">
-                View Full Product →
-              </button>
+          <div className="flex items-center justify-center p-6">
+            <Link
+              className="w-full transform rounded-lg bg-white px-4 py-3 text-center font-bold text-[#F92F7B] shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-xl"
+              href={`/product/${data.slug}`}
+            >
+              View Full Product →
             </Link>
           </div>
 
