@@ -15,7 +15,7 @@ interface SubscribeProps {
 export const Subscribe = ({ image }: SubscribeProps = {}) => {
   const t = useTranslations('Components.Subscribe');
 
-  const imageSrc = image?.src || imageManagerImageUrl('newsletter-background.png', '{:size}');
+  const imageSrc = image?.src || imageManagerImageUrl('newsletter-background.png', '1200w');
 
   return (
     <SubscribeSection

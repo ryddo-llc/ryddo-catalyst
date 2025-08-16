@@ -61,7 +61,8 @@ export const imageManagerImageUrl = (filename: string, sizeParam?: string, lossy
   let url = cdnImageUrlBuilder(sizeParam || '{:size}', 'image-manager', filename);
   
   // Add compression parameter for better performance unless explicitly disabled
-  if (lossy && sizeParam !== 'original') {
+  // Don't add query params to URL templates as it breaks CDN loader template replacement
+  if (lossy && sizeParam !== 'original' && sizeParam !== '{:size}') {
     url = `${url}?compression=lossy`;
   }
   

@@ -27,7 +27,6 @@ export function Subscribe({
 }) {
   const [isTabletOrLarger, setIsTabletOrLarger] = useState(false);
   const [parallaxOffset, setParallaxOffset] = useState(0);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -46,7 +45,7 @@ export function Subscribe({
 
   // Parallax effect
   const handleScroll = useCallback(() => {
-    if (!isTabletOrLarger || !image || !isImageLoaded) return;
+    if (!isTabletOrLarger || !image) return;
 
     // Cancel previous animation frame
     if (rafRef.current) {
@@ -84,10 +83,10 @@ export function Subscribe({
     scrollTimeoutRef.current = setTimeout(() => {
       setIsScrolling(false);
     }, 150);
-  }, [isTabletOrLarger, image, isImageLoaded]);
+  }, [isTabletOrLarger, image]);
 
   useEffect(() => {
-    if (!isTabletOrLarger || !image || !isImageLoaded) return;
+    if (!isTabletOrLarger || !image) return;
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Initial calculation
@@ -105,37 +104,7 @@ export function Subscribe({
         scrollTimeoutRef.current = null;
       }
     };
-  }, [handleScroll, isTabletOrLarger, image, isImageLoaded]);
-
-  // Lazy load background image
-  useEffect(() => {
-    if (!image) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !isImageLoaded) {
-            // Preload image before setting loaded state
-            const img = new window.Image();
-
-            img.onload = () => setIsImageLoaded(true);
-            img.src = image.src;
-          }
-        });
-      },
-      { rootMargin: '200px' },
-    );
-
-    const currentSection = sectionRef.current;
-
-    if (currentSection) {
-      observer.observe(currentSection);
-
-      return () => {
-        observer.unobserve(currentSection);
-      };
-    }
-  }, [image, isImageLoaded]);
+  }, [handleScroll, isTabletOrLarger, image]);
 
   return (
     <section
@@ -145,22 +114,32 @@ export function Subscribe({
       {/* Parallax Background Layer */}
       {image && (
         <div className="absolute inset-0 h-full w-full">
-          {isImageLoaded ? (
-            <div
-              className="absolute w-full bg-cover bg-center"
-              style={{
-                transform: isTabletOrLarger ? `translate3d(0, ${parallaxOffset}px, 0)` : 'none',
-                willChange: isScrolling ? 'transform' : 'auto',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
-                height: '120%',
-                top: '-10%',
-                backgroundImage: `url(${image.src})`,
-              }}
+          {/* Loading placeholder */}
+          <div className="absolute inset-0 animate-pulse bg-gray-100" />
+
+          {/* Parallax image container */}
+          <div
+            className="absolute w-full"
+            style={{
+              transform: isTabletOrLarger ? `translate3d(0, ${parallaxOffset}px, 0)` : 'none',
+              willChange: isScrolling ? 'transform' : 'auto',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+              height: '120%',
+              top: '-10%',
+            }}
+          >
+            <Image
+              alt={image.alt}
+              className="object-cover object-center"
+              fill
+              loading="lazy"
+              priority={false}
+              quality={100}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+              src={image.src}
             />
-          ) : (
-            <div className="absolute inset-0 animate-pulse bg-gray-100" />
-          )}
+          </div>
         </div>
       )}
 
