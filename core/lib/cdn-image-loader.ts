@@ -8,16 +8,19 @@ export default function bcCdnImageLoader({ src, width, quality }: ImageLoaderPro
   // Add compression parameter if not already present
   if (!url.includes('compression=') && !url.includes('lossy')) {
     const separator = url.includes('?') ? '&' : '?';
+
     url = `${url}${separator}compression=lossy`;
   }
   
   // Add quality parameter if specified and not already present
   if (quality && !url.includes('quality=')) {
     const separator = url.includes('?') ? '&' : '?';
+
     url = `${url}${separator}quality=${quality}`;
   } else if (!quality && !url.includes('quality=')) {
     // Add default quality of 85 for better compression if not specified
     const separator = url.includes('?') ? '&' : '?';
+
     url = `${url}${separator}quality=85`;
   }
 

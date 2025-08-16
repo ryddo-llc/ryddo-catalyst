@@ -56,7 +56,7 @@ export const contentImageUrl = (path: string, sizeParam?: string): string => {
  * @param {boolean} lossy - Whether to apply lossy compression. Defaults to true for better performance.
  * @returns {string} The resizeable URL template for the image, which can be used with `<Image>`.
  */
-export const imageManagerImageUrl = (filename: string, sizeParam?: string, lossy: boolean = true): string => {
+export const imageManagerImageUrl = (filename: string, sizeParam?: string, lossy = true): string => {
   // return a urlTemplate that can be used with the <Image> component
   let url = cdnImageUrlBuilder(sizeParam || '{:size}', 'image-manager', filename);
   
