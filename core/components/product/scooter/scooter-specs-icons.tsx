@@ -88,7 +88,7 @@ export function ScooterSpecsIcons({ specs }: ScooterSpecsIconsProps) {
       className="grid grid-cols-3 gap-1 md:gap-1"
       role="region"
     >
-      {specs.slice(0, 9).map((spec) => {
+      {specs.slice(0, 6).map((spec) => {
         const { iconSrc, alt } = getSpecIcon(spec.name);
 
         return (
