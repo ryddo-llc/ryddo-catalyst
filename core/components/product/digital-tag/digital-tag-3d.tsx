@@ -42,9 +42,11 @@ export function DigitalTag3D({ data }: DigitalTag3DProps) {
   // Responsive brand text sizing based on length
   const getBrandTextClasses = (brandName: string) => {
     const length = brandName.length;
+
     if (length <= 8) return 'text-4xl sm:text-5xl';
     if (length <= 12) return 'text-3xl sm:text-4xl';
     if (length <= 16) return 'text-2xl sm:text-3xl';
+    
     return 'text-xl sm:text-2xl';
   };
 
