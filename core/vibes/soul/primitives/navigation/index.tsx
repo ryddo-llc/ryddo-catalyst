@@ -226,28 +226,28 @@ const NavigationItem = memo<{
         </Link>
       </NavigationMenu.Trigger>
       {item.groups != null && item.groups.length > 0 && (
-        <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-1 md:px-6 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-          <div className="max-w-8xl md:max-w-6xl m-auto grid w-full grid-cols-4 justify-center pb-4 pt-3">
+        <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-3 md:px-4 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+          <div className="max-w-5xl md:max-w-4xl m-auto grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center gap-3 pb-3 pt-3">
             {item.groups.map((group, columnIndex) => (
               <ul className="flex flex-col" key={columnIndex}>
                 {/* Second Level Links */}
                 {group.label != null && group.label !== '' && (
                   <li className="group/category">
                     {group.href != null && group.href !== '' ? (
-                      <Link className="block relative overflow-hidden px-1 py-1 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2" href={group.href}>
-                        <div className="flex flex-col items-center gap-1">
+                      <Link className="block relative overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2" href={group.href}>
+                        <div className="flex flex-col items-center gap-0.5">
                           {group.image && (
                             <div className="relative">
                               <Image
                                 alt={group.image.altText}
                                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                                 className="rounded object-cover border-2 border-transparent transition-all group-hover/category:border-[#F92F7B]"
-                                height={200}
+                                height={240}
                                 loading="lazy"
                                 placeholder="blur"
-                                sizes="200px"
+                                sizes="240px"
                                 src={group.image.url}
-                                width={200}
+                                width={240}
                               />
                               {/* Secondary links overlay */}
                               {group.links.length > 0 && (
@@ -271,20 +271,20 @@ const NavigationItem = memo<{
                         </div>
                       </Link>
                     ) : (
-                      <div className="block relative overflow-hidden px-1 py-1 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
-                        <div className="flex flex-col items-center gap-1">
+                      <div className="block relative overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
+                        <div className="flex flex-col items-center gap-0.5">
                           {group.image && (
                             <div className="relative">
                               <Image
                                 alt={group.image.altText}
                                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                                 className="rounded object-cover border-2 border-transparent transition-all group-hover/category:border-[#F92F7B]"
-                                height={200}
+                                height={240}
                                 loading="lazy"
                                 placeholder="blur"
-                                sizes="200px"
+                                sizes="240px"
                                 src={group.image.url}
-                                width={200}
+                                width={240}
                               />
                               {/* Secondary links overlay */}
                               {group.links.length > 0 && (
@@ -756,7 +756,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       </div>
 
       <div className="perspective-[2000px] absolute left-0 right-0 top-full z-[110] flex w-full justify-center">
-        <NavigationMenu.Viewport className="relative mt-2 w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95" />
+        <NavigationMenu.Viewport className="relative mt-2 w-full max-w-4xl mx-auto data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95" />
       </div>
     </NavigationMenu.Root>
   );
