@@ -10,6 +10,7 @@ import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from '
 import { useParams, useSearchParams } from 'next/navigation';
 import React, {
   forwardRef,
+  memo,
   Ref,
   useActionState,
   useCallback,
@@ -194,6 +195,125 @@ const navGroupClassName =
 const navButtonClassName =
   'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
 
+// Memoized navigation item component for better performance
+const NavigationItem = memo<{
+  item: Link;
+  isActive: boolean;
+  isFloating: boolean;
+  index: number;
+}>(({ item, isActive, isFloating, index }) => {
+  return (
+    <NavigationMenu.Item key={index} value={index.toString()}>
+      <NavigationMenu.Trigger asChild>
+        <Link
+          className={clsx(
+            "text-md hidden items-center whitespace-nowrap rounded-xl p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex group relative",
+            {
+              "bg-[var(--nav-link-background-active,transparent)] text-[var(--nav-link-text-active,#F92F7B)]": isActive,
+              "bg-[var(--nav-link-background,transparent)] text-[var(--nav-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))]": !isActive
+            }
+          )}
+          href={item.href}
+        >
+          <span>{item.label}</span>
+          {item.groups != null && item.groups.length > 0 && (
+            <ChevronDown 
+              className={clsx(
+                "absolute left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+                isFloating ? "top-[calc(100%-8px)]" : "top-full"
+              )}
+              size={16}
+            />
+          )}
+        </Link>
+      </NavigationMenu.Trigger>
+      {item.groups != null && item.groups.length > 0 && (
+        <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-2 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+          <div className="max-w-8xl m-auto grid w-full grid-cols-4 justify-center pb-8 pt-5">
+            {item.groups.map((group, columnIndex) => (
+              <ul className="flex flex-col" key={columnIndex}>
+                {/* Second Level Links */}
+                {group.label != null && group.label !== '' && (
+                  <li>
+                    {group.href != null && group.href !== '' ? (
+                      <Link className={navGroupClassName} href={group.href}>
+                        <div className="flex flex-col items-center gap-2">
+                          {group.image && (
+                            <Image
+                              alt={group.image.altText}
+                              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                              className="rounded object-cover"
+                              height={80}
+                              loading="lazy"
+                              placeholder="blur"
+                              sizes="80px"
+                              src={group.image.url}
+                              width={80}
+                            />
+                          )}
+                          {group.label}
+                        </div>
+                      </Link>
+                    ) : (
+                      <span className={navGroupClassName}>
+                        <div className="flex flex-col items-center gap-2">
+                          {group.image && (
+                            <Image
+                              alt={group.image.altText}
+                              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                              className="rounded object-cover"
+                              height={80}
+                              loading="lazy"
+                              placeholder="blur"
+                              sizes="80px"
+                              src={group.image.url}
+                              width={80}
+                            />
+                          )}
+                          {group.label}
+                        </div>
+                      </span>
+                    )}
+                  </li>
+                )}
+
+                {group.links.map((link, idx) => (
+                  // Third Level Links
+                  <li key={idx}>
+                    <Link
+                      className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
+                      href={link.href}
+                    >
+                      <div className="flex flex-col items-center gap-2">
+                        {link.image && (
+                          <Image
+                            alt={link.image.altText}
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                            className="rounded object-cover"
+                            height={24}
+                            loading="lazy"
+                            placeholder="blur"
+                            sizes="24px"
+                            src={link.image.url}
+                            width={24}
+                          />
+                        )}
+                        {link.label}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </NavigationMenu.Content>
+      )}
+    </NavigationMenu.Item>
+  );
+});
+
+NavigationItem.displayName = 'NavigationItem';
+
 /**
  * This component supports various CSS variables for theming. Here's a comprehensive list, along
  * with their default values:
@@ -304,21 +424,29 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const pathname = usePathname();
 
 
-  useEffect(() => {
+  const handlePathChange = useCallback(() => {
     setIsMobileMenuOpen(false);
     setIsSearchOpen(false);
-  }, [pathname, setIsSearchOpen]);
+  }, [setIsSearchOpen]);
+
+  const handleScroll = useCallback(() => {
+    setIsSearchOpen(false);
+    setIsMobileMenuOpen(false);
+  }, [setIsSearchOpen]);
+
+  const handleMobileMenuToggle = useCallback(() => {
+    setIsMobileMenuOpen((prev) => !prev);
+  }, []);
 
   useEffect(() => {
-    function handleScroll() {
-      setIsSearchOpen(false);
-      setIsMobileMenuOpen(false);
-    }
+    handlePathChange();
+  }, [pathname, handlePathChange]);
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll);
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [setIsSearchOpen]);
+  }, [handleScroll]);
 
   return (
     <NavigationMenu.Root
@@ -342,7 +470,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             <MobileMenuButton
               aria-label={mobileMenuTriggerLabel}
               className="mr-1 @4xl:hidden"
-              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              onClick={handleMobileMenuToggle}
               open={isMobileMenuOpen}
             />
           </Popover.Trigger>
@@ -505,109 +633,20 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             value={streamableLinks}
           >
             {(links) => {
-              
               return links.map((item, i) => {
                 // Handle trailing slash differences
                 const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
                 const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
                 const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
                 
-                
                 return (
-                  <NavigationMenu.Item key={i} value={i.toString()}>
-                    <NavigationMenu.Trigger asChild>
-                      <Link
-                        className={clsx(
-                          "text-md hidden items-center whitespace-nowrap rounded-xl p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex group relative",
-                          {
-                            "bg-[var(--nav-link-background-active,transparent)] text-[var(--nav-link-text-active,#F92F7B)]": isActive,
-                            "bg-[var(--nav-link-background,transparent)] text-[var(--nav-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))]": !isActive
-                          }
-                        )}
-                        href={item.href}
-                      >
-                        <span>{item.label}</span>
-                        {item.groups != null && item.groups.length > 0 && (
-                          <ChevronDown 
-                            className={clsx(
-                              "absolute left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100",
-                              isFloating ? "top-[calc(100%-8px)]" : "top-full"
-                            )}
-                            size={16}
-                          />
-                        )}
-                      </Link>
-                  </NavigationMenu.Trigger>
-                  {item.groups != null && item.groups.length > 0 && (
-                    <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-2 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-                      <div className="max-w-8xl m-auto grid w-full grid-cols-4 justify-center pb-8 pt-5">
-                        {item.groups.map((group, columnIndex) => (
-                          <ul className="flex flex-col" key={columnIndex}>
-                            {/* Second Level Links */}
-                            {group.label != null && group.label !== '' && (
-                              <li>
-                                {group.href != null && group.href !== '' ? (
-                                  <Link className={navGroupClassName} href={group.href}>
-                                    <div className="flex flex-col items-center gap-2">
-                                      {group.image && (
-                                        <Image
-                                          alt={group.image.altText}
-                                          className="rounded object-cover"
-                                          height={300}
-                                          src={group.image.url}
-                                          width={300}
-                                        />
-                                      )}
-                                      {group.label}
-                                    </div>
-                                  </Link>
-                                ) : (
-                                  <span className={navGroupClassName}>
-                                    <div className="flex flex-col items-center gap-2">
-                                      {group.image && (
-                                        <Image
-                                          alt={group.image.altText}
-                                          className="rounded object-cover"
-                                          height={300}
-                                          src={group.image.url}
-                                          width={300}
-                                        />
-                                      )}
-                                      {group.label}
-                                    </div>
-                                  </span>
-                                )}
-                              </li>
-                            )}
-
-                            {group.links.map((link, idx) => (
-                              // Third Level Links
-                              <li key={idx}>
-                                <Link
-                                  className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                                  href={link.href}
-                                >
-                                  <div className="flex flex-col items-center gap-2">
-                                    {link.image && (
-                                      <Image
-                                        alt={link.image.altText}
-                                        className="rounded object-cover"
-                                        height={32}
-                                        src={link.image.url}
-                                        width={32}
-                                      />
-                                    )}
-                                    {link.label}
-                                  </div>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        ))}
-                      </div>
-                    </NavigationMenu.Content>
-                  )}
-                </NavigationMenu.Item>
+                  <NavigationItem
+                    index={i}
+                    isActive={isActive}
+                    isFloating={isFloating}
+                    item={item}
+                    key={i}
+                  />
                 );
               });
             }}
