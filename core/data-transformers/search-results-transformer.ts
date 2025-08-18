@@ -12,8 +12,8 @@ export async function searchResultsTransformer(
   const format = await getFormatter();
   const t = await getTranslations('Components.Header.Search');
 
-  const productResults: SearchResult = {
-    type: 'products',
+  const productResults = {
+    type: 'products' as const,
     title: t('products'),
     products: searchProducts.map((product) => {
       const price = pricesTransformer(product.prices, format);
@@ -28,10 +28,10 @@ export async function searchResultsTransformer(
         price,
       };
     }),
-  };
+  } satisfies SearchResult;
 
-  const categoryResults: SearchResult = {
-    type: 'links',
+  const categoryResults = {
+    type: 'links' as const,
     title: t('categories'),
     links:
       searchProducts.length > 0
@@ -47,10 +47,10 @@ export async function searchResultsTransformer(
             return { label: name, href: path };
           })
         : [],
-  };
+  } satisfies SearchResult;
 
-  const brandResults: SearchResult = {
-    type: 'links',
+  const brandResults = {
+    type: 'links' as const,
     title: t('brands'),
     links:
       searchProducts.length > 0
@@ -66,7 +66,7 @@ export async function searchResultsTransformer(
             return { label: name, href: path };
           })
         : [],
-  };
+  } satisfies SearchResult;
 
   const results: SearchResult[] = [];
 
