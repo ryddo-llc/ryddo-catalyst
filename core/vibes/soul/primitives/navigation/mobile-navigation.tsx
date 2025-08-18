@@ -1,12 +1,12 @@
 import { clsx } from 'clsx';
-import React, { forwardRef } from 'react';
+import { ComponentPropsWithoutRef, ComponentRef, forwardRef } from 'react';
 
-interface MobileMenuButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+interface MobileMenuButtonProps extends ComponentPropsWithoutRef<'button'> {
   open: boolean;
 }
 
 export const MobileMenuButton = forwardRef<
-  React.ComponentRef<'button'>,
+  ComponentRef<'button'>,
   MobileMenuButtonProps
 >(({ open, className, ...rest }, ref) => {
   return (

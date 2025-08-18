@@ -70,15 +70,15 @@ export async function searchResultsTransformer(
 
   const results = [];
 
-  if (categoryResults.links.length > 0) {
+  if (categoryResults.type === 'links' && categoryResults.links.length > 0) {
     results.push(categoryResults);
   }
 
-  if (brandResults.links.length > 0) {
+  if (brandResults.type === 'links' && brandResults.links.length > 0) {
     results.push(brandResults);
   }
 
-  if (productResults.products.length > 0) {
+  if (productResults.type === 'products' && productResults.products.length > 0) {
     results.push(productResults);
   }
 
