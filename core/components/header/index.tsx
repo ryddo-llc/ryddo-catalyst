@@ -37,9 +37,10 @@ const getCartCount = cache(async (cartId: string, customerAccessToken?: string) 
     variables: { cartId },
     customerAccessToken,
     fetchOptions: {
-      cache: 'no-store',
+      cache: 'no-store', // Cart data should remain fresh
       next: {
         tags: [TAGS.cart],
+        revalidate: 30, // But allow brief caching for 30 seconds to reduce API calls
       },
     },
   });
@@ -54,7 +55,14 @@ const getHeaderLinks = cache(async (customerAccessToken?: string) => {
     // Since this query is needed on every page, it's a good idea not to validate the customer access token.
     // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
     validateCustomerAccessToken: false,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: customerAccessToken 
+      ? { cache: 'no-store' } 
+      : { 
+          next: { 
+            revalidate: revalidate * 2, // Cache navigation data longer since it changes less frequently
+            tags: ['navigation'] // Add cache tags for more granular cache invalidation
+          } 
+        },
   });
 
   return readFragment(HeaderLinksFragment, response).site.categoryTree;

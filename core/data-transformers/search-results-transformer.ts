@@ -68,16 +68,19 @@ export async function searchResultsTransformer(
         : [],
   };
 
-  const results = [];
+  const results: SearchResult[] = [];
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (categoryResults.links.length > 0) {
     results.push(categoryResults);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (brandResults.links.length > 0) {
     results.push(brandResults);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (productResults.products.length > 0) {
     results.push(productResults);
   }

@@ -1,196 +1,23 @@
 'use client';
 
-import { SubmissionResult, useForm } from '@conform-to/react';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
-import debounce from 'lodash.debounce';
-import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from 'lucide-react';
-import { useParams, useSearchParams } from 'next/navigation';
-import React, {
-  forwardRef,
-  Ref,
-  useActionState,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-} from 'react';
-import { useFormStatus } from 'react-dom';
+import { Search, ShoppingBag, User } from 'lucide-react';
+import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
 
-import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Button } from '@/vibes/soul/primitives/button';
 import { Logo } from '@/vibes/soul/primitives/logo';
-import { Price } from '@/vibes/soul/primitives/price-label';
-import { ProductCard } from '@/vibes/soul/primitives/product-card';
-import { Image } from '~/components/image';
 import { Link } from '~/components/link';
-import { usePathname, useRouter } from '~/i18n/routing';
+import { usePathname } from '~/i18n/routing';
 import { useSearch } from '~/lib/search';
 
-interface Link {
-  label: string;
-  href: string;
-  groups?: Array<{
-    label?: string;
-    href?: string;
-    image?: {
-      url: string;
-      altText: string;
-    };
-    links: Array<{
-      label: string;
-      href: string;
-      image?: {
-        url: string;
-        altText: string;
-      };
-    }>;
-  }>;
-}
+import { CurrencyForm, LocaleSwitcher } from './locale-currency';
+import { MobileMenuButton } from './mobile-navigation';
+import { NavigationItem } from './navigation-item';
+import { SearchForm } from './search';
+import type { NavigationProps, SearchResult } from './types';
 
-interface Locale {
-  id: string;
-  label: string;
-}
-
-interface Currency {
-  id: string;
-  label: string;
-}
-
-type Action<State, Payload> = (
-  state: Awaited<State>,
-  payload: Awaited<Payload>,
-) => State | Promise<State>;
-
-export type SearchResult =
-  | {
-      type: 'products';
-      title: string;
-      products: Array<{
-        id: string;
-        title: string;
-        href: string;
-        price?: Price;
-        image?: { src: string; alt: string };
-      }>;
-    }
-  | {
-      type: 'links';
-      title: string;
-      links: Array<{ label: string; href: string }>;
-    };
-
-type CurrencyAction = Action<SubmissionResult | null, FormData>;
-type SearchAction<S extends SearchResult> = Action<
-  {
-    searchResults: S[] | null;
-    lastResult: SubmissionResult | null;
-    emptyStateTitle?: string;
-    emptyStateSubtitle?: string;
-  },
-  FormData
->;
-
-interface Props<S extends SearchResult> {
-  className?: string;
-  isFloating?: boolean;
-  accountHref: string;
-  cartCount?: Streamable<number | null>;
-  cartHref: string;
-  links: Streamable<Link[]>;
-  linksPosition?: 'center' | 'left' | 'right';
-  locales?: Locale[];
-  activeLocaleId?: string;
-  currencies?: Currency[];
-  activeCurrencyId?: Streamable<string | undefined>;
-  currencyAction?: CurrencyAction;
-  logo?: Streamable<string | { src: string; alt: string } | null>;
-  logoWidth?: number;
-  logoHeight?: number;
-  logoHref?: string;
-  logoLabel?: string;
-  mobileLogo?: Streamable<string | { src: string; alt: string } | null>;
-  mobileLogoWidth?: number;
-  mobileLogoHeight?: number;
-  searchHref: string;
-  searchParamName?: string;
-  searchAction?: SearchAction<S>;
-  searchInputPlaceholder?: string;
-  searchSubmitLabel?: string;
-  cartLabel?: string;
-  accountLabel?: string;
-  openSearchPopupLabel?: string;
-  searchLabel?: string;
-  mobileMenuTriggerLabel?: string;
-  switchCurrencyLabel?: string;
-}
-
-const MobileMenuButton = forwardRef<
-  React.ComponentRef<'button'>,
-  { open: boolean } & React.ComponentPropsWithoutRef<'button'>
->(({ open, className, ...rest }, ref) => {
-  return (
-    <button
-      {...rest}
-      className={clsx(
-        'group relative rounded-lg p-2 outline-0 ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:ring-2',
-        className,
-      )}
-      ref={ref}
-    >
-      <div className="flex h-4 w-4 origin-center transform flex-col justify-between overflow-hidden transition-all duration-300">
-        <div
-          className={clsx(
-            'h-px origin-left transform bg-[var(--nav-mobile-button-icon,hsl(var(--foreground)))] transition-all duration-300',
-            open ? 'translate-x-10' : 'w-7',
-          )}
-        />
-        <div
-          className={clsx(
-            'h-px transform rounded bg-[var(--nav-mobile-button-icon,hsl(var(--foreground)))] transition-all delay-75 duration-300',
-            open ? 'translate-x-10' : 'w-7',
-          )}
-        />
-        <div
-          className={clsx(
-            'h-px origin-left transform bg-[var(--nav-mobile-button-icon,hsl(var(--foreground)))] transition-all delay-150 duration-300',
-            open ? 'translate-x-10' : 'w-7',
-          )}
-        />
-
-        <div
-          className={clsx(
-            'absolute top-2 flex transform items-center justify-between bg-[var(--nav-mobile-button-icon,hsl(var(--foreground)))] transition-all duration-500',
-            open ? 'w-12 translate-x-0' : 'w-0 -translate-x-10',
-          )}
-        >
-          <div
-            className={clsx(
-              'absolute h-px w-4 transform bg-[var(--nav-mobile-button-icon,hsl(var(--foreground)))] transition-all delay-300 duration-500',
-              open ? 'rotate-45' : 'rotate-0',
-            )}
-          />
-          <div
-            className={clsx(
-              'absolute h-px w-4 transform bg-[var(--nav-mobile-button-icon,hsl(var(--foreground)))] transition-all delay-300 duration-500',
-              open ? '-rotate-45' : 'rotate-0',
-            )}
-          />
-        </div>
-      </div>
-    </button>
-  );
-});
-
-MobileMenuButton.displayName = 'MobileMenuButton';
-
-const navGroupClassName =
-  'block rounded-lg bg-[var(--nav-group-background,transparent)] px-3 py-2 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-group-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2';
 const navButtonClassName =
   'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
 
@@ -295,7 +122,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     searchLabel = 'Search',
     mobileMenuTriggerLabel = 'Toggle navigation',
     switchCurrencyLabel,
-  }: Props<S>,
+  }: NavigationProps<S>,
   ref: Ref<HTMLDivElement>,
 ) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -303,22 +130,29 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   const pathname = usePathname();
 
-
-  useEffect(() => {
+  const handlePathChange = useCallback(() => {
     setIsMobileMenuOpen(false);
     setIsSearchOpen(false);
-  }, [pathname, setIsSearchOpen]);
+  }, [setIsSearchOpen]);
+
+  const handleScroll = useCallback(() => {
+    setIsSearchOpen(false);
+    setIsMobileMenuOpen(false);
+  }, [setIsSearchOpen]);
+
+  const handleMobileMenuToggle = useCallback(() => {
+    setIsMobileMenuOpen((prev) => !prev);
+  }, []);
 
   useEffect(() => {
-    function handleScroll() {
-      setIsSearchOpen(false);
-      setIsMobileMenuOpen(false);
-    }
+    handlePathChange();
+  }, [pathname, handlePathChange]);
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll);
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [setIsSearchOpen]);
+  }, [handleScroll]);
 
   return (
     <NavigationMenu.Root
@@ -329,7 +163,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     >
       <div
         className={clsx(
-          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
+          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-1.5 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-5 @4xl:pr-2',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
@@ -342,7 +176,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             <MobileMenuButton
               aria-label={mobileMenuTriggerLabel}
               className="mr-1 @4xl:hidden"
-              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              onClick={handleMobileMenuToggle}
               open={isMobileMenuOpen}
             />
           </Popover.Trigger>
@@ -419,7 +253,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                         <LocaleSwitcher
                           activeLocaleId={activeLocaleId}
                           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                          locales={locales as [Locale, Locale, ...Locale[]]}
+                          locales={locales as [typeof locales[0], typeof locales[0], ...typeof locales]}
                         />
                       ) : null}
 
@@ -434,7 +268,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                               action={currencyAction}
                               activeCurrencyId={activeCurrencyId}
                               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                              currencies={currencies as [Currency, ...Currency[]]}
+                              currencies={currencies as [typeof currencies[0], ...typeof currencies]}
                             />
                           ) : null
                         }
@@ -505,106 +339,20 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             value={streamableLinks}
           >
             {(links) => {
-              
               return links.map((item, i) => {
                 // Handle trailing slash differences
                 const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
                 const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
                 const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
                 
-                
                 return (
-                  <NavigationMenu.Item key={i} value={i.toString()}>
-                    <NavigationMenu.Trigger asChild>
-                      <Link
-                        className={clsx(
-                          "text-md hidden items-center whitespace-nowrap rounded-xl p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex group relative",
-                          {
-                            "bg-[var(--nav-link-background-active,transparent)] text-[var(--nav-link-text-active,#F92F7B)]": isActive,
-                            "bg-[var(--nav-link-background,transparent)] text-[var(--nav-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))]": !isActive
-                          }
-                        )}
-                        href={item.href}
-                      >
-                        <span>{item.label}</span>
-                        {item.groups != null && item.groups.length > 0 && (
-                          <ChevronDown 
-                            className="absolute top-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100" 
-                            size={16}
-                          />
-                        )}
-                      </Link>
-                  </NavigationMenu.Trigger>
-                  {item.groups != null && item.groups.length > 0 && (
-                    <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-2 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-                      <div className="max-w-8xl m-auto grid w-full grid-cols-4 justify-center pb-8 pt-5">
-                        {item.groups.map((group, columnIndex) => (
-                          <ul className="flex flex-col" key={columnIndex}>
-                            {/* Second Level Links */}
-                            {group.label != null && group.label !== '' && (
-                              <li>
-                                {group.href != null && group.href !== '' ? (
-                                  <Link className={navGroupClassName} href={group.href}>
-                                    <div className="flex flex-col items-center gap-2">
-                                      {group.image && (
-                                        <Image
-                                          alt={group.image.altText}
-                                          className="rounded object-cover"
-                                          height={300}
-                                          src={group.image.url}
-                                          width={300}
-                                        />
-                                      )}
-                                      {group.label}
-                                    </div>
-                                  </Link>
-                                ) : (
-                                  <span className={navGroupClassName}>
-                                    <div className="flex flex-col items-center gap-2">
-                                      {group.image && (
-                                        <Image
-                                          alt={group.image.altText}
-                                          className="rounded object-cover"
-                                          height={300}
-                                          src={group.image.url}
-                                          width={300}
-                                        />
-                                      )}
-                                      {group.label}
-                                    </div>
-                                  </span>
-                                )}
-                              </li>
-                            )}
-
-                            {group.links.map((link, idx) => (
-                              // Third Level Links
-                              <li key={idx}>
-                                <Link
-                                  className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                                  href={link.href}
-                                >
-                                  <div className="flex flex-col items-center gap-2">
-                                    {link.image && (
-                                      <Image
-                                        alt={link.image.altText}
-                                        className="rounded object-cover"
-                                        height={32}
-                                        src={link.image.url}
-                                        width={32}
-                                      />
-                                    )}
-                                    {link.label}
-                                  </div>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        ))}
-                      </div>
-                    </NavigationMenu.Content>
-                  )}
-                </NavigationMenu.Item>
+                  <NavigationItem
+                    index={i}
+                    isActive={isActive}
+                    isFloating={isFloating}
+                    item={item}
+                    key={i}
+                  />
                 );
               });
             }}
@@ -680,7 +428,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               activeLocaleId={activeLocaleId}
               className="hidden @4xl:block"
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              locales={locales as [Locale, Locale, ...Locale[]]}
+              locales={locales as [typeof locales[0], typeof locales[0], ...typeof locales]}
             />
           ) : null}
 
@@ -696,7 +444,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   activeCurrencyId={activeCurrencyId}
                   className="hidden @4xl:block"
                   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                  currencies={currencies as [Currency, ...Currency[]]}
+                  currencies={currencies as [typeof currencies[0], ...typeof currencies]}
                   switchCurrencyLabel={switchCurrencyLabel}
                 />
               ) : null
@@ -706,7 +454,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       </div>
 
       <div className="perspective-[2000px] absolute left-0 right-0 top-full z-[110] flex w-full justify-center">
-        <NavigationMenu.Viewport className="relative mt-2 w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95" />
+        <NavigationMenu.Viewport className="relative mt-2 w-full max-w-4xl mx-auto data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95" />
       </div>
     </NavigationMenu.Root>
   );
@@ -714,380 +462,4 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
 Navigation.displayName = 'Navigation';
 
-function SearchForm<S extends SearchResult>({
-  searchAction,
-  searchParamName = 'query',
-  searchHref = '/search',
-  searchInputPlaceholder = 'Search Products',
-  searchSubmitLabel = 'Submit',
-}: {
-  searchAction: SearchAction<S>;
-  searchParamName?: string;
-  searchHref?: string;
-  searchInputPlaceholder?: string;
-  searchSubmitLabel?: string;
-}) {
-  const [query, setQuery] = useState('');
-  const [isSearching, startSearching] = useTransition();
-  const [{ searchResults, lastResult, emptyStateTitle, emptyStateSubtitle }, formAction] =
-    useActionState(searchAction, {
-      searchResults: null,
-      lastResult: null,
-    });
-  const [isDebouncing, setIsDebouncing] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isPending = isSearching || isDebouncing || isSubmitting;
-  const debouncedOnChange = useMemo(() => {
-    const debounced = debounce((q: string) => {
-      setIsDebouncing(false);
-
-      const formData = new FormData();
-
-      formData.append(searchParamName, q);
-
-      startSearching(() => {
-        formAction(formData);
-      });
-    }, 300);
-
-    return (q: string) => {
-      setIsDebouncing(true);
-
-      debounced(q);
-    };
-  }, [formAction, searchParamName]);
-
-  const [form] = useForm({ lastResult });
-
-  const handleSubmit = useCallback(() => {
-    setIsSubmitting(true);
-  }, []);
-
-  return (
-    <>
-      <form
-        action={searchHref}
-        className="flex items-center gap-3 px-3 py-3 @4xl:px-5 @4xl:py-4"
-        onSubmit={handleSubmit}
-      >
-        <SearchIcon
-          className="hidden shrink-0 text-[var(--nav-search-icon,hsl(var(--contrast-500)))] @xl:block"
-          size={20}
-          strokeWidth={1}
-        />
-        <input
-          className="grow bg-transparent pl-2 text-lg font-medium outline-0 focus-visible:outline-none @xl:pl-0"
-          name={searchParamName}
-          onChange={(e) => {
-            setQuery(e.currentTarget.value);
-            debouncedOnChange(e.currentTarget.value);
-          }}
-          placeholder={searchInputPlaceholder}
-          type="text"
-          value={query}
-        />
-        <SubmitButton loading={isPending} submitLabel={searchSubmitLabel} />
-      </form>
-
-      <SearchResults
-        emptySearchSubtitle={emptyStateSubtitle}
-        emptySearchTitle={emptyStateTitle}
-        errors={form.errors}
-        query={query}
-        searchParamName={searchParamName}
-        searchResults={searchResults}
-        stale={isPending}
-      />
-    </>
-  );
-}
-
-function SubmitButton({ loading, submitLabel }: { loading: boolean; submitLabel: string }) {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      loading={pending || loading}
-      shape="circle"
-      size="small"
-      type="submit"
-      variant="secondary"
-    >
-      <ArrowRight aria-label={submitLabel} size={20} strokeWidth={1.5} />
-    </Button>
-  );
-}
-
-function SearchResults({
-  query,
-  searchResults,
-  stale,
-  emptySearchTitle = `No results were found for '${query}'`,
-  emptySearchSubtitle = 'Please try another search.',
-  errors,
-}: {
-  query: string;
-  searchParamName: string;
-  emptySearchTitle?: string;
-  emptySearchSubtitle?: string;
-  searchResults: SearchResult[] | null;
-  stale: boolean;
-  errors?: string[];
-}) {
-  if (query === '') return null;
-
-  if (errors != null && errors.length > 0) {
-    if (stale) return null;
-
-    return (
-      <div className="flex flex-col border-t border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-6">
-        {errors.map((error) => (
-          <FormStatus key={error} type="error">
-            {error}
-          </FormStatus>
-        ))}
-      </div>
-    );
-  }
-
-  if (searchResults == null || searchResults.length === 0) {
-    if (stale) return null;
-
-    return (
-      <div className="flex flex-col border-t border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-6">
-        <p className="text-2xl font-medium text-[var(--nav-search-empty-title,hsl(var(--foreground)))]">
-          {emptySearchTitle}
-        </p>
-        <p className="text-[var(--nav-search-empty-subtitle,hsl(var(--contrast-500)))]">
-          {emptySearchSubtitle}
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={clsx(
-        'flex flex-1 flex-col overflow-y-auto border-t border-[var(--nav-search-divider,hsl(var(--contrast-100)))] @2xl:flex-row',
-        stale && 'opacity-50',
-      )}
-    >
-      {searchResults.map((result, index) => {
-        switch (result.type) {
-          case 'links': {
-            return (
-              <section
-                aria-label={result.title}
-                className="flex w-full flex-col gap-1 border-b border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-5 @2xl:max-w-80 @2xl:border-b-0 @2xl:border-r"
-                key={`result-${index}`}
-              >
-                <h3 className="mb-4 font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
-                  {result.title}
-                </h3>
-                <ul role="listbox">
-                  {result.links.map((link, i) => (
-                    <li key={i}>
-                      <Link
-                        className="block rounded-lg bg-[var(--nav-search-result-link-background,transparent)] px-3 py-4 font-[family-name:var(--nav-search-result-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-search-result-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-search-result-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-search-result-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                        href={link.href}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          }
-
-          case 'products': {
-            return (
-              <section
-                aria-label={result.title}
-                className="flex w-full flex-col gap-5 p-5"
-                key={`result-${index}`}
-              >
-                <h3 className="font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
-                  {result.title}
-                </h3>
-                <ul
-                  className="grid w-full grid-cols-2 gap-5 @xl:grid-cols-4 @2xl:grid-cols-2 @4xl:grid-cols-4"
-                  role="listbox"
-                >
-                  {result.products.map((product) => (
-                    <li key={product.id}>
-                      <ProductCard
-                        imageSizes="(min-width: 42rem) 25vw, 50vw"
-                        product={{
-                          id: product.id,
-                          title: product.title,
-                          href: product.href,
-                          price: product.price,
-                          image: product.image,
-                        }}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          }
-
-          default:
-            return null;
-        }
-      })}
-    </div>
-  );
-}
-
-const useSwitchLocale = () => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const params = useParams();
-  const searchParams = useSearchParams();
-
-  return useCallback(
-    (locale: string) =>
-      router.push(
-        // @ts-expect-error -- TypeScript will validate that only known `params`
-        // are used in combination with a given `pathname`. Since the two will
-        // always match for the current route, we can skip runtime checks.
-        { pathname, params, query: Object.fromEntries(searchParams.entries()) },
-        { locale },
-      ),
-    [pathname, params, router, searchParams],
-  );
-};
-
-function LocaleSwitcher({
-  locales,
-  activeLocaleId,
-  className,
-}: {
-  activeLocaleId?: string;
-  locales: [Locale, ...Locale[]];
-  className?: string;
-}) {
-  const activeLocale = locales.find((locale) => locale.id === activeLocaleId);
-  const [isPending, startTransition] = useTransition();
-  const switchLocale = useSwitchLocale();
-
-  return (
-    <div className={className}>
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger
-          className={clsx(
-            'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
-            navButtonClassName,
-          )}
-          disabled={isPending}
-        >
-          {activeLocale?.id ?? locales[0].id}
-          <ChevronDown size={16} strokeWidth={1.5} />
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Portal>
-          <DropdownMenu.Content
-            align="end"
-            className="z-[110] max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
-            sideOffset={16}
-          >
-            {locales.map(({ id, label }) => (
-              <DropdownMenu.Item
-                className={clsx(
-                  'cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
-                  {
-                    'text-[var(--nav-locale-link-text-selected,hsl(var(--foreground)))]':
-                      id === activeLocaleId,
-                  },
-                )}
-                key={id}
-                onSelect={() => startTransition(() => switchLocale(id))}
-              >
-                {label}
-              </DropdownMenu.Item>
-            ))}
-          </DropdownMenu.Content>
-        </DropdownMenu.Portal>
-      </DropdownMenu.Root>
-    </div>
-  );
-}
-
-function CurrencyForm({
-  action,
-  currencies,
-  activeCurrencyId,
-  switchCurrencyLabel = 'Switch currency',
-  className,
-}: {
-  activeCurrencyId?: string;
-  action: CurrencyAction;
-  currencies: [Currency, ...Currency[]];
-  switchCurrencyLabel?: string;
-  className?: string;
-}) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [lastResult, formAction] = useActionState(action, null);
-  const activeCurrency = currencies.find((currency) => currency.id === activeCurrencyId);
-
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    if (lastResult?.error) console.log(lastResult.error);
-  }, [lastResult?.error]);
-
-  return (
-    <div className={className}>
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger
-          className={clsx(
-            'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
-            navButtonClassName,
-          )}
-          disabled={isPending}
-        >
-          {activeCurrency?.label ?? currencies[0].label}
-          <ChevronDown size={16} strokeWidth={1.5}>
-            <title>{switchCurrencyLabel}</title>
-          </ChevronDown>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Portal>
-          <DropdownMenu.Content
-            align="end"
-            className="z-[110] max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
-            sideOffset={16}
-          >
-            {currencies.map((currency) => (
-              <DropdownMenu.Item
-                className={clsx(
-                  'cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
-                  {
-                    'text-[var(--nav-locale-link-text-selected,hsl(var(--foreground)))]':
-                      currency.id === activeCurrencyId,
-                  },
-                )}
-                key={currency.id}
-                onSelect={() => {
-                  // eslint-disable-next-line @typescript-eslint/require-await
-                  startTransition(async () => {
-                    const formData = new FormData();
-
-                    formData.append('id', currency.id);
-                    formAction(formData);
-
-                    // This is needed to refresh the Data Cache after the product has been added to the cart.
-                    // The cart id is not picked up after the first time the cart is created/updated.
-                    router.refresh();
-                  });
-                }}
-              >
-                {currency.label}
-              </DropdownMenu.Item>
-            ))}
-          </DropdownMenu.Content>
-        </DropdownMenu.Portal>
-      </DropdownMenu.Root>
-    </div>
-  );
-}
+export type { SearchResult } from './types';
