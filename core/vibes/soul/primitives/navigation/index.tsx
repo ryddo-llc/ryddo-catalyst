@@ -461,3 +461,5 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 });
 
 Navigation.displayName = 'Navigation';
+
+export type { SearchResult } from './types';

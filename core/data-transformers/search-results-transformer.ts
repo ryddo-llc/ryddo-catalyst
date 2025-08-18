@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ResultOf } from 'gql.tada';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
@@ -70,15 +71,15 @@ export async function searchResultsTransformer(
 
   const results: SearchResult[] = [];
 
-  if (categoryResults.type === 'links' && categoryResults.links.length > 0) {
+  if (categoryResults.links.length > 0) {
     results.push(categoryResults);
   }
 
-  if (brandResults.type === 'links' && brandResults.links.length > 0) {
+  if (brandResults.links.length > 0) {
     results.push(brandResults);
   }
 
-  if (productResults.type === 'products' && productResults.products.length > 0) {
+  if (productResults.products.length > 0) {
     results.push(productResults);
   }
 
