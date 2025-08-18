@@ -191,7 +191,7 @@ const MobileMenuButton = forwardRef<
 MobileMenuButton.displayName = 'MobileMenuButton';
 
 const navGroupClassName =
-  'block rounded-lg bg-[var(--nav-group-background,transparent)] px-3 py-2 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-group-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2';
+  'block rounded-lg bg-[var(--nav-group-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-group-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2';
 const navButtonClassName =
   'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
 
@@ -207,7 +207,7 @@ const NavigationItem = memo<{
       <NavigationMenu.Trigger asChild>
         <Link
           className={clsx(
-            "text-md hidden items-center whitespace-nowrap rounded-xl p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex group relative",
+            "text-md hidden items-center whitespace-nowrap rounded-xl p-2 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex group relative",
             {
               "bg-[var(--nav-link-background-active,transparent)] text-[var(--nav-link-text-active,#F92F7B)]": isActive,
               "bg-[var(--nav-link-background,transparent)] text-[var(--nav-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))]": !isActive
@@ -228,81 +228,91 @@ const NavigationItem = memo<{
         </Link>
       </NavigationMenu.Trigger>
       {item.groups != null && item.groups.length > 0 && (
-        <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-2 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-          <div className="max-w-8xl m-auto grid w-full grid-cols-4 justify-center pb-8 pt-5">
+        <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-1 md:px-6 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+          <div className="max-w-8xl md:max-w-6xl m-auto grid w-full grid-cols-4 justify-center pb-4 pt-3">
             {item.groups.map((group, columnIndex) => (
               <ul className="flex flex-col" key={columnIndex}>
                 {/* Second Level Links */}
                 {group.label != null && group.label !== '' && (
-                  <li>
+                  <li className="group/category">
                     {group.href != null && group.href !== '' ? (
-                      <Link className={navGroupClassName} href={group.href}>
-                        <div className="flex flex-col items-center gap-2">
+                      <Link className={clsx(navGroupClassName, "relative overflow-hidden")} href={group.href}>
+                        <div className="flex flex-col items-center gap-1">
                           {group.image && (
-                            <Image
-                              alt={group.image.altText}
-                              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                              className="rounded object-cover"
-                              height={80}
-                              loading="lazy"
-                              placeholder="blur"
-                              sizes="80px"
-                              src={group.image.url}
-                              width={80}
-                            />
+                            <div className="relative">
+                              <Image
+                                alt={group.image.altText}
+                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                                className="rounded object-cover transition-opacity group-hover/category:opacity-50"
+                                height={200}
+                                loading="lazy"
+                                placeholder="blur"
+                                sizes="200px"
+                                src={group.image.url}
+                                width={200}
+                              />
+                              {/* Secondary links overlay */}
+                              {group.links.length > 0 && (
+                                <div className="absolute inset-0 bg-black/70 rounded opacity-0 group-hover/category:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center p-2">
+                                  <div className="flex flex-col gap-1 max-h-full overflow-y-auto">
+                                    {group.links.map((link, linkIdx) => (
+                                      <Link
+                                        className="text-white text-xs font-medium hover:text-gray-200 transition-colors text-center px-1 py-0.5 rounded hover:bg-white/10"
+                                        href={link.href}
+                                        key={linkIdx}
+                                      >
+                                        {link.label}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           )}
                           {group.label}
                         </div>
                       </Link>
                     ) : (
-                      <span className={navGroupClassName}>
-                        <div className="flex flex-col items-center gap-2">
+                      <div className={clsx(navGroupClassName, "relative overflow-hidden")}>
+                        <div className="flex flex-col items-center gap-1">
                           {group.image && (
-                            <Image
-                              alt={group.image.altText}
-                              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                              className="rounded object-cover"
-                              height={80}
-                              loading="lazy"
-                              placeholder="blur"
-                              sizes="80px"
-                              src={group.image.url}
-                              width={80}
-                            />
+                            <div className="relative">
+                              <Image
+                                alt={group.image.altText}
+                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                                className="rounded object-cover transition-opacity group-hover/category:opacity-50"
+                                height={200}
+                                loading="lazy"
+                                placeholder="blur"
+                                sizes="200px"
+                                src={group.image.url}
+                                width={200}
+                              />
+                              {/* Secondary links overlay */}
+                              {group.links.length > 0 && (
+                                <div className="absolute inset-0 bg-black/70 rounded opacity-0 group-hover/category:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center p-2">
+                                  <div className="flex flex-col gap-1 max-h-full overflow-y-auto">
+                                    {group.links.map((link, linkIdx) => (
+                                      <Link
+                                        className="text-white text-xs font-medium hover:text-gray-200 transition-colors text-center px-1 py-0.5 rounded hover:bg-white/10"
+                                        href={link.href}
+                                        key={linkIdx}
+                                      >
+                                        {link.label}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           )}
                           {group.label}
                         </div>
-                      </span>
+                      </div>
                     )}
                   </li>
                 )}
 
-                {group.links.map((link, idx) => (
-                  // Third Level Links
-                  <li key={idx}>
-                    <Link
-                      className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                      href={link.href}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        {link.image && (
-                          <Image
-                            alt={link.image.altText}
-                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                            className="rounded object-cover"
-                            height={24}
-                            loading="lazy"
-                            placeholder="blur"
-                            sizes="24px"
-                            src={link.image.url}
-                            width={24}
-                          />
-                        )}
-                        {link.label}
-                      </div>
-                    </Link>
-                  </li>
-                ))}
               </ul>
             ))}
           </div>
@@ -457,7 +467,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     >
       <div
         className={clsx(
-          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
+          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-1.5 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-5 @4xl:pr-2',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
