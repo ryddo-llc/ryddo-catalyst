@@ -87,7 +87,7 @@ export function ProductCard({
           {imageUrl ? (
             <Image
               alt={productName || 'Product image'}
-              className="object-contain"
+              className="object-cover"
               fill
               loading="lazy"
               priority={imagePriority}
