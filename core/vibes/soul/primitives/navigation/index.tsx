@@ -190,8 +190,6 @@ const MobileMenuButton = forwardRef<
 
 MobileMenuButton.displayName = 'MobileMenuButton';
 
-const navGroupClassName =
-  'block rounded-lg bg-[var(--nav-group-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-group-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2';
 const navButtonClassName =
   'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
 
@@ -236,14 +234,14 @@ const NavigationItem = memo<{
                 {group.label != null && group.label !== '' && (
                   <li className="group/category">
                     {group.href != null && group.href !== '' ? (
-                      <Link className={clsx(navGroupClassName, "relative overflow-hidden")} href={group.href}>
+                      <Link className="block relative overflow-hidden px-1 py-1 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2" href={group.href}>
                         <div className="flex flex-col items-center gap-1">
                           {group.image && (
                             <div className="relative">
                               <Image
                                 alt={group.image.altText}
                                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                                className="rounded object-cover transition-opacity group-hover/category:opacity-50"
+                                className="rounded object-cover border-2 border-transparent transition-all group-hover/category:border-[#F92F7B]"
                                 height={200}
                                 loading="lazy"
                                 placeholder="blur"
@@ -253,11 +251,11 @@ const NavigationItem = memo<{
                               />
                               {/* Secondary links overlay */}
                               {group.links.length > 0 && (
-                                <div className="absolute inset-0 bg-black/70 rounded opacity-0 group-hover/category:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center p-2">
-                                  <div className="flex flex-col gap-1 max-h-full overflow-y-auto">
-                                    {group.links.map((link, linkIdx) => (
+                                <div className="absolute bottom-1 right-1 opacity-0 group-hover/category:opacity-100 transition-opacity duration-200">
+                                  <div className="flex flex-col gap-0.5 items-end">
+                                    {group.links.slice(0, 4).map((link, linkIdx) => (
                                       <Link
-                                        className="text-white text-xs font-medium hover:text-gray-200 transition-colors text-center px-1 py-0.5 rounded hover:bg-white/10"
+                                        className="text-xs font-medium text-gray-800 bg-white/90 hover:bg-white hover:text-[#F92F7B] transition-colors px-2 py-0.5 rounded-md shadow-sm border border-gray-200"
                                         href={link.href}
                                         key={linkIdx}
                                       >
@@ -273,14 +271,14 @@ const NavigationItem = memo<{
                         </div>
                       </Link>
                     ) : (
-                      <div className={clsx(navGroupClassName, "relative overflow-hidden")}>
+                      <div className="block relative overflow-hidden px-1 py-1 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
                         <div className="flex flex-col items-center gap-1">
                           {group.image && (
                             <div className="relative">
                               <Image
                                 alt={group.image.altText}
                                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                                className="rounded object-cover transition-opacity group-hover/category:opacity-50"
+                                className="rounded object-cover border-2 border-transparent transition-all group-hover/category:border-[#F92F7B]"
                                 height={200}
                                 loading="lazy"
                                 placeholder="blur"
@@ -290,11 +288,11 @@ const NavigationItem = memo<{
                               />
                               {/* Secondary links overlay */}
                               {group.links.length > 0 && (
-                                <div className="absolute inset-0 bg-black/70 rounded opacity-0 group-hover/category:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center p-2">
-                                  <div className="flex flex-col gap-1 max-h-full overflow-y-auto">
-                                    {group.links.map((link, linkIdx) => (
+                                <div className="absolute bottom-1 right-1 opacity-0 group-hover/category:opacity-100 transition-opacity duration-200">
+                                  <div className="flex flex-col gap-0.5 items-end">
+                                    {group.links.slice(0, 4).map((link, linkIdx) => (
                                       <Link
-                                        className="text-white text-xs font-medium hover:text-gray-200 transition-colors text-center px-1 py-0.5 rounded hover:bg-white/10"
+                                        className="text-xs font-medium text-gray-800 bg-white/90 hover:bg-white hover:text-[#F92F7B] transition-colors px-2 py-0.5 rounded-md shadow-sm border border-gray-200"
                                         href={link.href}
                                         key={linkIdx}
                                       >
