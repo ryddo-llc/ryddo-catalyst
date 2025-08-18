@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 
 import { Image } from '~/components/image';
+import { blurDataURLs } from '~/lib/generate-blur-placeholder';
 
 import SlideUpPopup from '../ui/slide-up-popup';
 
@@ -40,9 +41,13 @@ export default function AdventuresPopup({ isOpen, onClose }: AdventuresPopupProp
         <div className="absolute inset-0 z-0">
           <Image
             alt="Ryddo adventure - person on electric bike"
+            blurDataURL={blurDataURLs['super73-girl']}
             className="object-cover object-top object-right transition-all duration-300 ease-out"
             fill
+            placeholder="blur"
             priority
+            quality={80}
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw"
             src="/images/backgrounds/super73-girl.webp"
           />
         </div>

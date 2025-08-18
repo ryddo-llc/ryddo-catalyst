@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { Image } from '~/components/image';
+import { blurDataURLs } from '~/lib/generate-blur-placeholder';
 
 import SlideUpPopup from '../ui/slide-up-popup';
 
@@ -53,9 +54,13 @@ export default function BookNowPopup({ isOpen, onClose }: BookNowPopupProps) {
         <div className="absolute inset-0 z-0">
           <Image
             alt="Ryddo background"
+            blurDataURL={blurDataURLs['default-background']}
             className="object-cover"
             fill
+            placeholder="blur"
             priority
+            quality={80}
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw"
             src="/images/backgrounds/default-background.webp"
           />
         </div>
