@@ -529,7 +529,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                         <span>{item.label}</span>
                         {item.groups != null && item.groups.length > 0 && (
                           <ChevronDown 
-                            className="absolute top-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100" 
+                            className={clsx(
+                              "absolute left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+                              isFloating ? "top-[calc(100%-8px)]" : "top-full"
+                            )}
                             size={16}
                           />
                         )}
