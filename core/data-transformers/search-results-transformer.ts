@@ -68,7 +68,7 @@ export async function searchResultsTransformer(
         : [],
   };
 
-  const results = [];
+  const results: SearchResult[] = [];
 
   if (categoryResults.type === 'links' && categoryResults.links.length > 0) {
     results.push(categoryResults);
