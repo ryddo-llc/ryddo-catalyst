@@ -53,7 +53,7 @@ export default function PartnersContactBar() {
   };
 
   return (
-    <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-xs font-bold text-white sm:text-sm lg:flex-row">
+    <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-xs font-bold text-white sm:text-sm md:flex-row">
       {/* Mobile Layout - Two buttons side by side */}
       <div className="flex w-full md:hidden">
         {/* Adventures Button - Mobile */}
