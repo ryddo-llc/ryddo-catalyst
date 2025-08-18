@@ -23,4 +23,5 @@ export function getBase64BlurDataURL(): string {
 
 export const blurDataURLs = {
   'super73-girl': 'data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADQAQCdASoQAAUAAkA4JZwCdAEO/gcqUAD++P3h5Ov18/zhzf5Pv8AgYbE6H8s+kx4pf6f//5P/vxjHkf//ye5s3IixYV/k/yYAA==',
+  'default-background': 'data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADwAQCdASoQAAkAAkA4JZwCdAEO/gcqUAD++QP39e7v//P8/5AA/vjE/+/s8/n9/e7v//P8/5AA/vjE/+/s8/n9/e7v//P8/5AA/vjE/+/s8/n9/e7vAAA=',
 };
