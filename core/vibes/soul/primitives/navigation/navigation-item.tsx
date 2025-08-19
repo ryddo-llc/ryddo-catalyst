@@ -1,7 +1,8 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { clsx } from 'clsx';
 import { ChevronDown } from 'lucide-react';
-import { memo } from 'react';
+import { memo, useRef } from 'react';
+import { useRouter } from '~/i18n/routing';
 
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
@@ -17,6 +18,17 @@ interface NavigationItemProps {
 }
 
 export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFloating, index }) => {
+  const router = useRouter();
+  const prefetchedRefs = useRef<Set<string>>(new Set());
+  
+  const handlePrefetch = (href: string) => {
+    if (!prefetchedRefs.current.has(href)) {
+      // @ts-expect-error - prefetch method exists on router
+      router.prefetch(href);
+      prefetchedRefs.current.add(href);
+    }
+  };
+  
   return (
     <NavigationMenu.Item key={index} value={index.toString()}>
       <NavigationMenu.Trigger asChild>
@@ -53,10 +65,20 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                 {group.label != null && group.label !== '' && (
                   <li className="group/category">
                     {group.href != null && group.href !== '' ? (
-                      <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-within:outline-0 focus-within:ring-2">
-                        <Link
-                          className="flex flex-col items-center gap-0.5"
-                          href={group.href}
+                      <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
+                        <div
+                          className="flex flex-col items-center gap-0.5 cursor-pointer"
+                          onClick={() => router.push(group.href)}
+                          onMouseEnter={() => handlePrefetch(group.href)}
+                          onTouchStart={() => handlePrefetch(group.href)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              router.push(group.href);
+                            }
+                          }}
+                          role="link"
+                          tabIndex={0}
                         >
                           {group.image && (
                             <div className="relative">
@@ -85,6 +107,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                         )}
                                         href={link.href}
                                         key={linkIdx}
+                                        onClick={(e) => e.stopPropagation()}
                                         style={{ transitionDelay: `${linkIdx * 75}ms` }}
                                       >
                                         {link.label}
@@ -96,7 +119,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                             </div>
                           )}
                           {group.label}
-                        </Link>
+                        </div>
                       </div>
                     ) : (
                       <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
