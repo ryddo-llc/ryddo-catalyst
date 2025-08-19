@@ -5,6 +5,7 @@ import { memo } from 'react';
 
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
 
 import type { Link as NavigationLink } from './types';
 
@@ -56,11 +57,12 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                             <div className="relative">
                               <Image
                                 alt={group.image.altText}
-                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                                blurDataURL={getBase64BlurDataURL()}
                                 className="rounded object-cover border-2 border-transparent transition-all group-hover/category:border-[#F92F7B]"
                                 height={300}
-                                loading="lazy"
+                                loading="eager"
                                 placeholder="blur"
+                                priority
                                 sizes="300px"
                                 src={group.image.url}
                                 width={300}
@@ -93,11 +95,12 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                             <div className="relative">
                               <Image
                                 alt={group.image.altText}
-                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                                blurDataURL={getBase64BlurDataURL()}
                                 className="rounded object-cover border-2 border-transparent transition-all group-hover/category:border-[#F92F7B]"
                                 height={300}
-                                loading="lazy"
+                                loading="eager"
                                 placeholder="blur"
+                                priority
                                 sizes="300px"
                                 src={group.image.url}
                                 width={300}
