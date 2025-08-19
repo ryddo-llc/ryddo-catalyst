@@ -2,10 +2,10 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { clsx } from 'clsx';
 import { ChevronDown } from 'lucide-react';
 import { memo, useRef } from 'react';
-import { useRouter } from '~/i18n/routing';
 
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { useRouter } from '~/i18n/routing';
 import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
 
 import type { Link as NavigationLink } from './types';
@@ -21,9 +21,8 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
   const router = useRouter();
   const prefetchedRefs = useRef<Set<string>>(new Set());
   
-  const handlePrefetch = (href: string) => {
-    if (!prefetchedRefs.current.has(href)) {
-      // @ts-expect-error - prefetch method exists on router
+  const handlePrefetch = (href: string | undefined) => {
+    if (href && !prefetchedRefs.current.has(href)) {
       router.prefetch(href);
       prefetchedRefs.current.add(href);
     }
@@ -68,15 +67,15 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                       <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
                         <div
                           className="flex flex-col items-center gap-0.5 cursor-pointer"
-                          onClick={() => router.push(group.href)}
-                          onMouseEnter={() => handlePrefetch(group.href)}
-                          onTouchStart={() => handlePrefetch(group.href)}
+                          onClick={() => group.href && router.push(group.href)}
                           onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
                               e.preventDefault();
-                              router.push(group.href);
+                              if (group.href) router.push(group.href);
                             }
                           }}
+                          onMouseEnter={() => handlePrefetch(group.href)}
+                          onTouchStart={() => handlePrefetch(group.href)}
                           role="link"
                           tabIndex={0}
                         >
