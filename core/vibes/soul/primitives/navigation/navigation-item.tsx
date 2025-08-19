@@ -53,11 +53,11 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                 {group.label != null && group.label !== '' && (
                   <li className="group/category">
                     {group.href != null && group.href !== '' ? (
-                      <Link
-                        className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2"
-                        href={group.href}
-                      >
-                        <div className="flex flex-col items-center gap-0.5">
+                      <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2">
+                        <Link
+                          className="flex flex-col items-center gap-0.5"
+                          href={group.href}
+                        >
                           {group.image && (
                             <div className="relative">
                               <Image
@@ -71,18 +71,22 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                 src={group.image.url}
                                 width={300}
                               />
-                              {/* Secondary links overlay */}
+                              {/* Secondary links overlay - positioned relative to image */}
                               {group.links.length > 0 && (
-                                <div className="absolute bottom-1 right-1 opacity-0 transition-opacity duration-200 group-hover/category:opacity-100">
-                                  <div className="flex flex-col items-end gap-0.5">
+                                <div className="absolute bottom-1 right-1 opacity-0 transition-opacity duration-200 group-hover/category:opacity-100 pointer-events-none">
+                                  <div className="flex flex-col items-end gap-0.5 pointer-events-auto">
                                     {group.links.slice(0, 4).map((link, linkIdx) => (
-                                      <Link
+                                      <button
                                         className="rounded-md border border-gray-200 bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-colors hover:bg-white hover:text-[#F92F7B]"
-                                        href={link.href}
                                         key={linkIdx}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          window.location.href = link.href;
+                                        }}
                                       >
                                         {link.label}
-                                      </Link>
+                                      </button>
                                     ))}
                                   </div>
                                 </div>
@@ -90,8 +94,8 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                             </div>
                           )}
                           {group.label}
-                        </div>
-                      </Link>
+                        </Link>
+                      </div>
                     ) : (
                       <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
                         <div className="flex flex-col items-center gap-0.5">
@@ -108,18 +112,22 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                 src={group.image.url}
                                 width={300}
                               />
-                              {/* Secondary links overlay */}
+                              {/* Secondary links overlay - positioned relative to image */}
                               {group.links.length > 0 && (
                                 <div className="absolute bottom-1 right-1 opacity-0 transition-opacity duration-200 group-hover/category:opacity-100">
                                   <div className="flex flex-col items-end gap-0.5">
                                     {group.links.slice(0, 4).map((link, linkIdx) => (
-                                      <Link
+                                      <button
                                         className="rounded-md border border-gray-200 bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-colors hover:bg-white hover:text-[#F92F7B]"
-                                        href={link.href}
                                         key={linkIdx}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          window.location.href = link.href;
+                                        }}
                                       >
                                         {link.label}
-                                      </Link>
+                                      </button>
                                     ))}
                                   </div>
                                 </div>
