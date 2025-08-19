@@ -53,7 +53,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                 {group.label != null && group.label !== '' && (
                   <li className="group/category">
                     {group.href != null && group.href !== '' ? (
-                      <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2">
+                      <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-within:outline-0 focus-within:ring-2">
                         <Link
                           className="flex flex-col items-center gap-0.5"
                           href={group.href}
@@ -76,17 +76,19 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                 <div className="absolute bottom-1 right-1 opacity-0 transition-opacity duration-200 group-hover/category:opacity-100 pointer-events-none">
                                   <div className="flex flex-col items-end gap-0.5 pointer-events-auto">
                                     {group.links.slice(0, 4).map((link, linkIdx) => (
-                                      <button
-                                        className="rounded-md border border-gray-200 bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-colors hover:bg-white hover:text-[#F92F7B]"
+                                      <Link
+                                        className={clsx(
+                                          "rounded-md border border-gray-200 bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-all duration-500 hover:bg-white hover:text-[#F92F7B] hover:scale-105 hover:shadow-md",
+                                          "translate-y-2 scale-95 opacity-0 group-hover/category:translate-y-0 group-hover/category:scale-100 group-hover/category:opacity-100",
+                                          "motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 motion-reduce:scale-100",
+                                          `group-hover/category:delay-[${linkIdx * 50}ms]`
+                                        )}
+                                        href={link.href}
                                         key={linkIdx}
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                          window.location.href = link.href;
-                                        }}
+                                        style={{ transitionDelay: `${linkIdx * 75}ms` }}
                                       >
                                         {link.label}
-                                      </button>
+                                      </Link>
                                     ))}
                                   </div>
                                 </div>
@@ -117,17 +119,19 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                 <div className="absolute bottom-1 right-1 opacity-0 transition-opacity duration-200 group-hover/category:opacity-100">
                                   <div className="flex flex-col items-end gap-0.5">
                                     {group.links.slice(0, 4).map((link, linkIdx) => (
-                                      <button
-                                        className="rounded-md border border-gray-200 bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-colors hover:bg-white hover:text-[#F92F7B]"
+                                      <Link
+                                        className={clsx(
+                                          "rounded-md border border-gray-200 bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-all duration-500 hover:bg-white hover:text-[#F92F7B] hover:scale-105 hover:shadow-md",
+                                          "translate-y-2 scale-95 opacity-0 group-hover/category:translate-y-0 group-hover/category:scale-100 group-hover/category:opacity-100",
+                                          "motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 motion-reduce:scale-100",
+                                          `group-hover/category:delay-[${linkIdx * 50}ms]`
+                                        )}
+                                        href={link.href}
                                         key={linkIdx}
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                          window.location.href = link.href;
-                                        }}
+                                        style={{ transitionDelay: `${linkIdx * 75}ms` }}
                                       >
                                         {link.label}
-                                      </button>
+                                      </Link>
                                     ))}
                                   </div>
                                 </div>
