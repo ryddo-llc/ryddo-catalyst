@@ -8,12 +8,12 @@ import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-
 export function PaymentOptions() {
   return (
     <section
-      className="relative w-full h-screen max-h-[800px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] bg-[url(/images/backgrounds/payment-options-background.webp)] md:bg-fixed"
+      className="relative w-full h-screen min-h-[600px] max-h-[800px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] bg-[url(/images/backgrounds/payment-options-background.webp)] md:bg-fixed"
     >
       <div
         className="relative mx-auto lg:ml-[16vw] lg:mr-0
           w-[90vw] max-w-[500px] min-w-[320px]
-          max-h-[70vh] flex-shrink-0 overflow-hidden rounded-xl"
+          min-h-[375px] flex-shrink-0 overflow-hidden rounded-xl"
       >
         <Image
           alt=""
@@ -24,7 +24,7 @@ export function PaymentOptions() {
           src="/images/backgrounds/newsletter-form.webp"
         />
 
-        <div className="relative flex flex-col h-full p-6 sm:p-8">
+        <div className="relative flex flex-col min-h-0 flex-1 p-6 sm:p-8">
           <h2 className="text-4xl font-bold -mt-4 -mb-2 text-center">
             Payment Options
             <span className="text-[#F92F7B] text-5xl align-baseline">.</span>
