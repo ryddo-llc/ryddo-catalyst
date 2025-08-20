@@ -27,9 +27,9 @@ export interface ResponsiveTextConfig {
 /**
  * Generate responsive text size classes based on content length
  * 
- * @param text - The text content to size (used for length calculation)
- * @param options - Configuration options
- * @returns Tailwind CSS classes for responsive text sizing
+ * @param {string} [text] - The text content to size (used for length calculation)
+ * @param {object} [options] - Configuration options
+ * @returns {string} Tailwind CSS classes for responsive text sizing
  * 
  * @example
  * ```typescript
@@ -66,8 +66,8 @@ export function calculateResponsiveTextClasses(
 /**
  * Get responsive positioning classes for background text
  * 
- * @param containerHeight - Height context ('short' | 'medium' | 'tall')
- * @returns Tailwind CSS classes for responsive positioning
+ * @param {('short'|'medium'|'tall')} [containerHeight='medium'] - Height context ('short' | 'medium' | 'tall')
+ * @returns {string} Tailwind CSS classes for responsive positioning
  */
 export function getResponsivePositioning(
   containerHeight: 'short' | 'medium' | 'tall' = 'medium'
@@ -86,8 +86,8 @@ export function getResponsivePositioning(
  * Positions text along the diagonal break between colored and white sections
  * Based on clipPath: 'polygon(0 0, 160% 0, 0 60%)'
  * 
- * @param alignment - Where along the diagonal to position ('start' | 'center' | 'end')
- * @returns Tailwind CSS classes for diagonal positioning
+ * @param {('start'|'center'|'end')} [alignment='center'] - Where along the diagonal to position ('start' | 'center' | 'end')
+ * @returns {string} Tailwind CSS classes for diagonal positioning
  */
 export function getDiagonalPositioning(
   alignment: 'start' | 'center' | 'end' = 'center'
@@ -108,6 +108,8 @@ export function getDiagonalPositioning(
 
 /**
  * Get text configuration based on character length
+ * @param {number} length - Character length of the text
+ * @returns {ResponsiveTextConfig} Configuration object with responsive text sizes
  */
 function getConfigForLength(length: number): ResponsiveTextConfig {
   // Very short names (1-6 chars): Largest sizes - significantly bigger
@@ -195,6 +197,9 @@ function getConfigForLength(length: number): ResponsiveTextConfig {
 
 /**
  * Generate the final class string from configuration
+ * @param {ResponsiveTextConfig} config - The responsive text configuration
+ * @param {object} [options] - Additional sizing options
+ * @returns {string} Tailwind CSS classes for text sizing
  */
 function generateSizeClasses(
   config: ResponsiveTextConfig, 
@@ -230,15 +235,31 @@ function generateSizeClasses(
  * Predefined configurations for common use cases
  */
 export const textSizePresets = {
-  /** Hero text that should be very prominent */
+  /** 
+   * Hero text that should be very prominent
+   * @param {string} [text] - The text content to size
+   * @returns {string} Tailwind CSS classes for hero text
+   */
   hero: (text?: string) => calculateResponsiveTextClasses(text, { useViewportSizing: true }),
   
-  /** Background watermark text */
+  /** 
+   * Background watermark text
+   * @param {string} [text] - The text content to size
+   * @returns {string} Tailwind CSS classes for watermark text
+   */
   watermark: (text?: string) => calculateResponsiveTextClasses(text),
   
-  /** Display text for headings */
+  /** 
+   * Display text for headings
+   * @param {string} [text] - The text content to size
+   * @returns {string} Tailwind CSS classes for display text
+   */
   display: (text?: string) => calculateResponsiveTextClasses(text, { minSize: 'text-xl' }),
   
-  /** Compact text for tight spaces */
+  /** 
+   * Compact text for tight spaces
+   * @param {string} [text] - The text content to size
+   * @returns {string} Tailwind CSS classes for compact text
+   */
   compact: (text?: string) => calculateResponsiveTextClasses(text, { maxSize: 'text-6xl' })
 } as const;
