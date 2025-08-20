@@ -22,7 +22,7 @@ export default function InfoSection() {
           className="my-3 flex items-center justify-center gap-1 font-bold text-pink-500 md:justify-start"
           href="/about"
         >
-          Learn More <FiArrowRight />
+          Learn More About Our Mission <FiArrowRight />
         </Link>
       </div>
 
