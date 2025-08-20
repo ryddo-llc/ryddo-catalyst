@@ -9,6 +9,7 @@ import { Image } from '~/components/image';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/scooter-product-transformer';
 import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
+import { findBackgroundImage, findHeroProductImage } from '~/lib/image-resolver';
 
 import { ProductBadges } from '../shared/product-badges';
 import {
@@ -111,9 +112,10 @@ export function ProductDetailScooter<F extends Field>({
                     <div className="absolute inset-0 h-full w-full">
                       <Stream fallback={null} value={product.images}>
                         {(images) => {
+                          const backgroundImage = findBackgroundImage(images);
                           const backgroundSrc =
                             product.backgroundImage ||
-                            images[1]?.src ||
+                            backgroundImage?.src ||
                             '/images/backgrounds/default-background.webp';
 
                           return (
@@ -173,15 +175,13 @@ export function ProductDetailScooter<F extends Field>({
                             <div className="mx-auto w-full max-w-[280px] px-4 md:max-w-sm">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
-                                  const scooterImage = images[2] ?? images[0];
+                                  const scooterImage = findHeroProductImage(images) ?? images[0];
 
                                   return scooterImage ? (
                                     <Image
                                       alt={scooterImage.alt}
-                                      blurDataURL={getBase64BlurDataURL()}
                                       className="h-auto max-h-full w-full object-contain"
                                       height={1000}
-                                      placeholder="blur"
                                       priority
                                       src={scooterImage.src}
                                       width={2000}

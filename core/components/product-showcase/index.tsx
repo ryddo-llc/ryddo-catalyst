@@ -13,6 +13,7 @@ import {
 } from '@/vibes/soul/primitives/carousel';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
+import { findShowcaseImages } from '~/lib/image-resolver';
 
 export interface ProductImage {
   src: string;
@@ -68,8 +69,6 @@ export function ProductShowcase({
   productName,
   description,
 }: ProductShowcaseProps) {
-  const startingImageIndex = 2;
-  const endingImageIndex = 5;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState<ReturnType<typeof useEmblaCarousel>[1]>();
 
@@ -144,13 +143,14 @@ export function ProductShowcase({
             );
           }
 
-          const effectiveEndIndex = Math.min(endingImageIndex, imagesData.length);
-          const slicedImages = imagesData.slice(startingImageIndex, effectiveEndIndex);
+          // Use smart image resolution for showcase images
+          const showcaseImages = findShowcaseImages(imagesData);
+          console.log(showcaseImages)
           
-          if (slicedImages.length === 0) {
+          if (showcaseImages.length === 0) {
             return (
               <div className="relative z-10 flex h-[50vh] items-center justify-center text-gray-500">
-                No images available in the specified range
+                No showcase images available. Available images: {imagesData.map(img => img.alt).join(', ')}
               </div>
             );
           }
@@ -167,18 +167,18 @@ export function ProductShowcase({
               setApi={setCarouselApi}
             >
               <CarouselContent className="h-full w-full">
-                {slicedImages.map((image, index) => (
+                {showcaseImages.map((image, index) => (
                   <CarouselItem
                     className="relative flex h-full w-full items-center justify-center"
                     key={index}
                   >
                     <Image
                       alt={image.alt}
-                      className="h-auto max-h-[40vh] w-full object-contain sm:max-h-[60vh]"
-                      fill
+                      className="h-auto max-h-[40vh] w-auto object-contain sm:max-h-[60vh]"
+                      height={600}
                       priority={index === 0}
-                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 800px"
                       src={image.src}
+                      width={800}
                     />
                   </CarouselItem>
                 ))}

@@ -8,6 +8,7 @@ import { Image } from '~/components/image';
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
+import { findBackgroundImage, findHeroProductImage } from '~/lib/image-resolver';
 
 import { ProductBadges } from '../shared/product-badges';
 import {
@@ -105,9 +106,10 @@ export function ProductDetailBike<F extends Field>({
                     <div className="absolute inset-0 h-full w-full">
                       <Stream fallback={null} value={product.images}>
                         {(images) => {
+                          const backgroundImage = findBackgroundImage(images);
                           const backgroundSrc =
                             product.backgroundImage ||
-                            images[1]?.src ||
+                            backgroundImage?.src ||
                             '/images/backgrounds/default-background.webp';
 
                           return (
@@ -170,15 +172,13 @@ export function ProductDetailBike<F extends Field>({
                             <div className="flex h-64 w-full max-w-lg items-center justify-center transition-all duration-300 ease-in-out md:h-80 md:max-w-xl xl:h-96">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
-                                  const bikeImage = images[2];
+                                  const bikeImage = findHeroProductImage(images);
 
                                   return bikeImage ? (
                                     <Image
                                       alt={bikeImage.alt}
-                                      blurDataURL={getBase64BlurDataURL()}
                                       className="h-auto w-full object-contain transition-all duration-300"
                                       height={1000}
-                                      placeholder="blur"
                                       priority
                                       sizes="(max-width: 640px) 384px, (max-width: 768px) 448px, (max-width: 1024px) 512px, (max-width: 1280px) 576px, 672px"
                                       src={bikeImage.src}
@@ -186,7 +186,7 @@ export function ProductDetailBike<F extends Field>({
                                     />
                                   ) : (
                                     <div className="text-center text-gray-500">
-                                      No bike image available (index 2)
+                                      No bike image available
                                     </div>
                                   );
                                 }}
