@@ -23,9 +23,7 @@ export const OrganizationSchema = () => {
     brand: {
       '@type': 'Brand',
       name: 'Ryddo'
-    },
-    category: 'Electric Vehicles',
-    keywords: 'electric bikes, e-bikes, electric bicycles, sustainable transportation, commuter bikes, mountain bikes'
+    }
   };
 
   return (
