@@ -1,3 +1,5 @@
+import type { OptionalProductImage } from '~/lib/types';
+
 export interface PerformanceMetric {
   category: string;
   label: string;
@@ -6,10 +8,7 @@ export interface PerformanceMetric {
   sublabel: string;
 }
 
-export interface ProductImage {
-  src?: string;
-  alt?: string;
-}
+export type ProductImage = OptionalProductImage;
 
 export interface PerformanceComparisonProps {
   productTitle: string;

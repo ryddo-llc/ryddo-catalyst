@@ -1,3 +1,5 @@
+import type { ProductImage } from '~/lib/types';
+
 export interface ProductFeature {
   title: string;
   description: string;
@@ -21,11 +23,6 @@ interface BigCommerceCustomFields {
   edges: Array<{
     node: BigCommerceCustomField;
   }> | null;
-}
-
-interface ProductImage {
-  src: string;
-  alt: string;
 }
 
 /**

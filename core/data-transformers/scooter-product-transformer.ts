@@ -1,5 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ResultOf } from 'gql.tada';
+import { cache } from 'react';
 
 import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
@@ -53,7 +54,7 @@ export interface ScooterProductData {
   };
 }
 
-export function scooterProductTransformer(product: ProductWithOptions): ScooterProductData {
+export const scooterProductTransformer = cache((product: ProductWithOptions): ScooterProductData => {
   const customFields = removeEdgesAndNodes(product.customFields);
   const images = removeEdgesAndNodes(product.images);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -154,4 +155,4 @@ export function scooterProductTransformer(product: ProductWithOptions): ScooterP
     colors,
     inventoryStatus,
   };
-}
+});

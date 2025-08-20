@@ -7,6 +7,8 @@ import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
+import { findBackgroundImage, findHeroProductImage } from '~/lib/image-resolver';
 
 import { ProductBadges } from '../shared/product-badges';
 import {
@@ -100,23 +102,23 @@ export function ProductDetailBike<F extends Field>({
               {(product) =>
                 product && (
                   <div className="relative min-h-[60vh] md:max-h-[85vh] md:min-h-[70vh]">
-                    {/* Background Image */}
+                    {/* Background Image - Loaded immediately without Stream */}
                     <div className="absolute inset-0 h-full w-full">
-                      <Stream
-                        fallback={<div className="h-full w-full bg-gray-100" />}
-                        value={product.images}
-                      >
+                      <Stream fallback={null} value={product.images}>
                         {(images) => {
+                          const backgroundImage = findBackgroundImage(images);
                           const backgroundSrc =
                             product.backgroundImage ||
-                            images[1]?.src ||
+                            backgroundImage?.src ||
                             '/images/backgrounds/default-background.webp';
 
                           return (
                             <Image
                               alt="detail page background"
+                              blurDataURL={getBase64BlurDataURL()}
                               className="object-cover"
                               fill
+                              placeholder="blur"
                               priority
                               src={backgroundSrc}
                             />
@@ -170,7 +172,7 @@ export function ProductDetailBike<F extends Field>({
                             <div className="flex h-64 w-full max-w-lg items-center justify-center transition-all duration-300 ease-in-out md:h-80 md:max-w-xl xl:h-96">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
-                                  const bikeImage = images[2];
+                                  const bikeImage = findHeroProductImage(images);
 
                                   return bikeImage ? (
                                     <Image
@@ -184,7 +186,7 @@ export function ProductDetailBike<F extends Field>({
                                     />
                                   ) : (
                                     <div className="text-center text-gray-500">
-                                      No bike image available (index 2)
+                                      No bike image available
                                     </div>
                                   );
                                 }}
