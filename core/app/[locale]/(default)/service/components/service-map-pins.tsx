@@ -1,6 +1,6 @@
 export function ServiceMapPins() {
   return (
-    <div className="hidden lg:block absolute top-[calc(33vh)] right-[8vw] pointer-events-none">
+    <div className="hidden lg:block absolute top-[calc(35vh)] right-[7vw] pointer-events-none">
       {/* Map Pin 1 with Label */}
       <div className="relative group mb-48">
         {/* Outer concentric circle (most transparent) */}
