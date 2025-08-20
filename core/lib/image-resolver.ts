@@ -1,7 +1,4 @@
-export interface ProductImage {
-  src: string;
-  alt: string;
-}
+import type { ProductImage } from '~/lib/types';
 
 /**
  * Find background image for product detail pages

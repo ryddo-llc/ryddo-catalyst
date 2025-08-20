@@ -15,11 +15,9 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { textSizePresets } from '~/lib/dynamic-text-sizing';
 import { findShowcaseImages } from '~/lib/image-resolver';
+import type { ProductImage } from '~/lib/types';
 
-export interface ProductImage {
-  src: string;
-  alt: string;
-}
+export type { ProductImage } from '~/lib/types';
 
 export interface ProductShowcaseProps {
   images: Streamable<ProductImage[]>;
