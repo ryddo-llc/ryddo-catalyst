@@ -7,6 +7,7 @@ import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
 
 import { ProductBadges } from '../shared/product-badges';
 import {
@@ -100,12 +101,9 @@ export function ProductDetailBike<F extends Field>({
               {(product) =>
                 product && (
                   <div className="relative min-h-[60vh] md:max-h-[85vh] md:min-h-[70vh]">
-                    {/* Background Image */}
+                    {/* Background Image - Loaded immediately without Stream */}
                     <div className="absolute inset-0 h-full w-full">
-                      <Stream
-                        fallback={<div className="h-full w-full bg-gray-100" />}
-                        value={product.images}
-                      >
+                      <Stream fallback={null} value={product.images}>
                         {(images) => {
                           const backgroundSrc =
                             product.backgroundImage ||
@@ -115,8 +113,10 @@ export function ProductDetailBike<F extends Field>({
                           return (
                             <Image
                               alt="detail page background"
+                              blurDataURL={getBase64BlurDataURL()}
                               className="object-cover"
                               fill
+                              placeholder="blur"
                               priority
                               src={backgroundSrc}
                             />
@@ -175,8 +175,10 @@ export function ProductDetailBike<F extends Field>({
                                   return bikeImage ? (
                                     <Image
                                       alt={bikeImage.alt}
+                                      blurDataURL={getBase64BlurDataURL()}
                                       className="h-auto w-full object-contain transition-all duration-300"
                                       height={1000}
+                                      placeholder="blur"
                                       priority
                                       sizes="(max-width: 640px) 384px, (max-width: 768px) 448px, (max-width: 1024px) 512px, (max-width: 1280px) 576px, 672px"
                                       src={bikeImage.src}

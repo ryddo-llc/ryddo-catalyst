@@ -1,5 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ResultOf } from 'gql.tada';
+import { cache } from 'react';
 
 import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
@@ -60,7 +61,7 @@ export interface BikeProductData {
   };
 }
 
-export function bikeProductTransformer(product: ProductWithOptions): BikeProductData {
+export const bikeProductTransformer = cache((product: ProductWithOptions): BikeProductData => {
   const customFields = removeEdgesAndNodes(product.customFields);
   const images = removeEdgesAndNodes(product.images);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -200,4 +201,4 @@ export function bikeProductTransformer(product: ProductWithOptions): BikeProduct
       barWidth: dynamicWheelSpecs?.barWidth ?? 350,
     },
   };
-}
+});
