@@ -59,8 +59,8 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
-// Revalidate product pages every 60 seconds
-export const revalidate = 60;
+// Revalidate product pages every 30 minutes
+export const revalidate = 1800;
 
 // Generate static pages for popular products at build time
 export function generateStaticParams() {
