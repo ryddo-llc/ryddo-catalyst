@@ -61,7 +61,6 @@ const colorPalette = [
   '#F1F5F9', // light gray-blue
 ];
 
-
 export function ProductShowcase({
   images,
   className,
@@ -107,10 +106,12 @@ export function ProductShowcase({
       />
       {productName ? (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-          <span className={clsx(
-            'mt-32 select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60',
-            textSizePresets.watermark(productName || '')
-          )}>
+          <span
+            className={clsx(
+              'mt-32 select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60',
+              textSizePresets.watermark(productName || ''),
+            )}
+          >
             {productName}
           </span>
         </div>
@@ -177,9 +178,9 @@ export function ProductShowcase({
                     className="relative flex h-full w-full items-center justify-center px-8 py-4"
                     key={index}
                   >
-                    <div className="relative aspect-[4/3] h-[340px] w-[450px] xs:h-[380px] xs:w-[505px] sm:h-[420px] sm:w-[560px] md:h-[480px] md:w-[640px] lg:h-[520px] lg:w-[695px] xl:h-[560px] xl:w-[745px] 2xl:h-[600px] 2xl:w-[800px]">
+                    <div className="xs:h-[380px] xs:w-[505px] relative aspect-[4/3] h-[340px] w-[450px] sm:h-[420px] sm:w-[560px] md:h-[480px] md:w-[640px] lg:h-[520px] lg:w-[695px] xl:h-[560px] xl:w-[745px] 2xl:h-[600px] 2xl:w-[800px]">
                       <Image
-                        alt={image.alt}
+                        alt={`${productName} ${image.alt} image`}
                         className="object-contain"
                         fill
                         loading="lazy"
