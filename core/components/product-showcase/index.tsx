@@ -13,6 +13,7 @@ import {
 } from '@/vibes/soul/primitives/carousel';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
+import { textSizePresets } from '~/lib/dynamic-text-sizing';
 import { findShowcaseImages } from '~/lib/image-resolver';
 
 export interface ProductImage {
@@ -60,6 +61,7 @@ const colorPalette = [
   '#F1F5F9', // light gray-blue
 ];
 
+
 export function ProductShowcase({
   images,
   className,
@@ -105,7 +107,10 @@ export function ProductShowcase({
       />
       {productName ? (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-          <span className="mt-32 select-none whitespace-nowrap text-6xl font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60 sm:text-6xl md:text-8xl lg:text-9xl xl:text-[12rem]">
+          <span className={clsx(
+            'mt-32 select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60',
+            textSizePresets.watermark(productName || '')
+          )}>
             {productName}
           </span>
         </div>
@@ -145,12 +150,12 @@ export function ProductShowcase({
 
           // Use smart image resolution for showcase images
           const showcaseImages = findShowcaseImages(imagesData);
-          console.log(showcaseImages)
-          
+
           if (showcaseImages.length === 0) {
             return (
               <div className="relative z-10 flex h-[50vh] items-center justify-center text-gray-500">
-                No showcase images available. Available images: {imagesData.map(img => img.alt).join(', ')}
+                No showcase images available. Available images:{' '}
+                {imagesData.map((img) => img.alt).join(', ')}
               </div>
             );
           }
@@ -169,17 +174,19 @@ export function ProductShowcase({
               <CarouselContent className="h-full w-full">
                 {showcaseImages.map((image, index) => (
                   <CarouselItem
-                    className="relative flex h-full w-full items-center justify-center"
+                    className="relative flex h-full w-full items-center justify-center px-8 py-4"
                     key={index}
                   >
-                    <Image
-                      alt={image.alt}
-                      className="h-auto max-h-[40vh] w-auto object-contain sm:max-h-[60vh]"
-                      height={600}
-                      priority={index === 0}
-                      src={image.src}
-                      width={800}
-                    />
+                    <div className="relative aspect-[4/3] h-[340px] w-[450px] xs:h-[380px] xs:w-[505px] sm:h-[420px] sm:w-[560px] md:h-[480px] md:w-[640px] lg:h-[520px] lg:w-[695px] xl:h-[560px] xl:w-[745px] 2xl:h-[600px] 2xl:w-[800px]">
+                      <Image
+                        alt={image.alt}
+                        className="object-contain"
+                        fill
+                        loading="lazy"
+                        sizes="(max-width: 480px) 450px, (max-width: 640px) 505px, (max-width: 768px) 560px, (max-width: 1024px) 640px, (max-width: 1280px) 695px, (max-width: 1536px) 745px, 800px"
+                        src={image.src}
+                      />
+                    </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
