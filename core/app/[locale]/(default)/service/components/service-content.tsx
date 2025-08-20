@@ -50,7 +50,7 @@ export function ServiceContent() {
       <ServiceAccordionItem title="Parts:" value="parts">
         <div className="space-y-3 text-md">
           <p>
-            <strong>Ryddo only carries parts for Dualtron scooters.</strong> 
+            <strong>Ryddo only carries parts for Dualtron scooters. </strong> 
             Repairs for products other than Dualtron scooters require customers to obtain the required parts for servicing. We are happy to assist you with determining which parts need to be ordered.
           </p>
         </div>

@@ -22,14 +22,17 @@ export default function ServiceLayout({
       />
 
       <section className="relative bg-blue-50 py-24">
-        <div className="absolute inset-0 opacity-20">
-          <Image
-            alt="Map background"
-            className="h-full w-full object-cover"
-            height={1080}
-            src="/images/backgrounds/map-background.webp"
-            width={1920}
-          />
+        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
+          backgroundImage: 'url(/images/backgrounds/map-background.webp)',
+          backgroundSize: '100% auto',
+          backgroundRepeat: 'repeat-y',
+          backgroundPosition: 'top center'
+        }}>
+        </div>
+        
+        {/* Map Pins - positioned relative to background but with full opacity */}
+        <div className="absolute inset-0 pointer-events-none">
+          <ServiceMapPins />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4">
@@ -41,12 +44,8 @@ export default function ServiceLayout({
               {children}
             </div>
           </div>
-          
-          {/* Map Pins - Desktop Only */}
-          <div aria-label="Service location map pins" className="hidden lg:block" role="complementary">
-            <ServiceMapPins />
-          </div>
         </div>
+        
       </section>
     </>
   );
