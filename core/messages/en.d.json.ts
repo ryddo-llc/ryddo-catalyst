@@ -3,6 +3,7 @@
 
 declare const messages: {
   "Home": {
+    "title": "Ryddo - Premium Electric Bikes",
     "Slideshow": {
       "Slide01": {
         "title": "Performance E-Scooters",
