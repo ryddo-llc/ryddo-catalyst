@@ -18,10 +18,10 @@ export function PaymentOptions() {
         <Image
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
-          fill
-          priority={false}
+          className="absolute top-0 left-0 w-full h-screen object-cover object-top opacity-95"
+          height={1080}
           src="/images/backgrounds/newsletter-form.webp"
+          width={1920}
         />
 
         <div className="relative flex flex-col h-full p-6 sm:p-8">
