@@ -18,8 +18,9 @@ export function PaymentOptions() {
         <Image
           alt=""
           aria-hidden="true"
-          className="absolute top-0 left-0 w-full h-screen object-cover object-top opacity-95"
+          className="absolute top-0 left-0 w-full h-screen object-cover object-top opacity-95 brightness-95 pointer-events-none select-none"
           height={1080}
+          sizes="(min-width: 556px) 500px, 90vw"
           src="/images/backgrounds/newsletter-form.webp"
           width={1920}
         />
