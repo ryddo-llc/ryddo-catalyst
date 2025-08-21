@@ -32,10 +32,10 @@ import { productCardTransformer } from '~/data-transformers/product-card-transfo
 import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
+import { getFeaturedAddonsAndAccessories } from '~/components/product/shared/addons-query';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
-import { getPageData } from '../../page-data';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
@@ -367,12 +367,11 @@ export default async function Product({ params, searchParams }: Props) {
     const accessToken = await getSessionCustomerAccessToken();
     const currency = await getPreferredCurrencyCode();
 
-    const data = await getPageData(currency, accessToken);
+    // Get 3 featured gear + 3 featured accessories (6 total)
+    const rawProducts = await getFeaturedAddonsAndAccessories(currency, accessToken);
 
-    const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
-
-    // Take only first 6 products for popular accessories section
-    return productCardTransformer(featuredProducts.slice(0, 6), format);
+    // Transform to match component interface
+    return productCardTransformer(rawProducts, format);
   });
 
   const streamableAnalyticsData = Streamable.from(async () => {
