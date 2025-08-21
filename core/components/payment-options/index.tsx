@@ -2,13 +2,17 @@
 
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-options-accordion';
 
 export function PaymentOptions() {
   return (
     <section
-      className="relative w-full h-screen min-h-[min(600px,100dvh)] max-h-[800px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] bg-[url(/images/backgrounds/payment-options-background.webp)] md:bg-fixed"
+      className="relative w-full h-screen min-h-[min(600px,100dvh)] max-h-[800px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] md:bg-fixed"
+      style={{
+        backgroundImage: `url(${imageManagerImageUrl('payment-options.jpg', '1920w')})`
+      }}
     >
       <div
         className="relative mx-auto lg:ml-[16vw] lg:mr-0
