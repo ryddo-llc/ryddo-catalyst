@@ -65,8 +65,9 @@ const PopularProductsQuery = graphql(
           searchProducts(
             filters: { 
               categoryEntityIds: [28, 29]
+              isFeatured: true
             }
-            sort: BEST_SELLING
+            sort: FEATURED
           ) {
             products(first: 12) {
               edges {
