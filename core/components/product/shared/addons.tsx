@@ -88,7 +88,7 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
                       />
                       
                       {/* Product Name Overlay (visible on hover) */}
-                      <div className="absolute bottom-2 left-1.5 right-1.5 z-40 transform translate-y-full bg-[#F92F7B] text-white px-2 py-1 text-center transition-all duration-300 group-hover:translate-y-0 group-hover:scale-105 rounded-lg shadow-lg @sm:bottom-3 @sm:left-2 @sm:right-2">
+                      <div className="absolute bottom-2 left-1.5 right-1.5 z-40 transform translate-y-full opacity-0 bg-[#F92F7B] text-white px-2 py-1 text-center transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-hover:scale-105 rounded-lg shadow-lg @sm:bottom-3 @sm:left-2 @sm:right-2">
                         <p className="text-[9px] font-medium leading-tight truncate @sm:text-[10px]">
                           {accessory.title}
                         </p>
