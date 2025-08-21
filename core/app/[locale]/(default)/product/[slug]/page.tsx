@@ -19,6 +19,7 @@ import { getPerformanceConfig } from '~/components/product/layout/performance-co
 import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import { PerformanceComparisonSkeleton } from '~/components/product/layout/performance-comparison/performance-comparison-skeleton';
 import Addons from '~/components/product/shared/addons';
+import { getFeaturedAddonsAndAccessories } from '~/components/product/shared/addons-query';
 import RelatedProducts from '~/components/product/shared/related-products';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
@@ -32,7 +33,6 @@ import { productCardTransformer } from '~/data-transformers/product-card-transfo
 import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
-import { getFeaturedAddonsAndAccessories } from '~/components/product/shared/addons-query';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';

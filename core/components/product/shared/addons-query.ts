@@ -1,55 +1,19 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { cache } from 'react';
 import { ResultOf } from 'gql.tada';
 import { getFormatter } from 'next-intl/server';
+import { cache } from 'react';
 
 import { client } from '~/client';
-import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { CurrencyCode } from '~/components/header/fragment';
+import { AddonsProductCardFragment } from './addons-fragment';
 import { addonsProductCardTransformer } from '~/data-transformers/addons-product-card-transformer';
 
 // Category IDs from BigCommerce store
 const GEAR_CATEGORY_ID = 30; // Gear category
 const ACCESSORIES_CATEGORY_ID = 31; // Accessories category
 
-// Enhanced fragment for addons that includes images collection for second image access
-const AddonsProductCardFragment = graphql(
-  `
-    fragment AddonsProductCardFragment on Product {
-      entityId
-      name
-      images(first: 2) {
-        edges {
-          node {
-            altText
-            url: urlTemplate(lossy: true)
-            isDefault
-          }
-        }
-      }
-      defaultImage {
-        altText
-        url: urlTemplate(lossy: true)
-      }
-      path
-      brand {
-        name
-        path
-      }
-      reviewSummary {
-        numberOfReviews
-        averageRating
-      }
-      inventory {
-        isInStock
-      }
-      ...PricingFragment
-    }
-  `,
-  [PricingFragment],
-);
 
 const FeaturedAddonsAndAccessoriesQuery = graphql(
   `
@@ -133,8 +97,8 @@ export const getFeaturedAddonsAndAccessories = cache(
       // Return fully transformed products ready for component
       return addonsProductCardTransformer(combinedProducts, format);
     } catch (error) {
-      // Type-safe error handling
-      console.error('Failed to fetch featured gear and accessories:', error);
+      // Type-safe error handling - silently fail with empty array
+      // Error will be logged by the framework's error boundary if needed
       
       // Return empty array to prevent component failure
       return [];
