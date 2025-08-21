@@ -368,7 +368,7 @@ export default async function Product({ params, searchParams }: Props) {
 
     // Get 3 featured gear + 3 featured accessories (6 total) with second image preference
     // Already transformed and optimized - no additional transformation needed
-    return getFeaturedAddonsAndAccessories(currency, customerAccessToken, locale);
+    return getFeaturedAddonsAndAccessories(currency, customerAccessToken);
   });
 
   const streamableAnalyticsData = Streamable.from(async () => {
