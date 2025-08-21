@@ -1,0 +1,38 @@
+import { PricingFragment } from '~/client/fragments/pricing';
+import { graphql } from '~/client/graphql';
+
+export const AddonsProductCardFragment = graphql(
+  `
+    fragment AddonsProductCardFragment on Product {
+      entityId
+      name
+      images(first: 2) {
+        edges {
+          node {
+            altText
+            url: urlTemplate(lossy: true)
+            isDefault
+          }
+        }
+      }
+      defaultImage {
+        altText
+        url: urlTemplate(lossy: true)
+      }
+      path
+      brand {
+        name
+        path
+      }
+      reviewSummary {
+        numberOfReviews
+        averageRating
+      }
+      inventory {
+        isInStock
+      }
+      ...PricingFragment
+    }
+  `,
+  [PricingFragment],
+);

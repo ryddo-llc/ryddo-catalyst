@@ -19,6 +19,7 @@ import { getPerformanceConfig } from '~/components/product/layout/performance-co
 import { PerformanceComparison } from '~/components/product/layout/performance-comparison/performance-comparison';
 import { PerformanceComparisonSkeleton } from '~/components/product/layout/performance-comparison/performance-comparison-skeleton';
 import Addons from '~/components/product/shared/addons';
+import { getFeaturedAddonsAndAccessories } from '~/components/product/shared/addons-query';
 import RelatedProducts from '~/components/product/shared/related-products';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
@@ -35,7 +36,6 @@ import { scooterProductTransformer } from '~/data-transformers/scooter-product-t
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
-import { getPageData } from '../../page-data';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
@@ -364,15 +364,11 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamablePopularAccessories = Streamable.from(async () => {
-    const accessToken = await getSessionCustomerAccessToken();
     const currency = await getPreferredCurrencyCode();
 
-    const data = await getPageData(currency, accessToken);
-
-    const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
-
-    // Take only first 6 products for popular accessories section
-    return productCardTransformer(featuredProducts.slice(0, 6), format);
+    // Get 3 featured gear + 3 featured accessories (6 total) with second image preference
+    // Already transformed and optimized - no additional transformation needed
+    return getFeaturedAddonsAndAccessories(currency, customerAccessToken);
   });
 
   const streamableAnalyticsData = Streamable.from(async () => {

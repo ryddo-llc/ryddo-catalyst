@@ -13,7 +13,7 @@ import {
 } from '@/vibes/soul/primitives/carousel';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
-import { textSizePresets } from '~/lib/dynamic-text-sizing';
+import { getFluidBackgroundTextSize } from '~/lib/dynamic-text-sizing';
 import { findShowcaseImages } from '~/lib/image-resolver';
 import type { ProductImage } from '~/lib/types';
 
@@ -93,7 +93,7 @@ export function ProductShowcase({
     <section
       aria-labelledby={ariaLabelledBy}
       className={clsx(
-        'relative flex max-h-screen min-h-[50vh] w-full items-center justify-center overflow-hidden bg-white font-[family-name:var(--product-showcase-font-family,var(--font-family-body))] sm:min-h-[40vh] md:min-h-[60vh] lg:min-h-[80vh]',
+        'relative flex max-h-screen min-h-[50vh] w-full items-center justify-center overflow-hidden bg-white font-[family-name:var(--product-showcase-font-family,var(--font-family-body))] sm:min-h-[40vh] md:min-h-[60vh] lg:min-h-[80vh] @container',
         className,
       )}
     >
@@ -106,8 +106,8 @@ export function ProductShowcase({
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
           <span
             className={clsx(
-              'mt-32 select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60',
-              textSizePresets.watermark(productName || ''),
+              'mt-32 select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60 max-w-[90vw] scale-90 @sm:max-w-none @sm:scale-100',
+              getFluidBackgroundTextSize(productName || ''),
             )}
           >
             {productName}
