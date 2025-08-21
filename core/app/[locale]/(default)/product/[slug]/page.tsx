@@ -364,12 +364,11 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamablePopularAccessories = Streamable.from(async () => {
-    const accessToken = await getSessionCustomerAccessToken();
     const currency = await getPreferredCurrencyCode();
 
     // Get 3 featured gear + 3 featured accessories (6 total) with second image preference
     // Already transformed and optimized - no additional transformation needed
-    return getFeaturedAddonsAndAccessories(currency, accessToken);
+    return getFeaturedAddonsAndAccessories(currency, customerAccessToken, locale);
   });
 
   const streamableAnalyticsData = Streamable.from(async () => {

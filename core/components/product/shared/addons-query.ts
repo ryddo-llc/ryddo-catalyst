@@ -7,8 +7,9 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { CurrencyCode } from '~/components/header/fragment';
-import { AddonsProductCardFragment } from './addons-fragment';
 import { addonsProductCardTransformer } from '~/data-transformers/addons-product-card-transformer';
+
+import { AddonsProductCardFragment } from './addons-fragment';
 
 // Category IDs from BigCommerce store
 const GEAR_CATEGORY_ID = 30; // Gear category
@@ -96,7 +97,7 @@ export const getFeaturedAddonsAndAccessories = cache(
       
       // Return fully transformed products ready for component
       return addonsProductCardTransformer(combinedProducts, format);
-    } catch (error) {
+    } catch {
       // Type-safe error handling - silently fail with empty array
       // Error will be logged by the framework's error boundary if needed
       

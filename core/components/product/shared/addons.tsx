@@ -16,7 +16,10 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
   return (
     <section className="relative w-full bg-white bg-gradient-to-br px-4 py-12 @sm:py-16 @lg:py-20 @container">
       {/* Background Text - positioned directly behind addon grid */}
-      <div className="pointer-events-none absolute inset-x-0 top-[calc(50%+2rem)] bottom-8 flex items-center justify-center overflow-hidden @sm:top-[calc(50%+1rem)] @sm:bottom-12 @md:top-[50%] @md:bottom-16">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-[calc(50%+2rem)] bottom-8 z-0 flex items-center justify-center overflow-hidden @sm:top-[calc(50%+1rem)] @sm:bottom-12 @md:top-[50%] @md:bottom-16"
+      >
         <span 
           className={`select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-300 opacity-20 transition-opacity duration-300 max-w-[90vw] scale-90 @sm:max-w-none @sm:scale-100 @sm:opacity-30 @md:opacity-40 ${getFluidBackgroundTextSize(backgroundText)}`}
         >
