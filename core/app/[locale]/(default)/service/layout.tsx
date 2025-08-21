@@ -1,7 +1,6 @@
 'use client';
 
 import { PageHeader } from '@/vibes/soul/sections/page-header';
-import { Image } from '~/components/image';
 
 import { ServiceMapPins } from './components/service-map-pins';
 import { ServiceSidebar } from './components/service-sidebar';
@@ -22,16 +21,16 @@ export default function ServiceLayout({
       />
 
       <section className="relative bg-blue-50 py-24">
-        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{
+        {/* Map background - positioned relative to the expanding container */}
+        <div aria-hidden="true" className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{
           backgroundImage: 'url(/images/backgrounds/map-background.webp)',
           backgroundSize: '100% auto',
           backgroundRepeat: 'repeat-y',
           backgroundPosition: 'top center'
-        }}>
-        </div>
+        }}/>
         
         {/* Map Pins - positioned relative to background but with full opacity */}
-        <div className="absolute inset-0 pointer-events-none">
+        <div aria-hidden="true" className="absolute inset-0 z-10 pointer-events-none">
           <ServiceMapPins />
         </div>
 
