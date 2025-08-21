@@ -7,6 +7,7 @@ import { FeaturedProductsCarouselFragment } from '~/components/featured-products
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { FooterFragment, FooterSectionsFragment } from '~/components/footer/fragment';
 import { CurrencyCode, HeaderFragment, HeaderLinksFragment } from '~/components/header/fragment';
+import { ProductCardFragment } from '~/components/product-card/fragment';
 
 export const LayoutQuery = graphql(
   `
@@ -56,10 +57,50 @@ const HomePageQuery = graphql(
   [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
 );
 
+const PopularProductsQuery = graphql(
+  `
+    query PopularProductsQuery($currencyCode: currencyCode) {
+      site {
+        search {
+          searchProducts(
+            filters: { 
+              categoryEntityIds: [28, 29]
+              isFeatured: true
+            }
+            sort: FEATURED
+          ) {
+            products(first: 12) {
+              edges {
+                node {
+                  ...ProductCardFragment
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  [ProductCardFragment],
+);
+
 export const getPageData = cache(
   async (currencyCode?: CurrencyCode, customerAccessToken?: string) => {
     const { data } = await client.fetch({
       document: HomePageQuery,
+      customerAccessToken,
+      variables: { currencyCode },
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data;
+  },
+);
+
+export const getPopularProductsData = cache(
+  async (currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: PopularProductsQuery,
       customerAccessToken,
       variables: { currencyCode },
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
