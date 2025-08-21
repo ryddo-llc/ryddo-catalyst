@@ -13,6 +13,7 @@ import {
 } from '@/vibes/soul/primitives/carousel';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
+import { getFluidBackgroundTextSize } from '~/lib/dynamic-text-sizing';
 import { findShowcaseImages } from '~/lib/image-resolver';
 import type { ProductImage } from '~/lib/types';
 
@@ -70,14 +71,6 @@ export function ProductShowcase({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState<ReturnType<typeof useEmblaCarousel>[1]>();
 
-  // Dynamic background text sizing based on text length - optimized for mobile
-  const getBackgroundTextSize = (text: string) => {
-    if (text.length > 15) return "text-[clamp(1rem,3vw,2rem)] @sm:text-[clamp(1.5rem,4vw,3rem)] @md:text-[clamp(2rem,6vw,4rem)] @lg:text-[clamp(2.5rem,8vw,5rem)]";
-    if (text.length > 10) return "text-[clamp(1.2rem,4vw,2.5rem)] @sm:text-[clamp(2rem,6vw,4rem)] @md:text-[clamp(3rem,8vw,6rem)] @lg:text-[clamp(4rem,10vw,8rem)]";
-    
-    return "text-[clamp(1.5rem,5vw,3rem)] @sm:text-[clamp(2.5rem,7vw,5rem)] @md:text-[clamp(4rem,10vw,7rem)] @lg:text-[clamp(6rem,12vw,10rem)]";
-  };
-
   // Set up carousel API to track slide changes
   useEffect(() => {
     if (!carouselApi) return;
@@ -114,7 +107,7 @@ export function ProductShowcase({
           <span
             className={clsx(
               'mt-32 select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60 max-w-[90vw] scale-90 @sm:max-w-none @sm:scale-100',
-              getBackgroundTextSize(productName || ''),
+              getFluidBackgroundTextSize(productName || ''),
             )}
           >
             {productName}

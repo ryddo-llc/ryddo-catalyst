@@ -2,6 +2,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { type Product } from '@/vibes/soul/primitives/product-card';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { getFluidBackgroundTextSize } from '~/lib/dynamic-text-sizing';
 
 interface AddonProps {
   addons: Streamable<Product[]>;
@@ -12,19 +13,12 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
   // Background text based on product type
   const backgroundText = name;
 
-  // Dynamic background text sizing based on text length - optimized for mobile
-  const getBackgroundTextSize = (text: string) => {
-    if (text.length > 15) return "text-[clamp(1rem,3vw,2rem)] @sm:text-[clamp(1.5rem,4vw,3rem)] @md:text-[clamp(2rem,6vw,4rem)] @lg:text-[clamp(2.5rem,8vw,5rem)]";
-    if (text.length > 10) return "text-[clamp(1.2rem,4vw,2.5rem)] @sm:text-[clamp(2rem,6vw,4rem)] @md:text-[clamp(3rem,8vw,6rem)] @lg:text-[clamp(4rem,10vw,8rem)]";
-    return "text-[clamp(1.5rem,5vw,3rem)] @sm:text-[clamp(2.5rem,7vw,5rem)] @md:text-[clamp(4rem,10vw,7rem)] @lg:text-[clamp(6rem,12vw,10rem)]";
-  };
-
   return (
     <section className="relative w-full bg-white bg-gradient-to-br px-4 py-12 @sm:py-16 @lg:py-20 @container">
       {/* Background Text - positioned directly behind addon grid */}
       <div className="pointer-events-none absolute inset-x-0 top-[calc(50%+2rem)] bottom-8 flex items-center justify-center overflow-hidden @sm:top-[calc(50%+1rem)] @sm:bottom-12 @md:top-[50%] @md:bottom-16">
         <span 
-          className={`select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-300 opacity-20 transition-opacity duration-300 max-w-[90vw] scale-90 @sm:max-w-none @sm:scale-100 @sm:opacity-30 @md:opacity-40 ${getBackgroundTextSize(backgroundText)}`}
+          className={`select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-300 opacity-20 transition-opacity duration-300 max-w-[90vw] scale-90 @sm:max-w-none @sm:scale-100 @sm:opacity-30 @md:opacity-40 ${getFluidBackgroundTextSize(backgroundText)}`}
         >
           {backgroundText}
         </span>
