@@ -16,7 +16,7 @@ import { getCompareProducts as getCompareProductsData } from './(faceted)/fetch-
 import { getSearchPageData } from './(faceted)/search/page-data';
 import { OrganizationSchema } from './_components/organization-schema';
 import { Slideshow } from './_components/slideshow';
-import { getPageData } from './page-data';
+import { getPageData, getPopularProductsData } from './page-data';
 
 const compareLoader = createCompareLoader();
 
@@ -82,12 +82,15 @@ export default async function Home({ params, searchParams }: Props) {
   });
 
   const streamablePopularProducts = Streamable.from(async () => {
-    const data = await streamablePageData;
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const currencyCode = await getPreferredCurrencyCode();
 
-    const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
+    const data = await getPopularProductsData(currencyCode, customerAccessToken);
+
+    const searchProducts = removeEdgesAndNodes(data.site.search.searchProducts.products);
 
     // Take only first 8 products for popular products section
-    return productCardTransformer(featuredProducts.slice(0, 8), format);
+    return productCardTransformer(searchProducts.slice(0, 8), format);
   });
 
   const streamableCompareProducts = Streamable.from(async () => {
