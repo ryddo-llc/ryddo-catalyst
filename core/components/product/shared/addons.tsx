@@ -12,11 +12,11 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
   // Background text based on product type
   const backgroundText = name;
 
-  // Dynamic background text sizing based on text length
+  // Dynamic background text sizing based on text length - optimized for mobile
   const getBackgroundTextSize = (text: string) => {
-    if (text.length > 15) return "text-[clamp(1.5rem,4vw,3rem)] @sm:text-[clamp(2rem,6vw,4rem)] @md:text-[clamp(2.5rem,8vw,5rem)] @lg:text-[clamp(3rem,10vw,6rem)]";
-    if (text.length > 10) return "text-[clamp(2rem,6vw,4rem)] @sm:text-[clamp(3rem,8vw,6rem)] @md:text-[clamp(4rem,10vw,8rem)] @lg:text-[clamp(5rem,12vw,9rem)]";
-    return "text-[clamp(2.5rem,8vw,5rem)] @sm:text-[clamp(4rem,10vw,7rem)] @md:text-[clamp(6rem,12vw,9rem)] @lg:text-[clamp(8rem,14vw,12rem)]";
+    if (text.length > 15) return "text-[clamp(1rem,3vw,2rem)] @sm:text-[clamp(1.5rem,4vw,3rem)] @md:text-[clamp(2rem,6vw,4rem)] @lg:text-[clamp(2.5rem,8vw,5rem)]";
+    if (text.length > 10) return "text-[clamp(1.2rem,4vw,2.5rem)] @sm:text-[clamp(2rem,6vw,4rem)] @md:text-[clamp(3rem,8vw,6rem)] @lg:text-[clamp(4rem,10vw,8rem)]";
+    return "text-[clamp(1.5rem,5vw,3rem)] @sm:text-[clamp(2.5rem,7vw,5rem)] @md:text-[clamp(4rem,10vw,7rem)] @lg:text-[clamp(6rem,12vw,10rem)]";
   };
 
   return (
@@ -24,7 +24,7 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
       {/* Background Text - positioned directly behind addon grid */}
       <div className="pointer-events-none absolute inset-x-0 top-[calc(50%+2rem)] bottom-8 flex items-center justify-center overflow-hidden @sm:top-[calc(50%+1rem)] @sm:bottom-12 @md:top-[50%] @md:bottom-16">
         <span 
-          className={`select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-300 opacity-25 transition-opacity duration-300 @sm:opacity-35 @md:opacity-45 ${getBackgroundTextSize(backgroundText)}`}
+          className={`select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-300 opacity-20 transition-opacity duration-300 max-w-[90vw] scale-90 @sm:max-w-none @sm:scale-100 @sm:opacity-30 @md:opacity-40 ${getBackgroundTextSize(backgroundText)}`}
         >
           {backgroundText}
         </span>
@@ -88,8 +88,8 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
                       />
                       
                       {/* Product Name Overlay (visible on hover) */}
-                      <div className="absolute bottom-3 left-2 right-2 z-40 transform translate-y-full bg-white/95 backdrop-blur-sm p-2 text-center transition-transform duration-300 group-hover:translate-y-0 rounded-lg @sm:bottom-4 @sm:left-3 @sm:right-3 @sm:p-3 @sm:rounded-xl @md:bottom-6 @md:left-4 @md:right-4">
-                        <p className="text-xs font-medium text-gray-900 line-clamp-2 @sm:text-sm">
+                      <div className="absolute bottom-2 left-1.5 right-1.5 z-40 transform translate-y-full bg-[#F92F7B] text-white px-2 py-1 text-center transition-all duration-300 group-hover:translate-y-0 group-hover:scale-105 rounded-lg shadow-lg @sm:bottom-3 @sm:left-2 @sm:right-2">
+                        <p className="text-[9px] font-medium leading-tight truncate @sm:text-[10px]">
                           {accessory.title}
                         </p>
                       </div>
