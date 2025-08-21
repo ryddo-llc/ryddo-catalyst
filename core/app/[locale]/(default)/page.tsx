@@ -16,7 +16,7 @@ import { getCompareProducts as getCompareProductsData } from './(faceted)/fetch-
 import { getSearchPageData } from './(faceted)/search/page-data';
 import { OrganizationSchema } from './_components/organization-schema';
 import { Slideshow } from './_components/slideshow';
-import { getPageData, getPopularProductsData } from './page-data';
+import { getPopularProductsData } from './page-data';
 
 const compareLoader = createCompareLoader();
 
@@ -25,28 +25,42 @@ interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale } = await params;
-  
+
   setRequestLocale(locale);
-  
+
   const t = await getTranslations('Home');
-  
+
   return {
     title: t('title'),
-    description: "Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle. Free shipping, expert support, and financing available.",
-    keywords: ['electric bikes', 'e-bikes', 'electric bicycles', 'commuter bikes', 'mountain bikes', 'sustainable transportation'],
+    description:
+      'Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle. Free shipping, expert support, and financing available.',
+    keywords: [
+      'electric bikes',
+      'e-bikes',
+      'electric bicycles',
+      'commuter bikes',
+      'mountain bikes',
+      'sustainable transportation',
+    ],
     openGraph: {
       type: 'website',
       title: t('title'),
-      description: "Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle.",
+      description:
+        'Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle.',
       siteName: 'Ryddo',
       url: '/',
     },
     twitter: {
       card: 'summary_large_image',
       title: t('title'),
-      description: "Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle.",
+      description:
+        'Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle.',
     },
     alternates: {
       canonical: '/',
@@ -65,13 +79,6 @@ export default async function Home({ params, searchParams }: Props) {
   const { settings } = await getSearchPageData();
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
-
-  const streamablePageData = Streamable.from(async () => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const currencyCode = await getPreferredCurrencyCode();
-
-    return getPageData(currencyCode, customerAccessToken);
-  });
 
   const streamableCategories = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
