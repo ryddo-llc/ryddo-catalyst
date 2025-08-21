@@ -1,6 +1,6 @@
 export function ServiceMapPins() {
   return (
-    <div className="hidden lg:block absolute top-[33%] right-12">
+    <div aria-hidden="true" className="hidden lg:block absolute top-[calc(33vh+6rem)] right-[8vw]">
       {/* Map Pin 1 with Label */}
       <div className="relative group mb-48">
         {/* Outer concentric circle (most transparent) */}
