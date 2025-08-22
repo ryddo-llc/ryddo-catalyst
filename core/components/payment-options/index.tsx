@@ -1,14 +1,19 @@
-'use client';
-
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-options-accordion';
 
 export function PaymentOptions() {
   return (
     <section
-      className="relative w-full h-screen min-h-[min(600px,100dvh)] max-h-[800px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] bg-[url(/images/backgrounds/payment-options-background.webp)] md:bg-fixed"
+      className="relative w-full h-screen h-[min(100dvh,800px)] min-h-[600px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] md:bg-fixed motion-reduce:bg-scroll bg-neutral-100"
+      style={{
+        backgroundImage: `image-set(
+          url('${imageManagerImageUrl('payment-options.jpg', '1920w')}') 1x,
+          url('${imageManagerImageUrl('payment-options.jpg', '3840w')}') 2x
+        )`
+      }}
     >
       <div
         className="relative mx-auto lg:ml-[16vw] lg:mr-0
