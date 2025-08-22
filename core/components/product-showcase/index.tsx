@@ -13,7 +13,6 @@ import {
 } from '@/vibes/soul/primitives/carousel';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
-import { getFluidBackgroundTextSize } from '~/lib/dynamic-text-sizing';
 import { findShowcaseImages } from '~/lib/image-resolver';
 import type { ProductImage } from '~/lib/types';
 
@@ -93,7 +92,7 @@ export function ProductShowcase({
     <section
       aria-labelledby={ariaLabelledBy}
       className={clsx(
-        'relative flex max-h-screen min-h-[50vh] w-full items-center justify-center overflow-hidden bg-white font-[family-name:var(--product-showcase-font-family,var(--font-family-body))] sm:min-h-[40vh] md:min-h-[60vh] lg:min-h-[80vh] @container',
+        'relative flex max-h-screen min-h-[50vh] w-full items-center justify-center overflow-hidden bg-white font-[family-name:var(--product-showcase-font-family,var(--font-family-body))] @container sm:min-h-[40vh] md:min-h-[60vh] lg:min-h-[80vh]',
         className,
       )}
     >
@@ -106,8 +105,7 @@ export function ProductShowcase({
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
           <span
             className={clsx(
-              'mt-32 select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-500 opacity-30 sm:mt-60 max-w-[90vw] scale-90 @sm:max-w-none @sm:scale-100',
-              getFluidBackgroundTextSize(productName || ''),
+              '@lg:scale-175 max-w-[95vw] scale-110 transform select-none whitespace-nowrap font-black uppercase leading-none tracking-wider text-gray-400 opacity-80 transition-opacity duration-500 @sm:max-w-none @sm:scale-125 @md:scale-150',
             )}
           >
             {productName}
@@ -117,7 +115,7 @@ export function ProductShowcase({
 
       {/* Description Section - Responsive */}
       {description ? (
-        <div className="z-5 absolute left-1/2 top-6 max-w-xs -translate-x-1/2 transform px-4 sm:left-auto sm:right-10 sm:top-12 sm:max-w-md sm:translate-x-0 sm:px-0">
+        <div className="z-10 absolute left-1/2 top-6 max-w-xs -translate-x-1/2 transform px-4 sm:left-auto sm:right-10 sm:top-12 sm:max-w-md sm:translate-x-0 sm:px-0">
           <h2 className="text-center text-xl font-black leading-tight sm:text-left sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
             <span className="block text-[#F92F7B]">
               {description
@@ -161,7 +159,7 @@ export function ProductShowcase({
 
           return (
             <Carousel
-              className="z-5 relative flex h-full w-full items-center justify-center"
+              className="z-10 relative flex h-full w-full items-center justify-center"
               opts={{
                 align: 'center',
                 loop: true,
@@ -192,14 +190,14 @@ export function ProductShowcase({
 
               {/* Left Button */}
               <CarouselButtons
-                className="z-5 absolute left-0 top-1/2 -translate-y-1/2 [&>button:first-child]:flex [&>button:first-child]:h-[80px] [&>button:first-child]:w-[40px] [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-l-none [&>button:first-child]:rounded-r-2xl [&>button:first-child]:bg-[#F92F7B] [&>button:first-child]:text-white [&>button:first-child]:shadow-lg [&>button:first-child]:transition-all [&>button:first-child]:duration-300 [&>button:first-child]:hover:scale-105 [&>button:first-child]:hover:bg-[#e01b5f] [&>button:first-child]:active:scale-95 sm:[&>button:first-child]:h-[130px] sm:[&>button:first-child]:w-[55px] [&>button:last-child]:hidden"
+                className="z-10 absolute left-0 top-1/2 -translate-y-1/2 [&>button:first-child]:flex [&>button:first-child]:h-[80px] [&>button:first-child]:w-[40px] [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-l-none [&>button:first-child]:rounded-r-2xl [&>button:first-child]:bg-[#F92F7B] [&>button:first-child]:text-white [&>button:first-child]:shadow-lg [&>button:first-child]:transition-all [&>button:first-child]:duration-300 [&>button:first-child]:hover:scale-105 [&>button:first-child]:hover:bg-[#e01b5f] [&>button:first-child]:active:scale-95 sm:[&>button:first-child]:h-[130px] sm:[&>button:first-child]:w-[55px] [&>button:last-child]:hidden"
                 nextLabel={nextLabel}
                 previousLabel={previousLabel}
               />
 
               {/* Right Button */}
               <CarouselButtons
-                className="z-5 absolute right-0 top-1/2 -translate-y-1/2 [&>button:first-child]:hidden [&>button:last-child]:flex [&>button:last-child]:h-[80px] [&>button:last-child]:w-[40px] [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-l-2xl [&>button:last-child]:rounded-r-none [&>button:last-child]:bg-[#F92F7B] [&>button:last-child]:text-white [&>button:last-child]:shadow-lg [&>button:last-child]:transition-all [&>button:last-child]:duration-300 [&>button:last-child]:hover:scale-105 [&>button:last-child]:hover:bg-[#e01b5f] [&>button:last-child]:active:scale-95 sm:[&>button:last-child]:h-[130px] sm:[&>button:last-child]:w-[55px]"
+                className="z-10 absolute right-0 top-1/2 -translate-y-1/2 [&>button:first-child]:hidden [&>button:last-child]:flex [&>button:last-child]:h-[80px] [&>button:last-child]:w-[40px] [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-l-2xl [&>button:last-child]:rounded-r-none [&>button:last-child]:bg-[#F92F7B] [&>button:last-child]:text-white [&>button:last-child]:shadow-lg [&>button:last-child]:transition-all [&>button:last-child]:duration-300 [&>button:last-child]:hover:scale-105 [&>button:last-child]:hover:bg-[#e01b5f] [&>button:last-child]:active:scale-95 sm:[&>button:last-child]:h-[130px] sm:[&>button:last-child]:w-[55px]"
                 nextLabel={nextLabel}
                 previousLabel={previousLabel}
               />
