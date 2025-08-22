@@ -42,7 +42,7 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
           onPin={() => setIsFloating(true)}
           onUnfix={() => setIsFloating(false)}
           pinStart={bannerHeight}
-          style={{ zIndex: isFloating ? 100 : 50 }}
+          style={{ zIndex: isFloating ? 150 : 100 }}
         >
           <div className={clsx(
             'p-2',

@@ -84,7 +84,7 @@ export function ProductDetail<F extends Field>({
         }}
       />
 
-      <div className="group/product-detail z-5 relative mx-auto w-full max-w-screen-2xl px-4 py-8 @xl:px-6 @xl:py-12 @4xl:px-8 @4xl:py-16">
+      <div className="group/product-detail z-10 relative mx-auto w-full max-w-screen-2xl px-4 py-8 @xl:px-6 @xl:py-12 @4xl:px-8 @4xl:py-16">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">
             <Breadcrumbs breadcrumbs={breadcrumbs} />
