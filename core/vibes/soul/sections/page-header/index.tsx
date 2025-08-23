@@ -15,11 +15,16 @@ interface PageHeaderProps {
 export const PageHeader = ({ title, backgroundImage, className, locale }: PageHeaderProps) => {
   const placeholderImage = {
     alt: 'Page header background',
-    src: imageManagerImageUrl('newsletter-background.png', 'original')
+    src: imageManagerImageUrl('newsletter-background.png', 'original'),
   };
 
   return (
-    <section className={clsx('relative w-full h-[30vh] md:h-[25vh] lg:h-[30vh] flex items-end overflow-hidden', className)}>
+    <section
+      className={clsx(
+        'relative flex h-[30vh] w-full items-end overflow-hidden md:h-[25vh] lg:h-[30vh]',
+        className,
+      )}
+    >
       {/* Background Image */}
       <Stream
         fallback={
@@ -51,19 +56,19 @@ export const PageHeader = ({ title, backgroundImage, className, locale }: PageHe
       </Stream>
 
       {/* Content */}
-      <div className="relative text-left px-4 pb-8 md:px-8 md:pb-12">
+      <div className="relative px-4 pb-12 text-left sm:px-8 md:px-12 lg:px-20">
         <Stream
           fallback={
             <Skeleton.Root>
-              <Skeleton.Box className="h-12 w-64 bg-white/20 rounded" />
+              <Skeleton.Box className="h-12 w-64 rounded bg-white/20" />
             </Skeleton.Root>
           }
           value={title}
         >
           {(pageTitle) => (
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-['Nunito'] font-heading leading-tight text-black/70">
+            <h2 className="font-['Nunito'] font-heading text-3xl font-bold leading-tight text-black md:text-4xl lg:text-5xl">
               {pageTitle.toLocaleLowerCase(locale)}
-              <span className='text-[#F92F7B] text-5xl md:text-6xl lg:text-7xl font-["Inter"] leading-[67.20px]'>
+              <span className='font-["Inter"] text-5xl leading-[67.20px] text-[#F92F7B] md:text-6xl lg:text-7xl'>
                 .
               </span>
             </h2>
@@ -76,12 +81,17 @@ export const PageHeader = ({ title, backgroundImage, className, locale }: PageHe
 
 export const PageHeaderSkeleton = ({ className }: { className?: string }) => {
   return (
-    <section className={clsx('relative w-full h-[30vh] md:h-[25vh] lg:h-[30vh] flex items-center justify-center overflow-hidden bg-gray-200 animate-pulse', className)}>
-      <div className="relative text-center px-4 max-w-4xl mx-auto">
+    <section
+      className={clsx(
+        'relative flex h-[30vh] w-full animate-pulse items-center justify-center overflow-hidden bg-gray-200 md:h-[25vh] lg:h-[30vh]',
+        className,
+      )}
+    >
+      <div className="relative mx-auto max-w-4xl px-4 text-center">
         <Skeleton.Root className="mx-auto">
-          <Skeleton.Box className="h-12 w-64 bg-white/20 rounded" />
+          <Skeleton.Box className="h-12 w-64 rounded bg-white/20" />
         </Skeleton.Root>
       </div>
     </section>
   );
-}; 
+};
