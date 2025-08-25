@@ -3,6 +3,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { PropsWithChildren } from 'react';
 
 import { AccountSidebar } from './account-sidebar';
+import { DashboardProvider } from './dashboard-context';
 import { getDashboardData } from './dashboard/page-data';
 
 interface Props extends PropsWithChildren {
@@ -17,13 +18,14 @@ export default async function Layout({ children, params }: Props) {
   const t = await getTranslations('Account.Layout');
   const format = await getFormatter();
 
-  // Fetch dashboard data for sidebar badges
+  // Fetch dashboard data once for the entire account section
   let dashboardData = null;
+  let dataError = undefined;
 
   try {
     dashboardData = await getDashboardData(format);
-  } catch {
-    // Handle errors gracefully
+  } catch (error) {
+    dataError = error instanceof Error ? error : new Error('Failed to load dashboard data');
   }
 
   return (
