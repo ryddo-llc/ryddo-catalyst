@@ -141,7 +141,24 @@ export function CategoryShowcase({
           {(categoriesData) => {
             if (categoriesData.length === 0) return null;
 
-            const allCategories = [...categoriesData, SERVICE_CATEGORY];
+            // Sort categories to prioritize e-scooters first, e-bikes second
+            const sortedCategories = [...categoriesData].sort((a, b) => {
+              const aName = a.name.toLowerCase();
+              const bName = b.name.toLowerCase();
+              
+              // E-Scooters should be first
+              if (aName.includes('scooter')) return -1;
+              if (bName.includes('scooter')) return 1;
+              
+              // E-Bikes should be second
+              if (aName.includes('bike')) return -1;
+              if (bName.includes('bike')) return 1;
+              
+              // Keep original order for others
+              return 0;
+            });
+
+            const allCategories = [...sortedCategories, SERVICE_CATEGORY];
 
             const topRowCategories = allCategories.slice(0, 3);
             const bottomRowCategories = allCategories.slice(3, 5);
