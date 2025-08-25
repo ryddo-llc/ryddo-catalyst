@@ -39,7 +39,7 @@ function SubmitButton({ children, disabled }: { children: string; disabled?: boo
 
   return (
     <button
-      className="flex min-h-[50px] w-full items-center justify-center rounded-[50px] bg-[#F92F7B] px-6 py-4 font-['Inter'] text-lg font-bold leading-normal tracking-wide text-white shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] transition-all hover:bg-[#d41f63] hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+      className="flex min-h-[50px] w-full items-center justify-center whitespace-nowrap rounded-[50px] bg-[#F92F7B] px-4 sm:px-6 py-3 sm:py-4 font-['Inter'] text-base sm:text-lg font-bold leading-normal tracking-wide text-white shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] transition-all hover:bg-[#d41f63] hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
       disabled={disabled || pending}
       type="submit"
     >
@@ -143,7 +143,7 @@ export function ScooterMobileCollapsibleForm<F extends Field>({
         <div className="flex items-center justify-center gap-4">
           {compareProduct && (
             <Compare
-              className="flex min-h-[48px] items-center justify-center rounded-[50px] border-2 border-solid border-[#757575] px-6 py-3 text-base font-semibold text-[#757575] transition-colors hover:bg-[#757575] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex min-h-[48px] items-center justify-center whitespace-nowrap rounded-[50px] border-2 border-solid border-[#757575] px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-[#757575] transition-colors hover:bg-[#757575] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
               label="Compare"
               product={compareProduct}
             />
