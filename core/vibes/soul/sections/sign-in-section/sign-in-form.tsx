@@ -41,7 +41,7 @@ export function SignInForm({
   });
 
   return (
-    <form {...getFormProps(form)} action={formAction} className="flex grow flex-col gap-5">
+    <form {...getFormProps(form)} action={formAction} className="space-y-5">
       <Input
         {...getInputProps(fields.email, { type: 'text' })}
         errors={fields.email.errors}
@@ -50,12 +50,13 @@ export function SignInForm({
       />
       <Input
         {...getInputProps(fields.password, { type: 'password' })}
-        className="mb-6"
         errors={fields.password.errors}
         key={fields.password.id}
         label={passwordLabel}
       />
-      <SubmitButton>{submitLabel}</SubmitButton>
+      <div className="pt-2">
+        <SubmitButton>{submitLabel}</SubmitButton>
+      </div>
       {form.errors?.map((error, index) => (
         <FormStatus key={index} type="error">
           {error}

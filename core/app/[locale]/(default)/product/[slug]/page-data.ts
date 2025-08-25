@@ -412,3 +412,68 @@ export const getProductsByCategory = cache(
     return products.filter((p) => p.entityId !== excludeProductId).slice(0, 4);
   },
 );
+
+// Query to get variant SKU based on selected options
+const VariantSkuQuery = graphql(`
+  query VariantSkuQuery(
+    $entityId: Int!
+    $optionValueIds: [OptionValueId!]
+    $useDefaultOptionSelections: Boolean
+  ) {
+    site {
+      product(
+        entityId: $entityId
+        optionValueIds: $optionValueIds
+        useDefaultOptionSelections: $useDefaultOptionSelections
+      ) {
+        sku
+        variants(first: 1) {
+          edges {
+            node {
+              entityId
+              sku
+              defaultImage {
+                altText
+                url: urlTemplate(lossy: true)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const getVariantSku = cache(
+  async (variables: Variables, customerAccessToken?: string): Promise<string> => {
+    try {
+      const { data } = await client.fetch({
+        document: VariantSkuQuery,
+        variables,
+        customerAccessToken,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      const product = data.site.product;
+      
+      if (!product) {
+        return '';
+      }
+
+      // First try to get SKU directly from the product (for selected variant)
+      if (product.sku && product.sku.trim() !== '') {
+        return product.sku;
+      }
+
+      // If no direct SKU, try to get from variants
+      const variants = removeEdgesAndNodes(product.variants || { edges: [] });
+      if (variants.length > 0 && variants[0]?.sku && variants[0].sku.trim() !== '') {
+        return variants[0].sku;
+      }
+
+      return '';
+    } catch {
+      return '';
+    }
+  },
+);
