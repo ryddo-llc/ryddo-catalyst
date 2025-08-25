@@ -129,7 +129,7 @@ export default function SlideUpPopup({
             {/* Close button */}
             <button
               aria-label="Close popup"
-              className={`absolute -top-5 md:-top-6 left-1/2 -translate-x-1/2 border border-primary text-primary rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-200 shadow-lg bg-white z-50 transform w-10 h-10 sm:w-12 sm:h-12 ${isAnimating ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`}
+              className={`absolute -top-5 md:-top-6 left-1/2 -translate-x-1/2 border border-primary text-primary rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-200 shadow-lg bg-white z-50 transform w-10 h-10 sm:w-12 sm:h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white ${isAnimating ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`}
               onClick={onClose}
             >
               <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" viewBox="0 0 24 24">

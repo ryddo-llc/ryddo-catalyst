@@ -43,12 +43,11 @@ export default function AdventuresPopup({ isOpen, onClose, id }: AdventuresPopup
       <div className="relative h-full">
         {/* Background Image */}
         <Image
-          alt="Ryddo adventure - person on electric bike"
+          alt=""
           blurDataURL={blurDataURLs['super73-girl']}
           className="object-cover object-top transition-all duration-300 ease-out"
           fill
           placeholder="blur"
-          priority
           quality={80}
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw"
           src="/images/backgrounds/super73-girl.webp"
@@ -68,7 +67,8 @@ export default function AdventuresPopup({ isOpen, onClose, id }: AdventuresPopup
                 the Westside, L.A. River bike path, Griffith park, and Newport Back bay.
               </p>
 
-              <form className="space-y-3 md:space-y-4" noValidate onSubmit={handleSubmit}>
+              <form className="space-y-3 md:space-y-4" onSubmit={handleSubmit}>
+                <label className="sr-only" htmlFor="adventures-email">Email address</label>
                 <input
                   aria-describedby="adventures-help"
                   autoComplete="email"
