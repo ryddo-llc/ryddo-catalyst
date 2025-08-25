@@ -52,9 +52,11 @@ export const AddToNewWishlistModal = ({
     if (!hasValidProductId) {
       return 'Invalid product selected. Please refresh the page and try again.';
     }
+
     if (!hasValidSku) {
       return 'Product variant not selected. Please select all product options before adding to wishlist.';
     }
+
     return 'Invalid product data. Please refresh the page and try again.';
   };
 

@@ -109,9 +109,6 @@ export function AccountSidebar({ links, dashboardData }: AccountSidebarProps) {
 
           return (
             <Link
-              key={link.href}
-              href={link.href}
-              prefetch={link.prefetch}
               className={clsx(
                 'group flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200',
                 isActive
@@ -119,6 +116,9 @@ export function AccountSidebar({ links, dashboardData }: AccountSidebarProps) {
                   : 'text-[var(--account-card-description,hsl(var(--contrast-600)))] hover:bg-[var(--account-card-hover,hsl(var(--contrast-50)))] hover:text-[var(--account-card-title,hsl(var(--foreground)))]',
                 isLogout && 'mt-4 border-t border-[var(--account-card-border,hsl(var(--contrast-200)))] pt-4 hover:bg-red-50 hover:text-red-600'
               )}
+              href={link.href}
+              key={link.href}
+              prefetch={link.prefetch}
             >
               <div className={clsx(
                 'flex items-center justify-center rounded-md p-1',

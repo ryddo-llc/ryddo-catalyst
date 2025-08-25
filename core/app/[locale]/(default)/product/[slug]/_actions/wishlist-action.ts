@@ -289,18 +289,33 @@ export async function addToNewWishlist(
     const fieldErrors = submission.error?.fieldErrors;
     let errorMessage = t('Errors.unexpected');
     
-    // Handle field errors safely
+    // Handle field errors safely  
     if (fieldErrors && typeof fieldErrors === 'object') {
-      const selectedSkuErrors = (fieldErrors as any)?.selectedSku;
-      const wishlistNameErrors = (fieldErrors as any)?.wishlistName;
-      const productIdErrors = (fieldErrors as any)?.productId;
+      // Check for selectedSku errors
+      if ('selectedSku' in fieldErrors) {
+        const selectedSkuErrors = fieldErrors.selectedSku;
+
+        if (Array.isArray(selectedSkuErrors) && selectedSkuErrors.some((error: string) => error.includes('Selected SKU cannot be empty'))) {
+          errorMessage = 'Please select all product options before adding to wishlist.';
+        }
+      }
       
-      if (Array.isArray(selectedSkuErrors) && selectedSkuErrors.some((error: string) => error.includes('Selected SKU cannot be empty'))) {
-        errorMessage = 'Please select all product options before adding to wishlist.';
-      } else if (Array.isArray(wishlistNameErrors) && wishlistNameErrors.some((error: string) => error.includes('Wishlist name is required'))) {
-        errorMessage = 'Wishlist name is required.';
-      } else if (Array.isArray(productIdErrors) && productIdErrors.some((error: string) => error.includes('Product ID must be a positive number'))) {
-        errorMessage = 'Invalid product selected.';
+      // Check for wishlistName errors
+      if ('wishlistName' in fieldErrors) {
+        const wishlistNameErrors = fieldErrors.wishlistName;
+
+        if (Array.isArray(wishlistNameErrors) && wishlistNameErrors.some((error: string) => error.includes('Wishlist name is required'))) {
+          errorMessage = 'Wishlist name is required.';
+        }
+      }
+      
+      // Check for productId errors
+      if ('productId' in fieldErrors) {
+        const productIdErrors = fieldErrors.productId;
+
+        if (Array.isArray(productIdErrors) && productIdErrors.some((error: string) => error.includes('Product ID must be a positive number'))) {
+          errorMessage = 'Invalid product selected.';
+        }
       }
     }
     
@@ -312,6 +327,7 @@ export async function addToNewWishlist(
 
   if (!customerAccessToken) {
     redirect({ href: getLoginRedirect(redirectTo), locale });
+
     return { lastResult: null };
   }
 
@@ -319,12 +335,13 @@ export async function addToNewWishlist(
     const variantId = await getVariantIdFromSku(productId, selectedSku, customerAccessToken);
 
     formData.append('wishlistItems[0].productEntityId', productId.toString());
+
     if (variantId) {
       formData.append('wishlistItems[0].variantEntityId', variantId.toString());
     }
     
     const result = await newWishlist(prevState, formData);
-    
+
     if (result.lastResult?.status === 'success') {
       await serverToast.success(t('Button.addSuccessMessage'));
     }

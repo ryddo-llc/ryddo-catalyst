@@ -4,7 +4,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
-import { ArrowButton } from '~/components/arrow-button';
 import { buildConfig } from '~/build-config/reader';
 import { ForceRefresh } from '~/components/force-refresh';
 

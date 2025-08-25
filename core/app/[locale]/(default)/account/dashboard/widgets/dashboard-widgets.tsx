@@ -39,7 +39,7 @@ export function DashboardWidgets({ data, labels }: DashboardWidgetsProps) {
       <div className="text-left">
         <h3 className="font-[family-name:var(--account-title-font-family,var(--font-family-heading))] text-lg font-bold text-[var(--account-title,hsl(var(--foreground)))]">
           {labels.welcomeMessage}
-          {data.customerInfo?.firstName && `, ${data.customerInfo.firstName}`}
+          {data.customerInfo?.firstName ? `, ${data.customerInfo.firstName}` : ''}
           <span className="ml-1 text-[#F92F7B]">!</span>
         </h3>
         <p className="mt-1 text-sm text-[var(--account-subtitle,hsl(var(--contrast-500)))]">

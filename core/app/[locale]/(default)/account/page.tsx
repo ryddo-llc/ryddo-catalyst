@@ -1,6 +1,7 @@
 import { getFormatter, setRequestLocale } from 'next-intl/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
+
 import { AccountDashboard } from './dashboard/account-dashboard';
 import { getDashboardData } from './dashboard/page-data';
 
@@ -22,16 +23,6 @@ export default async function AccountPage({ params }: Props) {
 
   return (
     <div className="h-full">
-      {/* Dashboard Content Panel Header */}
-      <div className="mb-6 border-b border-[var(--account-card-border,hsl(var(--contrast-200)))] pb-4">
-        <h2 className="font-[family-name:var(--account-title-font-family,var(--font-family-heading))] text-2xl font-bold text-[var(--account-title,hsl(var(--foreground)))]">
-          Dashboard
-        </h2>
-        <p className="mt-1 text-sm text-[var(--account-subtitle,hsl(var(--contrast-500)))]">
-          Overview of your account activity and quick actions
-        </p>
-      </div>
-
       {/* Dashboard Content */}
       <AccountDashboard
         accountStatusTitle="Account Status"

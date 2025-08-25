@@ -158,13 +158,13 @@ export function AccountNavigation({ links, dashboardData }: AccountNavigationPro
               </p>
               
               {/* Data preview */}
-              {badgeData?.preview && !isLogout && (
+              {badgeData?.preview && !isLogout ? (
                 <div className="mt-2 rounded-lg bg-[var(--account-preview-background,hsl(var(--contrast-50)))] px-3 py-2">
                   <p className="text-xs text-[var(--account-preview-text,hsl(var(--contrast-600)))]">
                     {badgeData.preview}
                   </p>
                 </div>
-              )}
+              ) : null}
               
               {/* Hover arrow */}
               <div className="mt-4 opacity-0 transition-all duration-200 group-hover:opacity-100">

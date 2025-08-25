@@ -44,13 +44,13 @@ export const NewWishlistModal = ({
       )}
       
       {/* Show success state feedback */}
-      {state.lastResult?.status === 'success' && state.successMessage && (
+      {state.lastResult?.status === 'success' && state.successMessage ? (
         <div className="mt-4">
           <FormStatus type="success">
             {state.successMessage}
           </FormStatus>
         </div>
-      )}
+      ) : null}
     </>
   );
 };

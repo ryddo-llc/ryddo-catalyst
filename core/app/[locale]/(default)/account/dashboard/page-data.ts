@@ -109,9 +109,10 @@ export const getDashboardData = cache(async (formatter: Awaited<ReturnType<typeo
       const addressData = addressesData.value;
 
       addressesSummary.totalCount = addressData.addresses.length;
-      
+
       // Use first address as primary (defaultAddress property may not exist)
       const primaryAddress = addressData.addresses[0];
+
       if (primaryAddress) {
         addressesSummary.primary = {
           fullName: `${primaryAddress.firstName} ${primaryAddress.lastName}`,
