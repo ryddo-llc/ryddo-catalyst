@@ -29,6 +29,21 @@ export default function SlideUpPopup({
   const ANIMATION_DURATION = 300;
   const DOM_UPDATE_DELAY = 5;
 
+  // Compute accessible name props (prefer aria-labelledby over aria-label)
+  const getA11yNameProps = () => {
+    if (ariaLabelledBy) {
+      return { 'aria-labelledby': ariaLabelledBy };
+    }
+    
+    if (ariaLabel) {
+      return { 'aria-label': ariaLabel };
+    }
+
+    return {};
+  };
+
+  const a11yNameProps = getA11yNameProps();
+
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -62,12 +77,6 @@ export default function SlideUpPopup({
       // focus the dialog for SR/keyboard users
       dialogRef.current.focus();
     }
-
-    if (!isOpen && prevActiveEl.current) {
-      // restore focus to the trigger
-      prevActiveEl.current.focus();
-      prevActiveEl.current = null;
-    }
   }, [isOpen]);
 
   // Handle popup opening/closing animations
@@ -89,6 +98,12 @@ export default function SlideUpPopup({
 
     // Wait for animation to complete before unmounting
     const closeTimer = setTimeout(() => {
+      // restore focus to the trigger before unmount
+      if (prevActiveEl.current instanceof HTMLElement) {
+        prevActiveEl.current.focus();
+        prevActiveEl.current = null;
+      }
+
       setShouldRender(false);
     }, ANIMATION_DURATION);
 
@@ -106,8 +121,7 @@ export default function SlideUpPopup({
       >
         {/* Slide-up popup wrapper */}
         <div 
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
+          {...a11yNameProps}
           aria-modal="true"
           className={`
           absolute bottom-0 left-0 right-0
@@ -131,6 +145,7 @@ export default function SlideUpPopup({
               aria-label="Close popup"
               className={`absolute -top-5 md:-top-6 left-1/2 -translate-x-1/2 border border-primary text-primary rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-200 shadow-lg bg-white z-50 transform w-10 h-10 sm:w-12 sm:h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white ${isAnimating ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`}
               onClick={onClose}
+              type="button"
             >
               <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" viewBox="0 0 24 24">
                 <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
@@ -141,8 +156,8 @@ export default function SlideUpPopup({
             <div className={`
               transform transition-all duration-300 ease-in-out 
               ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
-              max-h-[85vh] sm:max-h-[90vh] md:max-h-none 
-              overflow-y-auto md:overflow-y-visible
+              max-h-[85vh] sm:max-h-[90vh] md:max-h-[90vh]
+              overflow-y-auto
             `}>
               {children}
             </div>
