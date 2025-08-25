@@ -47,25 +47,26 @@ export default function BookNowPopup({ isOpen, onClose, id }: BookNowPopupProps)
 
   return (
     <SlideUpPopup 
+      ariaLabelledBy="booknow-dialog-title"
       className="overflow-hidden transition-all duration-300 ease-out"
       id={id}
       isOpen={isOpen} 
       onClose={onClose}
     >
       <div className="relative h-full">
-        <div className="absolute inset-0 z-0">
-          <Image
-            alt="Ryddo background"
-            blurDataURL={blurDataURLs['default-background']}
-            className="object-cover"
-            fill
-            placeholder="blur"
-            priority
-            quality={80}
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw"
-            src="/images/backgrounds/default-background.webp"
-          />
-        </div>
+        <h2 className="sr-only" id="booknow-dialog-title">Book a service</h2>
+        {/* Background Image */}
+        <Image
+          alt=""
+          blurDataURL={blurDataURLs['default-background']}
+          className="object-cover"
+          fill
+          placeholder="blur"
+          priority
+          quality={80}
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw"
+          src="/images/backgrounds/default-background.webp"
+        />
         
         {/* Content Overlay */}
         <div className="relative z-10 flex h-full items-center justify-center">

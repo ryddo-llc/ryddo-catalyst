@@ -29,7 +29,7 @@ export default function PartnersContactBar() {
     { name: 'MiniMotors', image: minimotors },
   ];
 
-  const POPUP_TRANSITION_DURATION = 225;
+  const POPUP_TRANSITION_DURATION = 300;
   const ADVENTURES_DIALOG_ID = 'adventures-popup';
   const BOOKNOW_DIALOG_ID = 'booknow-popup';
 
@@ -55,13 +55,12 @@ export default function PartnersContactBar() {
   };
 
   return (
-    <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-sm font-bold text-white md:flex-row pb-[env(safe-area-inset-bottom)]">
+    <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-sm font-bold text-white md:flex-row pb-[env(safe-area-inset-bottom)] [--partner-bar-h:3rem] md:[--partner-bar-h:4rem]">
       {/* Mobile Layout - Two buttons side by side */}
       <div className="flex w-full md:hidden">
         {/* Adventures Button - Mobile */}
         <button 
           aria-controls={ADVENTURES_DIALOG_ID}
-          aria-expanded={activePopup === 'adventures'}
           aria-haspopup="dialog"
           className="group flex h-12 w-1/2 items-center justify-center border-r border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           data-state={activePopup === 'adventures' ? 'open' : 'closed'}
@@ -77,7 +76,6 @@ export default function PartnersContactBar() {
         {/* Book Now Button - Mobile */}
         <button
           aria-controls={BOOKNOW_DIALOG_ID}
-          aria-expanded={activePopup === 'booknow'}
           aria-haspopup="dialog"
           className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           data-state={activePopup === 'booknow' ? 'open' : 'closed'}
@@ -92,7 +90,6 @@ export default function PartnersContactBar() {
       {/* Newsletter Signup Section - Hidden on mobile */}
       <button
         aria-controls={ADVENTURES_DIALOG_ID}
-        aria-expanded={activePopup === 'adventures'}
         aria-haspopup="dialog"
         className="group hidden h-12 items-center justify-center border-b border-white px-2 transition-colors duration-200 hover:bg-[#F92F7B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black md:flex md:h-16 md:border-b-0 md:border-r md:px-3 lg:px-6 xl:px-8"
         data-state={activePopup === 'adventures' ? 'open' : 'closed'}
@@ -135,8 +132,12 @@ export default function PartnersContactBar() {
       {/* Contact Actions Section - Hidden on mobile */}
       <div className="hidden w-auto md:flex">
         {/* Phone Number */}
-        <div className="hidden lg:flex h-12 w-32 items-center justify-center border-l border-white transition-colors duration-200 hover:bg-[#F92F7B] lg:w-44 xl:w-48 2xl:w-52">
-          <Link aria-label="Call ryddo at 323-676-7433" className="px-1 text-center text-xs" href="tel:+13236767433">
+        <div className="hidden lg:flex h-12 w-32 lg:w-44 xl:w-48 2xl:w-52">
+          <Link 
+            aria-label="Call ryddo at 323-676-7433" 
+            className="flex h-full w-full items-center justify-center border-l border-white px-2 text-xs font-bold transition-colors duration-200 hover:bg-[#F92F7B] hover:text-white sm:h-14 md:h-16 md:text-sm" 
+            href="tel:+13236767433"
+          >
             <span>323.676.7433</span>
           </Link>
         </div>
@@ -144,7 +145,6 @@ export default function PartnersContactBar() {
         {/* Book Now Button - Desktop/Tablet */}
         <button
           aria-controls={BOOKNOW_DIALOG_ID}
-          aria-expanded={activePopup === 'booknow'}
           aria-haspopup="dialog"
           className="flex h-12 w-32 items-center justify-center bg-[#F92F7B] px-2 text-xs transition-colors duration-200 hover:bg-[#d41f63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:h-14 md:h-16 md:w-40 md:text-sm md:border-l md:border-white lg:w-44 xl:w-48 2xl:w-52"
           data-state={activePopup === 'booknow' ? 'open' : 'closed'}

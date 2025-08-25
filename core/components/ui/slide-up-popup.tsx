@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface SlideUpPopupProps {
   isOpen: boolean;
@@ -8,19 +8,25 @@ interface SlideUpPopupProps {
   children: React.ReactNode;
   className?: string;
   id?: string;
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
 }
 
-export default function SlideUpPopup({ 
-  isOpen, 
-  onClose, 
-  children, 
+export default function SlideUpPopup({
+  isOpen,
+  onClose,
+  children,
   className = '',
-  id
+  id,
+  ariaLabel,
+  ariaLabelledBy
 }: SlideUpPopupProps) {
-  const [shouldRender, setShouldRender] = useState(false);  
+  const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const prevActiveEl = useRef<HTMLElement | null>(null);
 
-  const ANIMATION_DURATION = 250;
+  const ANIMATION_DURATION = 300;
   const DOM_UPDATE_DELAY = 5;
 
   // Handle escape key
@@ -39,6 +45,30 @@ export default function SlideUpPopup({
       };
     }
   }, [isOpen, onClose]);
+
+  // Handle focus management
+  useEffect(() => {
+    if (isOpen) {
+      const activeElement = document.activeElement;
+
+      if (activeElement instanceof HTMLElement) {
+        prevActiveEl.current = activeElement;
+      }
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && dialogRef.current) {
+      // focus the dialog for SR/keyboard users
+      dialogRef.current.focus();
+    }
+
+    if (!isOpen && prevActiveEl.current) {
+      // restore focus to the trigger
+      prevActiveEl.current.focus();
+      prevActiveEl.current = null;
+    }
+  }, [isOpen]);
 
   // Handle popup opening/closing animations
   useEffect(() => {
@@ -67,17 +97,17 @@ export default function SlideUpPopup({
 
   if (!shouldRender) return null;
 
-  const FOOTER_HEIGHT = '64px';
-
   return (
     <>
       {/* Container positioned above footer with overflow hidden to prevent visual overlap */}
       <div 
         className="fixed left-0 right-0 z-[60] pointer-events-none overflow-hidden" 
-        style={{ bottom: FOOTER_HEIGHT, top: '0' }}
+        style={{ bottom: 'calc(var(--partner-bar-h, 64px) + env(safe-area-inset-bottom))', top: '0' }}
       >
         {/* Slide-up popup wrapper */}
         <div 
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           aria-modal="true"
           className={`
           absolute bottom-0 left-0 right-0
@@ -87,11 +117,13 @@ export default function SlideUpPopup({
           ${className}
         `} 
           {...(id && { id })}
+          ref={dialogRef}
           role="dialog"
           style={{ 
             overflow: 'visible',
             transformOrigin: 'bottom'
           }}
+          tabIndex={-1}
         >
           <div className="relative">
             {/* Close button */}
@@ -107,9 +139,9 @@ export default function SlideUpPopup({
 
             {/* Popup content with mobile height constraints */}
             <div className={`
-              transform transition-all duration-200 ease-in-out 
+              transform transition-all duration-300 ease-in-out 
               ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
-              max-h-[70vh] sm:max-h-[80vh] md:max-h-none 
+              max-h-[85vh] sm:max-h-[90vh] md:max-h-none 
               overflow-y-auto md:overflow-y-visible
             `}>
               {children}
