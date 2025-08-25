@@ -29,7 +29,9 @@ export default function PartnersContactBar() {
     { name: 'MiniMotors', image: minimotors },
   ];
 
-  const POPUP_TRANSITION_DURATION = 225;
+  const POPUP_TRANSITION_DURATION = 300;
+  const ADVENTURES_DIALOG_ID = 'adventures-popup';
+  const BOOKNOW_DIALOG_ID = 'booknow-popup';
 
   const openPopup = (popupType: PopupType) => {
     if (timeoutRef.current) {
@@ -53,44 +55,59 @@ export default function PartnersContactBar() {
   };
 
   return (
-    <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-xs font-bold text-white sm:text-sm md:flex-row">
+    <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-sm font-bold text-white md:flex-row pb-[env(safe-area-inset-bottom)] [--partner-bar-h:3rem] md:[--partner-bar-h:4rem]">
       {/* Mobile Layout - Two buttons side by side */}
       <div className="flex w-full md:hidden">
         {/* Adventures Button - Mobile */}
         <button 
-          className="flex h-12 w-1/2 items-center justify-center border-r border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B]"
+          aria-controls={ADVENTURES_DIALOG_ID}
+          aria-haspopup="dialog"
+          className="group flex h-12 w-1/2 items-center justify-center border-r border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          data-state={activePopup === 'adventures' ? 'open' : 'closed'}
           onClick={() => openPopup('adventures')}
+          type="button"
         >
           <div className="h-auto whitespace-nowrap p-0 text-center text-white">
-            <span>Free adventures</span>
-            <span className="ml-1 text-[#F92F7B]">^</span>
+            <span>Sign up for free ryddo</span>
+            <span aria-hidden="true" className="ml-1 text-[#F92F7B] transition-transform group-data-[state=open]:-rotate-180">⌄</span>
           </div>
         </button>
 
         {/* Book Now Button - Mobile */}
         <button
-          className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63]"
+          aria-controls={BOOKNOW_DIALOG_ID}
+          aria-haspopup="dialog"
+          className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          data-state={activePopup === 'booknow' ? 'open' : 'closed'}
           onClick={() => openPopup('booknow')}
+          type="button"
         >
-          <span className="font-bold">Book Now</span>
+          <span className="font-bold">Book Test Ride</span>
         </button>
       </div>
 
       {/* Desktop/Tablet Layout */}
       {/* Newsletter Signup Section - Hidden on mobile */}
-      <button 
-        className="xl:px-18 hidden h-12 items-center justify-center border-b border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] md:flex md:h-16 md:border-b-0 md:border-r md:px-10 lg:px-12"
+      <button
+        aria-controls={ADVENTURES_DIALOG_ID}
+        aria-haspopup="dialog"
+        className="group hidden h-12 items-center justify-center border-b border-white px-2 transition-colors duration-200 hover:bg-[#F92F7B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black md:flex md:h-16 md:border-b-0 md:border-r md:px-3 lg:px-6 xl:px-8"
+        data-state={activePopup === 'adventures' ? 'open' : 'closed'}
         onClick={() => openPopup('adventures')}
+        type="button"
       >
         <div className="h-auto whitespace-nowrap p-0 text-center text-white">
-          <span className="hidden lg:inline">Sign up for Free ryddo adventures</span>
+          <span className="hidden xl:inline">Sign up for Free ryddo adventures</span>
+          <span className="hidden lg:inline xl:hidden">Free ryddo adventures</span>
           <span className="md:inline lg:hidden">Free adventures</span>
-          <span className="ml-1 text-[#F92F7B]">^</span>
+          <span aria-hidden="true" className="ml-1 text-[#F92F7B] transition-transform group-data-[state=open]:-rotate-180">⌄</span>
         </div>
       </button>
 
       {/* Partners/Brands Section - Hidden on mobile */}
-      <div className="hidden min-h-[48px] flex-1 items-center justify-center gap-3 px-3 py-2 md:flex md:min-h-[64px] md:gap-8 md:px-8 md:py-0 lg:gap-12 lg:px-10 xl:gap-20 2xl:gap-32">
+      <div 
+        className="hidden min-h-[48px] flex-1 items-center justify-center gap-x-4 px-2 py-2 md:flex md:min-h-[64px] md:px-3 md:py-0 md:gap-x-6 lg:px-4 xl:px-6 2xl:px-8"
+      >
         {brands.map((brand: BrandProps) => (
           <Link
             className="h-auto flex-shrink-0 p-0 transition-opacity duration-200 hover:bg-transparent hover:opacity-80"
@@ -99,8 +116,12 @@ export default function PartnersContactBar() {
           >
             <Image
               alt={brand.name}
-              className="h-auto w-16 max-w-[124px] md:w-24 lg:w-28 xl:w-32"
+              className="h-auto w-12 max-w-[120px] md:w-28 lg:w-36 xl:w-48 2xl:w-56"
+              decoding="async"
+              draggable={false}
               height={20}
+              loading="lazy"
+              sizes="(min-width: 1536px) 14rem, (min-width: 1280px) 12rem, (min-width: 1024px) 9rem, (min-width: 768px) 7rem, 3rem"
               src={brand.image}
               width={80}
             />
@@ -109,31 +130,41 @@ export default function PartnersContactBar() {
       </div>
 
       {/* Contact Actions Section - Hidden on mobile */}
-      <div className="hidden w-full md:flex lg:w-auto">
+      <div className="hidden w-auto md:flex">
         {/* Phone Number */}
-        <div className="flex h-12 w-1/2 items-center justify-center border-l border-white transition-colors duration-200 hover:bg-[#F92F7B] sm:h-14 md:h-16 lg:w-44 xl:w-52 2xl:w-60">
-          <Link className="px-2 text-center" href="tel:3236767433">
+        <div className="hidden lg:flex h-12 w-32 lg:w-44 xl:w-48 2xl:w-52">
+          <Link 
+            aria-label="Call ryddo at 323-676-7433" 
+            className="flex h-full w-full items-center justify-center border-l border-white px-2 text-xs font-bold transition-colors duration-200 hover:bg-[#F92F7B] hover:text-white sm:h-14 md:h-16 md:text-sm" 
+            href="tel:+13236767433"
+          >
             <span>323.676.7433</span>
           </Link>
         </div>
 
         {/* Book Now Button - Desktop/Tablet */}
         <button
-          className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] sm:h-14 md:h-16 lg:w-44 xl:w-52 2xl:w-60"
+          aria-controls={BOOKNOW_DIALOG_ID}
+          aria-haspopup="dialog"
+          className="flex h-12 w-32 items-center justify-center bg-[#F92F7B] px-2 text-xs transition-colors duration-200 hover:bg-[#d41f63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:h-14 md:h-16 md:w-40 md:text-sm md:border-l md:border-white lg:w-44 xl:w-48 2xl:w-52"
+          data-state={activePopup === 'booknow' ? 'open' : 'closed'}
           onClick={() => openPopup('booknow')}
+          type="button"
         >
-          <span className="font-bold">Book Now</span>
+          <span className="font-bold">Book Test Ride</span>
         </button>
       </div>
       
       {/* Adventures Popup */}
       <AdventuresPopup 
+        id={ADVENTURES_DIALOG_ID}
         isOpen={activePopup === 'adventures'} 
         onClose={closePopup} 
       />
       
       {/* Book Now Popup */}
       <BookNowPopup 
+        id={BOOKNOW_DIALOG_ID}
         isOpen={activePopup === 'booknow'} 
         onClose={closePopup} 
       />

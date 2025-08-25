@@ -10,11 +10,17 @@ import SlideUpPopup from '../ui/slide-up-popup';
 interface AdventuresPopupProps {
   isOpen: boolean;
   onClose: () => void;
+  id?: string;
 }
 
-export default function AdventuresPopup({ isOpen, onClose }: AdventuresPopupProps) {
+export default function AdventuresPopup({ isOpen, onClose, id }: AdventuresPopupProps) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Compute dynamic IDs to prevent conflicts
+  const titleId = id ? `${id}-title` : 'adventures-dialog-title';
+  const emailId = id ? `${id}-email` : 'adventures-email';
+  const helpId = id ? `${id}-help` : 'adventures-help';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,30 +39,30 @@ export default function AdventuresPopup({ isOpen, onClose }: AdventuresPopupProp
 
   return (
     <SlideUpPopup
+      ariaLabelledBy={titleId}
       className="overflow-hidden transition-all duration-300 ease-out"
+      id={id}
       isOpen={isOpen}
       onClose={onClose}
     >
       <div className="relative h-full">
-        <div className="absolute inset-0 z-0">
-          <Image
-            alt="Ryddo adventure - person on electric bike"
-            blurDataURL={blurDataURLs['super73-girl']}
-            className="object-cover object-top transition-all duration-300 ease-out"
-            fill
-            placeholder="blur"
-            priority
-            quality={80}
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw"
-            src="/images/backgrounds/super73-girl.webp"
-          />
-        </div>
+        {/* Background Image */}
+        <Image
+          alt="Ryddo adventure - person on electric bike"
+          blurDataURL={blurDataURLs['super73-girl']}
+          className="object-cover object-top transition-all duration-300 ease-out"
+          fill
+          placeholder="blur"
+          quality={80}
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw"
+          src="/images/backgrounds/super73-girl.webp"
+        />
 
         {/* Content Overlay */}
         <div className="relative z-10 flex h-full">
           <div className="flex flex-1 items-center transition-all duration-300 ease-out xl:pl-12">
             <div className="w-full max-w-sm p-4 transition-all duration-300 ease-out sm:p-6 md:max-w-md md:p-8 lg:max-w-lg lg:p-12">
-              <h3 className="mb-3 text-lg font-bold transition-all duration-300 ease-out md:mb-4 lg:text-xl">
+              <h3 className="mb-3 text-lg font-bold transition-all duration-300 ease-out md:mb-4 lg:text-xl" id={titleId}>
                 <span className="text-[#F92F7B]">Interested in a free ryddo adventure?</span>
               </h3>
 
@@ -66,15 +72,21 @@ export default function AdventuresPopup({ isOpen, onClose }: AdventuresPopupProp
                 the Westside, L.A. River bike path, Griffith park, and Newport Back bay.
               </p>
 
-              <form className="space-y-3 md:space-y-4" onSubmit={handleSubmit}>
+              <form aria-busy={isSubmitting} className="space-y-3 md:space-y-4" onSubmit={handleSubmit}>
+                <label className="sr-only" htmlFor={emailId}>Email address</label>
                 <input
+                  aria-describedby={helpId}
+                  autoComplete="email"
                   className="w-full rounded-full border border-gray-300 px-4 py-2 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#F92F7B] md:px-5 md:py-3 md:text-base"
+                  id={emailId}
+                  name="email"
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="email"
+                  placeholder="Email address"
                   required
                   type="email"
                   value={email}
                 />
+                <span className="sr-only" id={helpId}>Enter your email to get notified about free ryddo adventures.</span>
                 <button
                   className="h-10 w-full rounded-full bg-[#F92F7B] px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#e01a6a] disabled:opacity-50 md:h-11 md:px-5 md:py-3 md:text-base"
                   disabled={isSubmitting}

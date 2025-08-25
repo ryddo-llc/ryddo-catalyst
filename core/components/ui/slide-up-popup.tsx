@@ -1,25 +1,48 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface SlideUpPopupProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
+  id?: string;
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
 }
 
-export default function SlideUpPopup({ 
-  isOpen, 
-  onClose, 
-  children, 
-  className = '' 
+export default function SlideUpPopup({
+  isOpen,
+  onClose,
+  children,
+  className = '',
+  id,
+  ariaLabel,
+  ariaLabelledBy
 }: SlideUpPopupProps) {
-  const [shouldRender, setShouldRender] = useState(false);  
+  const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const prevActiveEl = useRef<HTMLElement | null>(null);
 
-  const ANIMATION_DURATION = 250;
+  const ANIMATION_DURATION = 300;
   const DOM_UPDATE_DELAY = 5;
+
+  // Compute accessible name props (prefer aria-labelledby over aria-label)
+  const getA11yNameProps = () => {
+    if (ariaLabelledBy) {
+      return { 'aria-labelledby': ariaLabelledBy };
+    }
+    
+    if (ariaLabel) {
+      return { 'aria-label': ariaLabel };
+    }
+
+    return {};
+  };
+
+  const a11yNameProps = getA11yNameProps();
 
   // Handle escape key
   useEffect(() => {
@@ -37,6 +60,24 @@ export default function SlideUpPopup({
       };
     }
   }, [isOpen, onClose]);
+
+  // Handle focus management
+  useEffect(() => {
+    if (isOpen) {
+      const activeElement = document.activeElement;
+
+      if (activeElement instanceof HTMLElement) {
+        prevActiveEl.current = activeElement;
+      }
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && dialogRef.current) {
+      // focus the dialog for SR/keyboard users
+      dialogRef.current.focus();
+    }
+  }, [isOpen]);
 
   // Handle popup opening/closing animations
   useEffect(() => {
@@ -57,6 +98,12 @@ export default function SlideUpPopup({
 
     // Wait for animation to complete before unmounting
     const closeTimer = setTimeout(() => {
+      // restore focus to the trigger before unmount
+      if (prevActiveEl.current instanceof HTMLElement) {
+        prevActiveEl.current.focus();
+        prevActiveEl.current = null;
+      }
+
       setShouldRender(false);
     }, ANIMATION_DURATION);
 
@@ -65,32 +112,40 @@ export default function SlideUpPopup({
 
   if (!shouldRender) return null;
 
-  const FOOTER_HEIGHT = '64px';
-
   return (
     <>
       {/* Container positioned above footer with overflow hidden to prevent visual overlap */}
       <div 
-        className="fixed left-0 right-0 z-40 pointer-events-none overflow-hidden" 
-        style={{ bottom: FOOTER_HEIGHT, top: '0' }}
+        className="fixed left-0 right-0 z-[60] pointer-events-none overflow-hidden" 
+        style={{ bottom: 'calc(var(--partner-bar-h, 64px) + env(safe-area-inset-bottom))', top: '0' }}
       >
         {/* Slide-up popup wrapper */}
-        <div className={`
-        absolute bottom-0 left-0 right-0
-        bg-white text-black pointer-events-auto
-        transform transition-all duration-250 ease-in-out
-        ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
-        ${className}
-      `} style={{ 
-          overflow: 'visible',
-          transformOrigin: 'bottom'
-        }}>
+        <div 
+          {...a11yNameProps}
+          aria-modal="true"
+          className={`
+          absolute bottom-0 left-0 right-0
+          bg-white text-black pointer-events-auto
+          transform transition-all duration-300 ease-in-out
+          ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
+          ${className}
+        `} 
+          {...(id && { id })}
+          ref={dialogRef}
+          role="dialog"
+          style={{ 
+            overflow: 'visible',
+            transformOrigin: 'bottom'
+          }}
+          tabIndex={-1}
+        >
           <div className="relative">
             {/* Close button */}
             <button
               aria-label="Close popup"
-              className={`absolute -top-5 md:-top-6 left-1/2 -translate-x-1/2 border border-primary text-primary rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-200 shadow-lg bg-white z-50 transform w-10 h-10 sm:w-12 sm:h-12 ${isAnimating ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`}
+              className={`absolute -top-5 md:-top-6 left-1/2 -translate-x-1/2 border border-primary text-primary rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-200 shadow-lg bg-white z-50 transform w-10 h-10 sm:w-12 sm:h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white ${isAnimating ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`}
               onClick={onClose}
+              type="button"
             >
               <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" viewBox="0 0 24 24">
                 <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
@@ -99,10 +154,10 @@ export default function SlideUpPopup({
 
             {/* Popup content with mobile height constraints */}
             <div className={`
-              transform transition-all duration-200 ease-in-out 
+              transform transition-all duration-300 ease-in-out 
               ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
-              max-h-[70vh] sm:max-h-[80vh] md:max-h-none 
-              overflow-y-auto md:overflow-y-visible
+              max-h-[85vh] sm:max-h-[90vh] md:max-h-[90vh]
+              overflow-y-auto
             `}>
               {children}
             </div>
