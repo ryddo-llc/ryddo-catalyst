@@ -37,11 +37,19 @@ export function SignInSection({
   forgotPasswordLabel = 'Forgot your password?',
 }: Props) {
   return (
-    <div className="@container">
-      <div className="flex flex-col justify-center gap-y-24 px-3 py-10 @xl:flex-row @xl:px-6 @4xl:py-20 @5xl:px-20">
-        <div className="w-full @xl:max-w-md @xl:border-r @xl:pr-10 @4xl:pr-20">
+    <div className="@container relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-10 right-10 h-32 w-32 rounded-full bg-[#F92F7B]" />
+        <div className="absolute bottom-20 left-20 h-24 w-24 rounded-full bg-[#F92F7B]" />
+        <div className="absolute top-1/2 right-1/3 h-16 w-16 rounded-full bg-[#F92F7B]" />
+      </div>
+      
+      <div className="relative flex flex-col justify-center gap-y-24 px-3 py-10 @xl:flex-row @xl:px-6 @4xl:py-20 @5xl:px-20">
+        <div className="w-full @xl:max-w-md @xl:border-r @xl:border-[var(--sign-in-border,hsl(var(--contrast-200)))] @xl:pr-10 @4xl:pr-20">
           <h1 className="mb-10 font-[family-name:var(--sign-in-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none text-[var(--sign-in-title,hsl(var(--foreground)))] @xl:text-5xl">
             {title}
+            <span className="ml-2 text-5xl text-[#F92F7B]">.</span>
           </h1>
           <SignInForm
             action={action}
@@ -50,7 +58,7 @@ export function SignInSection({
             submitLabel={submitLabel}
           />
           <Link className="group/underline focus:outline-none" href={forgotPasswordHref}>
-            <AnimatedUnderline className="mt-4 block w-fit text-sm font-semibold">
+            <AnimatedUnderline className="mt-4 block w-fit text-sm font-semibold text-[var(--sign-in-link,hsl(var(--contrast-500)))] hover:text-[#F92F7B] transition-colors">
               {forgotPasswordLabel}
             </AnimatedUnderline>
           </Link>
