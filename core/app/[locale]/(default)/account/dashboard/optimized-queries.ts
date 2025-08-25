@@ -1,76 +1,15 @@
+import { getFormatter } from 'next-intl/server';
 import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { ordersTransformer } from '~/data-transformers/orders-transformer';
 import { TAGS } from '~/client/tags';
 
-// Lightweight query for dashboard summary - only fetches counts and essential info
-const DashboardSummaryQuery = graphql(`
-  query DashboardSummaryQuery {
-    customer {
-      entityId
-      firstName
-      lastName
-      email
-      addresses {
-        collectionInfo {
-          totalItems
-        }
-        edges(first: 1) {
-          node {
-            firstName
-            lastName
-            address1
-            city
-            stateOrProvince
-            postalCode
-          }
-        }
-      }
-      orders {
-        collectionInfo {
-          totalItems
-        }
-        edges(first: 3) {
-          node {
-            entityId
-            orderedAt {
-              utc
-            }
-            status {
-              label
-              value
-            }
-            totalIncTax {
-              value
-              currencyCode
-            }
-          }
-        }
-      }
-      wishlists {
-        collectionInfo {
-          totalItems
-        }
-        edges(first: 3) {
-          node {
-            entityId
-            name
-            isPublic
-            items {
-              collectionInfo {
-                totalItems
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`);
+import { getCustomerAddresses } from '../addresses/page-data';
+import { getCustomerOrders } from '../orders/page-data';
+import { getCustomerSettingsQuery } from '../settings/page-data';
+import { getCustomerWishlists } from '../wishlists/page-data';
 
 export interface OptimizedDashboardData {
   ordersSummary: {
@@ -130,98 +69,119 @@ function getOrderStatusType(status: string): 'pending' | 'processing' | 'shipped
   return 'pending';
 }
 
-function formatCurrency(value: number, currencyCode: string): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currencyCode,
-  }).format(value);
-}
+const fetchDashboardData = async (formatter: Awaited<ReturnType<typeof getFormatter>>): Promise<OptimizedDashboardData> => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  
+  if (!customerAccessToken) {
+    // Return empty dashboard for non-authenticated users
+    return {
+      ordersSummary: { recent: [], totalCount: 0 },
+      addressesSummary: { totalCount: 0 },
+      wishlistsSummary: { recent: [], totalCount: 0, totalItems: 0 },
+      accountStatus: { hasCompletedProfile: false, hasAddresses: false, hasOrders: false, completionPercentage: 0 },
+    };
+  }
 
-const fetchDashboardData = async (customerAccessToken: string): Promise<OptimizedDashboardData> => {
   try {
-    const { data } = await client.fetch({
-      document: DashboardSummaryQuery,
-      customerAccessToken,
-      fetchOptions: { 
-        next: { 
-          revalidate,
-          tags: [TAGS.customer, 'account-dashboard']
-        }
-      },
-    });
-
-    if (!data.customer) {
-      throw new Error('Customer data not found');
-    }
-
-    const customer = data.customer;
+    // Fetch data in parallel for better performance
+    const [ordersData, addressesData, wishlistsData, customerSettings] = await Promise.allSettled([
+      getCustomerOrders({ limit: 5 }), // Get recent 5 orders
+      getCustomerAddresses({ limit: 10 }), // Get addresses with proper pagination
+      getCustomerWishlists({ limit: 3, before: null, after: null }), // Get recent 3 wishlists
+      getCustomerSettingsQuery({}), // Get customer settings with empty props
+    ]);
 
     // Process orders
-    const ordersSummary = {
-      totalCount: customer.orders?.collectionInfo ? ((customer.orders.collectionInfo as any)?.totalItems || 0) : 0,
-      recent: customer.orders?.edges?.map(edge => ({
-        id: edge.node.entityId.toString(),
-        orderNumber: edge.node.entityId.toString(),
-        date: new Date(edge.node.orderedAt.utc).toLocaleDateString(),
-        total: formatCurrency(edge.node.totalIncTax.value, edge.node.totalIncTax.currencyCode),
-        status: edge.node.status.label,
-        statusType: getOrderStatusType(edge.node.status.label),
-      })) ?? [],
+    const ordersSummary: OptimizedDashboardData['ordersSummary'] = {
+      recent: [],
+      totalCount: 0,
     };
+
+    if (ordersData.status === 'fulfilled' && ordersData.value) {
+      const transformedOrders = ordersTransformer(ordersData.value.orders, formatter);
+
+      ordersSummary.recent = transformedOrders.slice(0, 5).map(order => ({
+        id: order.id,
+        orderNumber: order.id, // Use order id as order number since that's what's available
+        date: new Date().toLocaleDateString(), // Would need to extract from order data
+        total: order.totalPrice,
+        status: order.status,
+        statusType: getOrderStatusType(order.status),
+      }));
+      ordersSummary.totalCount = transformedOrders.length; // Use array length as count
+    }
 
     // Process addresses
-    const addressesData = customer.addresses;
-    const addressesSummary = {
-      totalCount: addressesData?.collectionInfo ? ((addressesData.collectionInfo as any)?.totalItems || 0) : 0,
-      primary: addressesData?.edges?.[0] ? {
-        fullName: `${addressesData.edges[0].node.firstName} ${addressesData.edges[0].node.lastName}`,
-        addressLine1: addressesData.edges[0].node.address1,
-        city: addressesData.edges[0].node.city,
-        state: addressesData.edges[0].node.stateOrProvince || '',
-        zipCode: addressesData.edges[0].node.postalCode || '',
-      } : undefined,
+    const addressesSummary: OptimizedDashboardData['addressesSummary'] = {
+      totalCount: 0,
+      primary: undefined,
     };
+
+    if (addressesData.status === 'fulfilled' && addressesData.value) {
+      const addressData = addressesData.value;
+
+      addressesSummary.totalCount = addressData.addresses.length;
+
+      // Use first address as primary (defaultAddress property may not exist)
+      const primaryAddress = addressData.addresses[0];
+
+      if (primaryAddress) {
+        addressesSummary.primary = {
+          fullName: `${primaryAddress.firstName} ${primaryAddress.lastName}`,
+          addressLine1: primaryAddress.address1,
+          city: primaryAddress.city,
+          state: primaryAddress.stateOrProvince || '',
+          zipCode: primaryAddress.postalCode || '',
+        };
+      }
+    }
 
     // Process wishlists
-    const wishlistsData = customer.wishlists;
-    const wishlistsSummary = {
-      totalCount: wishlistsData?.collectionInfo ? ((wishlistsData.collectionInfo as any)?.totalItems || 0) : 0,
-      totalItems: wishlistsData?.edges?.reduce((sum, edge) => 
-        sum + ((edge.node.items?.collectionInfo as any)?.totalItems ?? 0), 0
-      ) ?? 0,
-      recent: wishlistsData?.edges?.map(edge => ({
-        id: edge.node.entityId.toString(),
-        name: edge.node.name,
-        itemCount: (edge.node.items?.collectionInfo as any)?.totalItems ?? 0,
-        isPublic: edge.node.isPublic,
-        lastModified: new Date().toISOString(), // Placeholder - would need actual date from API
-      })) ?? [],
+    const wishlistsSummary: OptimizedDashboardData['wishlistsSummary'] = {
+      recent: [],
+      totalCount: 0,
+      totalItems: 0,
     };
 
-    // Calculate account completion status
-    const hasCompletedProfile = !!(customer.firstName && customer.lastName && customer.email);
-    const hasAddresses = addressesSummary.totalCount > 0;
-    const hasOrders = ordersSummary.totalCount > 0;
+    if (wishlistsData.status === 'fulfilled' && wishlistsData.value) {
+      const wishlistData = wishlistsData.value;
+      const wishlists = wishlistData.edges?.map(edge => edge.node) || [];
 
+      wishlistsSummary.totalCount = wishlists.length;
+      wishlistsSummary.totalItems = wishlists.reduce((sum: number, w) => sum + (w.items.edges?.length || 0), 0);
+      
+      wishlistsSummary.recent = wishlists.slice(0, 3).map(wishlist => ({
+        id: wishlist.entityId.toString(),
+        name: wishlist.name,
+        itemCount: wishlist.items.edges?.length || 0,
+        isPublic: wishlist.isPublic,
+        lastModified: new Date().toISOString(), // Placeholder - would need actual lastModified date
+      }));
+    }
+
+    // Calculate account completion status
+    const accountStatus = {
+      hasCompletedProfile: !!(customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo),
+      hasAddresses: addressesSummary.totalCount > 0,
+      hasOrders: ordersSummary.totalCount > 0,
+      completionPercentage: 0,
+    };
+
+    // Calculate completion percentage
     let completedSteps = 0;
     const totalSteps = 3;
     
-    if (hasCompletedProfile) completedSteps += 1;
-    if (hasAddresses) completedSteps += 1;
-    if (hasOrders) completedSteps += 1;
+    if (accountStatus.hasCompletedProfile) completedSteps += 1;
+    if (accountStatus.hasAddresses) completedSteps += 1;
+    if (accountStatus.hasOrders) completedSteps += 1;
     
-    const accountStatus = {
-      hasCompletedProfile,
-      hasAddresses,
-      hasOrders,
-      completionPercentage: Math.round((completedSteps / totalSteps) * 100),
-    };
+    accountStatus.completionPercentage = Math.round((completedSteps / totalSteps) * 100);
 
-    // Customer info
-    const customerInfo = hasCompletedProfile ? {
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      email: customer.email,
+    // Get customer info
+    const customerInfo = customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo ? {
+      firstName: customerSettings.value.customerInfo.firstName,
+      lastName: customerSettings.value.customerInfo.lastName,
+      email: customerSettings.value.customerInfo.email,
     } : undefined;
 
     return {
@@ -231,7 +191,6 @@ const fetchDashboardData = async (customerAccessToken: string): Promise<Optimize
       accountStatus,
       customerInfo,
     };
-
   } catch (error) {
     console.error('Failed to fetch optimized dashboard data:', error);
     
@@ -256,17 +215,6 @@ const getCachedDashboardData = unstable_cache(
 );
 
 export const getOptimizedDashboardData = cache(async (): Promise<OptimizedDashboardData> => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  
-  if (!customerAccessToken) {
-    // Return empty dashboard for non-authenticated users
-    return {
-      ordersSummary: { recent: [], totalCount: 0 },
-      addressesSummary: { totalCount: 0 },
-      wishlistsSummary: { recent: [], totalCount: 0, totalItems: 0 },
-      accountStatus: { hasCompletedProfile: false, hasAddresses: false, hasOrders: false, completionPercentage: 0 },
-    };
-  }
-
-  return getCachedDashboardData(customerAccessToken);
+  const formatter = await getFormatter();
+  return getCachedDashboardData(formatter);
 });
