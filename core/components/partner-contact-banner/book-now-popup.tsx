@@ -12,6 +12,7 @@ import ServiceCard from './service-card';
 interface BookNowPopupProps {
   isOpen: boolean;
   onClose: () => void;
+  id?: string;
 }
 
 const serviceOptions = [
@@ -32,7 +33,7 @@ const serviceOptions = [
   }
 ];
 
-export default function BookNowPopup({ isOpen, onClose }: BookNowPopupProps) {
+export default function BookNowPopup({ isOpen, onClose, id }: BookNowPopupProps) {
   const handleServiceSelect = (serviceType: string) => {
     // TODO: Implement Calendly integration
     
@@ -47,6 +48,7 @@ export default function BookNowPopup({ isOpen, onClose }: BookNowPopupProps) {
   return (
     <SlideUpPopup 
       className="overflow-hidden transition-all duration-300 ease-out"
+      id={id}
       isOpen={isOpen} 
       onClose={onClose}
     >

@@ -7,13 +7,15 @@ interface SlideUpPopupProps {
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
+  id?: string;
 }
 
 export default function SlideUpPopup({ 
   isOpen, 
   onClose, 
   children, 
-  className = '' 
+  className = '',
+  id
 }: SlideUpPopupProps) {
   const [shouldRender, setShouldRender] = useState(false);  
   const [isAnimating, setIsAnimating] = useState(false);
@@ -71,20 +73,26 @@ export default function SlideUpPopup({
     <>
       {/* Container positioned above footer with overflow hidden to prevent visual overlap */}
       <div 
-        className="fixed left-0 right-0 z-40 pointer-events-none overflow-hidden" 
+        className="fixed left-0 right-0 z-[60] pointer-events-none overflow-hidden" 
         style={{ bottom: FOOTER_HEIGHT, top: '0' }}
       >
         {/* Slide-up popup wrapper */}
-        <div className={`
-        absolute bottom-0 left-0 right-0
-        bg-white text-black pointer-events-auto
-        transform transition-all duration-250 ease-in-out
-        ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
-        ${className}
-      `} style={{ 
-          overflow: 'visible',
-          transformOrigin: 'bottom'
-        }}>
+        <div 
+          aria-modal="true"
+          className={`
+          absolute bottom-0 left-0 right-0
+          bg-white text-black pointer-events-auto
+          transform transition-all duration-300 ease-in-out
+          ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
+          ${className}
+        `} 
+          {...(id && { id })}
+          role="dialog"
+          style={{ 
+            overflow: 'visible',
+            transformOrigin: 'bottom'
+          }}
+        >
           <div className="relative">
             {/* Close button */}
             <button

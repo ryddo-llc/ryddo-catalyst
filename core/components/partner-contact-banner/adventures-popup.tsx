@@ -10,9 +10,10 @@ import SlideUpPopup from '../ui/slide-up-popup';
 interface AdventuresPopupProps {
   isOpen: boolean;
   onClose: () => void;
+  id?: string;
 }
 
-export default function AdventuresPopup({ isOpen, onClose }: AdventuresPopupProps) {
+export default function AdventuresPopup({ isOpen, onClose, id }: AdventuresPopupProps) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,6 +35,7 @@ export default function AdventuresPopup({ isOpen, onClose }: AdventuresPopupProp
   return (
     <SlideUpPopup
       className="overflow-hidden transition-all duration-300 ease-out"
+      id={id}
       isOpen={isOpen}
       onClose={onClose}
     >
