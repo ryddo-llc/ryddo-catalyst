@@ -2,10 +2,10 @@
 
 import { createContext, useContext } from 'react';
 
-import { DashboardData } from './dashboard/page-data';
+import { OptimizedDashboardData } from './dashboard/optimized-queries';
 
 interface DashboardContextValue {
-  data: DashboardData | null;
+  data: OptimizedDashboardData | null;
   isLoading: boolean;
   error?: Error;
 }
@@ -14,9 +14,11 @@ const DashboardContext = createContext<DashboardContextValue | undefined>(undefi
 
 export function useDashboardData() {
   const context = useContext(DashboardContext);
+
   if (context === undefined) {
     throw new Error('useDashboardData must be used within a DashboardProvider');
   }
+
   return context;
 }
 

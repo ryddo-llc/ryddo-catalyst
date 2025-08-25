@@ -6,7 +6,7 @@ import { Heart, Home, LogOut, MapPin, Package, Settings } from 'lucide-react';
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 
-import { DashboardData } from './dashboard/page-data';
+import { OptimizedDashboardData } from './dashboard/optimized-queries';
 
 interface SidebarLink {
   href: string;
@@ -18,7 +18,7 @@ interface SidebarLink {
 
 interface AccountSidebarProps {
   links: SidebarLink[];
-  dashboardData?: DashboardData | null;
+  dashboardData?: OptimizedDashboardData | null;
 }
 
 const getIconForType = (iconType: string) => {
@@ -46,7 +46,7 @@ const getIconForType = (iconType: string) => {
   }
 };
 
-const getBadgeData = (iconType: string, dashboardData?: DashboardData | null) => {
+const getBadgeData = (iconType: string, dashboardData?: OptimizedDashboardData | null) => {
   if (!dashboardData) return null;
 
   switch (iconType) {
