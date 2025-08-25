@@ -103,6 +103,120 @@ function getOrderStatusType(status: string): 'pending' | 'processing' | 'shipped
   return 'pending';
 }
 
+// Helper function to process orders data
+function processOrdersData(
+  ordersData: PromiseSettledResult<Awaited<ReturnType<typeof getCustomerOrders>>>,
+  formatter: Awaited<ReturnType<typeof getFormatter>>
+): OptimizedDashboardData['ordersSummary'] {
+  const ordersSummary: OptimizedDashboardData['ordersSummary'] = {
+    recent: [],
+    totalCount: 0,
+  };
+
+  if (ordersData.status === 'fulfilled' && ordersData.value) {
+    const transformedOrders = ordersTransformer(ordersData.value.orders, formatter);
+
+    ordersSummary.recent = transformedOrders.slice(0, 5).map(order => ({
+      id: order.id,
+      orderNumber: order.id,
+      date: new Date().toLocaleDateString(),
+      total: order.totalPrice,
+      status: order.status,
+      statusType: getOrderStatusType(order.status),
+    }));
+    ordersSummary.totalCount = transformedOrders.length;
+  }
+
+  return ordersSummary;
+}
+
+// Helper function to process addresses data
+function processAddressesData(
+  addressesData: PromiseSettledResult<Awaited<ReturnType<typeof getCustomerAddresses>>>
+): OptimizedDashboardData['addressesSummary'] {
+  const addressesSummary: OptimizedDashboardData['addressesSummary'] = {
+    totalCount: 0,
+    primary: undefined,
+  };
+
+  if (addressesData.status === 'fulfilled' && addressesData.value) {
+    const addressData = addressesData.value;
+
+    addressesSummary.totalCount = addressData.addresses.length;
+
+    const primaryAddress = addressData.addresses[0];
+
+    if (primaryAddress) {
+      addressesSummary.primary = {
+        fullName: `${primaryAddress.firstName} ${primaryAddress.lastName}`,
+        addressLine1: primaryAddress.address1,
+        city: primaryAddress.city,
+        state: primaryAddress.stateOrProvince || '',
+        zipCode: primaryAddress.postalCode || '',
+      };
+    }
+  }
+
+  return addressesSummary;
+}
+
+// Helper function to process wishlists data
+function processWishlistsData(
+  wishlistsData: PromiseSettledResult<Awaited<ReturnType<typeof getCustomerWishlists>>>
+): OptimizedDashboardData['wishlistsSummary'] {
+  const wishlistsSummary: OptimizedDashboardData['wishlistsSummary'] = {
+    recent: [],
+    totalCount: 0,
+    totalItems: 0,
+  };
+
+  if (wishlistsData.status === 'fulfilled' && wishlistsData.value) {
+    const wishlistData = wishlistsData.value;
+    const wishlists = wishlistData.edges?.map((edge) => edge.node) || [];
+
+    wishlistsSummary.totalCount = wishlists.length;
+    wishlistsSummary.totalItems = wishlists.reduce(
+      (sum, wishlist) => sum + (wishlist.items.edges?.length || 0), 
+      0
+    );
+    
+    wishlistsSummary.recent = wishlists.slice(0, 3).map((wishlist) => ({
+      id: wishlist.entityId.toString(),
+      name: wishlist.name,
+      itemCount: wishlist.items.edges?.length || 0,
+      isPublic: wishlist.isPublic,
+      lastModified: new Date().toISOString(),
+    }));
+  }
+
+  return wishlistsSummary;
+}
+
+// Helper function to calculate account status
+function calculateAccountStatus(
+  ordersSummary: OptimizedDashboardData['ordersSummary'],
+  addressesSummary: OptimizedDashboardData['addressesSummary'],
+  customerSettings: PromiseSettledResult<Awaited<ReturnType<typeof getCustomerSettingsQuery>>>
+): OptimizedDashboardData['accountStatus'] {
+  const hasCompletedProfile = !!(customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo);
+  const hasAddresses = addressesSummary.totalCount > 0;
+  const hasOrders = ordersSummary.totalCount > 0;
+
+  let completedSteps = 0;
+  const totalSteps = 3;
+  
+  if (hasCompletedProfile) completedSteps += 1;
+  if (hasAddresses) completedSteps += 1;
+  if (hasOrders) completedSteps += 1;
+
+  return {
+    hasCompletedProfile,
+    hasAddresses,
+    hasOrders,
+    completionPercentage: Math.round((completedSteps / totalSteps) * 100),
+  };
+}
+
 const fetchDashboardData = async (formatter: Awaited<ReturnType<typeof getFormatter>>): Promise<OptimizedDashboardData> => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   
@@ -119,97 +233,17 @@ const fetchDashboardData = async (formatter: Awaited<ReturnType<typeof getFormat
   try {
     // Fetch data in parallel for better performance
     const [ordersData, addressesData, wishlistsData, customerSettings] = await Promise.allSettled([
-      getCustomerOrders({ limit: 5 }), // Get recent 5 orders
-      getCustomerAddresses({ limit: 10 }), // Get addresses with proper pagination
-      getCustomerWishlists({ limit: 3, before: null, after: null }), // Get recent 3 wishlists
-      getCustomerSettingsQuery({}), // Get customer settings with empty props
+      getCustomerOrders({ limit: 5 }),
+      getCustomerAddresses({ limit: 10 }),
+      getCustomerWishlists({ limit: 3, before: null, after: null }),
+      getCustomerSettingsQuery({}),
     ]);
 
-    // Process orders
-    const ordersSummary: OptimizedDashboardData['ordersSummary'] = {
-      recent: [],
-      totalCount: 0,
-    };
-
-    if (ordersData.status === 'fulfilled' && ordersData.value) {
-      const transformedOrders = ordersTransformer(ordersData.value.orders, formatter);
-
-      ordersSummary.recent = transformedOrders.slice(0, 5).map(order => ({
-        id: order.id,
-        orderNumber: order.id, // Use order id as order number since that's what's available
-        date: new Date().toLocaleDateString(), // Would need to extract from order data
-        total: order.totalPrice,
-        status: order.status,
-        statusType: getOrderStatusType(order.status),
-      }));
-      ordersSummary.totalCount = transformedOrders.length; // Use array length as count
-    }
-
-    // Process addresses
-    const addressesSummary: OptimizedDashboardData['addressesSummary'] = {
-      totalCount: 0,
-      primary: undefined,
-    };
-
-    if (addressesData.status === 'fulfilled' && addressesData.value) {
-      const addressData = addressesData.value;
-
-      addressesSummary.totalCount = addressData.addresses.length;
-
-      // Use first address as primary (defaultAddress property may not exist)
-      const primaryAddress = addressData.addresses[0];
-
-      if (primaryAddress) {
-        addressesSummary.primary = {
-          fullName: `${primaryAddress.firstName} ${primaryAddress.lastName}`,
-          addressLine1: primaryAddress.address1,
-          city: primaryAddress.city,
-          state: primaryAddress.stateOrProvince || '',
-          zipCode: primaryAddress.postalCode || '',
-        };
-      }
-    }
-
-    // Process wishlists
-    const wishlistsSummary: OptimizedDashboardData['wishlistsSummary'] = {
-      recent: [],
-      totalCount: 0,
-      totalItems: 0,
-    };
-
-    if (wishlistsData.status === 'fulfilled' && wishlistsData.value) {
-      const wishlistData = wishlistsData.value;
-      const wishlists = wishlistData.edges?.map(edge => edge.node) || [];
-
-      wishlistsSummary.totalCount = wishlists.length;
-      wishlistsSummary.totalItems = wishlists.reduce((sum: number, w) => sum + (w.items.edges?.length || 0), 0);
-      
-      wishlistsSummary.recent = wishlists.slice(0, 3).map(wishlist => ({
-        id: wishlist.entityId.toString(),
-        name: wishlist.name,
-        itemCount: wishlist.items.edges?.length || 0,
-        isPublic: wishlist.isPublic,
-        lastModified: new Date().toISOString(), // Placeholder - would need actual lastModified date
-      }));
-    }
-
-    // Calculate account completion status
-    const accountStatus = {
-      hasCompletedProfile: !!(customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo),
-      hasAddresses: addressesSummary.totalCount > 0,
-      hasOrders: ordersSummary.totalCount > 0,
-      completionPercentage: 0,
-    };
-
-    // Calculate completion percentage
-    let completedSteps = 0;
-    const totalSteps = 3;
-    
-    if (accountStatus.hasCompletedProfile) completedSteps += 1;
-    if (accountStatus.hasAddresses) completedSteps += 1;
-    if (accountStatus.hasOrders) completedSteps += 1;
-    
-    accountStatus.completionPercentage = Math.round((completedSteps / totalSteps) * 100);
+    // Process data using helper functions
+    const ordersSummary = processOrdersData(ordersData, formatter);
+    const addressesSummary = processAddressesData(addressesData);
+    const wishlistsSummary = processWishlistsData(wishlistsData);
+    const accountStatus = calculateAccountStatus(ordersSummary, addressesSummary, customerSettings);
 
     // Get customer info from settings query
     let customerInfo = customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo ? {
@@ -246,5 +280,6 @@ const fetchDashboardData = async (formatter: Awaited<ReturnType<typeof getFormat
 // Temporarily removed caching for debugging customer info issue
 export const getOptimizedDashboardData = async (): Promise<OptimizedDashboardData> => {
   const formatter = await getFormatter();
+  
   return fetchDashboardData(formatter);
 };
