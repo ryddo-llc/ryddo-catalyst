@@ -102,18 +102,24 @@ interface WishlistRemoveMutationVariables {
 }
 
 async function getVariantIdFromSku(productId: number, sku: string, customerAccessToken?: string) {
-  const { data } = await client.fetch({
-    document: VariantIdFromSkuQuery,
-    variables: { productId, sku },
-    customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
-  });
+  try {
+    const { data } = await client.fetch({
+      document: VariantIdFromSkuQuery,
+      variables: { productId, sku },
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  if (!data.site.product?.variants) {
+    if (!data.site.product?.variants) {
+      return undefined;
+    }
+
+    const variants = removeEdgesAndNodes(data.site.product.variants);
+
+    return variants[0]?.entityId ?? undefined;
+  } catch {
     return undefined;
   }
-
-  return removeEdgesAndNodes(data.site.product.variants)[0]?.entityId ?? undefined;
 }
 
 async function addToDefaultWishlist(
@@ -264,10 +270,10 @@ interface State {
 }
 
 const addToNewWishlistSchema = z.object({
-  productId: z.number().nonnegative().min(1),
-  selectedSku: z.string(),
-  wishlistName: z.string().trim().nonempty(),
-  redirectTo: z.string(),
+  productId: z.number().nonnegative().min(1, 'Product ID must be a positive number'),
+  selectedSku: z.string().min(1, 'Selected SKU cannot be empty'),
+  wishlistName: z.string().trim().min(1, 'Wishlist name is required').max(255, 'Wishlist name is too long'),
+  redirectTo: z.string().min(1, 'Redirect URL is required'),
 });
 
 export async function addToNewWishlist(
@@ -279,18 +285,45 @@ export async function addToNewWishlist(
   const submission = parseWithZod(formData, { schema: addToNewWishlistSchema });
 
   if (submission.status !== 'success') {
-    return { lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }) };
+    // Check for specific validation errors
+    const fieldErrors = submission.error?.fieldErrors;
+    let errorMessage = t('Errors.unexpected');
+    
+    // Handle field errors safely  
+    if (fieldErrors && typeof fieldErrors === 'object') {
+      // Check for selectedSku errors
+      if ('selectedSku' in fieldErrors) {
+        const selectedSkuErrors = fieldErrors.selectedSku;
+
+        if (Array.isArray(selectedSkuErrors) && selectedSkuErrors.some((error: string) => error.includes('Selected SKU cannot be empty'))) {
+          errorMessage = 'Please select all product options before adding to wishlist.';
+        }
+      }
+      
+      // Check for wishlistName errors
+      if ('wishlistName' in fieldErrors) {
+        const wishlistNameErrors = fieldErrors.wishlistName;
+
+        if (Array.isArray(wishlistNameErrors) && wishlistNameErrors.some((error: string) => error.includes('Wishlist name is required'))) {
+          errorMessage = 'Wishlist name is required.';
+        }
+      }
+      
+      // Check for productId errors
+      if ('productId' in fieldErrors) {
+        const productIdErrors = fieldErrors.productId;
+
+        if (Array.isArray(productIdErrors) && productIdErrors.some((error: string) => error.includes('Product ID must be a positive number'))) {
+          errorMessage = 'Invalid product selected.';
+        }
+      }
+    }
+    
+    return { lastResult: submission.reply({ formErrors: [errorMessage] }) };
   }
 
   const { productId, selectedSku, redirectTo } = submission.value;
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const variantId = await getVariantIdFromSku(productId, selectedSku, customerAccessToken);
-
-  formData.append('wishlistItems[0].productEntityId', productId.toString());
-
-  if (variantId) {
-    formData.append('wishlistItems[0].variantEntityId', variantId.toString());
-  }
 
   if (!customerAccessToken) {
     redirect({ href: getLoginRedirect(redirectTo), locale });
@@ -298,11 +331,27 @@ export async function addToNewWishlist(
     return { lastResult: null };
   }
 
-  const result = await newWishlist(prevState, formData);
+  try {
+    const variantId = await getVariantIdFromSku(productId, selectedSku, customerAccessToken);
 
-  if (result.lastResult?.status === 'success') {
-    await serverToast.success(t('Button.addSuccessMessage'));
+    formData.append('wishlistItems[0].productEntityId', productId.toString());
+
+    if (variantId) {
+      formData.append('wishlistItems[0].variantEntityId', variantId.toString());
+    }
+    
+    const result = await newWishlist(prevState, formData);
+
+    if (result.lastResult?.status === 'success') {
+      await serverToast.success(t('Button.addSuccessMessage'));
+    }
+
+    return result;
+  } catch {
+    return { 
+      lastResult: submission.reply({ 
+        formErrors: [t('Errors.unexpected')] 
+      }) 
+    };
   }
-
-  return result;
 }

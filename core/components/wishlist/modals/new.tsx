@@ -34,7 +34,7 @@ export const NewWishlistModal = ({
         }}
       />
       {state.lastResult?.status === 'error' && (
-        <div className="mt-4">
+        <div className="mt-4 space-y-2">
           {form.errors?.map((error, index) => (
             <FormStatus key={index} type="error">
               {error}
@@ -42,6 +42,15 @@ export const NewWishlistModal = ({
           ))}
         </div>
       )}
+      
+      {/* Show success state feedback */}
+      {state.lastResult?.status === 'success' && state.successMessage ? (
+        <div className="mt-4">
+          <FormStatus type="success">
+            {state.successMessage}
+          </FormStatus>
+        </div>
+      ) : null}
     </>
   );
 };

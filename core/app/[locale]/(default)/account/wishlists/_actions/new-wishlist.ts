@@ -49,9 +49,23 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
       variables: { input: { name: wishlistName, isPublic, items: wishlistItems } },
     });
 
+    if (response.errors && response.errors.length > 0) {
+      return {
+        ...prevState,
+        lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
+      };
+    }
+
     const result = response.data.wishlist.createWishlist?.result;
 
-    if (result?.name !== wishlistName) {
+    if (!result) {
+      return {
+        ...prevState,
+        lastResult: submission.reply({ formErrors: [t('Errors.updateFailed')] }),
+      };
+    }
+
+    if (result.name !== wishlistName) {
       return {
         ...prevState,
         lastResult: submission.reply({ formErrors: [t('Errors.updateFailed')] }),
@@ -65,9 +79,6 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
       successMessage: t('Result.createSuccess'),
     };
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-
     if (error instanceof BigCommerceAuthError) {
       return {
         ...prevState,
