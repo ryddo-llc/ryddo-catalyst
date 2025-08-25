@@ -3,15 +3,13 @@
 import { clsx } from 'clsx';
 import { Heart, MapPin, Package, Settings, TrendingUp } from 'lucide-react';
 
-import { Link } from '~/components/link';
-import { memo } from 'react';
-
 import { ArrowButton } from '~/components/arrow-button';
+import { Link } from '~/components/link';
 
 import { OptimizedDashboardData } from '../optimized-queries';
 
-// Memoized stat card component for better performance
-const StatCard = memo(function StatCard({ 
+// Stat card component (memoization temporarily removed for debugging)
+function StatCard({ 
   icon: Icon, 
   label, 
   value, 
@@ -56,10 +54,10 @@ const StatCard = memo(function StatCard({
       </div>
     </Link>
   );
-});
+}
 
-// Memoized status item component
-const StatusItem = memo(function StatusItem({ 
+// Status item component (memoization temporarily removed for debugging)  
+function StatusItem({ 
   label, 
   completed 
 }: {
@@ -82,10 +80,10 @@ const StatusItem = memo(function StatusItem({
       </span>
     </div>
   );
-});
+}
 
-// Memoized order item component  
-const OrderItem = memo(function OrderItem({
+// Order item component (memoization temporarily removed for debugging)
+function OrderItem({
   order
 }: {
   order: OptimizedDashboardData['ordersSummary']['recent'][0];
@@ -116,10 +114,10 @@ const OrderItem = memo(function OrderItem({
       </div>
     </div>
   );
-});
+}
 
-// Memoized wishlist item component
-const WishlistItem = memo(function WishlistItem({
+// Wishlist item component (memoization temporarily removed for debugging)
+function WishlistItem({
   wishlist
 }: {
   wishlist: OptimizedDashboardData['wishlistsSummary']['recent'][0];
@@ -150,13 +148,13 @@ const WishlistItem = memo(function WishlistItem({
       </div>
     </Link>
   );
-});
+}
 
 interface OptimizedDashboardWidgetsProps {
   data: OptimizedDashboardData;
 }
 
-export const OptimizedDashboardWidgets = memo(function OptimizedDashboardWidgets({ 
+export function OptimizedDashboardWidgets({ 
   data 
 }: OptimizedDashboardWidgetsProps) {
   return (
@@ -164,9 +162,7 @@ export const OptimizedDashboardWidgets = memo(function OptimizedDashboardWidgets
       {/* Welcome Section */}
       <div className="text-left">
         <h3 className="font-[family-name:var(--account-title-font-family,var(--font-family-heading))] text-lg font-bold text-[var(--account-title,hsl(var(--foreground)))]">
-          Welcome back
-          {data.customerInfo?.firstName ? `, ${data.customerInfo.firstName}` : ''}
-          <span className="ml-1 text-[#F92F7B]">!</span>
+          Welcome back{data.customerInfo?.firstName ? `, ${data.customerInfo.firstName}` : ''}<span className="ml-1 text-[#F92F7B]">!</span>
         </h3>
         <p className="mt-1 text-sm text-[var(--account-subtitle,hsl(var(--contrast-500)))]">
           Here's an overview of your account activity
@@ -349,4 +345,4 @@ export const OptimizedDashboardWidgets = memo(function OptimizedDashboardWidgets
       )}
     </div>
   );
-});
+}

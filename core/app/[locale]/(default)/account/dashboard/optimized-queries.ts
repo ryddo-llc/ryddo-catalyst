@@ -1,10 +1,10 @@
 import { getFormatter } from 'next-intl/server';
-import { unstable_cache } from 'next/cache';
-import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
-import { ordersTransformer } from '~/data-transformers/orders-transformer';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
+import { ordersTransformer } from '~/data-transformers/orders-transformer';
 
 import { getCustomerAddresses } from '../addresses/page-data';
 import { getCustomerOrders } from '../orders/page-data';
@@ -55,6 +55,40 @@ export interface OptimizedDashboardData {
     lastName: string;
     email: string;
   };
+}
+
+// Simple customer query as backup if settings query fails
+const CustomerInfoQuery = graphql(`
+  query CustomerInfoQuery {
+    customer {
+      entityId
+      firstName
+      lastName
+      email
+    }
+  }
+`);
+
+async function getDirectCustomerInfo() {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  
+  if (!customerAccessToken) return null;
+  
+  try {
+    const { data } = await client.fetch({
+      document: CustomerInfoQuery,
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+    });
+
+    return data.customer ? {
+      firstName: data.customer.firstName,
+      lastName: data.customer.lastName,
+      email: data.customer.email,
+    } : null;
+  } catch {
+    return null;
+  }
 }
 
 function getOrderStatusType(status: string): 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' {
@@ -177,12 +211,17 @@ const fetchDashboardData = async (formatter: Awaited<ReturnType<typeof getFormat
     
     accountStatus.completionPercentage = Math.round((completedSteps / totalSteps) * 100);
 
-    // Get customer info
-    const customerInfo = customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo ? {
+    // Get customer info from settings query
+    let customerInfo = customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo ? {
       firstName: customerSettings.value.customerInfo.firstName,
       lastName: customerSettings.value.customerInfo.lastName,
       email: customerSettings.value.customerInfo.email,
     } : undefined;
+
+    // If settings query didn't provide customer info, try direct customer query
+    if (!customerInfo) {
+      customerInfo = (await getDirectCustomerInfo()) || undefined;
+    }
 
     return {
       ordersSummary,
@@ -191,8 +230,8 @@ const fetchDashboardData = async (formatter: Awaited<ReturnType<typeof getFormat
       accountStatus,
       customerInfo,
     };
-  } catch (error) {
-    console.error('Failed to fetch optimized dashboard data:', error);
+  } catch {
+    // Silently handle errors and return empty dashboard
     
     // Return empty dashboard on error
     return {
@@ -204,17 +243,8 @@ const fetchDashboardData = async (formatter: Awaited<ReturnType<typeof getFormat
   }
 };
 
-// Cached version with customer-specific key
-const getCachedDashboardData = unstable_cache(
-  fetchDashboardData,
-  ['dashboard-data'],
-  {
-    tags: [TAGS.customer, 'account-dashboard'],
-    revalidate: 300, // 5 minutes cache
-  }
-);
-
-export const getOptimizedDashboardData = cache(async (): Promise<OptimizedDashboardData> => {
+// Temporarily removed caching for debugging customer info issue
+export const getOptimizedDashboardData = async (): Promise<OptimizedDashboardData> => {
   const formatter = await getFormatter();
-  return getCachedDashboardData(formatter);
-});
+  return fetchDashboardData(formatter);
+};
