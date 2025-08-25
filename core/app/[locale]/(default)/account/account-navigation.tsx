@@ -118,25 +118,35 @@ export function AccountNavigation({ links, dashboardData }: AccountNavigationPro
                 </div>
                 
                 {/* Data badge or active indicator */}
-                {badgeData && !isLogout ? (
-                  <div className="flex flex-col items-end">
-                    <div className={clsx(
-                      'rounded-full px-2 py-1 text-xs font-bold',
-                      isActive 
-                        ? 'bg-[#F92F7B] text-white' 
-                        : 'bg-[var(--account-badge-background,hsl(var(--contrast-100)))] text-[var(--account-badge-text,hsl(var(--contrast-600)))]'
-                    )}>
-                      {badgeData.count}
-                    </div>
-                    <div className="mt-1 text-xs text-[var(--account-card-description,hsl(var(--contrast-500)))]">
-                      {badgeData.label}
-                    </div>
-                  </div>
-                ) : isActive && !isLogout ? (
-                  <div className="rounded-full bg-[#F92F7B] p-1">
-                    <div className="h-2 w-2 rounded-full bg-white" />
-                  </div>
-                ) : null}
+                {(() => {
+                  if (badgeData && !isLogout) {
+                    return (
+                      <div className="flex flex-col items-end">
+                        <div className={clsx(
+                          'rounded-full px-2 py-1 text-xs font-bold',
+                          isActive 
+                            ? 'bg-[#F92F7B] text-white' 
+                            : 'bg-[var(--account-badge-background,hsl(var(--contrast-100)))] text-[var(--account-badge-text,hsl(var(--contrast-600)))]'
+                        )}>
+                          {badgeData.count}
+                        </div>
+                        <div className="mt-1 text-xs text-[var(--account-card-description,hsl(var(--contrast-500)))]">
+                          {badgeData.label}
+                        </div>
+                      </div>
+                    );
+                  }
+                  
+                  if (isActive && !isLogout) {
+                    return (
+                      <div className="rounded-full bg-[#F92F7B] p-1">
+                        <div className="h-2 w-2 rounded-full bg-white" />
+                      </div>
+                    );
+                  }
+                  
+                  return null;
+                })()}
               </div>
               
               <h3 className="mb-2 font-[family-name:var(--account-card-title-font-family,var(--font-family-heading))] text-lg font-extrabold text-[var(--account-card-title,hsl(var(--foreground)))]">

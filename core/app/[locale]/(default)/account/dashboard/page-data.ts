@@ -86,6 +86,7 @@ export const getDashboardData = cache(async (formatter: Awaited<ReturnType<typeo
 
     if (ordersData.status === 'fulfilled' && ordersData.value) {
       const transformedOrders = ordersTransformer(ordersData.value.orders, formatter);
+
       ordersSummary.recent = transformedOrders.slice(0, 5).map(order => ({
         id: order.id,
         orderNumber: order.id, // Use order id as order number since that's what's available
@@ -106,6 +107,7 @@ export const getDashboardData = cache(async (formatter: Awaited<ReturnType<typeo
 
     if (addressesData.status === 'fulfilled' && addressesData.value) {
       const addressData = addressesData.value;
+
       addressesSummary.totalCount = addressData.addresses.length;
       
       // Use first address as primary (defaultAddress property may not exist)
@@ -131,13 +133,14 @@ export const getDashboardData = cache(async (formatter: Awaited<ReturnType<typeo
     if (wishlistsData.status === 'fulfilled' && wishlistsData.value) {
       const wishlistData = wishlistsData.value;
       const wishlists = wishlistData.edges?.map(edge => edge.node) || [];
+
       wishlistsSummary.totalCount = wishlists.length;
-      wishlistsSummary.totalItems = wishlists.reduce((sum: number, w) => sum + (w.items?.edges?.length || 0), 0);
+      wishlistsSummary.totalItems = wishlists.reduce((sum: number, w) => sum + (w.items.edges?.length || 0), 0);
       
       wishlistsSummary.recent = wishlists.slice(0, 3).map(wishlist => ({
         id: wishlist.entityId.toString(),
         name: wishlist.name,
-        itemCount: wishlist.items?.edges?.length || 0,
+        itemCount: wishlist.items.edges?.length || 0,
         isPublic: wishlist.isPublic,
         lastModified: new Date().toISOString(), // Placeholder - would need actual lastModified date
       }));

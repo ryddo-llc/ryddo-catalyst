@@ -25,16 +25,22 @@ const getIconForType = (iconType: string) => {
   switch (iconType) {
     case 'dashboard':
       return Home;
+
     case 'orders':
       return Package;
+
     case 'addresses':
       return MapPin;
+
     case 'settings':
       return Settings;
+
     case 'wishlists':
       return Heart;
+
     case 'logout':
       return LogOut;
+
     default:
       return Package;
   }
@@ -51,6 +57,7 @@ const getBadgeData = (iconType: string, dashboardData?: DashboardData | null) =>
           ? `Latest: #${dashboardData.ordersSummary.recent[0].orderNumber}`
           : null,
       };
+
     case 'addresses':
       return {
         count: dashboardData.addressesSummary.totalCount,
@@ -58,6 +65,7 @@ const getBadgeData = (iconType: string, dashboardData?: DashboardData | null) =>
           ? `Primary: ${dashboardData.addressesSummary.primary.city}`
           : null,
       };
+
     case 'wishlists':
       return {
         count: dashboardData.wishlistsSummary.totalCount,
@@ -65,6 +73,7 @@ const getBadgeData = (iconType: string, dashboardData?: DashboardData | null) =>
           ? `${dashboardData.wishlistsSummary.totalItems} items`
           : null,
       };
+
     case 'settings':
       return {
         count: `${dashboardData.accountStatus.completionPercentage}%`,
@@ -72,6 +81,7 @@ const getBadgeData = (iconType: string, dashboardData?: DashboardData | null) =>
           ? `${dashboardData.customerInfo.firstName} ${dashboardData.customerInfo.lastName}`
           : 'Profile setup needed',
       };
+
     default:
       return null;
   }

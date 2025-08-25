@@ -50,32 +50,32 @@ export function DashboardWidgets({ data, labels }: DashboardWidgetsProps) {
       {/* Stats Cards */}
       <div className="grid gap-3 grid-cols-2">
         <StatCard
+          color="blue"
+          href="/account/orders"
           icon={Package}
           label="Orders"
           value={data.ordersSummary.totalCount}
-          href="/account/orders"
-          color="blue"
         />
         <StatCard
+          color="green"
+          href="/account/addresses"
           icon={MapPin}
           label="Addresses"
           value={data.addressesSummary.totalCount}
-          href="/account/addresses"
-          color="green"
         />
         <StatCard
+          color="pink"
+          href="/account/wishlists"
           icon={Heart}
           label="Wishlists"
           value={data.wishlistsSummary.totalCount}
-          href="/account/wishlists"
-          color="pink"
         />
         <StatCard
+          color="purple"
+          href="/account/settings"
           icon={TrendingUp}
           label="Profile Complete"
           value={`${data.accountStatus.completionPercentage}%`}
-          href="/account/settings"
-          color="purple"
         />
       </div>
 
@@ -100,7 +100,7 @@ export function DashboardWidgets({ data, labels }: DashboardWidgetsProps) {
             {data.ordersSummary.recent.length > 0 ? (
               <div className="space-y-4">
                 {data.ordersSummary.recent.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-4">
+                  <div className="flex items-center justify-between rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-4" key={order.id}>
                     <div className="flex-1">
                       <div className="font-semibold text-[var(--account-card-title,hsl(var(--foreground)))]">
                         #{order.orderNumber}
@@ -148,24 +148,24 @@ export function DashboardWidgets({ data, labels }: DashboardWidgetsProps) {
 
             <div className="space-y-3">
               <Link
-                href="/account/settings"
                 className="flex items-center gap-3 rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-3 transition-colors hover:bg-[var(--account-card-hover,hsl(var(--contrast-50)))]"
+                href="/account/settings"
               >
                 <Settings className="h-4 w-4 text-[#F92F7B]" />
                 <span className="text-sm font-medium">{labels.editProfileLabel}</span>
               </Link>
               
               <Link
-                href="/account/addresses"
                 className="flex items-center gap-3 rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-3 transition-colors hover:bg-[var(--account-card-hover,hsl(var(--contrast-50)))]"
+                href="/account/addresses"
               >
                 <MapPin className="h-4 w-4 text-[#F92F7B]" />
                 <span className="text-sm font-medium">{labels.addAddressLabel}</span>
               </Link>
               
               <Link
-                href="/account/wishlists"
                 className="flex items-center gap-3 rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-3 transition-colors hover:bg-[var(--account-card-hover,hsl(var(--contrast-50)))]"
+                href="/account/wishlists"
               >
                 <Heart className="h-4 w-4 text-[#F92F7B]" />
                 <span className="text-sm font-medium">{labels.viewAllWishlistsLabel}</span>
@@ -200,16 +200,16 @@ export function DashboardWidgets({ data, labels }: DashboardWidgetsProps) {
 
               <div className="space-y-2">
                 <StatusItem
-                  label="Profile Information"
                   completed={data.accountStatus.hasCompletedProfile}
+                  label="Profile Information"
                 />
                 <StatusItem
-                  label="Shipping Address"
                   completed={data.accountStatus.hasAddresses}
+                  label="Shipping Address"
                 />
                 <StatusItem
-                  label="First Order"
                   completed={data.accountStatus.hasOrders}
+                  label="First Order"
                 />
               </div>
             </div>
@@ -237,9 +237,9 @@ export function DashboardWidgets({ data, labels }: DashboardWidgetsProps) {
             <div className="space-y-3">
               {data.wishlistsSummary.recent.map((wishlist) => (
                 <Link
-                  key={wishlist.id}
-                  href={`/account/wishlists/${wishlist.id}`}
                   className="group rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-4 transition-all hover:border-[#F92F7B]/50 hover:shadow-md"
+                  href={`/account/wishlists/${wishlist.id}`}
+                  key={wishlist.id}
                 >
                   <div className="flex items-start justify-between">
                     <div>
@@ -287,8 +287,8 @@ function StatCard({ icon: Icon, label, value, href, color }: StatCardProps) {
 
   return (
     <Link
-      href={href}
       className="group relative overflow-hidden rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-card-background,hsl(var(--background)))] p-3 transition-all duration-300 hover:border-[#F92F7B]/50 hover:shadow-md"
+      href={href}
     >
       <div className="absolute -right-2 -top-2 h-8 w-8 rounded-full bg-gradient-to-br from-[#F92F7B]/10 to-[#F92F7B]/5 transition-all duration-300 group-hover:scale-110" />
       

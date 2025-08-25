@@ -1,4 +1,4 @@
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, setRequestLocale } from 'next-intl/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { AccountDashboard } from './dashboard/account-dashboard';
@@ -34,25 +34,25 @@ export default async function AccountPage({ params }: Props) {
 
       {/* Dashboard Content */}
       <AccountDashboard
-        data={streamableDashboardData}
-        welcomeMessage="Welcome back"
-        recentOrdersTitle="Recent Orders"
-        quickActionsTitle="Quick Actions"
         accountStatusTitle="Account Status"
-        wishlistPreviewTitle="Wishlist Preview"
-        viewAllOrdersLabel="View All Orders"
-        viewAllAddressesLabel="View All Addresses"
-        viewAllWishlistsLabel="View All Wishlists"
-        editProfileLabel="Edit Profile"
         addAddressLabel="Add Address"
+        data={streamableDashboardData}
+        editProfileLabel="Edit Profile"
         noOrdersMessage="You don't have any orders yet"
         noWishlistsMessage="You don't have any wishlists yet"
-        orderNumberLabel="Order #"
         orderDateLabel="Date"
-        orderTotalLabel="Total"
+        orderNumberLabel="Order #"
         orderStatusLabel="Status"
-        trackOrderLabel="Track Order"
+        orderTotalLabel="Total"
+        quickActionsTitle="Quick Actions"
+        recentOrdersTitle="Recent Orders"
         reorderLabel="Reorder"
+        trackOrderLabel="Track Order"
+        viewAllAddressesLabel="View All Addresses"
+        viewAllOrdersLabel="View All Orders"
+        viewAllWishlistsLabel="View All Wishlists"
+        welcomeMessage="Welcome back"
+        wishlistPreviewTitle="Wishlist Preview"
       />
     </div>
   );

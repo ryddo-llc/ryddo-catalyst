@@ -115,6 +115,7 @@ async function getVariantIdFromSku(productId: number, sku: string, customerAcces
     }
 
     const variants = removeEdgesAndNodes(data.site.product.variants);
+
     return variants[0]?.entityId ?? undefined;
   } catch {
     return undefined;

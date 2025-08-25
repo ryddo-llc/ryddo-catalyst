@@ -54,7 +54,7 @@ export function AccountDashboard({
             {/* Loading skeleton */}
             <div className="grid gap-4 @md:grid-cols-2 @xl:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-32 animate-pulse rounded-2xl bg-contrast-100" />
+                <div className="h-32 animate-pulse rounded-2xl bg-contrast-100" key={i} />
               ))}
             </div>
             <div className="grid gap-8 @xl:grid-cols-2">

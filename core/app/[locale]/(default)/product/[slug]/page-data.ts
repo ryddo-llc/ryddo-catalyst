@@ -467,6 +467,7 @@ export const getVariantSku = cache(
 
       // If no direct SKU, try to get from variants
       const variants = removeEdgesAndNodes(product.variants || { edges: [] });
+
       if (variants.length > 0 && variants[0]?.sku && variants[0].sku.trim() !== '') {
         return variants[0].sku;
       }

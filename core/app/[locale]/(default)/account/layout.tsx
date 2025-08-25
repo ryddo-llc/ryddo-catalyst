@@ -1,6 +1,6 @@
+import { Heart, Home, MapPin, Package, Settings } from 'lucide-react';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
-import { Heart, Home, MapPin, Package, Settings } from 'lucide-react';
 
 import { AccountSidebar } from './account-sidebar';
 import { getDashboardData } from './dashboard/page-data';
@@ -19,6 +19,7 @@ export default async function Layout({ children, params }: Props) {
 
   // Fetch dashboard data for sidebar badges
   let dashboardData = null;
+
   try {
     dashboardData = await getDashboardData(format);
   } catch {
@@ -44,6 +45,7 @@ export default async function Layout({ children, params }: Props) {
           {/* Sidebar - Hidden on mobile/tablet, visible on desktop */}
           <div className="hidden lg:flex w-80 flex-shrink-0 border-r border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-sidebar-background,hsl(var(--background)))]">
             <AccountSidebar
+              dashboardData={dashboardData}
               links={[
                 { href: '/account', label: 'Dashboard', description: 'Account overview', icon: 'dashboard' },
                 { href: '/account/orders', label: t('orders'), description: 'View and track your orders', icon: 'orders' },
@@ -52,7 +54,6 @@ export default async function Layout({ children, params }: Props) {
                 { href: '/account/wishlists', label: t('wishlists'), description: 'Your saved items', icon: 'wishlists' },
                 { href: '/logout', label: t('logout'), description: 'Sign out of your account', icon: 'logout', prefetch: 'none' },
               ]}
-              dashboardData={dashboardData}
             />
           </div>
 
@@ -67,11 +68,12 @@ export default async function Layout({ children, params }: Props) {
                 { href: '/account/wishlists', icon: Heart, label: t('wishlists') },
               ].map((link) => {
                 const IconComponent = link.icon;
+
                 return (
                   <a
-                    key={link.href}
-                    href={link.href}
                     className="flex flex-col items-center gap-1 p-2 text-xs text-[var(--account-card-description,hsl(var(--contrast-500)))] hover:text-[#F92F7B]"
+                    href={link.href}
+                    key={link.href}
                   >
                     <div className="h-6 w-6 flex items-center justify-center">
                       <IconComponent className="h-4 w-4" />
