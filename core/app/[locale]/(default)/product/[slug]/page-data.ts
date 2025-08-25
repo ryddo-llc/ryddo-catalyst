@@ -444,8 +444,10 @@ const VariantSkuQuery = graphql(`
   }
 `);
 
+type VariantSkuVariables = VariablesOf<typeof VariantSkuQuery>;
+
 export const getVariantSku = cache(
-  async (variables: Variables, customerAccessToken?: string): Promise<string> => {
+  async (variables: VariantSkuVariables, customerAccessToken?: string): Promise<string> => {
     try {
       const { data } = await client.fetch({
         document: VariantSkuQuery,

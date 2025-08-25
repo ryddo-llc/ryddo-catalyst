@@ -50,7 +50,6 @@ import {
   getProductPricingAndRelatedProducts,
   getProductsByCategory,
   getStreamableProduct,
-  getVariantSku,
 } from './page-data';
 
 const compareLoader = createCompareLoader();
@@ -185,21 +184,9 @@ export default async function Product({ params, searchParams }: Props) {
 
   const streamableProductSku = Streamable.from(async () => {
     const product = await streamableProduct;
-    const variables = await productVariables;
-
-    // If product has a direct SKU, use it (for simple products)
-    if (product.sku && product.sku.trim() !== '') {
-      return product.sku;
-    }
-
-    // For variant products, use the variant SKU resolution function
-    const variantSku = await getVariantSku(variables, customerAccessToken);
     
-    if (typeof variantSku === 'string' && variantSku.trim() !== '') {
-      return variantSku;
-    }
-
-    return '';
+    // Return the product SKU directly now that BigCommerce has proper SKUs configured
+    return product.sku || '';
   });
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
