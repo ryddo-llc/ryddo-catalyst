@@ -50,8 +50,8 @@ export default async function Layout({ children, params }: Props) {
 
           {/* Sidebar + Content Layout */}
           <div className="flex min-h-[calc(100vh-200px)] bg-[var(--account-card-background,hsl(var(--background)))] border-t border-[var(--account-card-border,hsl(var(--contrast-200)))]">
-            {/* Sidebar - Hidden on mobile/tablet, visible on desktop */}
-            <div className="hidden lg:flex w-80 flex-shrink-0 border-r border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-sidebar-background,hsl(var(--background)))]">
+            {/* Sidebar - Hidden on mobile, visible on tablet and desktop */}
+            <div className="hidden md:flex w-80 flex-shrink-0 border-r border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-sidebar-background,hsl(var(--background)))]">
               <AccountSidebar
                 dashboardData={dashboardData}
                 links={[
@@ -65,19 +65,20 @@ export default async function Layout({ children, params }: Props) {
               />
             </div>
 
-            {/* Mobile/Tablet Navigation Bar - Optimized component */}
+            {/* Mobile Navigation Bar - Optimized component */}
             <MobileNavigation 
               labels={{
                 orders: t('orders'),
                 addresses: t('addresses'),
                 settings: t('settings'),
                 wishlists: t('wishlists'),
+                logout: t('logout'),
               }}
             />
 
             {/* Content Panel */}
             <div className="flex-1 overflow-hidden">
-              <div className="h-full overflow-y-auto px-4 py-6 lg:px-8 pb-24 lg:pb-6">
+              <div className="h-full overflow-y-auto px-4 py-6 md:px-8 pb-24 md:pb-6">
                 {children}
               </div>
             </div>

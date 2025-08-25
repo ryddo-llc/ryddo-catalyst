@@ -1,6 +1,6 @@
 'use client';
 
-import { Heart, Home, MapPin, Package, Settings } from 'lucide-react';
+import { Heart, Home, LogOut, MapPin, Package, Settings } from 'lucide-react';
 
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
@@ -11,6 +11,7 @@ interface MobileNavigationProps {
     addresses: string;
     settings: string;
     wishlists: string;
+    logout: string;
   };
 }
 
@@ -24,11 +25,12 @@ export function MobileNavigation({ labels }: MobileNavigationProps) {
     { href: '/account/addresses', icon: MapPin, label: labels.addresses },
     { href: '/account/settings', icon: Settings, label: labels.settings },
     { href: '/account/wishlists', icon: Heart, label: labels.wishlists },
+    { href: '/logout', icon: LogOut, label: labels.logout },
   ];
 
   return (
-    <div className="fixed bottom-12 left-0 right-0 z-50 border-t border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-sidebar-background,hsl(var(--background)))] px-4 py-2 lg:hidden">
-      <div className="mx-auto flex max-w-md items-center justify-around">
+    <div className="fixed bottom-12 left-0 right-0 z-50 border-t border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-sidebar-background,hsl(var(--background)))] px-4 py-2 md:hidden">
+      <div className="mx-auto flex max-w-lg items-center justify-around">
         {links.map((link) => {
           const IconComponent = link.icon;
           const isActive = pathname === link.href;
