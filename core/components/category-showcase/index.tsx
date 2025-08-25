@@ -4,6 +4,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { ArrowButton } from '~/components/arrow-button';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 export interface Category {
   name: string;
@@ -32,6 +33,8 @@ interface CategoryItemProps {
 }
 
 function CategoryItem({ category, className, layout = 'default', index = 0 }: CategoryItemProps) {
+  const backgroundImage = imageManagerImageUrl(`${category.name.toLowerCase()}.png`, '{:size}');
+
   return (
     <Link
       className={clsx(
@@ -46,9 +49,10 @@ function CategoryItem({ category, className, layout = 'default', index = 0 }: Ca
             alt={category.image.altText || category.name}
             className="object-cover"
             fill
-            priority={index < 3}
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            src={category.image.url}
+            loading={index < 2 ? 'eager' : 'lazy'}
+            priority={index < 2}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 600px"
+            src={backgroundImage || category.image.url}
           />
         ) : null}
       </div>
@@ -137,7 +141,24 @@ export function CategoryShowcase({
           {(categoriesData) => {
             if (categoriesData.length === 0) return null;
 
-            const allCategories = [...categoriesData, SERVICE_CATEGORY];
+            // Sort categories to prioritize e-scooters first, e-bikes second
+            const sortedCategories = [...categoriesData].sort((a, b) => {
+              const aName = a.name.toLowerCase();
+              const bName = b.name.toLowerCase();
+              
+              // E-Scooters should be first
+              if (aName.includes('scooter')) return -1;
+              if (bName.includes('scooter')) return 1;
+              
+              // E-Bikes should be second
+              if (aName.includes('bike')) return -1;
+              if (bName.includes('bike')) return 1;
+              
+              // Keep original order for others
+              return 0;
+            });
+
+            const allCategories = [...sortedCategories, SERVICE_CATEGORY];
 
             const topRowCategories = allCategories.slice(0, 3);
             const bottomRowCategories = allCategories.slice(3, 5);
