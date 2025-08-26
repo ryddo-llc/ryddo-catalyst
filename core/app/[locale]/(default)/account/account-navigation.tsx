@@ -3,11 +3,11 @@
 import { clsx } from 'clsx';
 import { Heart, LogOut, MapPin, Package, Settings } from 'lucide-react';
 
+
 import { ArrowButton } from '~/components/arrow-button';
 import { Link } from '~/components/link';
+import type { DashboardData } from '~/data-transformers/dashboard-transformer';
 import { usePathname } from '~/i18n/routing';
-
-import { OptimizedDashboardData } from './dashboard/optimized-queries';
 
 interface NavigationLink {
   href: string;
@@ -18,7 +18,7 @@ interface NavigationLink {
 
 interface AccountNavigationProps {
   links: NavigationLink[];
-  dashboardData?: OptimizedDashboardData | null;
+  dashboardData?: DashboardData | null;
 }
 
 const getIconForLink = (href: string) => {
@@ -31,7 +31,7 @@ const getIconForLink = (href: string) => {
   return Package;
 };
 
-const getBadgeData = (href: string, dashboardData?: OptimizedDashboardData | null) => {
+const getBadgeData = (href: string, dashboardData?: DashboardData | null) => {
   if (!dashboardData) return null;
 
   if (href.includes('orders')) {
