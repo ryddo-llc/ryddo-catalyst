@@ -3,8 +3,6 @@ import { PropsWithChildren } from 'react';
 
 import { AccountSidebar } from './account-sidebar';
 import { MobileNavigation } from './components/responsive-navigation';
-import { getOptimizedDashboardData } from './dashboard/optimized-queries';
-import { DashboardProvider } from './dashboard-context';
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
@@ -39,7 +37,7 @@ export default async function Layout({ children, params }: Props) {
             {/* Sidebar - Hidden on mobile, visible on tablet and desktop */}
             <div className="hidden md:flex w-80 flex-shrink-0 border-r border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-sidebar-background,hsl(var(--background)))]">
               <AccountSidebar
-                dashboardData={dashboardData}
+                dashboardData={null}
                 links={[
                   { href: '/account', label: 'Dashboard', description: 'Account overview', icon: 'dashboard' },
                   { href: '/account/orders', label: t('orders'), description: 'View and track your orders', icon: 'orders' },
@@ -71,6 +69,5 @@ export default async function Layout({ children, params }: Props) {
           </div>
         </div>
       </div>
-    </DashboardProvider>
   );
 }

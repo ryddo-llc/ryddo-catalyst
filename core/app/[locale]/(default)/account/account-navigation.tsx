@@ -7,7 +7,7 @@ import { ArrowButton } from '~/components/arrow-button';
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 
-import { DashboardData } from './dashboard/page-data';
+import { OptimizedDashboardData } from './dashboard/optimized-queries';
 
 interface NavigationLink {
   href: string;
@@ -18,7 +18,7 @@ interface NavigationLink {
 
 interface AccountNavigationProps {
   links: NavigationLink[];
-  dashboardData?: DashboardData | null;
+  dashboardData?: OptimizedDashboardData | null;
 }
 
 const getIconForLink = (href: string) => {
@@ -31,7 +31,7 @@ const getIconForLink = (href: string) => {
   return Package;
 };
 
-const getBadgeData = (href: string, dashboardData?: DashboardData | null) => {
+const getBadgeData = (href: string, dashboardData?: OptimizedDashboardData | null) => {
   if (!dashboardData) return null;
 
   if (href.includes('orders')) {
