@@ -1,20 +1,17 @@
-import { setRequestLocale } from 'next-intl/server';
+import { Stream, Streamable } from '~/vibes/soul/lib/streamable';
 
-import { OptimizedAccountDashboard } from './dashboard/optimized-account-dashboard';
+import { getDashboardData } from './dashboard/page-data';
+import { StreamableDashboard } from './dashboard/streamable-dashboard';
+import Loading from './loading';
 
-interface Props {
-  params: Promise<{ locale: string }>;
-}
-
-export default async function AccountPage({ params }: Props) {
-  const { locale } = await params;
-
-  setRequestLocale(locale);
+export default function AccountPage() {
+  const dashboardData = Streamable.from(() => getDashboardData());
 
   return (
     <div className="h-full">
-    {/* Dashboard Content - now uses shared data from context */}
-      <OptimizedAccountDashboard />
+      <Stream fallback={<Loading />} value={dashboardData}>
+        {(data) => <StreamableDashboard data={data} />}
+      </Stream>
     </div>
   );
 }

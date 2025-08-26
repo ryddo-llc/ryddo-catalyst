@@ -2,6 +2,10 @@ import { getFormatter } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
+import { DashboardData } from '~/data-transformers/dashboard-transformer';
 import { ordersTransformer } from '~/data-transformers/orders-transformer';
 
 import { getCustomerAddresses } from '../addresses/page-data';
@@ -9,54 +13,53 @@ import { getCustomerOrders } from '../orders/page-data';
 import { getCustomerSettingsQuery } from '../settings/page-data';
 import { getCustomerWishlists } from '../wishlists/page-data';
 
-export interface DashboardData {
-  ordersSummary: {
-    recent: Array<{
-      id: string;
-      orderNumber: string;
-      date: string;
-      total: string;
-      status: string;
-      statusType: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-      trackingUrl?: string;
-    }>;
-    totalCount: number;
-  };
-  addressesSummary: {
-    primary?: {
-      fullName: string;
-      addressLine1: string;
-      city: string;
-      state: string;
-      zipCode: string;
-    };
-    totalCount: number;
-  };
-  wishlistsSummary: {
-    recent: Array<{
-      id: string;
-      name: string;
-      itemCount: number;
-      isPublic: boolean;
-      lastModified: string;
-    }>;
-    totalCount: number;
-    totalItems: number;
-  };
-  accountStatus: {
-    hasCompletedProfile: boolean;
-    hasAddresses: boolean;
-    hasOrders: boolean;
-    completionPercentage: number;
-  };
-  customerInfo?: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
+// Simple customer query as backup if settings query fails
+const CustomerInfoQuery = graphql(`
+  query CustomerInfoQuery {
+    customer {
+      entityId
+      firstName
+      lastName
+      email
+    }
+  }
+`);
+
+async function getDirectCustomerInfo() {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  
+  if (!customerAccessToken) return null;
+  
+  try {
+    const { data } = await client.fetch({
+      document: CustomerInfoQuery,
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+    });
+
+    return data.customer ? {
+      firstName: data.customer.firstName,
+      lastName: data.customer.lastName,
+      email: data.customer.email,
+    } : null;
+  } catch {
+    return null;
+  }
 }
 
-export const getDashboardData = cache(async (formatter: Awaited<ReturnType<typeof getFormatter>>): Promise<DashboardData> => {
+function getOrderStatusType(status: string): 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' {
+  const lowerStatus = status.toLowerCase();
+  
+  if (lowerStatus.includes('pending') || lowerStatus.includes('awaiting')) return 'pending';
+  if (lowerStatus.includes('processing') || lowerStatus.includes('preparing')) return 'processing';
+  if (lowerStatus.includes('shipped') || lowerStatus.includes('transit')) return 'shipped';
+  if (lowerStatus.includes('delivered') || lowerStatus.includes('completed')) return 'delivered';
+  if (lowerStatus.includes('cancelled') || lowerStatus.includes('refunded')) return 'cancelled';
+  
+  return 'pending';
+}
+
+export const getDashboardData = cache(async (): Promise<DashboardData | null> => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   
   if (!customerAccessToken) {
@@ -70,107 +73,99 @@ export const getDashboardData = cache(async (formatter: Awaited<ReturnType<typeo
   }
 
   try {
-    // Fetch data in parallel for better performance
+    // Fetch data in parallel using existing working functions
     const [ordersData, addressesData, wishlistsData, customerSettings] = await Promise.allSettled([
-      getCustomerOrders({ limit: 5 }), // Get recent 5 orders
-      getCustomerAddresses({ limit: 10 }), // Get addresses with proper pagination
-      getCustomerWishlists({ limit: 3, before: null, after: null }), // Get recent 3 wishlists
-      getCustomerSettingsQuery({}), // Get customer settings with empty props
+      getCustomerOrders({ limit: 5 }),
+      getCustomerAddresses({ limit: 10 }),
+      getCustomerWishlists({ limit: 3, before: null, after: null }),
+      getCustomerSettingsQuery({}),
     ]);
 
+    const formatter = await getFormatter();
+
     // Process orders
-    const ordersSummary: DashboardData['ordersSummary'] = {
-      recent: [],
-      totalCount: 0,
-    };
-
-    if (ordersData.status === 'fulfilled' && ordersData.value) {
+    
+    const ordersSummary = ordersData.status === 'fulfilled' && ordersData.value ? (() => {
       const transformedOrders = ordersTransformer(ordersData.value.orders, formatter);
-
-      ordersSummary.recent = transformedOrders.slice(0, 5).map(order => ({
-        id: order.id,
-        orderNumber: order.id, // Use order id as order number since that's what's available
-        date: new Date().toLocaleDateString(), // Would need to extract from order data
-        total: order.totalPrice,
-        status: order.status,
-        statusType: getOrderStatusType(order.status),
-        trackingUrl: undefined, // Would need to be extracted from order data
-      }));
-      ordersSummary.totalCount = transformedOrders.length; // Use array length as count
-    }
+      
+      return {
+        recent: transformedOrders.slice(0, 5).map(order => ({
+          id: order.id,
+          orderNumber: order.id,
+          date: formatter.dateTime(new Date()),
+          total: order.totalPrice,
+          status: order.status,
+          statusType: getOrderStatusType(order.status),
+        })),
+        totalCount: transformedOrders.length,
+      };
+    })() : { recent: [], totalCount: 0 };
 
     // Process addresses
-    const addressesSummary: DashboardData['addressesSummary'] = {
-      totalCount: 0,
-      primary: undefined,
-    };
-
-    if (addressesData.status === 'fulfilled' && addressesData.value) {
-      const addressData = addressesData.value;
-
-      addressesSummary.totalCount = addressData.addresses.length;
-
-      // Use first address as primary (defaultAddress property may not exist)
-      const primaryAddress = addressData.addresses[0];
-
-      if (primaryAddress) {
-        addressesSummary.primary = {
-          fullName: `${primaryAddress.firstName} ${primaryAddress.lastName}`,
-          addressLine1: primaryAddress.address1,
-          city: primaryAddress.city,
-          state: primaryAddress.stateOrProvince || '',
-          zipCode: primaryAddress.postalCode || '',
-        };
-      }
-    }
+    
+    const addressesSummary = addressesData.status === 'fulfilled' && addressesData.value ? (() => {
+      const addresses = addressesData.value.addresses;
+      
+      return {
+        totalCount: addresses.length,
+        primary: addresses.length > 0 ? {
+          fullName: `${addresses[0]?.firstName || ''} ${addresses[0]?.lastName || ''}`,
+          addressLine1: addresses[0]?.address1 || '',
+          city: addresses[0]?.city || '',
+          state: addresses[0]?.stateOrProvince || '',
+          zipCode: addresses[0]?.postalCode || '',
+        } : undefined,
+      };
+    })() : { totalCount: 0 };
 
     // Process wishlists
-    const wishlistsSummary: DashboardData['wishlistsSummary'] = {
-      recent: [],
-      totalCount: 0,
-      totalItems: 0,
-    };
-
-    if (wishlistsData.status === 'fulfilled' && wishlistsData.value) {
-      const wishlistData = wishlistsData.value;
-      const wishlists = wishlistData.edges?.map(edge => edge.node) || [];
-
-      wishlistsSummary.totalCount = wishlists.length;
-      wishlistsSummary.totalItems = wishlists.reduce((sum: number, w) => sum + (w.items.edges?.length || 0), 0);
+    
+    const wishlistsSummary = wishlistsData.status === 'fulfilled' && wishlistsData.value ? (() => {
+      const wishlists = wishlistsData.value.edges?.map((edge) => edge.node) || [];
       
-      wishlistsSummary.recent = wishlists.slice(0, 3).map(wishlist => ({
-        id: wishlist.entityId.toString(),
-        name: wishlist.name,
-        itemCount: wishlist.items.edges?.length || 0,
-        isPublic: wishlist.isPublic,
-        lastModified: new Date().toISOString(), // Placeholder - would need actual lastModified date
-      }));
-    }
-
-    // Calculate account completion status
-    const accountStatus = {
-      hasCompletedProfile: !!(customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo),
-      hasAddresses: addressesSummary.totalCount > 0,
-      hasOrders: ordersSummary.totalCount > 0,
-      completionPercentage: 0,
-    };
-
-    // Calculate completion percentage
-    let completedSteps = 0;
-    const totalSteps = 3;
-    
-    if (accountStatus.hasCompletedProfile) completedSteps += 1;
-    if (accountStatus.hasAddresses) completedSteps += 1;
-    if (accountStatus.hasOrders) completedSteps += 1;
-    
-    accountStatus.completionPercentage = Math.round((completedSteps / totalSteps) * 100);
+      return {
+        recent: wishlists.slice(0, 3).map((wishlist) => ({
+          id: wishlist.entityId.toString(),
+          name: wishlist.name,
+          itemCount: wishlist.items.edges?.length || 0,
+          isPublic: wishlist.isPublic,
+          lastModified: new Date().toISOString(),
+        })),
+        totalCount: wishlists.length,
+        totalItems: wishlists.reduce((sum, wishlist) => sum + (wishlist.items.edges?.length || 0), 0),
+      };
+    })() : { recent: [], totalCount: 0, totalItems: 0 };
 
     // Get customer info
-    const customerInfo = customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo ? {
+    let customerInfo = customerSettings.status === 'fulfilled' && customerSettings.value?.customerInfo ? {
       firstName: customerSettings.value.customerInfo.firstName,
       lastName: customerSettings.value.customerInfo.lastName,
       email: customerSettings.value.customerInfo.email,
     } : undefined;
+
+    // If settings query didn't provide customer info, try direct customer query
+    if (!customerInfo) {
+      customerInfo = (await getDirectCustomerInfo()) || undefined;
+    }
+
+    // Calculate account status
+    const hasCompletedProfile = !!(customerInfo);
+    const hasAddresses = addressesSummary.totalCount > 0;
+    const hasOrders = ordersSummary.totalCount > 0;
+
+    let completedSteps = 0;
+    const totalSteps = 3;
+    
+    if (hasCompletedProfile) completedSteps += 1;
+    if (hasAddresses) completedSteps += 1;
+    if (hasOrders) completedSteps += 1;
+
+    const accountStatus = {
+      hasCompletedProfile,
+      hasAddresses,
+      hasOrders,
+      completionPercentage: Math.round((completedSteps / totalSteps) * 100),
+    };
 
     return {
       ordersSummary,
@@ -179,8 +174,13 @@ export const getDashboardData = cache(async (formatter: Awaited<ReturnType<typeo
       accountStatus,
       customerInfo,
     };
-  } catch {
-    // Return empty dashboard on error
+  } catch (error) {
+    // Log error in development but return empty dashboard in production  
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.error('Dashboard data fetch error:', error);
+    }
+
     return {
       ordersSummary: { recent: [], totalCount: 0 },
       addressesSummary: { totalCount: 0 },
@@ -189,15 +189,3 @@ export const getDashboardData = cache(async (formatter: Awaited<ReturnType<typeo
     };
   }
 });
-
-function getOrderStatusType(status: string): 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' {
-  const lowerStatus = status.toLowerCase();
-  
-  if (lowerStatus.includes('pending') || lowerStatus.includes('awaiting')) return 'pending';
-  if (lowerStatus.includes('processing') || lowerStatus.includes('preparing')) return 'processing';
-  if (lowerStatus.includes('shipped') || lowerStatus.includes('transit')) return 'shipped';
-  if (lowerStatus.includes('delivered') || lowerStatus.includes('completed')) return 'delivered';
-  if (lowerStatus.includes('cancelled') || lowerStatus.includes('refunded')) return 'cancelled';
-  
-  return 'pending';
-}

@@ -1,20 +1,17 @@
-'use client';
-
 import { clsx } from 'clsx';
 import { Heart, MapPin, Package, Settings, TrendingUp } from 'lucide-react';
 
 import { ArrowButton } from '~/components/arrow-button';
 import { Link } from '~/components/link';
-
-import { OptimizedDashboardData } from '../optimized-queries';
+import type { DashboardData } from '~/data-transformers/dashboard-transformer';
 
 // Stat card component (memoization temporarily removed for debugging)
-function StatCard({ 
-  icon: Icon, 
-  label, 
-  value, 
-  href, 
-  color 
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  href,
+  color,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
@@ -35,14 +32,14 @@ function StatCard({
       href={href}
     >
       <div className="absolute -right-2 -top-2 h-8 w-8 rounded-full bg-gradient-to-br from-[#F92F7B]/10 to-[#F92F7B]/5 transition-all duration-300 group-hover:scale-110" />
-      
+
       <div className="relative">
         <div className="flex items-center justify-between">
           <div className={clsx('rounded-full p-1.5', colorClasses[color])}>
             <Icon className="h-3 w-3" />
           </div>
         </div>
-        
+
         <div className="mt-2">
           <div className="text-lg font-bold text-[var(--account-card-title,hsl(var(--foreground)))]">
             {value}
@@ -56,26 +53,24 @@ function StatCard({
   );
 }
 
-// Status item component (memoization temporarily removed for debugging)  
-function StatusItem({ 
-  label, 
-  completed 
-}: {
-  label: string;
-  completed: boolean;
-}) {
+// Status item component (memoization temporarily removed for debugging)
+function StatusItem({ label, completed }: { label: string; completed: boolean }) {
   return (
     <div className="flex items-center gap-3">
-      <div className={clsx(
-        'h-2 w-2 rounded-full',
-        completed ? 'bg-[#F92F7B]' : 'bg-[var(--account-card-border,hsl(var(--contrast-200)))]'
-      )} />
-      <span className={clsx(
-        'text-sm',
-        completed 
-          ? 'text-[var(--account-card-title,hsl(var(--foreground)))]' 
-          : 'text-[var(--account-card-description,hsl(var(--contrast-500)))]'
-      )}>
+      <div
+        className={clsx(
+          'h-2 w-2 rounded-full',
+          completed ? 'bg-[#F92F7B]' : 'bg-[var(--account-card-border,hsl(var(--contrast-200)))]',
+        )}
+      />
+      <span
+        className={clsx(
+          'text-sm',
+          completed
+            ? 'text-[var(--account-card-title,hsl(var(--foreground)))]'
+            : 'text-[var(--account-card-description,hsl(var(--contrast-500)))]',
+        )}
+      >
         {label}
       </span>
     </div>
@@ -83,13 +78,12 @@ function StatusItem({
 }
 
 // Order item component (memoization temporarily removed for debugging)
-function OrderItem({
-  order
-}: {
-  order: OptimizedDashboardData['ordersSummary']['recent'][0];
-}) {
+function OrderItem({ order }: { order: DashboardData['ordersSummary']['recent'][0] }) {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-4" key={order.id}>
+    <div
+      className="flex items-center justify-between rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-4"
+      key={order.id}
+    >
       <div className="flex-1">
         <div className="font-semibold text-[var(--account-card-title,hsl(var(--foreground)))]">
           #{order.orderNumber}
@@ -99,16 +93,15 @@ function OrderItem({
         </div>
       </div>
       <div className="text-right">
-        <span className={clsx(
-          'inline-flex rounded-full px-2 py-1 text-xs font-medium',
-          {
+        <span
+          className={clsx('inline-flex rounded-full px-2 py-1 text-xs font-medium', {
             'bg-yellow-100 text-yellow-800': order.statusType === 'pending',
             'bg-blue-100 text-blue-800': order.statusType === 'processing',
             'bg-purple-100 text-purple-800': order.statusType === 'shipped',
             'bg-green-100 text-green-800': order.statusType === 'delivered',
             'bg-red-100 text-red-800': order.statusType === 'cancelled',
-          }
-        )}>
+          })}
+        >
           {order.status}
         </span>
       </div>
@@ -117,11 +110,7 @@ function OrderItem({
 }
 
 // Wishlist item component (memoization temporarily removed for debugging)
-function WishlistItem({
-  wishlist
-}: {
-  wishlist: OptimizedDashboardData['wishlistsSummary']['recent'][0];
-}) {
+function WishlistItem({ wishlist }: { wishlist: DashboardData['wishlistsSummary']['recent'][0] }) {
   return (
     <Link
       className="group rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-4 transition-all hover:border-[#F92F7B]/50 hover:shadow-md"
@@ -137,12 +126,12 @@ function WishlistItem({
             {wishlist.itemCount} items
           </p>
         </div>
-        <div className={clsx(
-          'rounded-full px-2 py-1 text-xs font-medium',
-          wishlist.isPublic 
-            ? 'bg-green-100 text-green-800' 
-            : 'bg-gray-100 text-gray-800'
-        )}>
+        <div
+          className={clsx(
+            'rounded-full px-2 py-1 text-xs font-medium',
+            wishlist.isPublic ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800',
+          )}
+        >
           {wishlist.isPublic ? 'Public' : 'Private'}
         </div>
       </div>
@@ -150,19 +139,18 @@ function WishlistItem({
   );
 }
 
-interface OptimizedDashboardWidgetsProps {
-  data: OptimizedDashboardData;
+interface DashboardWidgetsProps {
+  data: DashboardData;
 }
 
-export function OptimizedDashboardWidgets({ 
-  data 
-}: OptimizedDashboardWidgetsProps) {
+export function OptimizedDashboardWidgets({ data }: DashboardWidgetsProps) {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="text-left">
         <h3 className="font-[family-name:var(--account-title-font-family,var(--font-family-heading))] text-lg font-bold text-[var(--account-title,hsl(var(--foreground)))]">
-          Welcome back{data.customerInfo?.firstName ? `, ${data.customerInfo.firstName}` : ''}<span className="ml-1 text-[#F92F7B]">!</span>
+          Welcome back{data.customerInfo?.firstName ? `, ${data.customerInfo.firstName}` : ''}
+          <span className="ml-1 text-[#F92F7B]">!</span>
         </h3>
         <p className="mt-1 text-sm text-[var(--account-subtitle,hsl(var(--contrast-500)))]">
           Here's an overview of your account activity
@@ -170,7 +158,7 @@ export function OptimizedDashboardWidgets({
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-3 grid-cols-2">
+      <div className="grid grid-cols-2 gap-3">
         <StatCard
           color="blue"
           href="/account/orders"
@@ -206,16 +194,14 @@ export function OptimizedDashboardWidgets({
         {/* Recent Orders */}
         <div className="relative overflow-hidden rounded-2xl border-2 border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-card-background,hsl(var(--background)))] p-4">
           <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gradient-to-br from-[#F92F7B]/10 to-[#F92F7B]/5" />
-          
+
           <div className="relative">
             <div className="mb-6 flex items-center justify-between">
               <h3 className="font-[family-name:var(--account-card-title-font-family,var(--font-family-heading))] text-xl font-extrabold text-[var(--account-card-title,hsl(var(--foreground)))]">
                 Recent Orders
               </h3>
               <Link href="/account/orders">
-                <ArrowButton className="text-xs">
-                  View All Orders
-                </ArrowButton>
+                <ArrowButton className="text-xs">View All Orders</ArrowButton>
               </Link>
             </div>
 
@@ -239,7 +225,7 @@ export function OptimizedDashboardWidgets({
         {/* Quick Actions */}
         <div className="relative overflow-hidden rounded-2xl border-2 border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-card-background,hsl(var(--background)))] p-4">
           <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gradient-to-br from-[#F92F7B]/10 to-[#F92F7B]/5" />
-          
+
           <div className="relative">
             <h3 className="mb-6 font-[family-name:var(--account-card-title-font-family,var(--font-family-heading))] text-xl font-extrabold text-[var(--account-card-title,hsl(var(--foreground)))]">
               Quick Actions
@@ -253,7 +239,7 @@ export function OptimizedDashboardWidgets({
                 <Settings className="h-4 w-4 text-[#F92F7B]" />
                 <span className="text-sm font-medium">Edit Profile</span>
               </Link>
-              
+
               <Link
                 className="flex items-center gap-3 rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-3 transition-colors hover:bg-[var(--account-card-hover,hsl(var(--contrast-50)))]"
                 href="/account/addresses"
@@ -261,7 +247,7 @@ export function OptimizedDashboardWidgets({
                 <MapPin className="h-4 w-4 text-[#F92F7B]" />
                 <span className="text-sm font-medium">Add Address</span>
               </Link>
-              
+
               <Link
                 className="flex items-center gap-3 rounded-lg border border-[var(--account-card-border,hsl(var(--contrast-200)))] p-3 transition-colors hover:bg-[var(--account-card-hover,hsl(var(--contrast-50)))]"
                 href="/account/wishlists"
@@ -276,12 +262,12 @@ export function OptimizedDashboardWidgets({
         {/* Account Status */}
         <div className="relative overflow-hidden rounded-2xl border-2 border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-card-background,hsl(var(--background)))] p-4">
           <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gradient-to-br from-[#F92F7B]/10 to-[#F92F7B]/5" />
-          
+
           <div className="relative">
             <h3 className="mb-6 font-[family-name:var(--account-card-title-font-family,var(--font-family-heading))] text-xl font-extrabold text-[var(--account-card-title,hsl(var(--foreground)))]">
               Account Status
             </h3>
-            
+
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-[var(--account-card-title,hsl(var(--foreground)))]">
@@ -291,7 +277,7 @@ export function OptimizedDashboardWidgets({
                   {data.accountStatus.completionPercentage}%
                 </span>
               </div>
-              
+
               <div className="h-2 w-full rounded-full bg-[var(--account-card-border,hsl(var(--contrast-200)))]">
                 <div
                   className="h-2 rounded-full bg-[#F92F7B] transition-all duration-300"
@@ -304,14 +290,8 @@ export function OptimizedDashboardWidgets({
                   completed={data.accountStatus.hasCompletedProfile}
                   label="Profile Information"
                 />
-                <StatusItem
-                  completed={data.accountStatus.hasAddresses}
-                  label="Shipping Address"
-                />
-                <StatusItem
-                  completed={data.accountStatus.hasOrders}
-                  label="First Order"
-                />
+                <StatusItem completed={data.accountStatus.hasAddresses} label="Shipping Address" />
+                <StatusItem completed={data.accountStatus.hasOrders} label="First Order" />
               </div>
             </div>
           </div>
@@ -322,16 +302,14 @@ export function OptimizedDashboardWidgets({
       {data.wishlistsSummary.recent.length > 0 && (
         <div className="relative overflow-hidden rounded-2xl border-2 border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-card-background,hsl(var(--background)))] p-4">
           <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gradient-to-br from-[#F92F7B]/10 to-[#F92F7B]/5" />
-          
+
           <div className="relative">
             <div className="mb-6 flex items-center justify-between">
               <h3 className="font-[family-name:var(--account-card-title-font-family,var(--font-family-heading))] text-xl font-extrabold text-[var(--account-card-title,hsl(var(--foreground)))]">
                 Wishlist Preview
               </h3>
               <Link href="/account/wishlists">
-                <ArrowButton className="text-xs">
-                  View All Wishlists
-                </ArrowButton>
+                <ArrowButton className="text-xs">View All Wishlists</ArrowButton>
               </Link>
             </div>
 

@@ -71,7 +71,7 @@ export type SearchAction<S extends SearchResult> = Action<
 export interface NavigationProps<S extends SearchResult> {
   className?: string;
   isFloating?: boolean;
-  accountHref: string;
+  accountHref: Streamable<string>;
   cartCount?: Streamable<number | null>;
   cartHref: string;
   links: Streamable<Link[]>;
