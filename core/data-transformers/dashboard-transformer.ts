@@ -130,11 +130,11 @@ export function dashboardTransformer(
   const addressesSummary = {
     totalCount: addresses.length,
     primary: addresses.length > 0 ? {
-      fullName: `${addresses[0].firstName} ${addresses[0].lastName}`,
-      addressLine1: addresses[0].address1,
-      city: addresses[0].city,
-      state: addresses[0].stateOrProvince || '',
-      zipCode: addresses[0].postalCode || '',
+      fullName: `${addresses[0]?.firstName || ''} ${addresses[0]?.lastName || ''}`,
+      addressLine1: addresses[0]?.address1 || '',
+      city: addresses[0]?.city || '',
+      state: addresses[0]?.stateOrProvince || '',
+      zipCode: addresses[0]?.postalCode || '',
     } : undefined,
   };
 

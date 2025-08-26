@@ -29,7 +29,6 @@ export interface AccountSettingsSectionProps {
  * ```
  */
 export function AccountSettingsSection({
-  title = 'Account Settings',
   account,
   updateAccountAction,
   updateAccountSubmitLabel,
