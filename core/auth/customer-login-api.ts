@@ -21,7 +21,7 @@ import { SignJWT } from 'jose';
 export const generateCustomerLoginApiJwt = async (
   customerId: number,
   channelId: number,
-  redirectTo = '/account/orders',
+  redirectTo = '/account',
   additionalClaims?: Record<string, unknown>,
 ): Promise<string> => {
   const clientId = process.env.BIGCOMMERCE_CLIENT_ID;
