@@ -22,7 +22,7 @@ type PopupType = 'adventures' | 'booknow' | null;
 export default function PartnersContactBar() {
   const [activePopup, setActivePopup] = useState<PopupType>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const brands: BrandProps[] = [
     { name: 'Super73', image: super73 },
     { name: 'Cake', image: cake },
@@ -37,7 +37,7 @@ export default function PartnersContactBar() {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  
+
     if (activePopup === popupType) {
       setActivePopup(null);
     } else if (activePopup && activePopup !== popupType) {
@@ -55,11 +55,11 @@ export default function PartnersContactBar() {
   };
 
   return (
-    <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black text-sm font-bold text-white md:flex-row pb-[env(safe-area-inset-bottom)] [--partner-bar-h:3rem] md:[--partner-bar-h:4rem]">
+    <section className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col items-stretch bg-black pb-[env(safe-area-inset-bottom)] text-sm font-bold text-white [--partner-bar-h:3rem] md:flex-row md:[--partner-bar-h:4rem]">
       {/* Mobile Layout - Two buttons side by side */}
       <div className="flex w-full md:hidden">
         {/* Adventures Button - Mobile */}
-        <button 
+        <button
           aria-controls={ADVENTURES_DIALOG_ID}
           aria-haspopup="dialog"
           className="group flex h-12 w-1/2 items-center justify-center border-r border-white px-3 transition-colors duration-200 hover:bg-[#F92F7B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
@@ -69,7 +69,12 @@ export default function PartnersContactBar() {
         >
           <div className="h-auto whitespace-nowrap p-0 text-center text-white">
             <span>Sign up for free ryddo</span>
-            <span aria-hidden="true" className="ml-1 text-[#F92F7B] transition-transform group-data-[state=open]:-rotate-180">⌄</span>
+            <span
+              aria-hidden="true"
+              className="ml-1 text-[#F92F7B] transition-transform group-data-[state=open]:-rotate-180"
+            >
+              ⌄
+            </span>
           </div>
         </button>
 
@@ -100,14 +105,17 @@ export default function PartnersContactBar() {
           <span className="hidden xl:inline">Sign up for Free ryddo adventures</span>
           <span className="hidden lg:inline xl:hidden">Free ryddo adventures</span>
           <span className="md:inline lg:hidden">Free adventures</span>
-          <span aria-hidden="true" className="ml-1 text-[#F92F7B] transition-transform group-data-[state=open]:-rotate-180">⌄</span>
+          <span
+            aria-hidden="true"
+            className="ml-1 text-[#F92F7B] transition-transform group-data-[state=open]:-rotate-180"
+          >
+            ⌄
+          </span>
         </div>
       </button>
 
       {/* Partners/Brands Section - Hidden on mobile */}
-      <div 
-        className="hidden min-h-[48px] flex-1 items-center justify-center gap-x-4 px-2 py-2 md:flex md:min-h-[64px] md:px-3 md:py-0 md:gap-x-6 lg:px-4 xl:px-6 2xl:px-8"
-      >
+      <div className="hidden min-h-[48px] flex-1 items-center justify-center gap-x-4 px-2 py-2 md:flex md:min-h-[64px] md:gap-x-6 md:px-3 md:py-0 lg:px-4 xl:px-6 2xl:px-8">
         {brands.map((brand: BrandProps) => (
           <Link
             className="h-auto flex-shrink-0 p-0 transition-opacity duration-200 hover:bg-transparent hover:opacity-80"
@@ -132,10 +140,10 @@ export default function PartnersContactBar() {
       {/* Contact Actions Section - Hidden on mobile */}
       <div className="hidden w-auto md:flex">
         {/* Phone Number */}
-        <div className="hidden lg:flex h-12 w-32 lg:w-44 xl:w-48 2xl:w-52">
-          <Link 
-            aria-label="Call ryddo at 323-676-7433" 
-            className="flex h-full w-full items-center justify-center border-l border-white px-2 text-xs font-bold transition-colors duration-200 hover:bg-[#F92F7B] hover:text-white sm:h-14 md:h-16 md:text-sm" 
+        <div className="hidden h-12 w-32 lg:flex lg:w-44 xl:w-48 2xl:w-52">
+          <Link
+            aria-label="Call ryddo at 323-676-7433"
+            className="flex h-full w-full items-center justify-center border-l border-white px-2 text-xs font-bold transition-colors duration-200 hover:bg-[#F92F7B] hover:text-white sm:h-14 md:h-16 md:text-sm"
             href="tel:+13236767433"
           >
             <span>323.676.7433</span>
@@ -146,7 +154,7 @@ export default function PartnersContactBar() {
         <button
           aria-controls={BOOKNOW_DIALOG_ID}
           aria-haspopup="dialog"
-          className="flex h-12 w-32 items-center justify-center bg-[#F92F7B] px-2 text-xs transition-colors duration-200 hover:bg-[#d41f63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:h-14 md:h-16 md:w-40 md:text-sm md:border-l md:border-white lg:w-44 xl:w-48 2xl:w-52"
+          className="flex h-12 w-32 items-center justify-center bg-[#F92F7B] px-2 text-xs transition-colors duration-200 hover:bg-[#d41f63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:h-14 md:h-16 md:w-40 md:border-l md:border-white md:text-sm lg:w-44 xl:w-48 2xl:w-52"
           data-state={activePopup === 'booknow' ? 'open' : 'closed'}
           onClick={() => openPopup('booknow')}
           type="button"
@@ -154,19 +162,19 @@ export default function PartnersContactBar() {
           <span className="font-bold">Book Test Ride</span>
         </button>
       </div>
-      
+
       {/* Adventures Popup */}
-      <AdventuresPopup 
+      <AdventuresPopup
         id={ADVENTURES_DIALOG_ID}
-        isOpen={activePopup === 'adventures'} 
-        onClose={closePopup} 
+        isOpen={activePopup === 'adventures'}
+        onClose={closePopup}
       />
-      
+
       {/* Book Now Popup */}
-      <BookNowPopup 
+      <BookNowPopup
         id={BOOKNOW_DIALOG_ID}
-        isOpen={activePopup === 'booknow'} 
-        onClose={closePopup} 
+        isOpen={activePopup === 'booknow'}
+        onClose={closePopup}
       />
     </section>
   );
