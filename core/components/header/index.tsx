@@ -173,6 +173,12 @@ export const Header = async () => {
     return currencyCode ?? defaultCurrency?.id;
   });
 
+  const streamableAccountHref = Streamable.from(async (): Promise<string> => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    
+    return customerAccessToken ? '/account' : '/login';
+  });
+
   return (
     <HeaderSection
       banner={{
@@ -182,7 +188,7 @@ export const Header = async () => {
           'Get free gear with an E-Bike or Scooter purchase + free shipping on orders over $150 *',
       }}
       navigation={{
-        accountHref: '/login',
+        accountHref: streamableAccountHref,
         accountLabel: t('Icons.account'),
         cartHref: '/cart',
         cartLabel: t('Icons.cart'),

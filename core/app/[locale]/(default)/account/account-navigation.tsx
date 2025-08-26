@@ -3,11 +3,11 @@
 import { clsx } from 'clsx';
 import { Heart, LogOut, MapPin, Package, Settings } from 'lucide-react';
 
+
 import { ArrowButton } from '~/components/arrow-button';
 import { Link } from '~/components/link';
+import type { DashboardData } from '~/data-transformers/dashboard-transformer';
 import { usePathname } from '~/i18n/routing';
-
-import { DashboardData } from './dashboard/page-data';
 
 interface NavigationLink {
   href: string;

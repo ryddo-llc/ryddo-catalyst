@@ -527,9 +527,20 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             </Link>
           )}
 
-          <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
-            <User size={20} strokeWidth={2} />
-          </Link>
+          <Stream
+            fallback={
+              <Link aria-label={accountLabel} className={navButtonClassName} href="/login">
+                <User size={20} strokeWidth={2} />
+              </Link>
+            }
+            value={accountHref}
+          >
+            {(href) => (
+              <Link aria-label={accountLabel} className={navButtonClassName} href={href}>
+                <User size={20} strokeWidth={2} />
+              </Link>
+            )}
+          </Stream>
           <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
             <ShoppingBag size={20} strokeWidth={2} />
             <Stream
