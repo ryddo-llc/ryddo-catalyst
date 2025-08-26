@@ -1,5 +1,3 @@
-'use client';
-
 import { clsx } from 'clsx';
 import { Heart, MapPin, Package, Settings, TrendingUp } from 'lucide-react';
 

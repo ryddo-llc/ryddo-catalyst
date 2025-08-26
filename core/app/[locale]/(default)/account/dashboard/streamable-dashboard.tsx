@@ -18,9 +18,9 @@ export function StreamableDashboard({ data }: StreamableDashboardProps) {
               {/* Stats cards skeleton */}
               {Array.from({ length: 4 }).map((_, i) => (
                 <div 
-                  key={i} 
-                  className="h-32 animate-pulse rounded-2xl bg-contrast-100"
                   aria-hidden="true"
+                  className="h-32 animate-pulse rounded-2xl bg-contrast-100"
+                  key={i} 
                 />
               ))}
             </div>
@@ -33,9 +33,9 @@ export function StreamableDashboard({ data }: StreamableDashboardProps) {
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div 
-                      key={i} 
-                      className="h-24 animate-pulse rounded-xl bg-contrast-100"
                       aria-hidden="true"
+                      className="h-24 animate-pulse rounded-xl bg-contrast-100"
+                      key={i} 
                     />
                   ))}
                 </div>
@@ -66,17 +66,9 @@ export function StreamableDashboard({ data }: StreamableDashboardProps) {
         }
         value={data}
       >
-        {(dashboardData) => {
-          if (!dashboardData) {
-            return (
-              <div className="rounded-lg border border-contrast-200 p-8 text-center">
-                <p className="text-contrast-500">Unable to load dashboard data. Please refresh the page.</p>
-              </div>
-            );
-          }
-
-          return <OptimizedDashboardWidgets data={dashboardData} />;
-        }}
+        {(dashboardData) => (
+          <OptimizedDashboardWidgets data={dashboardData} />
+        )}
       </Stream>
     </div>
   );
