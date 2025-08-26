@@ -17,24 +17,10 @@ export default async function Layout({ children, params }: Props) {
 
   const t = await getTranslations('Account.Layout');
 
-  // Fetch optimized dashboard data once for the entire account section
-  let dashboardData = null;
-  let dataError;
-
-  try {
-    dashboardData = await getOptimizedDashboardData();
-  } catch (error) {
-    dataError = error instanceof Error ? error : new Error('Failed to load dashboard data');
-  }
+  // Dashboard data is now loaded lazily with Streamable in individual pages
+  // This provides better loading states and streaming behavior
 
   return (
-    <DashboardProvider 
-      value={{ 
-        data: dashboardData, 
-        isLoading: false, 
-        error: dataError 
-      }}
-    >
       <div className="@container min-h-screen bg-[var(--account-background,hsl(var(--background)))]">
         <div className="mx-auto max-w-screen-2xl">
           {/* Account Header */}

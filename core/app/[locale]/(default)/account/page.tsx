@@ -1,6 +1,9 @@
 import { setRequestLocale } from 'next-intl/server';
 
-import { OptimizedAccountDashboard } from './dashboard/optimized-account-dashboard';
+import { Streamable } from '@/vibes/soul/lib/streamable';
+
+import { getOptimizedDashboardData } from './dashboard/optimized-queries';
+import { StreamableDashboard } from './dashboard/streamable-dashboard';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -11,10 +14,13 @@ export default async function AccountPage({ params }: Props) {
 
   setRequestLocale(locale);
 
+  // Use Streamable to defer data loading with proper suspense boundaries
+  const streamableDashboardData = Streamable.from(() => getOptimizedDashboardData());
+
   return (
     <div className="h-full">
-    {/* Dashboard Content - now uses shared data from context */}
-      <OptimizedAccountDashboard />
+      {/* StreamableDashboard handles loading states with Stream component */}
+      <StreamableDashboard data={streamableDashboardData} />
     </div>
   );
 }
