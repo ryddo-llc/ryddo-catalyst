@@ -12,6 +12,7 @@ import { ProductsListSection } from '@/vibes/soul/sections/products-list-section
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
+import { numberedPaginationTransformer } from '~/data-transformers/numbered-pagination-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
@@ -127,10 +128,43 @@ export default async function Category(props: Props) {
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
+    // Convert page parameter to cursor-based pagination for data fetching
+    let paginationParams = {};
+    const { page, before, after } = searchParams;
+    
+    if (typeof page === 'string') {
+      const pageNum = parseInt(page, 10);
+      
+      if (!Number.isNaN(pageNum) && pageNum > 1) {
+        // For page-based navigation, we need to calculate the appropriate cursor
+        // Since we can't jump directly to arbitrary pages with cursors,
+        // we use a different approach: fetch more products and slice them
+        const itemsPerPage = 9;
+        const offset = (pageNum - 1) * itemsPerPage;
+        
+        // Use a larger limit to get enough products for the desired page
+        const limit = offset + itemsPerPage;
+        
+        paginationParams = { 
+          limit: limit.toString(),
+          // Clear cursors to start from the beginning
+          before: null,
+          after: null
+        };
+      } else {
+        // For page 1, use normal cursor-based pagination
+        paginationParams = { before, after };
+      }
+    } else {
+      // Use existing cursor parameters if no page parameter
+      paginationParams = { before, after };
+    }
+
     const search = await fetchFacetedSearch(
       {
         ...searchParams,
         ...parsedSearchParams,
+        ...paginationParams,
         category: categoryId,
       },
       currencyCode,
@@ -142,9 +176,25 @@ export default async function Category(props: Props) {
 
   const streamableProducts = Streamable.from(async () => {
     const format = await getFormatter();
+    const searchParams = await props.searchParams;
 
     const search = await streamableFacetedSearch;
-    const products = search.products.items;
+    let products = search.products.items;
+
+    // If we're using page-based navigation, slice the products to show only the current page
+    const { page } = searchParams;
+
+    if (typeof page === 'string') {
+      const pageNum = parseInt(page, 10);
+
+      if (!Number.isNaN(pageNum) && pageNum > 1) {
+        const itemsPerPage = 9;
+        const startIndex = (pageNum - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        products = products.slice(startIndex, endIndex);
+      }
+    }
 
     return products.map((product) => ({
       id: product.entityId.toString(),
@@ -169,6 +219,38 @@ export default async function Category(props: Props) {
     const search = await streamableFacetedSearch;
 
     return pageInfoTransformer(search.products.pageInfo);
+  });
+
+  const streamableNumberedPagination = Streamable.from(async () => {
+    const search = await streamableFacetedSearch;
+    const searchParams = await props.searchParams;
+    const totalItems = search.products.collectionInfo?.totalItems ?? 0;
+    const itemsPerPage = 9; // Products per page is 9
+    
+    // Get current page from URL parameter or calculate from cursor
+    let currentPage = 1;
+    const { before, after, page } = searchParams;
+    
+    // If we have a page parameter, use it
+    if (typeof page === 'string') {
+      const pageNum = parseInt(page, 10);
+      
+      if (!Number.isNaN(pageNum) && pageNum > 0) {
+        currentPage = pageNum;
+      }
+    } else if (before || after) {
+      // If we have cursors but no page parameter, we can't accurately determine the page
+      // This is a limitation of cursor-based pagination - we don't know which page we're on
+      // For now, we'll default to page 1 and let the UI handle it gracefully
+      currentPage = 1;
+    }
+
+    return numberedPaginationTransformer(search.products.pageInfo, {
+      totalItems,
+      itemsPerPage,
+      currentPage,
+      pageParamName: 'page',
+    });
   });
 
   const streamableFilters = Streamable.from(async () => {
@@ -263,6 +345,7 @@ export default async function Category(props: Props) {
         filtersPanelTitle={t('FacetedSearch.filters')}
         maxCompareLimitMessage={t('Compare.maxCompareLimit')}
         maxItems={MAX_COMPARE_LIMIT}
+        numberedPaginationInfo={streamableNumberedPagination}
         paginationInfo={streamablePagination}
         products={streamableProducts}
         rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
@@ -284,6 +367,7 @@ export default async function Category(props: Props) {
         ]}
         sortParamName="sort"
         totalCount={streamableTotalCount}
+        useNumberedPagination={true}
       />
       <Stream value={streamableFacetedSearch}>
         {(search) => <CategoryViewed category={category} products={search.products.items} />}
