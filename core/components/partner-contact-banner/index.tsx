@@ -69,7 +69,7 @@ export default function PartnersContactBar() {
         >
           <div className="h-auto whitespace-nowrap p-0 text-center text-white">
             <span>Sign up for free ryddo</span>
-            <span aria-hidden="true" className="ml-1 text-[#F92F7B] transition-transform group-data-[state=open]:-rotate-180">⌄</span>
+            <span aria-hidden="true" className="ml-1 text-[#F92F7B] transition-transform group-data-[state=open]:-rotate-180">^</span>
           </div>
         </button>
 
