@@ -56,6 +56,7 @@ const navButtonClassName =
  *   --nav-mobile-button-icon: hsl(var(--foreground));
  *   --nav-mobile-link-text: hsl(var(--foreground));
  *   --nav-mobile-link-text-hover: hsl(var(--foreground));
+ *   --nav-mobile-link-text-active: hsl(var(--foreground));
  *   --nav-mobile-link-background: transparent;
  *   --nav-mobile-link-background-hover: hsl(var(--contrast-100));
  *   --nav-mobile-link-font-family: var(--font-family-body);
@@ -223,12 +224,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           <Popover.Portal>
             <Popover.Content 
               align="start"
-              className="w-56 max-w-[60vw] z-[110] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+              className="w-72 max-w-[75vw] max-h-[70vh] z-[110] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
               sideOffset={4}
-              style={{ 
-                maxHeight: '70vh',
-                height: '70vh'
-              }}
             >
               <div
                 className="h-full divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto overscroll-contain bg-[var(--nav-mobile-background,hsl(var(--background)))]"
@@ -257,9 +254,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                       // Active state logic - handle trailing slash differences
                       const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
                       const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
-                      const isActive = normalizedPathname === normalizedHref || 
-                                      (item.href !== '/' && pathname.startsWith(item.href.replace(/\/$/, ''))) ||
-                                      (item.href === '/' && pathname === '/');
+                      const isActive =
+                        normalizedPathname === normalizedHref ||
+                        (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
                       const hasSubcategories = item.groups && item.groups.length > 0;
                       const isExpanded = expandedSections.has(i);
                       
@@ -270,25 +267,15 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                             <div className="p-1.5 @4xl:p-3">
                               <div className="flex items-center justify-between">
                                 <Link
+                                  aria-current={isActive ? 'page' : undefined}
                                   className={clsx(
-                                    "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
-                                    isActive ? "text-pink-500" : "text-gray-800"
+                                    "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
+                                    "text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]",
+                                    "bg-[var(--nav-mobile-link-background,transparent)] hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))]",
+                                    isActive && "text-[var(--nav-mobile-link-text-active,hsl(var(--foreground)))]"
                                   )}
                                   href={item.href}
                                   onClick={() => setIsMobileMenuOpen(false)}
-                                  onMouseEnter={(e) => {
-                                    if (!isActive) {
-                                      e.currentTarget.style.backgroundColor = 'rgba(236, 72, 153, 0.1)';
-                                    }
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    if (!isActive) {
-                                      e.currentTarget.style.backgroundColor = 'transparent';
-                                    }
-                                  }}
-                                  style={{
-                                    backgroundColor: isActive ? 'transparent' : undefined
-                                  }}
                                 >
                                   {item.label}
                                 </Link>
@@ -338,14 +325,14 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                       <div className="flex items-center justify-between px-2 py-1.5">
                                         {group.href ? (
                                           <Link
-                                            className="flex-1 text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-colors"
+                                            className="flex-1 text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-colors"
                                             href={group.href}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                           >
                                             {group.label}
                                           </Link>
                                         ) : (
-                                          <div className="text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]">
+                                          <div className="text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]">
                                             {group.label}
                                           </div>
                                         )}
@@ -378,18 +365,33 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                     
                                     {/* Group Links with nested accordion */}
                                     {group.links.length > 0 && (
-                                      <div 
-                                        aria-hidden={!expandedSubSections.has(`${i}-${groupIndex}`)}
-                                        className={clsx(
-                                          "overflow-hidden transition-all duration-200 ease-in-out",
-                                          expandedSubSections.has(`${i}-${groupIndex}`) ? "max-h-[50vh] opacity-100" : "max-h-0 opacity-0"
-                                        )}
-                                        id={`subsection-panel-${i}-${groupIndex}`}
-                                      >
+                                      group.label ? (
+                                        <div 
+                                          aria-hidden={!expandedSubSections.has(`${i}-${groupIndex}`)}
+                                          className={clsx(
+                                            "overflow-hidden transition-all duration-200 ease-in-out",
+                                            expandedSubSections.has(`${i}-${groupIndex}`) ? "max-h-[50vh] opacity-100" : "max-h-0 opacity-0"
+                                          )}
+                                          id={`subsection-panel-${i}-${groupIndex}`}
+                                        >
+                                          <div className="ml-2 space-y-0.5">
+                                            {group.links.map((link) => (
+                                              <Link
+                                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                href={link.href}
+                                                key={link.href}
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                              >
+                                                {link.label}
+                                              </Link>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      ) : (
                                         <div className="ml-2 space-y-0.5">
                                           {group.links.map((link) => (
                                             <Link
-                                              className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                              className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                               href={link.href}
                                               key={link.href}
                                               onClick={() => setIsMobileMenuOpen(false)}
@@ -398,7 +400,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                             </Link>
                                           ))}
                                         </div>
-                                      </div>
+                                      )
                                     )}
                                   </div>
                                 ))}
