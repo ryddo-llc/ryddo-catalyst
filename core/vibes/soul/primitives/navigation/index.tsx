@@ -133,7 +133,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const pathname = usePathname();
 
   const handlePathChange = useCallback(() => {
-    setIsMobileMenuOpen(false);
+    // Only close search, keep mobile menu open for better UX
     setIsSearchOpen(false);
   }, [setIsSearchOpen]);
 
@@ -144,9 +144,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   const handleMobileMenuToggle = useCallback(() => {
     setIsMobileMenuOpen((prev) => !prev);
+  }, []);
 
-    // Reset all accordion states when menu opens
-    if (!isMobileMenuOpen) {
+  // Reset all accordion states whenever the menu becomes open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
       setExpandedSections(new Set());
       setExpandedSubSections(new Set());
     }
@@ -228,9 +230,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 height: '70vh'
               }}
             >
-              <div 
-                className="h-full divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]"
-                style={{ overscrollBehavior: 'contain' }}
+              <div
+                className="h-full divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto overscroll-contain bg-[var(--nav-mobile-background,hsl(var(--background)))]"
               >
                 <Stream
                   fallback={
@@ -253,15 +254,17 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 >
                   {(links) =>
                     links.map((item, i) => {
-                      // Handle trailing slash differences
+                      // Active state logic - handle trailing slash differences
                       const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
                       const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
-                      const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                      const isActive = normalizedPathname === normalizedHref || 
+                                      (item.href !== '/' && pathname.startsWith(item.href.replace(/\/$/, ''))) ||
+                                      (item.href === '/' && pathname === '/');
                       const hasSubcategories = item.groups && item.groups.length > 0;
                       const isExpanded = expandedSections.has(i);
                       
                       return (
-                        <div className="border-b border-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] last:border-b-0" key={i}>
+                        <div className="border-b border-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] last:border-b-0" key={item.href}>
                           {/* Main Category Link */}
                           {item.label !== '' && (
                             <div className="p-1.5 @4xl:p-3">
@@ -269,12 +272,23 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                 <Link
                                   className={clsx(
                                     "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
-                                    {
-                                      "bg-[var(--nav-mobile-link-background-active,transparent)] text-[var(--nav-mobile-link-text-active,#F92F7B)]": isActive,
-                                      "bg-[var(--nav-mobile-link-background,transparent)] text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]": !isActive
-                                    }
+                                    isActive ? "text-pink-500" : "text-gray-800"
                                   )}
                                   href={item.href}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  onMouseEnter={(e) => {
+                                    if (!isActive) {
+                                      e.currentTarget.style.backgroundColor = 'rgba(236, 72, 153, 0.1)';
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!isActive) {
+                                      e.currentTarget.style.backgroundColor = 'transparent';
+                                    }
+                                  }}
+                                  style={{
+                                    backgroundColor: isActive ? 'transparent' : undefined
+                                  }}
                                 >
                                   {item.label}
                                 </Link>
@@ -282,9 +296,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                 {/* Expand/Collapse Button for categories with subcategories */}
                                 {hasSubcategories && (
                                   <button
+                                    aria-controls={`section-panel-${i}`}
+                                    aria-expanded={isExpanded}
                                     aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
                                     className="ml-1.5 p-1.5 rounded-lg hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
                                     onClick={() => toggleSection(i)}
+                                    type="button"
                                   >
                                     <svg
                                       className={clsx(
@@ -305,26 +322,43 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                           
                           {/* Sub-categories with accordion behavior */}
                           {hasSubcategories && (
-                            <div className={clsx(
-                              "overflow-hidden transition-all duration-200 ease-in-out",
-                              isExpanded ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-                            )}>
+                            <div 
+                              aria-hidden={!isExpanded}
+                              className={clsx(
+                                "overflow-hidden transition-all duration-200 ease-in-out",
+                                isExpanded ? "max-h-[65vh] opacity-100" : "max-h-0 opacity-0"
+                              )}
+                              id={`section-panel-${i}`}
+                            >
                               <div className="px-1.5 pb-1.5 @4xl:px-3 @4xl:pb-3">
                                 {item.groups?.map((group, groupIndex) => (
-                                  <div className="mb-2 last:mb-0" key={groupIndex}>
+                                  <div className="mb-2 last:mb-0" key={`${item.href}-${group.label ?? groupIndex}`}>
                                     {/* Group Header */}
                                     {group.label ? (
                                       <div className="flex items-center justify-between px-2 py-1.5">
-                                        <div className="text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]">
-                                          {group.label}
-                                        </div>
+                                        {group.href ? (
+                                          <Link
+                                            className="flex-1 text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-colors"
+                                            href={group.href}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                          >
+                                            {group.label}
+                                          </Link>
+                                        ) : (
+                                          <div className="text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]">
+                                            {group.label}
+                                          </div>
+                                        )}
                                         
                                         {/* Expand/Collapse Button for sub-subcategories */}
                                         {group.links.length > 0 && (
                                           <button
+                                            aria-controls={`subsection-panel-${i}-${groupIndex}`}
+                                            aria-expanded={expandedSubSections.has(`${i}-${groupIndex}`)}
                                             aria-label={expandedSubSections.has(`${i}-${groupIndex}`) ? `Collapse ${group.label}` : `Expand ${group.label}`}
                                             className="p-1 rounded hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
                                             onClick={() => toggleSubSection(i, groupIndex)}
+                                            type="button"
                                           >
                                             <svg
                                               className={clsx(
@@ -344,16 +378,21 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                     
                                     {/* Group Links with nested accordion */}
                                     {group.links.length > 0 && (
-                                      <div className={clsx(
-                                        "overflow-hidden transition-all duration-200 ease-in-out",
-                                        expandedSubSections.has(`${i}-${groupIndex}`) ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
-                                      )}>
+                                      <div 
+                                        aria-hidden={!expandedSubSections.has(`${i}-${groupIndex}`)}
+                                        className={clsx(
+                                          "overflow-hidden transition-all duration-200 ease-in-out",
+                                          expandedSubSections.has(`${i}-${groupIndex}`) ? "max-h-[50vh] opacity-100" : "max-h-0 opacity-0"
+                                        )}
+                                        id={`subsection-panel-${i}-${groupIndex}`}
+                                      >
                                         <div className="ml-2 space-y-0.5">
-                                          {group.links.map((link, j) => (
+                                          {group.links.map((link) => (
                                             <Link
                                               className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                               href={link.href}
-                                              key={j}
+                                              key={link.href}
+                                              onClick={() => setIsMobileMenuOpen(false)}
                                             >
                                               {link.label}
                                             </Link>
