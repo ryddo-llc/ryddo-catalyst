@@ -69,62 +69,75 @@ export default async function Wishlists({ params, searchParams }: Props) {
   const newWishlistModal = getNewWishlistModal(t);
 
   return (
-    <WishlistsSection
-      actions={<NewWishlistButton label={t('new')} modal={newWishlistModal} variant="tertiary" />}
-      emptyStateCallToAction={
-        <NewWishlistButton label={t('noWishlistsCallToAction')} modal={newWishlistModal} />
-      }
-      emptyStateTitle={t('noWishlists')}
-      emptyWishlistStateText={t('emptyWishlist')}
-      itemActions={{
-        component: (wishlist) => {
-          if (!wishlist) {
-            return <Skeleton.Box className="h-10 w-10 rounded-full" />;
-          }
+    <div className="h-full">
+      {/* Content Panel Header */}
+      <div className="mb-6 border-b border-[var(--account-card-border,hsl(var(--contrast-200)))] pb-4">
+        <h2 className="font-[family-name:var(--account-title-font-family,var(--font-family-heading))] text-2xl font-bold text-[var(--account-title,hsl(var(--foreground)))]">
+          {t('title')}
+        </h2>
+        <p className="mt-1 text-sm text-[var(--account-subtitle,hsl(var(--contrast-500)))]">
+          Manage your saved items and wishlist collections
+        </p>
+      </div>
 
-          return (
-            <WishlistActionsMenu
-              actionsTitle={t('actionsTitle')}
-              items={[
-                {
-                  label: t('rename'),
-                  modal: getRenameWishlistModal(wishlist, t),
-                },
-                {
-                  label: wishlist.visibility.isPublic ? t('makePrivate') : t('makePublic'),
-                  modal: getChangeWishlistVisibilityModal(wishlist, t),
-                },
-                {
-                  label: t('delete'),
-                  variant: 'danger',
-                  modal: getDeleteWishlistModal(wishlist, t),
-                },
-              ]}
-              share={
-                wishlist.publicUrl
-                  ? {
-                      wishlistName: wishlist.name,
-                      modalTitle: t('Modal.shareTitle', { name: wishlist.name }),
-                      publicUrl: wishlist.publicUrl,
-                      closeLabel: t('Modal.close'),
-                      copyLabel: t('Modal.copy'),
-                      copiedMessage: t('shareCopied'),
-                      disabledTooltip: t('shareDisabled'),
-                      label: t('share'),
-                      successMessage: t('shareSuccess'),
-                      isPublic: wishlist.visibility.isPublic,
-                      isMobileUser: isMobile,
-                    }
-                  : undefined
-              }
-            />
-          );
-        },
-      }}
-      paginationInfo={Streamable.from(() => getPaginationInfo(searchParams))}
-      title={t('title')}
-      viewWishlistLabel={t('viewWishlist')}
-      wishlists={Streamable.from(() => listWishlists(searchParams, t))}
-    />
+      {/* Wishlists Content */}
+      <WishlistsSection
+        actions={<NewWishlistButton label={t('new')} modal={newWishlistModal} variant="tertiary" />}
+        emptyStateCallToAction={
+          <NewWishlistButton label={t('noWishlistsCallToAction')} modal={newWishlistModal} />
+        }
+        emptyStateTitle={t('noWishlists')}
+        emptyWishlistStateText={t('emptyWishlist')}
+        itemActions={{
+          component: (wishlist) => {
+            if (!wishlist) {
+              return <Skeleton.Box className="h-10 w-10 rounded-full" />;
+            }
+
+            return (
+              <WishlistActionsMenu
+                actionsTitle={t('actionsTitle')}
+                items={[
+                  {
+                    label: t('rename'),
+                    modal: getRenameWishlistModal(wishlist, t),
+                  },
+                  {
+                    label: wishlist.visibility.isPublic ? t('makePrivate') : t('makePublic'),
+                    modal: getChangeWishlistVisibilityModal(wishlist, t),
+                  },
+                  {
+                    label: t('delete'),
+                    variant: 'danger',
+                    modal: getDeleteWishlistModal(wishlist, t),
+                  },
+                ]}
+                share={
+                  wishlist.publicUrl
+                    ? {
+                        wishlistName: wishlist.name,
+                        modalTitle: t('Modal.shareTitle', { name: wishlist.name }),
+                        publicUrl: wishlist.publicUrl,
+                        closeLabel: t('Modal.close'),
+                        copyLabel: t('Modal.copy'),
+                        copiedMessage: t('shareCopied'),
+                        disabledTooltip: t('shareDisabled'),
+                        label: t('share'),
+                        successMessage: t('shareSuccess'),
+                        isPublic: wishlist.visibility.isPublic,
+                        isMobileUser: isMobile,
+                      }
+                    : undefined
+                }
+              />
+            );
+          },
+        }}
+        paginationInfo={Streamable.from(() => getPaginationInfo(searchParams))}
+        title="" // Remove duplicate title since we have panel header
+        viewWishlistLabel={t('viewWishlist')}
+        wishlists={Streamable.from(() => listWishlists(searchParams, t))}
+      />
+    </div>
   );
 }

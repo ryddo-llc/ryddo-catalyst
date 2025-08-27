@@ -35,7 +35,7 @@ function SubmitButton({ children, disabled }: { children: string; disabled?: boo
 
   return (
     <button
-      className="flex min-h-[43px] flex-1 items-center justify-center self-stretch overflow-hidden rounded-[50px] bg-[#F92F7B] px-4 py-2.5 font-['Inter'] text-base font-bold leading-normal tracking-wide text-white shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] transition-all hover:bg-[#d41f63] hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:pb-2.5 sm:pl-4 sm:pr-[15.5px] sm:pt-[9px]"
+      className="flex min-h-[43px] flex-1 items-center justify-center self-stretch whitespace-nowrap overflow-hidden rounded-[50px] bg-[#F92F7B] px-3 sm:px-4 md:px-6 py-2.5 font-['Inter'] text-sm sm:text-base font-bold leading-normal tracking-wide text-white shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] transition-all hover:bg-[#d41f63] hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
       disabled={disabled || pending}
       type="submit"
     >
@@ -142,7 +142,7 @@ export function BikeAddToCartForm<F extends Field>({
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
         {compareProduct && (
           <Compare
-            className="flex min-h-[43px] items-center justify-center whitespace-nowrap rounded-[50px] border-2 border-solid border-[#757575] px-4 py-3 text-sm font-semibold text-[#757575] transition-colors hover:bg-[#757575] hover:text-white disabled:cursor-not-allowed disabled:opacity-50 sm:pl-[31px] sm:pr-[29.83px]"
+            className="flex min-h-[43px] items-center justify-center whitespace-nowrap rounded-[50px] border-2 border-solid border-[#757575] px-3 sm:px-4 md:px-6 py-2.5 text-sm sm:text-base font-semibold text-[#757575] transition-colors hover:bg-[#757575] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             label="Compare"
             product={compareProduct}
           />

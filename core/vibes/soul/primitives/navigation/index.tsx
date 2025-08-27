@@ -56,6 +56,7 @@ const navButtonClassName =
  *   --nav-mobile-button-icon: hsl(var(--foreground));
  *   --nav-mobile-link-text: hsl(var(--foreground));
  *   --nav-mobile-link-text-hover: hsl(var(--foreground));
+ *   --nav-mobile-link-text-active: hsl(var(--foreground));
  *   --nav-mobile-link-background: transparent;
  *   --nav-mobile-link-background-hover: hsl(var(--contrast-100));
  *   --nav-mobile-link-font-family: var(--font-family-body);
@@ -127,11 +128,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 ) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isSearchOpen, setIsSearchOpen } = useSearch();
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
+  const [expandedSubSections, setExpandedSubSections] = useState<Set<string>>(new Set());
 
   const pathname = usePathname();
 
   const handlePathChange = useCallback(() => {
-    setIsMobileMenuOpen(false);
+    // Only close search, keep mobile menu open for better UX
     setIsSearchOpen(false);
   }, [setIsSearchOpen]);
 
@@ -142,6 +145,44 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   const handleMobileMenuToggle = useCallback(() => {
     setIsMobileMenuOpen((prev) => !prev);
+  }, []);
+
+  // Reset all accordion states whenever the menu becomes open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      setExpandedSections(new Set());
+      setExpandedSubSections(new Set());
+    }
+  }, [isMobileMenuOpen]);
+
+  const toggleSection = useCallback((index: number) => {
+    setExpandedSections(prev => {
+      const newSet = new Set(prev);
+
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+
+      return newSet;
+    });
+  }, []);
+
+  const toggleSubSection = useCallback((sectionIndex: number, groupIndex: number) => {
+    const key = `${sectionIndex}-${groupIndex}`;
+
+    setExpandedSubSections(prev => {
+      const newSet = new Set(prev);
+
+      if (newSet.has(key)) {
+        newSet.delete(key);
+      } else {
+        newSet.add(key);
+      }
+
+      return newSet;
+    });
   }, []);
 
   useEffect(() => {
@@ -171,7 +212,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       >
         {/* Mobile Menu */}
         <Popover.Root onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
-          <Popover.Anchor className="absolute left-0 right-0 top-full" />
+          <Popover.Anchor className="absolute left-0 top-full" />
           <Popover.Trigger asChild>
             <MobileMenuButton
               aria-label={mobileMenuTriggerLabel}
@@ -181,8 +222,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             />
           </Popover.Trigger>
           <Popover.Portal>
-            <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popper-anchor-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-              <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
+            <Popover.Content 
+              align="start"
+              className="w-72 max-w-[75vw] max-h-[70vh] z-[200] overflow-y-auto overscroll-contain @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+              sideOffset={4}
+            >
+              <div className="divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] bg-[var(--nav-mobile-background,hsl(var(--background)))]">
                 <Stream
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
@@ -204,42 +249,178 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 >
                   {(links) =>
                     links.map((item, i) => {
-                      // Handle trailing slash differences
+                      // Active state logic - handle trailing slash differences
                       const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
                       const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
-                      const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                      const isActive =
+                        normalizedPathname === normalizedHref ||
+                        (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                      const hasSubcategories = item.groups && item.groups.length > 0;
+                      const hasLabel = item.label.trim() !== '';
+                      const isExpanded = hasLabel ? expandedSections.has(i) : true;
                       
                       return (
-                        <ul className="flex flex-col p-2 @4xl:gap-4 @4xl:p-5" key={i}>
-                          {item.label !== '' && (
-                            <li>
-                              <Link
-                                className={clsx(
-                                  "block rounded-lg px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4",
-                                  {
-                                    "bg-[var(--nav-mobile-link-background-active,transparent)] text-[var(--nav-mobile-link-text-active,#F92F7B)]": isActive,
-                                    "bg-[var(--nav-mobile-link-background,transparent)] text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]": !isActive
-                                  }
+                        <div className="border-b border-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] last:border-b-0" key={item.href}>
+                          {/* Main Category Link */}
+                          {hasLabel && (
+                            <div className="p-1.5 @4xl:p-3">
+                              <div className="flex items-center justify-between">
+                                <Link
+                                  aria-current={isActive ? 'page' : undefined}
+                                  className={clsx(
+                                    "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
+                                    "text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]",
+                                    "bg-[var(--nav-mobile-link-background,transparent)] hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))]",
+                                    isActive && "text-[var(--nav-mobile-link-text-active,hsl(var(--foreground)))]"
+                                  )}
+                                  href={item.href}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                  {item.label}
+                                </Link>
+                                
+                                {/* Expand/Collapse Button for categories with subcategories */}
+                                {hasSubcategories && (
+                                  <button
+                                    aria-controls={`section-panel-${i}`}
+                                    aria-expanded={isExpanded}
+                                    aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
+                                    className="ml-1.5 p-1.5 rounded-lg hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
+                                    onClick={() => toggleSection(i)}
+                                    type="button"
+                                  >
+                                    <svg
+                                      className={clsx(
+                                        "w-4 h-4 transition-transform duration-200",
+                                        isExpanded ? "rotate-180" : "rotate-0"
+                                      )}
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+                                    </svg>
+                                  </button>
                                 )}
-                                href={item.href}
-                              >
-                                {item.label}
-                              </Link>
-                            </li>
+                              </div>
+                            </div>
                           )}
-                        {item.groups
-                          ?.flatMap((group) => group.links)
-                          .map((link, j) => (
-                            <li key={j}>
-                              <Link
-                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
-                                href={link.href}
-                              >
-                                {link.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
+                          
+                          {/* Sub-categories with accordion behavior */}
+                          {hasSubcategories && (
+                            <div 
+                              aria-hidden={!isExpanded}
+                              className={clsx(
+                                "overflow-hidden transition-all duration-200 ease-in-out",
+                                isExpanded ? "max-h-[65vh] opacity-100" : "max-h-0 opacity-0"
+                              )}
+                              id={`section-panel-${i}`}
+                            >
+                              <div className="px-1.5 pb-1.5 @4xl:px-3 @4xl:pb-3">
+                                {item.groups?.map((group, groupIndex) => (
+                                  <div className="mb-2 last:mb-0" key={`${item.href}-${group.label ?? groupIndex}`}>
+                                    {/* Group Header */}
+                                    {group.label ? (
+                                      <div className="flex items-center justify-between px-2 py-1.5">
+                                        {group.href ? (
+                                          <Link
+                                            className="flex-1 text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-colors"
+                                            href={group.href}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                          >
+                                            {group.label}
+                                          </Link>
+                                        ) : (
+                                          <div className="text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]">
+                                            {group.label}
+                                          </div>
+                                        )}
+                                        
+                                        {/* Expand/Collapse Button for sub-subcategories */}
+                                        {group.links.length > 0 && (
+                                          <button
+                                            aria-controls={`subsection-panel-${i}-${groupIndex}`}
+                                            aria-expanded={expandedSubSections.has(`${i}-${groupIndex}`)}
+                                            aria-label={expandedSubSections.has(`${i}-${groupIndex}`) ? `Collapse ${group.label}` : `Expand ${group.label}`}
+                                            className="p-1 rounded hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
+                                            onClick={() => toggleSubSection(i, groupIndex)}
+                                            type="button"
+                                          >
+                                            <svg
+                                              className={clsx(
+                                                "w-4 h-4 transition-transform duration-200",
+                                                expandedSubSections.has(`${i}-${groupIndex}`) ? "rotate-180" : "rotate-0"
+                                              )}
+                                              fill="none"
+                                              stroke="currentColor"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+                                            </svg>
+                                          </button>
+                                        )}
+                                      </div>
+                                    ) : null}
+                                    
+                                    {/* Group Links with nested accordion */}
+                                    {group.links.length > 0 && (
+                                      group.label ? (
+                                        <div 
+                                          aria-hidden={!expandedSubSections.has(`${i}-${groupIndex}`)}
+                                          className={clsx(
+                                            "overflow-hidden transition-all duration-200 ease-in-out",
+                                            expandedSubSections.has(`${i}-${groupIndex}`) ? "max-h-[50vh] opacity-100" : "max-h-0 opacity-0"
+                                          )}
+                                          id={`subsection-panel-${i}-${groupIndex}`}
+                                        >
+                                          <div className="ml-2 space-y-0.5">
+                                            {group.links.map((link) => {
+                                              const normalizedLinkHref = link.href.endsWith('/') ? link.href : `${link.href}/`;
+                                              const isLinkActive = normalizedPathname === normalizedLinkHref || 
+                                                (link.href !== '/' && normalizedPathname.startsWith(normalizedLinkHref));
+                                              
+                                              return (
+                                                <Link
+                                                  aria-current={isLinkActive ? 'page' : undefined}
+                                                  className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                  href={link.href}
+                                                  key={link.href}
+                                                  onClick={() => setIsMobileMenuOpen(false)}
+                                                >
+                                                  {link.label}
+                                                </Link>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="ml-2 space-y-0.5">
+                                          {group.links.map((link) => {
+                                            const normalizedLinkHref = link.href.endsWith('/') ? link.href : `${link.href}/`;
+                                            const isLinkActive = normalizedPathname === normalizedLinkHref || 
+                                              (link.href !== '/' && normalizedPathname.startsWith(normalizedLinkHref));
+                                            
+                                            return (
+                                              <Link
+                                                aria-current={isLinkActive ? 'page' : undefined}
+                                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                href={link.href}
+                                                key={link.href}
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                              >
+                                                {link.label}
+                                              </Link>
+                                            );
+                                          })}
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       );
                     })
                   }
@@ -400,9 +581,20 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             </Link>
           )}
 
-          <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
-            <User size={20} strokeWidth={2} />
-          </Link>
+          <Stream
+            fallback={
+              <Link aria-label={accountLabel} className={navButtonClassName} href="/login">
+                <User size={20} strokeWidth={2} />
+              </Link>
+            }
+            value={accountHref}
+          >
+            {(href) => (
+              <Link aria-label={accountLabel} className={navButtonClassName} href={href}>
+                <User size={20} strokeWidth={2} />
+              </Link>
+            )}
+          </Stream>
           <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
             <ShoppingBag size={20} strokeWidth={2} />
             <Stream

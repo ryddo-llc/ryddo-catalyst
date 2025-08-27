@@ -184,8 +184,9 @@ export default async function Product({ params, searchParams }: Props) {
 
   const streamableProductSku = Streamable.from(async () => {
     const product = await streamableProduct;
-
-    return product.sku;
+    
+    // Return the product SKU directly now that BigCommerce has proper SKUs configured
+    return product.sku || '';
   });
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {

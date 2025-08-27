@@ -122,12 +122,13 @@ export function UpdateAccountForm({
         label={companyLabel}
       />
       <Button
+        className="bg-[#F92F7B] hover:bg-[#d41f63] border-[#F92F7B] hover:border-[#d41f63] text-white font-semibold transition-all duration-200"
         loading={pending}
         name="intent"
         size="small"
         type="submit"
         value="update"
-        variant="secondary"
+        variant="primary"
       >
         {submitLabel}
       </Button>

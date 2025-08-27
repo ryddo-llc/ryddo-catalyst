@@ -94,20 +94,33 @@ export default async function Addresses({ params, searchParams }: Props) {
     .filter(exists);
 
   return (
-    <AddressListSection
-      addressAction={addressAction}
-      addresses={addresses}
-      cancelLabel={t('cancel')}
-      createLabel={t('create')}
-      deleteLabel={t('delete')}
-      editLabel={t('edit')}
-      emptyStateTitle={t('EmptyState.title')}
-      fields={[...fields, { name: 'id', type: 'hidden', label: 'ID' }]}
-      minimumAddressCount={0}
-      setDefaultLabel={t('setDefault')}
-      showAddFormLabel={t('cta')}
-      title={t('title')}
-      updateLabel={t('update')}
-    />
+    <div className="h-full">
+      {/* Content Panel Header */}
+      <div className="mb-6 border-b border-[var(--account-card-border,hsl(var(--contrast-200)))] pb-4">
+        <h2 className="font-[family-name:var(--account-title-font-family,var(--font-family-heading))] text-2xl font-bold text-[var(--account-title,hsl(var(--foreground)))]">
+          {t('title')}
+        </h2>
+        <p className="mt-1 text-sm text-[var(--account-subtitle,hsl(var(--contrast-500)))]">
+          Manage your shipping addresses
+        </p>
+      </div>
+
+      {/* Addresses Content */}
+      <AddressListSection
+        addressAction={addressAction}
+        addresses={addresses}
+        cancelLabel={t('cancel')}
+        createLabel={t('create')}
+        deleteLabel={t('delete')}
+        editLabel={t('edit')}
+        emptyStateTitle={t('EmptyState.title')}
+        fields={[...fields, { name: 'id', type: 'hidden', label: 'ID' }]}
+        minimumAddressCount={0}
+        setDefaultLabel={t('setDefault')}
+        showAddFormLabel={t('cta')}
+        title="" // Remove duplicate title since we have panel header
+        updateLabel={t('update')}
+      />
+    </div>
   );
 }

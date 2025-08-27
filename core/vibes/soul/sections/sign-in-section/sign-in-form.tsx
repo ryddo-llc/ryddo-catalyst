@@ -41,7 +41,7 @@ export function SignInForm({
   });
 
   return (
-    <form {...getFormProps(form)} action={formAction} className="flex grow flex-col gap-5">
+    <form {...getFormProps(form)} action={formAction} className="space-y-5">
       <Input
         {...getInputProps(fields.email, { type: 'text' })}
         errors={fields.email.errors}
@@ -50,12 +50,13 @@ export function SignInForm({
       />
       <Input
         {...getInputProps(fields.password, { type: 'password' })}
-        className="mb-6"
         errors={fields.password.errors}
         key={fields.password.id}
         label={passwordLabel}
       />
-      <SubmitButton>{submitLabel}</SubmitButton>
+      <div className="pt-2">
+        <SubmitButton>{submitLabel}</SubmitButton>
+      </div>
       {form.errors?.map((error, index) => (
         <FormStatus key={index} type="error">
           {error}
@@ -69,7 +70,12 @@ function SubmitButton({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-auto w-full" loading={pending} type="submit" variant="secondary">
+    <Button 
+      className="mt-auto w-full bg-[#F92F7B] hover:bg-[#d41f63] border-[#F92F7B] hover:border-[#d41f63] text-white font-semibold transition-all duration-200" 
+      loading={pending} 
+      type="submit" 
+      variant="primary"
+    >
       {children}
     </Button>
   );
