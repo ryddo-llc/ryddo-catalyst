@@ -224,12 +224,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           <Popover.Portal>
             <Popover.Content 
               align="start"
-              className="w-72 max-w-[75vw] max-h-[70vh] z-[110] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+              className="w-72 max-w-[75vw] max-h-[70vh] z-[200] overflow-y-auto overscroll-contain @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
               sideOffset={4}
             >
-              <div
-                className="h-full divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto overscroll-contain bg-[var(--nav-mobile-background,hsl(var(--background)))]"
-              >
+              <div className="divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] bg-[var(--nav-mobile-background,hsl(var(--background)))]">
                 <Stream
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
@@ -258,12 +256,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                         normalizedPathname === normalizedHref ||
                         (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
                       const hasSubcategories = item.groups && item.groups.length > 0;
-                      const isExpanded = expandedSections.has(i);
+                      const hasLabel = item.label.trim() !== '';
+                      const isExpanded = hasLabel ? expandedSections.has(i) : true;
                       
                       return (
                         <div className="border-b border-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] last:border-b-0" key={item.href}>
                           {/* Main Category Link */}
-                          {item.label !== '' && (
+                          {hasLabel && (
                             <div className="p-1.5 @4xl:p-3">
                               <div className="flex items-center justify-between">
                                 <Link
@@ -375,8 +374,35 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                           id={`subsection-panel-${i}-${groupIndex}`}
                                         >
                                           <div className="ml-2 space-y-0.5">
-                                            {group.links.map((link) => (
+                                            {group.links.map((link) => {
+                                              const normalizedLinkHref = link.href.endsWith('/') ? link.href : `${link.href}/`;
+                                              const isLinkActive = normalizedPathname === normalizedLinkHref || 
+                                                (link.href !== '/' && normalizedPathname.startsWith(normalizedLinkHref));
+                                              
+                                              return (
+                                                <Link
+                                                  aria-current={isLinkActive ? 'page' : undefined}
+                                                  className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                  href={link.href}
+                                                  key={link.href}
+                                                  onClick={() => setIsMobileMenuOpen(false)}
+                                                >
+                                                  {link.label}
+                                                </Link>
+                                              );
+                                            })}
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="ml-2 space-y-0.5">
+                                          {group.links.map((link) => {
+                                            const normalizedLinkHref = link.href.endsWith('/') ? link.href : `${link.href}/`;
+                                            const isLinkActive = normalizedPathname === normalizedLinkHref || 
+                                              (link.href !== '/' && normalizedPathname.startsWith(normalizedLinkHref));
+                                            
+                                            return (
                                               <Link
+                                                aria-current={isLinkActive ? 'page' : undefined}
                                                 className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                                 href={link.href}
                                                 key={link.href}
@@ -384,21 +410,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                               >
                                                 {link.label}
                                               </Link>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      ) : (
-                                        <div className="ml-2 space-y-0.5">
-                                          {group.links.map((link) => (
-                                            <Link
-                                              className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
-                                              href={link.href}
-                                              key={link.href}
-                                              onClick={() => setIsMobileMenuOpen(false)}
-                                            >
-                                              {link.label}
-                                            </Link>
-                                          ))}
+                                            );
+                                          })}
                                         </div>
                                       )
                                     )}
