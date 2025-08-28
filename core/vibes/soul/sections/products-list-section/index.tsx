@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+import { NumberedPagination, NumberedPaginationInfo } from '@/vibes/soul/primitives/numbered-pagination';
 import { Product } from '@/vibes/soul/primitives/product-card';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
 import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
@@ -23,6 +24,8 @@ interface Props {
   sortOptions: Streamable<SortOption[]>;
   compareProducts?: Streamable<Product[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
+  numberedPaginationInfo?: Streamable<NumberedPaginationInfo>;
+  useNumberedPagination?: boolean;
   compareHref?: string;
   compareLabel?: Streamable<string>;
   showCompare?: Streamable<boolean>;
@@ -55,6 +58,8 @@ export function ProductsListSection({
   compareLabel,
   showCompare,
   paginationInfo,
+  numberedPaginationInfo,
+  useNumberedPagination = false,
   filterLabel = 'Filters',
   filtersPanelTitle: streamableFiltersPanelTitle = 'Filters',
   resetFiltersLabel,
@@ -71,7 +76,7 @@ export function ProductsListSection({
   maxCompareLimitMessage,
 }: Props) {
   return (
-    <div className="group/products-list-section @container" style={{ backgroundColor: '#F5F5F5' }}>
+    <div className="group/products-list-section @container bg-gray-100">
       <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
         <div>
           <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
@@ -95,10 +100,44 @@ export function ProductsListSection({
                   const currentResults = productList.length;
                   const startResult = currentResults > 0 ? 1 : 0;
                   const endResult = currentResults;
+                  
+                  // If we have numbered pagination info, use it to calculate the correct range
+                  if (useNumberedPagination && numberedPaginationInfo) {
+                    // Handled in a separate stream to avoid complexity
+                    return (
+                      <Stream value={numberedPaginationInfo}>
+                        {(numberedPaginationData) => {
+                          if (totalResults === 0) {
+                            return (
+                              <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                                Showing 0 of 0 results
+                              </div>
+                            );
+                          }
+                          
+                          const { currentPage, itemsPerPage } = numberedPaginationData;
+                          const calculatedStartResult = (currentPage - 1) * itemsPerPage + 1;
+                          const calculatedEndResult = Math.min(currentPage * itemsPerPage, totalResults);
+                          
+                          return (
+                            <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                              {calculatedStartResult === calculatedEndResult 
+                                ? `Showing ${calculatedStartResult} of ${totalResults} results`
+                                : `Showing ${calculatedStartResult}-${calculatedEndResult} of ${totalResults} results`
+                              }
+                            </div>
+                          );
+                        }}
+                      </Stream>
+                    );
+                  }
 
                   return (
                     <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
-                      Showing {startResult}-{endResult} of {totalResults} results
+                      {startResult === endResult 
+                        ? `Showing ${startResult} of ${totalResults} results`
+                        : `Showing ${startResult}-${endResult} of ${totalResults} results`
+                      }
                     </div>
                   );
                 }}
@@ -180,7 +219,17 @@ export function ProductsListSection({
               showCompare={showCompare}
             />
 
-            {paginationInfo && <CursorPagination info={paginationInfo} />}
+            {(() => {
+              if (useNumberedPagination && numberedPaginationInfo) {
+                return <NumberedPagination info={numberedPaginationInfo} />;
+              }
+              
+              if (paginationInfo) {
+                return <CursorPagination info={paginationInfo} />;
+              }
+
+              return null;
+            })()}
           </div>
         </div>
       </div>

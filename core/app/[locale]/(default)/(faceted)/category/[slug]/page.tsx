@@ -12,6 +12,7 @@ import { ProductsListSection } from '@/vibes/soul/sections/products-list-section
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
+import { numberedPaginationTransformer } from '~/data-transformers/numbered-pagination-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
@@ -117,6 +118,11 @@ export default async function Category(props: Props) {
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
+  // Items-per-page is consistent across fetch, slice, and pagination
+  const ITEMS_PER_PAGE = 9;
+  // Cap the maximum limit to prevent API stress on very large page numbers
+  const MAX_LIMIT = 100;
+
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
@@ -127,10 +133,43 @@ export default async function Category(props: Props) {
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
+    // Convert page parameter to cursor-based pagination for data fetching
+    let paginationParams = {};
+    const { page, before, after } = searchParams;
+    
+    if (typeof page === 'string') {
+      const pageNum = parseInt(page, 10);
+      
+      if (!Number.isNaN(pageNum) && pageNum > 1) {
+        // For page-based navigation, we need to calculate the appropriate cursor
+        // Since we can't jump directly to arbitrary pages with cursors,
+        // we use a different approach: fetch more products and slice them
+        const offset = (pageNum - 1) * ITEMS_PER_PAGE;
+        
+        // Use a larger limit to get enough products for the desired page
+        const limit = Math.min(offset + ITEMS_PER_PAGE, MAX_LIMIT);
+        
+        paginationParams = {
+          // Start from the beginning; do not include before/after
+          limit,
+        };
+      } else {
+        // For page 1, use normal cursor-based pagination
+        paginationParams = { before, after };
+      }
+    } else {
+      // Use existing cursor parameters if no page parameter
+      const next: Record<string, string> = {};
+      
+      if (typeof before === 'string') next.before = before;
+      if (typeof after === 'string') next.after = after;
+      paginationParams = next;
+    }
+
     const search = await fetchFacetedSearch(
       {
-        ...searchParams,
         ...parsedSearchParams,
+        ...paginationParams,
         category: categoryId,
       },
       currencyCode,
@@ -142,9 +181,24 @@ export default async function Category(props: Props) {
 
   const streamableProducts = Streamable.from(async () => {
     const format = await getFormatter();
+    const searchParams = await props.searchParams;
 
     const search = await streamableFacetedSearch;
-    const products = search.products.items;
+    let products = search.products.items;
+
+    // If we're using page-based navigation, slice the products to show only the current page
+    const { page } = searchParams;
+
+    if (typeof page === 'string') {
+      const pageNum = parseInt(page, 10);
+
+      if (!Number.isNaN(pageNum) && pageNum > 1) {
+        const startIndex = (pageNum - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+
+        products = products.slice(startIndex, endIndex);
+      }
+    }
 
     return products.map((product) => ({
       id: product.entityId.toString(),
@@ -169,6 +223,40 @@ export default async function Category(props: Props) {
     const search = await streamableFacetedSearch;
 
     return pageInfoTransformer(search.products.pageInfo);
+  });
+
+  const streamableNumberedPagination = Streamable.from(async () => {
+    const search = await streamableFacetedSearch;
+    const searchParams = await props.searchParams;
+    const totalItems = search.products.collectionInfo?.totalItems ?? 0;
+    
+    // Get current page from URL parameter or calculate from cursor
+    let currentPage = 1;
+    const { before, after, page } = searchParams;
+    
+    // If we have a page parameter, use it
+    if (typeof page === 'string') {
+      const pageNum = parseInt(page, 10);
+      
+      if (!Number.isNaN(pageNum) && pageNum > 0) {
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        
+        // Clamp to [1, totalPages] (when totalPages is 0, clamp to 1 and let UI handle 0 results)
+        currentPage = Math.min(Math.max(1, pageNum), Math.max(1, totalPages));
+      }
+    } else if (before || after) {
+      // If we have cursors but no page parameter, we can't accurately determine the page
+      // This is a limitation of cursor-based pagination - we don't know which page we're on
+      // For now, we'll default to page 1 and let the UI handle it gracefully
+      currentPage = 1;
+    }
+
+    return numberedPaginationTransformer(search.products.pageInfo, {
+      totalItems,
+      itemsPerPage: ITEMS_PER_PAGE,
+      currentPage,
+      pageParamName: 'page',
+    });
   });
 
   const streamableFilters = Streamable.from(async () => {
@@ -263,6 +351,7 @@ export default async function Category(props: Props) {
         filtersPanelTitle={t('FacetedSearch.filters')}
         maxCompareLimitMessage={t('Compare.maxCompareLimit')}
         maxItems={MAX_COMPARE_LIMIT}
+        numberedPaginationInfo={streamableNumberedPagination}
         paginationInfo={streamablePagination}
         products={streamableProducts}
         rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
@@ -284,6 +373,7 @@ export default async function Category(props: Props) {
         ]}
         sortParamName="sort"
         totalCount={streamableTotalCount}
+        useNumberedPagination={true}
       />
       <Stream value={streamableFacetedSearch}>
         {(search) => <CategoryViewed category={category} products={search.products.items} />}
