@@ -107,6 +107,14 @@ export function ProductsListSection({
                     return (
                       <Stream value={numberedPaginationInfo}>
                         {(numberedPaginationData) => {
+                          if (totalResults === 0) {
+                            return (
+                              <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                                Showing 0 of 0 results
+                              </div>
+                            );
+                          }
+                          
                           const { currentPage, itemsPerPage } = numberedPaginationData;
                           const calculatedStartResult = (currentPage - 1) * itemsPerPage + 1;
                           const calculatedEndResult = Math.min(currentPage * itemsPerPage, totalResults);

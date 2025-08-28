@@ -25,7 +25,8 @@ export function numberedPaginationTransformer(
     pageParamName = 'page',
   } = options;
 
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const safeItemsPerPage = Math.max(1, itemsPerPage || 0);
+  const totalPages = totalItems === 0 ? 0 : Math.ceil(totalItems / safeItemsPerPage);
 
   return {
     startCursorParamName,

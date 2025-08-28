@@ -118,6 +118,11 @@ export default async function Category(props: Props) {
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
+  // Items-per-page is consistent across fetch, slice, and pagination
+  const ITEMS_PER_PAGE = 9;
+  // Cap the maximum limit to prevent API stress on very large page numbers
+  const MAX_LIMIT = 100;
+
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
@@ -139,17 +144,14 @@ export default async function Category(props: Props) {
         // For page-based navigation, we need to calculate the appropriate cursor
         // Since we can't jump directly to arbitrary pages with cursors,
         // we use a different approach: fetch more products and slice them
-        const itemsPerPage = 9;
-        const offset = (pageNum - 1) * itemsPerPage;
+        const offset = (pageNum - 1) * ITEMS_PER_PAGE;
         
         // Use a larger limit to get enough products for the desired page
-        const limit = offset + itemsPerPage;
+        const limit = Math.min(offset + ITEMS_PER_PAGE, MAX_LIMIT);
         
-        paginationParams = { 
+        paginationParams = {
+          // Start from the beginning; do not include before/after
           limit: limit.toString(),
-          // Clear cursors to start from the beginning
-          before: null,
-          after: null
         };
       } else {
         // For page 1, use normal cursor-based pagination
@@ -188,9 +190,8 @@ export default async function Category(props: Props) {
       const pageNum = parseInt(page, 10);
 
       if (!Number.isNaN(pageNum) && pageNum > 1) {
-        const itemsPerPage = 9;
-        const startIndex = (pageNum - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
+        const startIndex = (pageNum - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
 
         products = products.slice(startIndex, endIndex);
       }
@@ -225,7 +226,6 @@ export default async function Category(props: Props) {
     const search = await streamableFacetedSearch;
     const searchParams = await props.searchParams;
     const totalItems = search.products.collectionInfo?.totalItems ?? 0;
-    const itemsPerPage = 9; // Products per page is 9
     
     // Get current page from URL parameter or calculate from cursor
     let currentPage = 1;
@@ -236,7 +236,10 @@ export default async function Category(props: Props) {
       const pageNum = parseInt(page, 10);
       
       if (!Number.isNaN(pageNum) && pageNum > 0) {
-        currentPage = pageNum;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        
+        // Clamp to [1, totalPages] (when totalPages is 0, clamp to 1 and let UI handle 0 results)
+        currentPage = Math.min(Math.max(1, pageNum), Math.max(1, totalPages));
       }
     } else if (before || after) {
       // If we have cursors but no page parameter, we can't accurately determine the page
@@ -247,7 +250,7 @@ export default async function Category(props: Props) {
 
     return numberedPaginationTransformer(search.products.pageInfo, {
       totalItems,
-      itemsPerPage,
+      itemsPerPage: ITEMS_PER_PAGE,
       currentPage,
       pageParamName: 'page',
     });
