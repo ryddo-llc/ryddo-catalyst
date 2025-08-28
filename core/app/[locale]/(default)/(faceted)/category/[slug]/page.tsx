@@ -151,7 +151,7 @@ export default async function Category(props: Props) {
         
         paginationParams = {
           // Start from the beginning; do not include before/after
-          limit: limit.toString(),
+          limit,
         };
       } else {
         // For page 1, use normal cursor-based pagination
@@ -159,12 +159,15 @@ export default async function Category(props: Props) {
       }
     } else {
       // Use existing cursor parameters if no page parameter
-      paginationParams = { before, after };
+      const next: Record<string, string> = {};
+      
+      if (typeof before === 'string') next.before = before;
+      if (typeof after === 'string') next.after = after;
+      paginationParams = next;
     }
 
     const search = await fetchFacetedSearch(
       {
-        ...searchParams,
         ...parsedSearchParams,
         ...paginationParams,
         category: categoryId,
