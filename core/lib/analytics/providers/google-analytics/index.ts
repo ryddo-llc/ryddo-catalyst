@@ -14,6 +14,7 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
 
   readonly cart = this.getCartEvents();
   readonly navigation = this.getNavigationEvents();
+  readonly performance = this.getPerformanceEvents();
 
   private readonly dataLayerScriptId = 'data-layer-script';
   private readonly gtagScriptId = 'gtag-script';
@@ -215,5 +216,37 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
         });
       },
     } satisfies Analytics.Navigation.ProviderEvents;
+  }
+
+  private getPerformanceEvents() {
+    return {
+      apiCallCompleted: (payload, metadata) => {
+        // Send performance data to Google Analytics as custom events
+        gtag('event', 'api_call', {
+          event_id: metadata.eventUuid,
+          channel_id: metadata.channelId,
+          operation: payload.operation,
+          operation_type: payload.operationType,
+          duration: payload.duration,
+          status: payload.status,
+          error: payload.error,
+          custom_parameters: {
+            api_performance: true,
+            is_slow: payload.duration > 2000,
+            is_error: payload.status >= 400 || !!payload.error,
+          },
+        });
+
+        // Also send timing event for Core Web Vitals compatibility
+        if (payload.duration > 0) {
+          gtag('event', 'timing_complete', {
+            name: payload.operation,
+            value: payload.duration,
+            event_category: 'API Performance',
+            event_label: `${payload.operationType}: ${payload.operation}`,
+          });
+        }
+      },
+    } satisfies Analytics.Performance.ProviderEvents;
   }
 }

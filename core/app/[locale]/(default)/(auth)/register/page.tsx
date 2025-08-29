@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 // TODO: Add recaptcha token
 // import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
-import { DynamicFormSection } from '@/vibes/soul/sections/dynamic-form-section';
+import { RegisterSection } from '@/vibes/soul/sections/register-section';
 import {
   formFieldTransformer,
   injectCountryCodeOptions,
@@ -97,7 +97,7 @@ export default async function Register({ params }: Props) {
     .filter(exists);
 
   return (
-    <DynamicFormSection
+    <RegisterSection
       action={registerCustomer}
       fields={fields}
       submitLabel={t('cta')}

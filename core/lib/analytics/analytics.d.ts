@@ -86,4 +86,22 @@ declare namespace Analytics {
       productRemoved: (payload: ProductRemovedPayload) => void;
     }
   }
+
+  export namespace Performance {
+    interface APICallPayload {
+      operation: string;
+      operationType: 'query' | 'mutation';
+      duration: number;
+      status: number;
+      error?: string;
+    }
+
+    interface ProviderEvents {
+      apiCallCompleted: (payload: APICallPayload, metadata: Metadata) => void;
+    }
+
+    export interface Events {
+      apiCallCompleted: (payload: APICallPayload) => void;
+    }
+  }
 }

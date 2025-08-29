@@ -36,7 +36,7 @@ export function SelectField({
   const id = React.useId();
 
   return (
-    <div className={clsx('w-full', className)}>
+    <div className={clsx('w-full relative isolate', className)}>
       <Label
         className={clsx(hideLabel && 'sr-only', 'mb-2')}
         colorScheme={colorScheme}

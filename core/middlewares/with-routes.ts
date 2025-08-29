@@ -206,6 +206,7 @@ const updateStatusCache = async (
     expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
   };
 
+  // Use waitUntil to persist the cache in the background
   event.waitUntil(kv.set(kvKey(STORE_STATUS_KEY, channelId), statusCache));
 
   return statusCache;

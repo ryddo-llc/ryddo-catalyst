@@ -7,6 +7,7 @@ export class Analytics implements IAnalytics {
 
   readonly cart = this.bindCartEvents();
   readonly navigation = this.bindNavigationEvents();
+  readonly performance = this.bindPerformanceEvents();
 
   constructor(private readonly config: AnalyticsConfig) {
     if (!Analytics.#instance) {
@@ -70,5 +71,20 @@ export class Analytics implements IAnalytics {
         });
       },
     } satisfies Analytics.Navigation.Events;
+  }
+
+  private bindPerformanceEvents() {
+    return {
+      apiCallCompleted: (payload) => {
+        this.config.providers.forEach((provider) => {
+          if (provider.performance) {
+            provider.performance.apiCallCompleted(payload, {
+              channelId: this.config.channelId,
+              eventUuid: uuidV4(),
+            });
+          }
+        });
+      },
+    } satisfies Analytics.Performance.Events;
   }
 }
