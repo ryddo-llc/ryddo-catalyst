@@ -3,7 +3,7 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
-import { Search, ShoppingBag, User } from 'lucide-react';
+import { Search, ShoppingBag, User, X } from 'lucide-react';
 import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -19,7 +19,7 @@ import { SearchForm } from './search';
 import type { NavigationProps, SearchResult } from './types';
 
 const navButtonClassName =
-  'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
+  'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
 
 /**
  * This component supports various CSS variables for theming. Here's a comprehensive list, along
@@ -142,6 +142,22 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     setIsSearchOpen(false);
     setIsMobileMenuOpen(false);
   }, [setIsSearchOpen]);
+
+  // Add keyboard shortcut for search (Cmd/Ctrl + K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      } else if (e.key === 'Escape' && isSearchOpen) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSearchOpen, setIsSearchOpen]);
 
   const handleMobileMenuToggle = useCallback(() => {
     setIsMobileMenuOpen((prev) => !prev);
