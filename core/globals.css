@@ -61,8 +61,6 @@
   --nav-search-result-link-background-hover: hsl(var(--contrast-100));
   --nav-search-result-link-font-family: var(--font-family-body);
 
-  /* Search Button Ryddo Brand Colors */
-  --nav-search-button-icon: hsl(var(--primary));
-  --nav-search-button-icon-hover: hsl(var(--primary));
-  --nav-search-button-background-hover: hsl(var(--primary) / 10%);
+  /* Override button primary text to white for better contrast on Ryddo pink */
+  --button-primary-text: hsl(var(--background));
 }
