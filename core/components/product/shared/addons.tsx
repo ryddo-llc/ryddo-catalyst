@@ -1,8 +1,13 @@
+'use client';
+
+import { useState } from 'react';
+
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { type Product } from '@/vibes/soul/primitives/product-card';
 import { Image } from '~/components/image';
-import { Link } from '~/components/link';
 import { getFluidBackgroundTextSize } from '~/lib/dynamic-text-sizing';
+
+import { ProductModal } from './product-modal';
 
 interface AddonProps {
   addons: Streamable<Product[]>;
@@ -12,6 +17,20 @@ interface AddonProps {
 export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
   // Background text based on product type
   const backgroundText = name;
+  
+  // Modal state
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
 
   return (
     <section className="relative w-full bg-white bg-gradient-to-br px-4 py-12 @sm:py-16 @lg:py-20 @container">
@@ -54,50 +73,63 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
                 const displayAccessories = accessories;
 
                 return displayAccessories.map((accessory) => (
-                  <Link href={accessory.href} key={accessory.id}>
-                    <div className="group relative z-30 cursor-pointer overflow-hidden rounded-2xl @container">
-                      {/* Optimized ripple effect with responsive sizing */}
-                      <div className="absolute inset-0 z-10 flex items-center justify-center">
-                        {/* Center pulse */}
-                        <div className="absolute h-12 w-12 rounded-full bg-[#F92F7B] opacity-0 transition-all duration-200 ease-out group-hover:scale-125 group-hover:opacity-100 @sm:h-16 @sm:w-16" />
+                  <button
+                    aria-label={`View ${accessory.title} details`}
+                    className="group relative z-30 cursor-pointer overflow-hidden rounded-2xl bg-transparent border-none p-0 @container"
+                    key={accessory.id}
+                    type="button"
+                    onClick={() => handleProductClick(accessory)}
+                  >
+                    {/* Optimized ripple effect with responsive sizing */}
+                    <div className="absolute inset-0 z-10 flex items-center justify-center">
+                      {/* Center pulse */}
+                      <div className="absolute h-12 w-12 rounded-full bg-[#F92F7B] opacity-0 transition-all duration-200 ease-out group-hover:scale-125 group-hover:opacity-100 @sm:h-16 @sm:w-16" />
 
-                        {/* Inner pulse circle */}
-                        <div className="absolute h-16 w-16 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-100 duration-300 ease-out group-hover:scale-110 group-hover:opacity-80 @sm:h-20 @sm:w-20" />
+                      {/* Inner pulse circle */}
+                      <div className="absolute h-16 w-16 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-100 duration-300 ease-out group-hover:scale-110 group-hover:opacity-80 @sm:h-20 @sm:w-20" />
 
-                        {/* First wave of ripples */}
-                        <div className="absolute h-24 w-24 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-150 duration-500 ease-out group-hover:scale-150 group-hover:opacity-0 @sm:h-32 @sm:w-32" />
-                        <div className="group-hover:scale-200 absolute h-20 w-20 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-200 duration-700 ease-out group-hover:opacity-0 @sm:h-24 @sm:w-24" />
-                        <div className="group-hover:scale-200 absolute h-24 w-24 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-300 duration-700 ease-out group-hover:opacity-0 @sm:h-28 @sm:w-28" />
+                      {/* First wave of ripples */}
+                      <div className="absolute h-24 w-24 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-150 duration-500 ease-out group-hover:scale-150 group-hover:opacity-0 @sm:h-32 @sm:w-32" />
+                      <div className="group-hover:scale-200 absolute h-20 w-20 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-200 duration-700 ease-out group-hover:opacity-0 @sm:h-24 @sm:w-24" />
+                      <div className="group-hover:scale-200 absolute h-24 w-24 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-300 duration-700 ease-out group-hover:opacity-0 @sm:h-28 @sm:w-28" />
 
-                        {/* Second wave of ripples */}
-                        <div className="group-hover:scale-200 absolute h-28 w-28 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-300 duration-1000 ease-out group-hover:opacity-0 @sm:h-32 @sm:w-32" />
-                        <div className="group-hover:scale-200 absolute h-32 w-32 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-500 duration-1000 ease-out group-hover:opacity-0 @sm:h-36 @sm:w-36" />
-                        <div className="group-hover:scale-200 absolute h-36 w-36 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-700 duration-1000 ease-out group-hover:opacity-0 @sm:h-40 @sm:w-40" />
-                      </div>
-                      
-                      {/* Product Image */}
-                      <Image
-                        alt={accessory.title}
-                        className="relative z-20 aspect-square rounded-2xl object-contain p-4 transition-transform duration-300 group-hover:scale-105 @sm:p-6 @md:p-8"
-                        height={500}
-                        src={accessory.image?.src || '/images/placeholder.png'}
-                        width={500}
-                      />
-                      
-                      {/* Product Name Overlay (visible on hover) */}
-                      <div className="absolute bottom-2 left-1.5 right-1.5 z-40 transform translate-y-full opacity-0 bg-[#F92F7B] text-white px-2 py-1 text-center transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-hover:scale-105 rounded-lg shadow-lg @sm:bottom-3 @sm:left-2 @sm:right-2">
-                        <p className="text-[9px] font-medium leading-tight truncate @sm:text-[10px]">
-                          {accessory.title}
-                        </p>
-                      </div>
+                      {/* Second wave of ripples */}
+                      <div className="group-hover:scale-200 absolute h-28 w-28 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-300 duration-1000 ease-out group-hover:opacity-0 @sm:h-32 @sm:w-32" />
+                      <div className="group-hover:scale-200 absolute h-32 w-32 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-500 duration-1000 ease-out group-hover:opacity-0 @sm:h-36 @sm:w-36" />
+                      <div className="group-hover:scale-200 absolute h-36 w-36 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-700 duration-1000 ease-out group-hover:opacity-0 @sm:h-40 @sm:w-40" />
                     </div>
-                  </Link>
+                    
+                    {/* Product Image */}
+                    <Image
+                      alt={accessory.title}
+                      className="relative z-20 aspect-square rounded-2xl object-contain p-4 transition-transform duration-300 group-hover:scale-105 @sm:p-6 @md:p-8"
+                      height={500}
+                      src={accessory.image?.src || '/images/placeholder.png'}
+                      width={500}
+                    />
+                    
+                    {/* Product Name Overlay (visible on hover) */}
+                    <div className="absolute bottom-2 left-1.5 right-1.5 z-40 transform translate-y-full opacity-0 bg-[#F92F7B] text-white px-2 py-1 text-center transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-hover:scale-105 rounded-lg shadow-lg @sm:bottom-3 @sm:left-2 @sm:right-2">
+                      <p className="text-[9px] font-medium leading-tight truncate @sm:text-[10px]">
+                        {accessory.title}
+                      </p>
+                    </div>
+                  </button>
                 ));
               }}
             </Stream>
           </div>
         </div>
       </div>
+      
+      {/* Product Modal */}
+      {selectedProduct && (
+        <ProductModal
+          isOpen={isModalOpen}
+          product={selectedProduct}
+          onClose={handleModalClose}
+        />
+      )}
     </section>
   );
 }
