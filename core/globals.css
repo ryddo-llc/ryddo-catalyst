@@ -45,4 +45,22 @@
   /* Banner */
   --banner-text: #ffffff;
   --banner-close-icon: #ffffff;
+
+  /* Search Component Variables - Simplified */
+  --nav-search-background: hsl(var(--background));
+  --nav-search-border: hsl(var(--foreground) / 5%);
+  --nav-search-divider: hsl(var(--contrast-100));
+  --nav-search-icon: hsl(var(--contrast-500));
+  --nav-search-empty-title: hsl(var(--foreground));
+  --nav-search-empty-subtitle: hsl(var(--contrast-500));
+  --nav-search-result-title: hsl(var(--foreground));
+  --nav-search-result-title-font-family: var(--font-family-mono);
+  --nav-search-result-link-text: hsl(var(--contrast-500));
+  --nav-search-result-link-text-hover: hsl(var(--foreground));
+  --nav-search-result-link-background: transparent;
+  --nav-search-result-link-background-hover: hsl(var(--contrast-100));
+  --nav-search-result-link-font-family: var(--font-family-body);
+
+  /* Override button primary text to white for better contrast on Ryddo pink */
+  --button-primary-text: hsl(var(--background));
 }
