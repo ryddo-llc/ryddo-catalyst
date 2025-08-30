@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { XIcon } from 'lucide-react';
 
 import { Modal } from '@/vibes/soul/primitives/modal';
+import { Button } from '@/vibes/soul/primitives/button';
 import { type Product } from '@/vibes/soul/primitives/product-card';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
@@ -21,8 +24,18 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
       title={product.title}
       isOpen={isOpen}
       setOpen={(open) => !open && onClose()}
-      className="max-w-4xl"
+      className="max-w-6xl"
+      hideHeader={true}
     >
+      {/* Custom Close Button */}
+      <div className="flex justify-end mb-4">
+        <Dialog.Close asChild>
+          <Button shape="circle" size="x-small" variant="ghost">
+            <XIcon size={20} />
+          </Button>
+        </Dialog.Close>
+      </div>
+
       <div className="flex flex-col gap-6 @lg:flex-row @lg:gap-8">
         {/* Product Image - Left Side */}
         <div className="flex-shrink-0 @lg:w-1/2">
@@ -80,17 +93,6 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
 
           {/* Product Form with Colors, Sizes, Add to Cart */}
           <ProductModalForm product={product} onClose={onClose} />
-
-          {/* View Full Product Details Link */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <Link
-              href={product.href}
-              className="inline-flex items-center text-[#F92F7B] hover:text-[#d41f63] font-medium text-sm transition-colors"
-              onClick={onClose}
-            >
-              View Full Product Details →
-            </Link>
-          </div>
         </div>
       </div>
     </Modal>

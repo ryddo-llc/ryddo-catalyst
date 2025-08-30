@@ -5,6 +5,7 @@ import { useState, useTransition } from 'react';
 import { Button } from '@/vibes/soul/primitives/button';
 import { type Product } from '@/vibes/soul/primitives/product-card';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { Link } from '~/components/link';
 
 interface ProductModalFormProps {
   product: Product;
@@ -68,11 +69,6 @@ export function ProductModalForm({ product, onClose }: ProductModalFormProps) {
             </button>
           ))}
         </div>
-        {selectedColor && (
-          <p className="mt-2 text-sm text-gray-600">
-            Selected: {mockColors.find(c => c.id === selectedColor)?.name}
-          </p>
-        )}
       </div>
 
       {/* Size Selection */}
@@ -93,9 +89,6 @@ export function ProductModalForm({ product, onClose }: ProductModalFormProps) {
             </button>
           ))}
         </div>
-        {selectedSize && (
-          <p className="mt-2 text-sm text-gray-600">Selected: {selectedSize}</p>
-        )}
       </div>
 
       {/* Add to Cart Button */}
@@ -115,6 +108,17 @@ export function ProductModalForm({ product, onClose }: ProductModalFormProps) {
             Please select {!selectedColor && !selectedSize ? 'color and size' : !selectedColor ? 'color' : 'size'} to add to cart
           </p>
         ) : null}
+
+        {/* View Full Product Details Link */}
+        <div className="mt-4">
+          <Link
+            href={product.href}
+            className="inline-flex items-center text-[#F92F7B] hover:text-[#d41f63] font-medium text-sm transition-colors"
+            onClick={onClose}
+          >
+            View Full Product Details →
+          </Link>
+        </div>
       </div>
     </div>
   );
