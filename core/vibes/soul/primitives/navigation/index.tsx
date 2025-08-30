@@ -3,7 +3,7 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
-import { Search, ShoppingBag, User, X } from 'lucide-react';
+import { Search, ShoppingBag, User } from 'lucide-react';
 import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
