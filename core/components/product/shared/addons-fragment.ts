@@ -1,3 +1,4 @@
+import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
 
@@ -31,8 +32,12 @@ export const AddonsProductCardFragment = graphql(
       inventory {
         isInStock
       }
+      availabilityV2 {
+        status
+      }
+      ...ProductOptionsFragment
       ...PricingFragment
     }
   `,
-  [PricingFragment],
+  [ProductOptionsFragment, PricingFragment],
 );

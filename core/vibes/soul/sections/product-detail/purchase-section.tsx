@@ -113,15 +113,20 @@ export function PurchaseSection<F extends Field>({
   useEffect(() => {
     if (lastResult?.status === 'success') {
       toast.success(successMessage);
-      // Reset optimistic state after successful submission
-      addOptimisticAction(false);
+      
+      startTransition(() => {
+        // Reset optimistic state after successful submission
+        addOptimisticAction(false);
+      });
 
       startTransition(async () => {
         await revalidateCart();
       });
     } else if (lastResult?.status === 'error') {
-      // Reset optimistic state on error
-      addOptimisticAction(false);
+      startTransition(() => {
+        // Reset optimistic state on error
+        addOptimisticAction(false);
+      });
       // Show error message
       toast.error(lastResult.error?.message || 'Failed to add item to cart. Please try again.');
     }
@@ -234,7 +239,7 @@ function SubmitButton({ children, disabled, optimistic }: { children: ReactNode;
 
   return (
     <Button
-      className="min-h-[44px] w-full bg-[#E6275D] text-white hover:bg-[#d01548] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 disabled:bg-gray-300 @sm:w-auto @sm:min-w-[200px]"
+      className="min-h-[44px] w-full bg-[#E6275D] text-white hover:bg-[#d01548] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6275D] focus-visible:ring-offset-2 disabled:bg-gray-300"
       disabled={disabled}
       loading={isLoading}
       size="medium"

@@ -7,7 +7,7 @@ import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/
 
 export const productOptionsTransformer = async (
   productOptions: ResultOf<typeof ProductOptionsFragment>['productOptions'],
-) => {
+): Promise<Field[]> => {
   const t = await getTranslations('Product.ProductDetails');
 
   return removeEdgesAndNodes(productOptions)
@@ -209,5 +209,5 @@ export const productOptionsTransformer = async (
 
       return null;
     })
-    .filter((field) => field !== null);
+    .filter((field): field is Field => field !== null);
 };

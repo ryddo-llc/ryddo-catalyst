@@ -1,12 +1,24 @@
 import { clsx } from 'clsx';
+import { ResultOf } from 'gql.tada';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
 import { Compare } from './compare';
+
+// Color option interface for product variants
+export interface ColorOption {
+  entityId: number;
+  label: string;
+  hexColors?: string[];
+  imageUrl?: string;
+  isSelected?: boolean;
+  isDefault?: boolean;
+}
 
 export interface Product {
   id: string;
@@ -21,6 +33,10 @@ export interface Product {
   outOfStock?: boolean;
   type?: string;
   name?: string;
+  colors?: ColorOption[];
+  sizes?: string[];
+  productOptions?: ResultOf<typeof ProductOptionsFragment>['productOptions']; // Raw product options for Streamable transformation
+  availabilityStatus?: string;
 }
 
 export interface ProductCardProps {
