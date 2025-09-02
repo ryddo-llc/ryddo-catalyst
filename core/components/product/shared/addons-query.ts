@@ -92,6 +92,7 @@ export const getFeaturedAddonsAndAccessories = cache(
       const gearProducts = removeEdgesAndNodes(data.site.gear.searchProducts.products);
       const accessoriesProducts = removeEdgesAndNodes(data.site.accessories.searchProducts.products);
 
+
       // Combine and transform with second image preference
       const combinedProducts = [...gearProducts, ...accessoriesProducts];
       

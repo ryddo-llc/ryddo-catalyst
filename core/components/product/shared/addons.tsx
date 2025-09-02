@@ -77,8 +77,8 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
                     aria-label={`View ${accessory.title} details`}
                     className="group relative z-30 cursor-pointer overflow-hidden rounded-2xl bg-transparent border-none p-0 @container"
                     key={accessory.id}
-                    type="button"
                     onClick={() => handleProductClick(accessory)}
+                    type="button"
                   >
                     {/* Optimized ripple effect with responsive sizing */}
                     <div className="absolute inset-0 z-10 flex items-center justify-center">
@@ -126,8 +126,8 @@ export default function Addons({ addons, name = 'Super73-RX' }: AddonProps) {
       {selectedProduct && (
         <ProductModal
           isOpen={isModalOpen}
-          product={selectedProduct}
           onClose={handleModalClose}
+          product={selectedProduct}
         />
       )}
     </section>

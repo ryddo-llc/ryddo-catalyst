@@ -1,14 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
 
-import { Modal } from '@/vibes/soul/primitives/modal';
 import { Button } from '@/vibes/soul/primitives/button';
+import { Modal } from '@/vibes/soul/primitives/modal';
 import { type Product } from '@/vibes/soul/primitives/product-card';
 import { Image } from '~/components/image';
-import { Link } from '~/components/link';
 
 import { ProductModalForm } from './product-modal-form';
 
@@ -21,14 +19,19 @@ interface ProductModalProps {
 export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   return (
     <Modal
-      title={product.title}
+      className="max-w-7xl"
+      hideHeader={true}
       isOpen={isOpen}
       setOpen={(open) => !open && onClose()}
-      className="max-w-6xl"
-      hideHeader={true}
+      title={product.title}
     >
+      {/* Hidden description for accessibility */}
+      <Dialog.Description className="sr-only">
+        View details and options for {product.title}
+      </Dialog.Description>
+
       {/* Custom Close Button */}
-      <div className="flex justify-end mb-4">
+      <div className="mb-4 flex justify-end">
         <Dialog.Close asChild>
           <Button shape="circle" size="x-small" variant="ghost">
             <XIcon size={20} />
@@ -42,11 +45,11 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
           <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
             {product.image?.src ? (
               <Image
-                src={product.image.src}
                 alt={product.image.alt || product.title}
                 className="h-full w-full object-contain"
-                width={400}
                 height={400}
+                src={product.image.src}
+                width={400}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-gray-400">
@@ -59,40 +62,10 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
         {/* Product Details - Right Side */}
         <div className="flex flex-1 flex-col gap-4 @lg:w-1/2">
           {/* Product Name */}
-          <h2 className="text-2xl font-bold text-gray-900 @md:text-3xl">
-            {product.title}
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900 @md:text-3xl">{product.title}</h2>
 
-          {/* Price */}
-          {product.price && (
-            <div className="text-xl font-semibold text-gray-900 @md:text-2xl">
-              {(() => {
-                if (typeof product.price === 'string') {
-                  return product.price;
-                }
-
-                if (product.price.type === 'sale') {
-                  return (
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500 line-through @md:text-base">
-                        {product.price.previousValue}
-                      </span>
-                      <span className="text-[#F92F7B]">{product.price.currentValue}</span>
-                    </div>
-                  );
-                }
-
-                if (product.price.type === 'range') {
-                  return `${product.price.minValue} – ${product.price.maxValue}`;
-                }
-
-                return product.price;
-              })()}
-            </div>
-          )}
-
-          {/* Product Form with Colors, Sizes, Add to Cart */}
-          <ProductModalForm product={product} onClose={onClose} />
+          {/* Product Form with Colors, Sizes, Price, and Add to Cart */}
+          <ProductModalForm onClose={onClose} product={product} />
         </div>
       </div>
     </Modal>
