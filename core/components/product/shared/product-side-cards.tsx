@@ -25,6 +25,7 @@ interface ProductWithSideCardData<F extends Field = Field> {
   images?: Array<{ src: string; alt: string }>;
   price?: Streamable<ProductPrice | string | null>;
   colors?: ColorOption[];
+  warranty?: string | null;
   // Form props for add to cart functionality
   action?: ProductDetailFormAction<F>;
   fields?: F[];
@@ -105,6 +106,15 @@ export function AuthorizedDealerCard<F extends Field = Field>({
             );
           }}
         </Stream>
+
+        {/* Warranty Information - Bikes Only */}
+        {product.productType === 'bike' && product.warranty ? (
+          <div className="mt-4 pt-4">
+            <div className="mb-2 font-['Inter'] text-sm font-black text-black">
+              {product.warranty}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {/* Action Buttons - Side by Side */}

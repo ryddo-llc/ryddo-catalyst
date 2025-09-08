@@ -60,6 +60,7 @@ interface ProductDetailBikeProduct extends BaseProductDetailProduct {
   backgroundImage?: string;
   colors?: ColorOption[];
   brandLogo?: { url: string; altText: string } | null;
+  warranty?: string | null;
 }
 
 export interface ProductDetailBikeProps<F extends Field> {
@@ -206,6 +207,7 @@ export function ProductDetailBike<F extends Field>({
                               images: product.images,
                               price: product.price,
                               colors: product.colors,
+                              warranty: product.warranty,
                             }}
                           />
                         </div>

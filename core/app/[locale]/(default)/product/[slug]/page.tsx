@@ -269,6 +269,11 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableCtaLabel = Streamable.from(async () => (await streamableCtaData).label);
   const streamableCtaDisabled = Streamable.from(async () => (await streamableCtaData).disabled);
 
+  const streamableWarranty = Streamable.from(async () => {
+    const product = await streamableProduct;
+    return product.warranty || null;
+  });
+
   const streamableAccordions = Streamable.from(async () => {
     const product = await streamableProduct;
 
@@ -522,6 +527,7 @@ export default async function Product({ params, searchParams }: Props) {
     rating: baseProduct.reviewSummary.averageRating,
     accordions: streamableAccordions,
     inventoryStatus: streamableInventoryStatus,
+    warranty: streamableWarranty,
     brandLogo: baseProduct.brand?.defaultImage ? {
       url: baseProduct.brand.defaultImage.url,
       altText: baseProduct.brand.defaultImage.altText

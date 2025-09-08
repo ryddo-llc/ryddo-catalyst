@@ -18,6 +18,7 @@ interface BikeRightSidebarProps<F extends Field> {
     images: Streamable<Array<{ src: string; alt: string }>>;
     price?: ProductPrice;
     colors?: ColorOption[];
+    warranty?: Streamable<string | null>;
   };
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
@@ -38,9 +39,9 @@ export function BikeRightSidebar<F extends Field>({
     <div className="absolute right-0 top-[-20px] z-10 hidden w-64 md:block xl:right-1 xl:w-72 -mr-4 sm:-mr-6 md:-mr-10 lg:-mr-14 xl:-mr-18">
       <Stream
         fallback={<ProductDetailFormSkeleton />}
-        value={Streamable.all([product.images, fields, ctaLabel, ctaDisabled])}
+        value={Streamable.all([product.images, fields, ctaLabel, ctaDisabled, product.warranty || Streamable.from(() => Promise.resolve(null))])}
       >
-        {([images, streamedFields, streamedCtaLabel, streamedCtaDisabled]) => (
+        {([images, streamedFields, streamedCtaLabel, streamedCtaDisabled, streamedWarranty]) => (
           <AuthorizedDealerCard
             product={{
               id: product.id,
@@ -49,6 +50,7 @@ export function BikeRightSidebar<F extends Field>({
               images,
               price: product.price,
               colors: product.colors,
+              warranty: streamedWarranty,
               action,
               fields: streamedFields,
               ctaLabel: streamedCtaLabel || undefined,
