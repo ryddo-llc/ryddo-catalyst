@@ -15,6 +15,7 @@ interface ProductPrice {
 interface ProductBadgesProps {
   inventoryStatus?: Streamable<InventoryStatus | null>;
   price?: Streamable<ProductPrice | string | null>;
+  title?: string;
 }
 
 // Stock Status Badge Component
@@ -92,7 +93,18 @@ function StockStatusSkeleton() {
 }
 
 // Main Product Badges Component
-export function ProductBadges({ inventoryStatus, price }: ProductBadgesProps) {
+export function ProductBadges({ inventoryStatus, price, title }: ProductBadgesProps) {
+  // If title is provided, display it as a badge instead of inventory status
+  if (title) {
+    return (
+      <div className="mb-1 flex justify-center gap-2">
+        <div className="inline-flex items-center rounded border border-black bg-black px-5 py-1 text-sm font-medium text-white">
+          {title}
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="mb-4 flex justify-center gap-2">
       <StockStatusBadge inventoryStatus={inventoryStatus} />

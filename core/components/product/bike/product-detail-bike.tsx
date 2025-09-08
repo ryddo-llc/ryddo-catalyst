@@ -131,32 +131,18 @@ export function ProductDetailBike<F extends Field>({
                     {/* Content Container */}
                     <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 sm:px-6 md:px-8 md:py-6 lg:px-12 xl:px-16">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
-                        {/* Top Section - Product Name & Stock */}
-                        <div className="mb-2 text-center md:mb-4">
-                          {/* Product Badges */}
-                          <ProductBadges
-                            inventoryStatus={product.inventoryStatus}
-                            price={product.price}
-                          />
+                        {/* Top Section - Product Name */}
+                        <div className="text-center md:mb-4">
+                          {/* Product Title Badge */}
+                          <ProductBadges title={product.title} />
 
-                          {/* Product Title */}
-                          <h1
-                            className="px-4 font-['Nunito'] text-2xl font-black leading-tight text-zinc-800 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
-                            id="product-heading"
-                          >
-                            {product.title}
-                            <span aria-hidden="true" className="text-[#F92F7B]">
-                              .
-                            </span>
-                          </h1>
-                          
                           {/* Brand Logo */}
                           {product.brandLogo && (
-                            <div className="mt-4 flex justify-center px-4">
+                            <div className="flex justify-center px-1">
                               <Image
                                 alt={product.brandLogo.altText || 'Brand logo'}
-                                className="h-auto w-auto max-h-24 object-contain sm:max-h-28 md:max-h-32 lg:max-h-36 xl:max-h-40"
-                                height={150}
+                                className="h-auto max-h-24 w-auto object-contain sm:max-h-28 md:max-h-32 lg:max-h-36 xl:max-h-40"
+                                height={350}
                                 loading="eager"
                                 priority
                                 sizes="(max-width: 640px) 150px, (max-width: 768px) 200px, (max-width: 1024px) 250px, (max-width: 1280px) 300px, 350px"
@@ -165,7 +151,7 @@ export function ProductDetailBike<F extends Field>({
                               />
                             </div>
                           )}
-                          
+
                           <Stream
                             fallback={<div className="h-4 animate-pulse bg-gray-200" />}
                             value={product.description}
