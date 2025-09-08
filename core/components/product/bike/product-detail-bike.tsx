@@ -132,7 +132,12 @@ export function ProductDetailBike<F extends Field>({
                     <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 sm:px-6 md:px-8 md:py-6 lg:px-12 xl:px-16">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
                         {/* Top Section - Product Name and Brand */}
-                        <div className="mt-6 text-center md:mb-4">
+                        <header className="mt-10 text-center md:mb-4">
+                          {/* Hidden h1 for SEO - Screen readers and crawlers only */}
+                          <h1 className="sr-only" id="product-heading">
+                            {product.title}
+                          </h1>
+
                           <div className="flex flex-col items-center">
                             {/* Product Title Badge */}
                             <ProductBadges title={product.title} />
@@ -153,16 +158,16 @@ export function ProductDetailBike<F extends Field>({
                               </div>
                             )}
                           </div>
-                        </div>
+                        </header>
 
                         {/* Middle Section - Center bike image with absolutely positioned sidebars */}
-                        <div className="relative mb-4 flex min-h-0 flex-1 items-start justify-center pt-4">
+                        <div className="relative mb-4 flex min-h-0 flex-1 items-start justify-center">
                           {/* Left Sidebar - Special Offers - Absolutely positioned */}
                           <BikeLeftSidebar />
 
-                          {/* Center - Bike Image - Smaller constrained width with sidebar spacing */}
-                          <div className="flex items-center justify-center px-6 sm:px-8 md:px-16 xl:px-20">
-                            <div className="flex h-64 w-full max-w-lg items-center justify-center transition-all duration-300 ease-in-out md:h-80 md:max-w-xl xl:h-96">
+                          {/* Center - Bike Image - Large central image */}
+                          <div className="flex items-center justify-center px-2 sm:px-4 md:px-6 lg:px-8">
+                            <div className="flex h-[14.5rem] w-full max-w-xl items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] md:h-[20.5rem] md:max-w-2xl lg:h-[23.5rem] lg:max-w-3xl xl:h-[25.5rem] xl:max-w-4xl">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const bikeImage = findHeroProductImage(images);
@@ -171,11 +176,11 @@ export function ProductDetailBike<F extends Field>({
                                     <Image
                                       alt={bikeImage.alt}
                                       className="h-auto w-full object-contain transition-all duration-300"
-                                      height={1000}
+                                      height={1500}
                                       priority
-                                      sizes="(max-width: 640px) 384px, (max-width: 768px) 448px, (max-width: 1024px) 512px, (max-width: 1280px) 576px, 672px"
+                                      sizes="(max-width: 640px) 460px, (max-width: 768px) 540px, (max-width: 1024px) 690px, (max-width: 1280px) 845px, 1080px"
                                       src={bikeImage.src}
-                                      width={1000}
+                                      width={1500}
                                     />
                                   ) : (
                                     <div className="text-center text-gray-500">
@@ -206,7 +211,7 @@ export function ProductDetailBike<F extends Field>({
                         </div>
 
                         {/* Bottom Section - Desktop/Tablet Specifications - Natural flow */}
-                        <div className="mt-auto hidden pt-4 md:block">
+                        <div className="mt-auto hidden pt-12 md:block">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;
