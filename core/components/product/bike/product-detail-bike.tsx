@@ -131,39 +131,28 @@ export function ProductDetailBike<F extends Field>({
                     {/* Content Container */}
                     <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 sm:px-6 md:px-8 md:py-6 lg:px-12 xl:px-16">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
-                        {/* Top Section - Product Name */}
-                        <div className="text-center md:mb-4">
-                          {/* Product Title Badge */}
-                          <ProductBadges title={product.title} />
+                        {/* Top Section - Product Name and Brand */}
+                        <div className="mt-6 text-center md:mb-4">
+                          <div className="flex flex-col items-center">
+                            {/* Product Title Badge */}
+                            <ProductBadges title={product.title} />
 
-                          {/* Brand Logo */}
-                          {product.brandLogo && (
-                            <div className="flex justify-center px-1">
-                              <Image
-                                alt={product.brandLogo.altText || 'Brand logo'}
-                                className="h-auto max-h-24 w-auto object-contain sm:max-h-28 md:max-h-32 lg:max-h-36 xl:max-h-40"
-                                height={350}
-                                loading="eager"
-                                priority
-                                sizes="(max-width: 640px) 150px, (max-width: 768px) 200px, (max-width: 1024px) 250px, (max-width: 1280px) 300px, 350px"
-                                src={product.brandLogo.url}
-                                width={350}
-                              />
-                            </div>
-                          )}
-
-                          <Stream
-                            fallback={<div className="h-4 animate-pulse bg-gray-200" />}
-                            value={product.description}
-                          >
-                            {(description) =>
-                              Boolean(description) && (
-                                <div className="justify-center self-stretch text-center font-['Nunito'] text-3xl font-medium leading-loose text-neutral-500">
-                                  {description}
-                                </div>
-                              )
-                            }
-                          </Stream>
+                            {/* Brand Logo - with responsive negative margin */}
+                            {product.brandLogo && (
+                              <div className="sm:-mt-18 -mt-16 flex justify-center md:-mt-20 lg:-mt-20 xl:-mt-20">
+                                <Image
+                                  alt={product.brandLogo.altText || 'Brand logo'}
+                                  className="h-auto max-h-32 w-auto object-contain sm:max-h-40 md:max-h-48 lg:max-h-56 xl:max-h-64"
+                                  height={500}
+                                  loading="eager"
+                                  priority
+                                  sizes="(max-width: 640px) 200px, (max-width: 768px) 300px, (max-width: 1024px) 400px, (max-width: 1280px) 450px, 500px"
+                                  src={product.brandLogo.url}
+                                  width={500}
+                                />
+                              </div>
+                            )}
+                          </div>
                         </div>
 
                         {/* Middle Section - Center bike image with absolutely positioned sidebars */}
