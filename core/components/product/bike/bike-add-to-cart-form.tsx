@@ -139,7 +139,8 @@ export function BikeAddToCartForm<F extends Field>({
         </div>
       )}
 
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
+      <div className="mb-6 flex flex-col gap-3 items-stretch">
+        <SubmitButton disabled={disabled}>{ctaLabel}</SubmitButton>
         {compareProduct && (
           <Compare
             className="flex min-h-[43px] items-center justify-center whitespace-nowrap rounded-[50px] border-2 border-solid border-[#757575] px-3 sm:px-4 md:px-6 py-2.5 text-sm sm:text-base font-semibold text-[#757575] transition-colors hover:bg-[#757575] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
@@ -147,7 +148,6 @@ export function BikeAddToCartForm<F extends Field>({
             product={compareProduct}
           />
         )}
-        <SubmitButton disabled={disabled}>{ctaLabel}</SubmitButton>
       </div>
 
       {/* Render interactive fields */}

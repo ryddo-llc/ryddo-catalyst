@@ -98,7 +98,7 @@ export function ProductBadges({ inventoryStatus, price, title }: ProductBadgesPr
   if (title) {
     return (
       <div className="mb-0 flex justify-center gap-2">
-        <div className="text-med inline-flex items-center rounded border border-black bg-transparent px-10 py-0 font-bold text-black">
+        <div className="text-med inline-flex items-center rounded border border-black bg-transparent px-8 py-0 font-bold text-black">
           {title}
         </div>
       </div>
