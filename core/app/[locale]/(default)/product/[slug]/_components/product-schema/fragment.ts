@@ -11,6 +11,10 @@ export const ProductSchemaFragment = graphql(`
     brand {
       name
       path
+      defaultImage {
+        altText
+        url: urlTemplate(lossy: true)
+      }
     }
     reviewSummary {
       averageRating

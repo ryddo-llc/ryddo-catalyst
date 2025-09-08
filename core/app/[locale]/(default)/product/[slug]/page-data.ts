@@ -198,6 +198,10 @@ const ProductQuery = graphql(
           path
           brand {
             name
+            defaultImage {
+              altText
+              url: urlTemplate(lossy: true)
+            }
           }
           reviewSummary {
             averageRating
