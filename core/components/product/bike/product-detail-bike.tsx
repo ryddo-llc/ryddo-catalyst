@@ -132,7 +132,7 @@ export function ProductDetailBike<F extends Field>({
                     <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 sm:px-6 md:px-8 md:py-6 lg:px-12 xl:px-16">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
                         {/* Top Section - Product Name and Brand */}
-                        <header className="mt-10 text-center md:mb-4">
+                        <header className="mt-10 text-center md:mb-1">
                           {/* Hidden h1 for SEO - Screen readers and crawlers only */}
                           <h1 className="sr-only" id="product-heading">
                             {product.title}
@@ -161,7 +161,7 @@ export function ProductDetailBike<F extends Field>({
                         </header>
 
                         {/* Middle Section - Center bike image with absolutely positioned sidebars */}
-                        <div className="relative mb-4 flex min-h-0 flex-1 items-start justify-center">
+                        <div className="relative mb-4 flex min-h-0 flex-1 items-start justify-center -mt-2 md:-mt-4 lg:-mt-6">
                           {/* Left Sidebar - Special Offers - Absolutely positioned */}
                           <BikeLeftSidebar />
 

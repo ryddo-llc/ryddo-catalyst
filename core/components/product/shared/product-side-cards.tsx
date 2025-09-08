@@ -71,7 +71,7 @@ export function OffersCard() {
 // Authorized Dealer Card Component
 export function AuthorizedDealerCard<F extends Field = Field>({ product }: { product: ProductWithSideCardData<F> }) {
   return (
-    <div className="max-w-sm text-right">
+    <div className="max-w-sm text-right rounded-lg bg-white/50 p-4 md:p-5 lg:p-6 backdrop-blur-md">
       {/* Authorized Dealer Header */}
       <div className="mb-6">
         <h3 className="text-xl mb-1 font-black font-['Inter'] text-zinc-800">Authorized Dealer</h3>
