@@ -522,6 +522,10 @@ export default async function Product({ params, searchParams }: Props) {
     rating: baseProduct.reviewSummary.averageRating,
     accordions: streamableAccordions,
     inventoryStatus: streamableInventoryStatus,
+    brandLogo: baseProduct.brand?.defaultImage ? {
+      url: baseProduct.brand.defaultImage.url,
+      altText: baseProduct.brand.defaultImage.altText
+    } : null,
   };
 
   const defaultProductData = baseProductData;

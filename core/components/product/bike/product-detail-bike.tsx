@@ -59,6 +59,7 @@ interface ProductDetailBikeProduct extends BaseProductDetailProduct {
   bikeSpecs?: Streamable<ProductSpecification[] | null>;
   backgroundImage?: string;
   colors?: ColorOption[];
+  brandLogo?: { url: string; altText: string } | null;
 }
 
 export interface ProductDetailBikeProps<F extends Field> {
@@ -148,6 +149,23 @@ export function ProductDetailBike<F extends Field>({
                               .
                             </span>
                           </h1>
+                          
+                          {/* Brand Logo */}
+                          {product.brandLogo && (
+                            <div className="mt-4 flex justify-center px-4">
+                              <Image
+                                alt={product.brandLogo.altText || 'Brand logo'}
+                                className="h-auto w-auto max-h-24 object-contain sm:max-h-28 md:max-h-32 lg:max-h-36 xl:max-h-40"
+                                height={150}
+                                loading="eager"
+                                priority
+                                sizes="(max-width: 640px) 150px, (max-width: 768px) 200px, (max-width: 1024px) 250px, (max-width: 1280px) 300px, 350px"
+                                src={product.brandLogo.url}
+                                width={350}
+                              />
+                            </div>
+                          )}
+                          
                           <Stream
                             fallback={<div className="h-4 animate-pulse bg-gray-200" />}
                             value={product.description}
