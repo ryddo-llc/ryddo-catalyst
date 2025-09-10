@@ -162,7 +162,7 @@ export function ProductDetailBike<F extends Field>({
                         </header>
 
                         {/* Middle Section - Center bike image with absolutely positioned sidebars */}
-                        <div className="relative mb-4 flex min-h-0 flex-1 items-start justify-center -mt-2 md:-mt-4 lg:-mt-6">
+                        <div className="relative -mt-2 mb-4 flex min-h-0 flex-1 items-start justify-center md:-mt-4 lg:-mt-6">
                           {/* Left Sidebar - Special Offers - Absolutely positioned */}
                           <BikeLeftSidebar />
 
@@ -176,7 +176,7 @@ export function ProductDetailBike<F extends Field>({
                                   return bikeImage ? (
                                     <Image
                                       alt={bikeImage.alt}
-                                      className="h-auto w-full object-contain transition-all duration-300"
+                                      className="w-full object-contain transition-all duration-300"
                                       height={1500}
                                       priority
                                       sizes="(max-width: 640px) 460px, (max-width: 768px) 540px, (max-width: 1024px) 690px, (max-width: 1280px) 845px, 1080px"
@@ -213,7 +213,7 @@ export function ProductDetailBike<F extends Field>({
                         </div>
 
                         {/* Bottom Section - Desktop/Tablet Specifications - Natural flow */}
-                        <div className="mt-auto hidden pt-12 md:block">
+                        <div className="mt-auto hidden pt-16 md:block">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;

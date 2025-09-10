@@ -140,6 +140,13 @@ const config = {
             fontVariationSettings: 'var(--font-variation-settings-mono)',
           },
         ],
+        kanit: [
+          'var(--font-family-kanit)',
+          {
+            fontFeatureSettings: 'var(--font-feature-settings-kanit)',
+            fontVariationSettings: 'var(--font-variation-settings-kanit)',
+          },
+        ],
       },
       fontSize: {
         xs: 'var(--font-size-xs, 0.75rem)',
