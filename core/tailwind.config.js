@@ -67,12 +67,12 @@ const config = {
             },
             code: {
               color: 'hsl(var(--contrast-500))',
-              fontFamily: 'var(--font-family-mono)',
+              fontFamily: 'ui-monospace, monospace',
             },
             pre: {
               color: 'hsl(var(--background))',
               backgroundColor: 'hsl(var(--foreground))',
-              fontFamily: 'var(--font-family-mono)',
+              fontFamily: 'ui-monospace, monospace',
             },
           },
         },
@@ -131,13 +131,6 @@ const config = {
           {
             fontFeatureSettings: 'var(--font-feature-settings-body)',
             fontVariationSettings: 'var(--font-variation-settings-body)',
-          },
-        ],
-        mono: [
-          'var(--font-family-mono)',
-          {
-            fontFeatureSettings: 'var(--font-feature-settings-mono)',
-            fontVariationSettings: 'var(--font-variation-settings-mono)',
           },
         ],
         kanit: [

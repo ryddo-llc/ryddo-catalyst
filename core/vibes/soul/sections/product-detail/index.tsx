@@ -126,7 +126,7 @@ export function ProductDetail<F extends Field>({
 
                       {/* Subtitle */}
                       {Boolean(product.subtitle) && (
-                        <p className="font-mono text-sm font-medium uppercase tracking-wider text-gray-600">
+                        <p className="text-sm font-medium uppercase tracking-wider text-gray-600">
                           {product.subtitle}
                         </p>
                       )}

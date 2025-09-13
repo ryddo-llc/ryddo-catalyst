@@ -12,12 +12,6 @@ const nunito = Nunito({
   variable: '--font-family-heading',
 });
 
-const nunitoMono = Nunito({
-  display: 'swap',
-  subsets: ['latin'],
-  variable: '--font-family-mono',
-});
-
 const kanit = Kanit({
   display: 'swap',
   subsets: ['latin'],
@@ -25,4 +19,4 @@ const kanit = Kanit({
   variable: '--font-family-kanit',
 });
 
-export const fonts = [inter, nunito, nunitoMono, kanit];
+export const fonts = [inter, nunito, kanit];
