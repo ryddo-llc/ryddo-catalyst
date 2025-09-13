@@ -28,6 +28,7 @@ interface BikeAddToCartFormProps<F extends Field> {
   ctaLabel?: string;
   disabled?: boolean;
   additionalActions?: ReactNode;
+  selectedVariants?: Record<string, string>;
 }
 
 function SubmitButton({ children, disabled }: { children: string; disabled?: boolean }) {
@@ -53,6 +54,7 @@ export function BikeAddToCartForm<F extends Field>({
   ctaLabel = 'Add to cart',
   disabled = false,
   additionalActions,
+  selectedVariants = {},
 }: BikeAddToCartFormProps<F>) {
   const [state, formAction] = useActionState(action, {
     fields,
@@ -115,10 +117,13 @@ export function BikeAddToCartForm<F extends Field>({
           return true;
         })
         .map((field) => {
-          // Get field value
+          // Get field value - prioritize external selections
           let value = '';
 
-          if ('defaultValue' in field && field.defaultValue) {
+          // First check if there's a selected variant from left sidebar
+          if (selectedVariants[field.name]) {
+            value = String(selectedVariants[field.name]);
+          } else if ('defaultValue' in field && field.defaultValue) {
             value = String(field.defaultValue);
           } else if ('options' in field && field.options.length > 0) {
             value = String(field.options[0]?.value ?? '');
@@ -150,58 +155,11 @@ export function BikeAddToCartForm<F extends Field>({
         )}
       </div>
 
-      {/* Render interactive fields */}
-      {fields.filter(shouldRenderField).map((field) => {
-        if (field.type === 'swatch-radio-group') {
-          return (
-            <div className="mb-6 flex flex-col items-center sm:items-end" key={field.name}>
-              <p className="mb-4 text-center text-base font-bold tracking-wide text-gray-900 sm:text-right">
-                {field.label || 'COLOR'}
-              </p>
-              <SwatchRadioGroup
-                className="justify-center gap-4 sm:justify-end [&_input:checked+label]:border-4 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-2 [&_input:checked+label]:ring-pink-200 [&_label]:h-12 [&_label]:min-h-[44px] [&_label]:w-12 [&_label]:min-w-[44px] [&_label]:border-2 [&_label]:border-gray-300"
-                defaultValue={field.defaultValue}
-                name={field.name}
-                options={field.options}
-              />
-            </div>
-          );
-        }
+      {/* Interactive fields removed - variants are now handled in left sidebar */}
 
-        // Handle other interactive field types here if needed
-        return null;
-      })}
+      {/* Fallback color selection removed - variants are now handled in left sidebar */}
 
-      {/* Fallback color selection if no swatch field */}
-      {!fields.find((f) => f.type === 'swatch-radio-group') && colors && colors.length > 0 && (
-        <div className="mb-6 flex flex-col items-center sm:items-end">
-          <p className="mb-4 text-center text-base font-bold tracking-wide text-gray-900 sm:text-right">
-            COLOR
-          </p>
-          <SwatchRadioGroup
-            className="justify-center gap-4 sm:justify-end [&_input:checked+label]:border-4 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-2 [&_input:checked+label]:ring-pink-200 [&_label]:h-12 [&_label]:min-h-[44px] [&_label]:w-12 [&_label]:min-w-[44px] [&_label]:border-2 [&_label]:border-gray-300"
-            defaultValue={colors.find((c) => c.isSelected || c.isDefault)?.entityId.toString()}
-            name="color"
-            options={colors.slice(0, 4).map((color) =>
-              color.imageUrl
-                ? {
-                    image: { alt: color.label, src: color.imageUrl },
-                    label: color.label,
-                    type: 'image' as const,
-                    value: color.entityId.toString(),
-                  }
-                : {
-                    color: color.hexColors?.[0] || '#6b7280',
-                    label: color.label,
-                    type: 'color' as const,
-                    value: color.entityId.toString(),
-                  },
-            )}
-          />
-        </div>
-      )}
-
-      {/* Wishlist Button - positioned below color picker */}
+      {/* Wishlist Button */}
       {additionalActions ? (
         <div className="flex justify-center sm:justify-end">{additionalActions}</div>
       ) : null}

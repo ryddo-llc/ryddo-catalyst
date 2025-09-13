@@ -17,10 +17,9 @@ import {
   ProductDetailBikeSkeleton,
 } from '../shared/product-detail-skeletons';
 
-import { BikeLeftSidebar } from './bike-left-sidebar';
 import { BikeMobileSection } from './bike-mobile-section';
-import { BikeRightSidebar } from './bike-right-sidebar';
 import { BikeSpecsIcons } from './bike-specs-icons';
+import { BikeVariantCoordinator } from './bike-variant-coordinator';
 
 interface BaseProductDetailProduct {
   id: string;
@@ -105,7 +104,7 @@ export function ProductDetailBike<F extends Field>({
                 product && (
                   <div className="relative min-h-[60vh] md:max-h-[85vh] md:min-h-[70vh]">
                     {/* Background Image - Loaded immediately without Stream */}
-                    <div className="absolute inset-0 h-full w-full">
+                    <div className="absolute inset-0 h-full w-full opacity-55">
                       <Stream fallback={null} value={product.images}>
                         {(images) => {
                           const backgroundImage = findBackgroundImage(images);
@@ -162,55 +161,48 @@ export function ProductDetailBike<F extends Field>({
                         </header>
 
                         {/* Middle Section - Center bike image with absolutely positioned sidebars */}
-                        <div className="relative -mt-2 mb-4 flex min-h-0 flex-1 items-start justify-center md:-mt-4 lg:-mt-6">
-                          {/* Left Sidebar - Special Offers - Absolutely positioned */}
-                          <BikeLeftSidebar />
+                        <BikeVariantCoordinator
+                          action={action}
+                          additionalActions={additionalActions}
+                          ctaDisabled={streamableCtaDisabled}
+                          ctaLabel={streamableCtaLabel}
+                          fields={streamableFields}
+                          product={{
+                            id: product.id,
+                            subtitle: product.subtitle,
+                            description: product.description,
+                            images: product.images,
+                            colors: product.colors,
+                            title: product.title,
+                            href: product.href,
+                            price: product.price,
+                            warranty: product.warranty,
+                          }}
+                        >
+                          <div className="flex h-[14.5rem] w-full max-w-xl items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] md:h-[20.5rem] md:max-w-2xl lg:h-[23.5rem] lg:max-w-3xl xl:h-[25.5rem] xl:max-w-4xl">
+                            <Stream fallback={<BikeImageSkeleton />} value={product.images}>
+                              {(images) => {
+                                const bikeImage = findHeroProductImage(images);
 
-                          {/* Center - Bike Image - Large central image */}
-                          <div className="flex items-center justify-center px-2 sm:px-4 md:px-6 lg:px-8">
-                            <div className="flex h-[14.5rem] w-full max-w-xl items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] md:h-[20.5rem] md:max-w-2xl lg:h-[23.5rem] lg:max-w-3xl xl:h-[25.5rem] xl:max-w-4xl">
-                              <Stream fallback={<BikeImageSkeleton />} value={product.images}>
-                                {(images) => {
-                                  const bikeImage = findHeroProductImage(images);
-
-                                  return bikeImage ? (
-                                    <Image
-                                      alt={bikeImage.alt}
-                                      className="w-full object-contain transition-all duration-300"
-                                      height={1500}
-                                      priority
-                                      sizes="(max-width: 640px) 460px, (max-width: 768px) 540px, (max-width: 1024px) 690px, (max-width: 1280px) 845px, 1080px"
-                                      src={bikeImage.src}
-                                      width={1500}
-                                    />
-                                  ) : (
-                                    <div className="text-center text-gray-500">
-                                      No bike image available
-                                    </div>
-                                  );
-                                }}
-                              </Stream>
-                            </div>
+                                return bikeImage ? (
+                                  <Image
+                                    alt={bikeImage.alt}
+                                    className="w-full object-contain transition-all duration-300"
+                                    height={1500}
+                                    priority
+                                    sizes="(max-width: 640px) 460px, (max-width: 768px) 540px, (max-width: 1024px) 690px, (max-width: 1280px) 845px, 1080px"
+                                    src={bikeImage.src}
+                                    width={1500}
+                                  />
+                                ) : (
+                                  <div className="text-center text-gray-500">
+                                    No bike image available
+                                  </div>
+                                );
+                              }}
+                            </Stream>
                           </div>
-
-                          {/* Right Sidebar - Price Card - Absolutely positioned */}
-                          <BikeRightSidebar
-                            action={action}
-                            additionalActions={additionalActions}
-                            ctaDisabled={streamableCtaDisabled}
-                            ctaLabel={streamableCtaLabel}
-                            fields={streamableFields}
-                            product={{
-                              id: product.id,
-                              title: product.title,
-                              href: product.href,
-                              images: product.images,
-                              price: product.price,
-                              colors: product.colors,
-                              warranty: product.warranty,
-                            }}
-                          />
-                        </div>
+                        </BikeVariantCoordinator>
 
                         {/* Bottom Section - Desktop/Tablet Specifications - Natural flow */}
                         <div className="mt-auto hidden pt-16 md:block">
