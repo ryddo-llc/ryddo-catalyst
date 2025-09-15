@@ -81,7 +81,7 @@ const renderVariantField = (
         {renderSelectedValue(params, field)}
       </div>
       <SwatchRadioGroup
-        className="justify-start gap-2 [&_label]:h-10 [&_label]:w-10 [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:transition-transform [&_label]:hover:scale-105 [&_button[data-state=checked]]:border-2 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:ring-2 [&_button[data-state=checked]]:ring-[#F92F7B] [&_label]:flex [&_label]:items-center [&_label]:justify-center [&_label]:text-xs [&_label]:font-bold"
+        className="justify-start gap-2 [&_label]:h-10 [&_label]:w-10 [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:transition-transform [&_label]:hover:scale-105 [&_button[data-state=checked]]:border-2 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:ring-2 [&_button[data-state=checked]]:ring-[#F92F7B] [&_label]:flex [&_label]:items-center [&_label]:justify-center [&_label]:text-xs [&_label]:font-bold [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold"
         defaultValue={params[field.name] ?? field.defaultValue}
         name={field.name}
         onOptionMouseEnter={(value) => onPrefetch(field.name, value)}

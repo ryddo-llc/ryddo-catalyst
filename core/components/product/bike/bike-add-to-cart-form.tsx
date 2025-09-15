@@ -105,9 +105,17 @@ export function BikeAddToCartForm<F extends Field>({
       {/* Handle non-interactive product option fields as hidden inputs */}
       {fields
         .filter((field) => {
-          // Exclude interactive field types
+          // Always include variant fields that have selected values
+          if (shouldRenderField(field) && selectedVariants[field.name]) {
+            return true;
+          }
+          // Always include color fields that have selected values
+          if (isColorField(field) && selectedVariants[field.name]) {
+            return true;
+          }
+          // Exclude interactive field types that don't have selections
           if (shouldRenderField(field)) return false;
-          // Exclude color fields
+          // Exclude color fields without selections
           if (isColorField(field)) return false;
 
           return true;
