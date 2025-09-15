@@ -17,6 +17,7 @@ import {
   BikeSpecsSkeleton,
   ProductDetailBikeSkeleton,
 } from '../shared/product-detail-skeletons';
+import { ProductImageOverlay } from '../shared/product-image-overlay';
 
 import { BikeMobileSection } from './bike-mobile-section';
 import { BikeSpecsIcons } from './bike-specs-icons';
@@ -70,6 +71,9 @@ export interface ProductDetailBikeProps<F extends Field> {
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
   additionalActions?: ReactNode;
+  // Image overlay actions
+  wishlistButton?: ReactNode;
+  digitalTagLink?: ReactNode;
   // Compare functionality
   compareProducts?: Streamable<
     Array<{ id: string; image?: { src: string; alt: string }; href: string; title: string }>
@@ -86,6 +90,8 @@ export function ProductDetailBike<F extends Field>({
   ctaLabel: streamableCtaLabel,
   ctaDisabled: streamableCtaDisabled,
   additionalActions,
+  wishlistButton,
+  digitalTagLink,
   compareProducts,
   compareLabel = 'Compare',
   maxCompareItems = 3,
@@ -180,7 +186,7 @@ export function ProductDetailBike<F extends Field>({
                             warranty: product.warranty,
                           }}
                         >
-                          <div className="flex h-[14.5rem] w-full max-w-xl items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] md:h-[20.5rem] md:max-w-2xl lg:h-[23.5rem] lg:max-w-3xl xl:h-[25.5rem] xl:max-w-4xl">
+                          <div className="relative flex h-[14.5rem] w-full max-w-xl items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] md:h-[20.5rem] md:max-w-2xl lg:h-[23.5rem] lg:max-w-3xl xl:h-[25.5rem] xl:max-w-4xl">
                             <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                               {(images) => {
                                 const bikeImage = findHeroProductImage(images);
@@ -202,6 +208,12 @@ export function ProductDetailBike<F extends Field>({
                                 );
                               }}
                             </Stream>
+
+                            {/* Floating Action Buttons Overlay */}
+                            <ProductImageOverlay
+                              digitalTagLink={digitalTagLink}
+                              wishlistButton={wishlistButton}
+                            />
                           </div>
                         </BikeVariantCoordinator>
 
@@ -225,7 +237,7 @@ export function ProductDetailBike<F extends Field>({
                     {/* Additional Content Below - Only show on mobile */}
                     <BikeMobileSection
                       action={action}
-                      additionalActions={additionalActions}
+                      additionalActions={null}
                       ctaDisabled={streamableCtaDisabled}
                       ctaLabel={streamableCtaLabel}
                       fields={streamableFields}

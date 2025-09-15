@@ -56,7 +56,7 @@ export function VariantSelector({
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
   }, {});
 
-  const [params] = useQueryStates(searchParams, { shallow: false });
+  const [params] = useQueryStates(searchParams, { shallow: true });
 
   const onPrefetch = (fieldName: string, value: string) => {
     if (prefetch) {
@@ -162,7 +162,7 @@ function VariantField({
   const controls = useInputControl(formField);
 
   const [params, setParams] = useQueryStates(
-    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: true }) } : {},
   );
 
   const handleChange = useCallback(

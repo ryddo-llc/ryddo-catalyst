@@ -1,12 +1,10 @@
 'use client';
 
-import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
 import { ReactNode, useCallback } from 'react';
 
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
-import { usePathname, useRouter } from '~/i18n/routing';
 
 // Helper function to identify variant fields (color/size)
 const isVariantField = (field: Field): boolean => {
@@ -19,23 +17,13 @@ const isVariantField = (field: Field): boolean => {
   );
 };
 
-// Helper function to render selected value
-const renderSelectedValue = (params: Record<string, string | null>, field: Field) => {
-  if (!params[field.name] || !('options' in field)) return null;
-
-  const selectedOption = field.options.find((opt) => String(opt.value) === params[field.name]);
-
-  return selectedOption ? (
-    <span className="font-bold text-[#F92F7B]">{selectedOption.label}</span>
-  ) : null;
-};
+// Note: Selected value display removed for performance - variants now use pure state coordination
 
 // Unified helper function to render variant fields (size and color)
 const renderVariantField = (
   field: Field,
-  params: Record<string, string | null>,
   handleVariantChange: (fieldName: string, value: string) => void,
-  onPrefetch: (fieldName: string, value: string) => void,
+  onPrefetch: () => void,
   isColorField = false,
 ) => {
   // Prepare options based on field type
@@ -55,18 +43,37 @@ const renderVariantField = (
     }
 
     // For color fields, preserve the original type (color/image) or add text as fallback
-    if (isColorField && field.type === 'swatch-radio-group') {
+    if (isColorField && field.type === 'swatch-radio-group' && 'options' in field) {
       return field.options.map((option) => {
-        // If it already has a type and it's color or image, keep it
-        if ('type' in option && (option.type === 'color' || option.type === 'image')) {
-          return option;
+        // Handle string options
+        if (typeof option === 'string') {
+          return {
+            value: option,
+            label: option,
+            type: 'text' as const,
+          };
         }
 
-        // Otherwise, add text type to show color name
+        // Handle object options
+        if (typeof option === 'object' && option !== null) {
+          // If it already has a type and it's color, keep it
+          if ('type' in option && option.type === 'color') {
+            return option;
+          }
+
+          // Otherwise, add text type to show color name
+          return {
+            ...option,
+            type: 'text' as const,
+            label: 'label' in option ? option.label : String((option as any).value || ''),
+          };
+        }
+
+        // Fallback for unexpected types
         return {
-          ...option,
+          value: String(option),
+          label: String(option),
           type: 'text' as const,
-          label: option.label,
         };
       });
     }
@@ -78,13 +85,12 @@ const renderVariantField = (
     <div className="w-full">
       <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
         <span>{isColorField ? 'Color' : 'Size'}:</span>
-        {renderSelectedValue(params, field)}
       </div>
       <SwatchRadioGroup
         className="justify-start gap-2 [&_label]:h-10 [&_label]:w-10 [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:transition-transform [&_label]:hover:scale-105 [&_button[data-state=checked]]:border-2 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:ring-2 [&_button[data-state=checked]]:ring-[#F92F7B] [&_label]:flex [&_label]:items-center [&_label]:justify-center [&_label]:text-xs [&_label]:font-bold [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold"
-        defaultValue={params[field.name] ?? field.defaultValue}
+        defaultValue={field.defaultValue}
         name={field.name}
-        onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
+        onOptionMouseEnter={onPrefetch}
         onValueChange={(value) => handleVariantChange(field.name, value)}
         options={getOptions()}
       />
@@ -92,55 +98,7 @@ const renderVariantField = (
   );
 };
 
-// Helper function to render other variant fields
-const renderOtherVariantField = (
-  field: Field,
-  params: Record<string, string | null>,
-  handleVariantChange: (fieldName: string, value: string) => void,
-  onPrefetch: (fieldName: string, value: string) => void,
-) => {
-  // Check if this field is likely a size/text variant (not color)
-  const isTextVariant =
-    field.name.toLowerCase().includes('size') ||
-    field.label.toLowerCase().includes('size') ||
-    field.name.toLowerCase().includes('variant');
-
-  return (
-    <div className="w-full" key={field.name}>
-      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
-        <span>{field.label}</span>
-        {renderSelectedValue(params, field)}
-      </div>
-      {/* Use circular SwatchRadioGroup for size-like fields, regular SwatchRadioGroup for color-like fields */}
-      {field.type === 'swatch-radio-group' && 'options' in field && !isTextVariant ? (
-        <SwatchRadioGroup
-          className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-1 [&_input:checked+label]:ring-pink-200 [&_label]:h-8 [&_label]:min-h-[32px] [&_label]:w-8 [&_label]:min-w-[32px] [&_label]:border-2 [&_label]:border-gray-300"
-          defaultValue={params[field.name] ?? field.defaultValue}
-          name={field.name}
-          onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
-          onValueChange={(value) => handleVariantChange(field.name, value)}
-          options={field.options}
-        />
-      ) : null}
-      {(field.type === 'button-radio-group' ||
-        (field.type === 'swatch-radio-group' && isTextVariant)) &&
-      'options' in field ? (
-        <SwatchRadioGroup
-          className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-4 [&_input:checked+label]:ring-[#F92F7B] [&_input:checked+label]:ring-offset-1 [&_label]:flex [&_label]:h-10 [&_label]:w-10 [&_label]:items-center [&_label]:justify-center [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:bg-white [&_label]:text-xs [&_label]:font-bold"
-          defaultValue={params[field.name] ?? field.defaultValue}
-          name={field.name}
-          onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
-          onValueChange={(value) => handleVariantChange(field.name, value)}
-          options={field.options.map((option) => ({
-            ...option,
-            type: 'text' as const,
-            label: option.label,
-          }))}
-        />
-      ) : null}
-    </div>
-  );
-};
+// Other variant fields removed for performance - now using unified renderVariantField
 
 interface BikeLeftSidebarContentProps {
   brandName?: string;
@@ -157,43 +115,25 @@ export function BikeLeftSidebarContent({
   fields = [],
   onVariantChange,
 }: BikeLeftSidebarContentProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-
   // Filter variant fields (color, size, etc.)
   const variantFields = fields.filter(isVariantField);
 
-  const searchParams = variantFields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
-    return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
-  }, {});
-
-  const [params, setParams] = useQueryStates(searchParams, { shallow: false });
-
-  const onPrefetch = useCallback(
-    (fieldName: string, value: string) => {
-      if (Object.keys(searchParams).length === 0) return;
-
-      const serialize = createSerializer(searchParams);
-      const newUrl = serialize(pathname, { ...params, [fieldName]: value });
-
-      router.prefetch(newUrl);
-    },
-    [router, pathname, params, searchParams],
-  );
+  const onPrefetch = useCallback(() => {
+    // Prefetch disabled to prevent unnecessary server queries on hover
+    // Variant selection is now purely client-side for better performance
+  }, []);
 
   const handleVariantChange = useCallback(
     (fieldName: string, value: string) => {
-      // Update URL params if field persists
-      if (variantFields.find((f) => f.name === fieldName)?.persist === true) {
-        void setParams({ [fieldName]: value || null });
-      }
+      // Skip URL updates for better performance - use state coordination instead
+      // URL persistence removed to prevent unnecessary server queries
 
-      // Notify parent component
+      // Notify parent component for state coordination
       if (onVariantChange) {
         onVariantChange(fieldName, value);
       }
     },
-    [variantFields, setParams, onVariantChange],
+    [onVariantChange],
   );
 
   if (!brandName && !description && fields.length === 0) return null;
@@ -221,18 +161,13 @@ export function BikeLeftSidebarContent({
 
         {/* Size Options - Interactive - Circular swatches with text */}
         {sizeField && 'options' in sizeField && sizeField.options.length
-          ? renderVariantField(sizeField, params, handleVariantChange, onPrefetch, false)
+          ? renderVariantField(sizeField, handleVariantChange, onPrefetch, false)
           : null}
 
         {/* Color Options - Interactive - Circular swatches */}
         {colorField && 'options' in colorField && colorField.options.length
-          ? renderVariantField(colorField, params, handleVariantChange, onPrefetch, true)
+          ? renderVariantField(colorField, handleVariantChange, onPrefetch, true)
           : null}
-
-        {/* Other variant fields */}
-        {variantFields
-          .filter((field) => field !== colorField && field !== sizeField)
-          .map((field) => renderOtherVariantField(field, params, handleVariantChange, onPrefetch))}
       </div>
     </div>
   );

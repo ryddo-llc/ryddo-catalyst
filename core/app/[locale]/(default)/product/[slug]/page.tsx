@@ -527,7 +527,6 @@ export default async function Product({ params, searchParams }: Props) {
     rating: baseProduct.reviewSummary.averageRating,
     accordions: streamableAccordions,
     inventoryStatus: streamableInventoryStatus,
-    warranty: streamableWarranty,
     brandLogo: baseProduct.brand?.defaultImage ? {
       url: baseProduct.brand.defaultImage.url,
       altText: baseProduct.brand.defaultImage.altText
@@ -540,15 +539,23 @@ export default async function Product({ params, searchParams }: Props) {
   const bikeProductData = streamableBikeData
     ? Streamable.from(async () => {
         const bikeData = await streamableBikeData;
+        const warranty = await streamableWarranty;
 
         return {
           ...baseProductData,
           backgroundImage: bikeData.backgroundImage,
           bikeSpecs: Streamable.from(() => Promise.resolve(bikeData.bikeSpecs || null)),
           colors: bikeData.colors,
+          warranty,
         };
       })
-    : baseProductData;
+    : Streamable.from(async () => {
+        const warranty = await streamableWarranty;
+        return {
+          ...baseProductData,
+          warranty,
+        };
+      });
 
   // Enhanced product data for scooter components
   const scooterProductData = streamableScooterData
@@ -566,16 +573,6 @@ export default async function Product({ params, searchParams }: Props) {
 
   const baseProps = {
     action: addToCart,
-    additionalActions: (
-      <div className="flex items-center gap-2">
-        <WishlistButton
-          formId={detachedWishlistFormId}
-          productId={productId}
-          productSku={streamableProductSku}
-        />
-        <DigitalTagLink productSlug={slug} />
-      </div>
-    ),
     additionalInformationTitle: t('ProductDetails.additionalInformation'),
     compareProducts: streamableCompareProducts,
     compareLabel: 'Compare',
@@ -592,6 +589,15 @@ export default async function Product({ params, searchParams }: Props) {
     thumbnailLabel: t('ProductDetails.thumbnail'),
     relatedProducts: streamableRelatedProducts,
     popularAccessories: streamablePopularAccessories,
+    // Image overlay actions
+    wishlistButton: (
+      <WishlistButton
+        formId={detachedWishlistFormId}
+        productId={productId}
+        productSku={streamableProductSku}
+      />
+    ),
+    digitalTagLink: <DigitalTagLink productSlug={slug} />,
   };
 
   const renderProductDetail = () => {
@@ -604,7 +610,19 @@ export default async function Product({ params, searchParams }: Props) {
 
       case 'default':
       default:
-        return <ProductDetail {...baseProps} product={defaultProductData} />;
+        // For default products, keep wishlist and digital tag in additionalActions
+        return (
+          <ProductDetail
+            {...baseProps}
+            additionalActions={
+              <div className="flex items-center gap-2">
+                {baseProps.wishlistButton}
+                {baseProps.digitalTagLink}
+              </div>
+            }
+            product={defaultProductData}
+          />
+        );
     }
   };
 

@@ -20,6 +20,7 @@ import {
   ProductSummarySkeleton,
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
+import { ProductImageOverlay } from '../shared/product-image-overlay';
 
 import { ScooterMobileCollapsibleForm } from './scooter-mobile-collapsible-form';
 import { ScooterMobileSpecs } from './scooter-mobile-specs';
@@ -75,6 +76,9 @@ export interface ProductDetailScooterProps<F extends Field> {
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
   additionalActions?: ReactNode;
+  // Image overlay actions
+  wishlistButton?: ReactNode;
+  digitalTagLink?: ReactNode;
   // Compare functionality
   compareProducts?: Streamable<
     Array<{ id: string; image?: { src: string; alt: string }; href: string; title: string }>
@@ -91,6 +95,8 @@ export function ProductDetailScooter<F extends Field>({
   ctaLabel: streamableCtaLabel,
   ctaDisabled: streamableCtaDisabled,
   additionalActions,
+  wishlistButton,
+  digitalTagLink,
   compareProducts,
   compareLabel = 'Compare',
   maxCompareItems = 3,
@@ -173,7 +179,7 @@ export function ProductDetailScooter<F extends Field>({
                         <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-visible">
                           {/* Centered Scooter Image */}
                           <div className="flex items-center justify-center">
-                            <div className="mx-auto w-full max-w-[280px] px-4 md:max-w-sm">
+                            <div className="relative mx-auto w-full max-w-[280px] px-4 md:max-w-sm">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const scooterImage = findHeroProductImage(images) ?? images[0];
@@ -194,6 +200,12 @@ export function ProductDetailScooter<F extends Field>({
                                   );
                                 }}
                               </Stream>
+
+                              {/* Floating Action Buttons Overlay */}
+                              <ProductImageOverlay
+                                digitalTagLink={digitalTagLink}
+                                wishlistButton={wishlistButton}
+                              />
                             </div>
                           </div>
 
@@ -213,7 +225,7 @@ export function ProductDetailScooter<F extends Field>({
                             {([images, fields, ctaLabel, ctaDisabled]) => (
                               <ScooterPriceCard
                                 action={action}
-                                additionalActions={additionalActions}
+                                additionalActions={null}
                                 ctaDisabled={ctaDisabled || false}
                                 ctaLabel={ctaLabel || 'Add to cart'}
                                 fields={fields}
