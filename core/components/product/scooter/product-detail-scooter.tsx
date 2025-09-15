@@ -21,6 +21,7 @@ import {
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
 import { ProductImageOverlay } from '../shared/product-image-overlay';
+import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
 
 import { ScooterMobileCollapsibleForm } from './scooter-mobile-collapsible-form';
 import { ScooterMobileSpecs } from './scooter-mobile-specs';
@@ -184,28 +185,38 @@ export function ProductDetailScooter<F extends Field>({
                                 {(images) => {
                                   const scooterImage = findHeroProductImage(images) ?? images[0];
 
-                                  return scooterImage ? (
-                                    <Image
-                                      alt={scooterImage.alt}
-                                      className="h-auto max-h-full w-full object-contain"
-                                      height={1000}
-                                      priority
-                                      src={scooterImage.src}
-                                      width={2000}
-                                    />
-                                  ) : (
-                                    <div className="text-center text-gray-500">
-                                      No scooter image available
-                                    </div>
+                                  return (
+                                    <>
+                                      {scooterImage ? (
+                                        <Image
+                                          alt={scooterImage.alt}
+                                          className="h-auto max-h-full w-full object-contain"
+                                          height={1000}
+                                          priority
+                                          src={scooterImage.src}
+                                          width={2000}
+                                        />
+                                      ) : (
+                                        <div className="text-center text-gray-500">
+                                          No scooter image available
+                                        </div>
+                                      )}
+
+                                      {/* Floating Action Buttons Overlay */}
+                                      <ProductImageOverlay
+                                        digitalTagLink={digitalTagLink}
+                                        galleryButton={
+                                          <GalleryButtonWithModal
+                                            images={images}
+                                            productTitle={product.title}
+                                          />
+                                        }
+                                        wishlistButton={wishlistButton}
+                                      />
+                                    </>
                                   );
                                 }}
                               </Stream>
-
-                              {/* Floating Action Buttons Overlay */}
-                              <ProductImageOverlay
-                                digitalTagLink={digitalTagLink}
-                                wishlistButton={wishlistButton}
-                              />
                             </div>
                           </div>
 

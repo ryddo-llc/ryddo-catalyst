@@ -9,6 +9,7 @@ import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 // Helper function to identify variant fields (color/size)
 const isVariantField = (field: Field): boolean => {
   const variantTypes = ['swatch-radio-group', 'button-radio-group', 'card-radio-group'];
+  // Note: 'colour' is British English spelling, both spellings supported
   const variantNames = ['color', 'colour', 'size', 'variant'];
 
   return (
@@ -31,8 +32,8 @@ const renderVariantField = (
     if (!('options' in field)) return [];
 
     // For size fields, always add text type to show labels
-    const isSizeField = field.label.toLowerCase().includes('size') ||
-                       field.name.toLowerCase().includes('size');
+    const isSizeField =
+      field.label.toLowerCase().includes('size') || field.name.toLowerCase().includes('size');
 
     if (isSizeField) {
       return field.options.map((option) => ({
@@ -45,34 +46,16 @@ const renderVariantField = (
     // For color fields, preserve the original type (color/image) or add text as fallback
     if (isColorField && field.type === 'swatch-radio-group' && 'options' in field) {
       return field.options.map((option) => {
-        // Handle string options
-        if (typeof option === 'string') {
-          return {
-            value: option,
-            label: option,
-            type: 'text' as const,
-          };
+        // SwatchRadioFieldOption can only be objects with type 'color' or 'image'
+        // If it already has a type and it's color, keep it
+        if (option.type === 'color') {
+          return option;
         }
 
-        // Handle object options
-        if (typeof option === 'object' && option !== null) {
-          // If it already has a type and it's color, keep it
-          if ('type' in option && option.type === 'color') {
-            return option;
-          }
-
-          // Otherwise, add text type to show color name
-          return {
-            ...option,
-            type: 'text' as const,
-            label: 'label' in option ? option.label : String((option as any).value || ''),
-          };
-        }
-
-        // Fallback for unexpected types
+        // For image type, convert to text for display
         return {
-          value: String(option),
-          label: String(option),
+          value: option.value,
+          label: option.label,
           type: 'text' as const,
         };
       });
@@ -87,7 +70,7 @@ const renderVariantField = (
         <span>{isColorField ? 'Color' : 'Size'}:</span>
       </div>
       <SwatchRadioGroup
-        className="justify-start gap-2 [&_label]:h-10 [&_label]:w-10 [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:transition-transform [&_label]:hover:scale-105 [&_button[data-state=checked]]:border-2 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:ring-2 [&_button[data-state=checked]]:ring-[#F92F7B] [&_label]:flex [&_label]:items-center [&_label]:justify-center [&_label]:text-xs [&_label]:font-bold [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold"
+        className="justify-start gap-2 [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold [&_button[data-state=checked]]:border-2 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:ring-2 [&_button[data-state=checked]]:ring-[#F92F7B] [&_label]:flex [&_label]:h-10 [&_label]:w-10 [&_label]:items-center [&_label]:justify-center [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:text-xs [&_label]:font-bold [&_label]:transition-transform [&_label]:hover:scale-105"
         defaultValue={field.defaultValue}
         name={field.name}
         onOptionMouseEnter={onPrefetch}

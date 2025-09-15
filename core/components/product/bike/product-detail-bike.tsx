@@ -18,6 +18,7 @@ import {
   ProductDetailBikeSkeleton,
 } from '../shared/product-detail-skeletons';
 import { ProductImageOverlay } from '../shared/product-image-overlay';
+import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
 
 import { BikeMobileSection } from './bike-mobile-section';
 import { BikeSpecsIcons } from './bike-specs-icons';
@@ -191,29 +192,39 @@ export function ProductDetailBike<F extends Field>({
                               {(images) => {
                                 const bikeImage = findHeroProductImage(images);
 
-                                return bikeImage ? (
-                                  <Image
-                                    alt={bikeImage.alt}
-                                    className="w-full object-contain transition-all duration-300"
-                                    height={1500}
-                                    priority
-                                    sizes="(max-width: 640px) 460px, (max-width: 768px) 540px, (max-width: 1024px) 690px, (max-width: 1280px) 845px, 1080px"
-                                    src={bikeImage.src}
-                                    width={1500}
-                                  />
-                                ) : (
-                                  <div className="text-center text-gray-500">
-                                    No bike image available
-                                  </div>
+                                return (
+                                  <>
+                                    {bikeImage ? (
+                                      <Image
+                                        alt={bikeImage.alt}
+                                        className="w-full object-contain transition-all duration-300"
+                                        height={1500}
+                                        priority
+                                        sizes="(max-width: 640px) 460px, (max-width: 768px) 540px, (max-width: 1024px) 690px, (max-width: 1280px) 845px, 1080px"
+                                        src={bikeImage.src}
+                                        width={1500}
+                                      />
+                                    ) : (
+                                      <div className="text-center text-gray-500">
+                                        No bike image available
+                                      </div>
+                                    )}
+
+                                    {/* Floating Action Buttons Overlay */}
+                                    <ProductImageOverlay
+                                      digitalTagLink={digitalTagLink}
+                                      galleryButton={
+                                        <GalleryButtonWithModal
+                                          images={images}
+                                          productTitle={product.title}
+                                        />
+                                      }
+                                      wishlistButton={wishlistButton}
+                                    />
+                                  </>
                                 );
                               }}
                             </Stream>
-
-                            {/* Floating Action Buttons Overlay */}
-                            <ProductImageOverlay
-                              digitalTagLink={digitalTagLink}
-                              wishlistButton={wishlistButton}
-                            />
                           </div>
                         </BikeVariantCoordinator>
 

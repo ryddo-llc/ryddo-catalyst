@@ -5,16 +5,18 @@ import { ReactNode } from 'react';
 interface ProductImageOverlayProps {
   wishlistButton?: ReactNode;
   digitalTagLink?: ReactNode;
+  galleryButton?: ReactNode;
   className?: string;
 }
 
 export function ProductImageOverlay({
   wishlistButton,
   digitalTagLink,
+  galleryButton,
   className = '',
 }: ProductImageOverlayProps) {
   // Don't render if no buttons provided
-  if (!wishlistButton && !digitalTagLink) {
+  if (!wishlistButton && !digitalTagLink && !galleryButton) {
     return null;
   }
 
@@ -35,6 +37,11 @@ export function ProductImageOverlay({
         {digitalTagLink ? (
           <div className="flex items-center justify-center">{digitalTagLink}</div>
         ) : null}
+
+        {/* Gallery Button */}
+        {galleryButton ? (
+          <div className="flex items-center justify-center">{galleryButton}</div>
+        ) : null}
       </div>
 
       {/* Subtle backdrop glow effect */}
@@ -47,10 +54,11 @@ export function ProductImageOverlay({
 export function ProductImageOverlayEnhanced({
   wishlistButton,
   digitalTagLink,
+  galleryButton,
   className = '',
 }: ProductImageOverlayProps) {
   // Don't render if no buttons provided
-  if (!wishlistButton && !digitalTagLink) {
+  if (!wishlistButton && !digitalTagLink && !galleryButton) {
     return null;
   }
 
@@ -73,6 +81,11 @@ export function ProductImageOverlayEnhanced({
         {/* Digital Tag Link */}
         {digitalTagLink ? (
           <div className="relative flex items-center justify-center">{digitalTagLink}</div>
+        ) : null}
+
+        {/* Gallery Button */}
+        {galleryButton ? (
+          <div className="relative flex items-center justify-center">{galleryButton}</div>
         ) : null}
 
         {/* Subtle inner glow */}
