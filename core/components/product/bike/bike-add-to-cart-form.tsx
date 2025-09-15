@@ -3,13 +3,11 @@
 import { ReactNode, startTransition, useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 
-import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Compare } from '@/vibes/soul/primitives/product-card/compare';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 
-import { ColorOption } from '../../../data-transformers/bike-product-transformer';
 import { revalidateCart } from '../../../vibes/soul/sections/product-detail/actions/revalidate-cart';
 
 interface CompareDrawerItem {
@@ -23,7 +21,6 @@ interface BikeAddToCartFormProps<F extends Field> {
   productId: string;
   action: ProductDetailFormAction<F>;
   fields: F[];
-  colors?: ColorOption[];
   compareProduct?: CompareDrawerItem;
   ctaLabel?: string;
   disabled?: boolean;
@@ -49,7 +46,6 @@ export function BikeAddToCartForm<F extends Field>({
   productId,
   action,
   fields,
-  colors,
   compareProduct,
   ctaLabel = 'Add to cart',
   disabled = false,

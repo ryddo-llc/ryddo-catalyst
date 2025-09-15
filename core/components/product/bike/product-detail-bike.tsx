@@ -9,6 +9,7 @@ import { type ProductSpecification } from '~/components/product/shared/product-s
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
 import { findBackgroundImage, findHeroProductImage } from '~/lib/image-resolver';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { ProductBadges } from '../shared/product-badges';
 import {
@@ -111,7 +112,7 @@ export function ProductDetailBike<F extends Field>({
                           const backgroundSrc =
                             product.backgroundImage ||
                             backgroundImage?.src ||
-                            '/images/backgrounds/default-background.webp';
+                            imageManagerImageUrl('default-ebike-background.png', 'original');
 
                           return (
                             <Image

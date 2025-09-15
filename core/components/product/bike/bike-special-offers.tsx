@@ -19,6 +19,121 @@ const isVariantField = (field: Field): boolean => {
   );
 };
 
+// Helper function to render selected value
+const renderSelectedValue = (params: Record<string, string | null>, field: Field) => {
+  if (!params[field.name] || !('options' in field)) return null;
+
+  const selectedOption = field.options.find((opt) => String(opt.value) === params[field.name]);
+
+  return selectedOption ? (
+    <span className="font-bold text-[#F92F7B]">{selectedOption.label}</span>
+  ) : null;
+};
+
+// Helper function to render size field
+const renderSizeField = (
+  field: Field,
+  params: Record<string, string | null>,
+  handleVariantChange: (fieldName: string, value: string) => void,
+  onPrefetch: (fieldName: string, value: string) => void,
+) => (
+  <div className="w-full">
+    <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
+      <span>{field.label}</span>
+      {renderSelectedValue(params, field)}
+    </div>
+    <SwatchRadioGroup
+      className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-4 [&_input:checked+label]:ring-[#F92F7B] [&_input:checked+label]:ring-offset-1 [&_label]:flex [&_label]:h-10 [&_label]:w-10 [&_label]:items-center [&_label]:justify-center [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:bg-white [&_label]:text-xs [&_label]:font-bold"
+      defaultValue={params[field.name] ?? field.defaultValue}
+      name={field.name}
+      onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
+      onValueChange={(value) => handleVariantChange(field.name, value)}
+      options={
+        'options' in field
+          ? field.options.map((option) => ({
+              ...option,
+              type: 'text' as const,
+              label: option.label,
+            }))
+          : []
+      }
+    />
+  </div>
+);
+
+// Helper function to render color field
+const renderColorField = (
+  field: Field,
+  params: Record<string, string | null>,
+  handleVariantChange: (fieldName: string, value: string) => void,
+  onPrefetch: (fieldName: string, value: string) => void,
+) => (
+  <div className="w-full">
+    <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
+      <span>{field.label}</span>
+      {renderSelectedValue(params, field)}
+    </div>
+    <SwatchRadioGroup
+      className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-1 [&_input:checked+label]:ring-pink-200 [&_label]:h-8 [&_label]:min-h-[32px] [&_label]:w-8 [&_label]:min-w-[32px] [&_label]:border-2 [&_label]:border-gray-300"
+      defaultValue={params[field.name] ?? field.defaultValue}
+      name={field.name}
+      onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
+      onValueChange={(value) => handleVariantChange(field.name, value)}
+      options={'options' in field ? field.options : []}
+    />
+  </div>
+);
+
+// Helper function to render other variant fields
+const renderOtherVariantField = (
+  field: Field,
+  params: Record<string, string | null>,
+  handleVariantChange: (fieldName: string, value: string) => void,
+  onPrefetch: (fieldName: string, value: string) => void,
+) => {
+  // Check if this field is likely a size/text variant (not color)
+  const isTextVariant =
+    field.name.toLowerCase().includes('size') ||
+    field.label.toLowerCase().includes('size') ||
+    field.name.toLowerCase().includes('variant');
+
+  return (
+    <div className="w-full" key={field.name}>
+      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
+        <span>{field.label}</span>
+        {renderSelectedValue(params, field)}
+      </div>
+      {/* Use circular SwatchRadioGroup for size-like fields, regular SwatchRadioGroup for color-like fields */}
+      {field.type === 'swatch-radio-group' && 'options' in field && !isTextVariant ? (
+        <SwatchRadioGroup
+          className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-1 [&_input:checked+label]:ring-pink-200 [&_label]:h-8 [&_label]:min-h-[32px] [&_label]:w-8 [&_label]:min-w-[32px] [&_label]:border-2 [&_label]:border-gray-300"
+          defaultValue={params[field.name] ?? field.defaultValue}
+          name={field.name}
+          onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
+          onValueChange={(value) => handleVariantChange(field.name, value)}
+          options={field.options}
+        />
+      ) : null}
+      {(field.type === 'button-radio-group' ||
+        (field.type === 'swatch-radio-group' && isTextVariant)) &&
+      'options' in field ? (
+        <SwatchRadioGroup
+          className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-4 [&_input:checked+label]:ring-[#F92F7B] [&_input:checked+label]:ring-offset-1 [&_label]:flex [&_label]:h-10 [&_label]:w-10 [&_label]:items-center [&_label]:justify-center [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:bg-white [&_label]:text-xs [&_label]:font-bold"
+          defaultValue={params[field.name] ?? field.defaultValue}
+          name={field.name}
+          onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
+          onValueChange={(value) => handleVariantChange(field.name, value)}
+          options={field.options.map((option) => ({
+            ...option,
+            type: 'text' as const,
+            label: option.label,
+          }))}
+        />
+      ) : null}
+    </div>
+  );
+};
+
 interface BikeLeftSidebarContentProps {
   brandName?: string;
   description?: ReactNode;
@@ -46,146 +161,73 @@ export function BikeLeftSidebarContent({
 
   const [params, setParams] = useQueryStates(searchParams, { shallow: false });
 
-  const onPrefetch = useCallback((fieldName: string, value: string) => {
-    if (Object.keys(searchParams).length === 0) return;
+  const onPrefetch = useCallback(
+    (fieldName: string, value: string) => {
+      if (Object.keys(searchParams).length === 0) return;
 
-    const serialize = createSerializer(searchParams);
-    const newUrl = serialize(pathname, { ...params, [fieldName]: value });
-    router.prefetch(newUrl);
-  }, [router, pathname, params, searchParams]);
+      const serialize = createSerializer(searchParams);
+      const newUrl = serialize(pathname, { ...params, [fieldName]: value });
 
-  const handleVariantChange = useCallback((fieldName: string, value: string) => {
-    // Update URL params if field persists
-    if (variantFields.find(f => f.name === fieldName)?.persist === true) {
-      void setParams({ [fieldName]: value || null });
-    }
+      router.prefetch(newUrl);
+    },
+    [router, pathname, params, searchParams],
+  );
 
-    // Notify parent component
-    if (onVariantChange) {
-      onVariantChange(fieldName, value);
-    }
-  }, [variantFields, setParams, onVariantChange]);
+  const handleVariantChange = useCallback(
+    (fieldName: string, value: string) => {
+      // Update URL params if field persists
+      if (variantFields.find((f) => f.name === fieldName)?.persist === true) {
+        void setParams({ [fieldName]: value || null });
+      }
+
+      // Notify parent component
+      if (onVariantChange) {
+        onVariantChange(fieldName, value);
+      }
+    },
+    [variantFields, setParams, onVariantChange],
+  );
 
   if (!brandName && !description && fields.length === 0) return null;
 
   // Find color and size fields specifically
-  const colorField = variantFields.find(f =>
-    f.label.toLowerCase().includes('color') ||
-    f.name.toLowerCase().includes('color')
+  const colorField = variantFields.find(
+    (f) => f.label.toLowerCase().includes('color') || f.name.toLowerCase().includes('color'),
   );
-  const sizeField = variantFields.find(f =>
-    f.label.toLowerCase().includes('size') ||
-    f.name.toLowerCase().includes('size')
+  const sizeField = variantFields.find(
+    (f) => f.label.toLowerCase().includes('size') || f.name.toLowerCase().includes('size'),
   );
 
   return (
     <div className="w-full">
       <div className="flex w-full flex-col items-start justify-start gap-4 rounded-lg">
         {brandName ? (
-          <div className="font-kanit text-2xl font-black leading-normal text-zinc-800">
-            {brandName}
-          </div>
+          <h1 className="font-kanit text-5xl font-black leading-normal text-zinc-800">
+            {brandName.toUpperCase()}
+          </h1>
         ) : null}
 
         {description ? (
-          <div className="text-sm leading-relaxed text-zinc-600">
-            {description}
-          </div>
+          <div className="text-large font-extrabold text-zinc-600">{description}</div>
         ) : null}
 
         {/* Size Options - Interactive - Circular swatches with text */}
-        {sizeField && 'options' in sizeField && sizeField.options.length > 0 && (
-          <div className="w-full">
-            <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
-              <span>{sizeField.label}</span>
-              {params[sizeField.name] && 'options' in sizeField && (
-                <span className="text-[#F92F7B] font-bold">
-                  {sizeField.options.find((opt: any) => opt.value === params[sizeField.name])?.label}
-                </span>
-              )}
-            </div>
-            <SwatchRadioGroup
-              className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-4 [&_input:checked+label]:ring-[#F92F7B] [&_input:checked+label]:ring-offset-1 [&_label]:h-10 [&_label]:w-10 [&_label]:border-2 [&_label]:border-gray-300 [&_label]:rounded-full [&_label]:flex [&_label]:items-center [&_label]:justify-center [&_label]:text-xs [&_label]:font-bold [&_label]:bg-white"
-              defaultValue={params[sizeField.name] ?? sizeField.defaultValue}
-              name={sizeField.name}
-              options={sizeField.options.map((option: any) => ({
-                ...option,
-                type: 'text' as const,
-                label: option.label
-              }))}
-              onValueChange={(value) => handleVariantChange(sizeField.name, value)}
-              onOptionMouseEnter={(value) => onPrefetch(sizeField.name, value)}
-            />
-          </div>
-        )}
+        {sizeField && 'options' in sizeField && sizeField.options.length
+          ? renderSizeField(sizeField, params, handleVariantChange, onPrefetch)
+          : null}
 
         {/* Color Options - Interactive */}
-        {colorField && colorField.type === 'swatch-radio-group' && 'options' in colorField && colorField.options.length > 0 && (
-          <div className="w-full">
-            <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
-              <span>{colorField.label}</span>
-              {params[colorField.name] && 'options' in colorField && (
-                <span className="text-[#F92F7B] font-bold">
-                  {colorField.options.find((opt: any) => opt.value === params[colorField.name])?.label}
-                </span>
-              )}
-            </div>
-            <SwatchRadioGroup
-              className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-1 [&_input:checked+label]:ring-pink-200 [&_label]:h-8 [&_label]:min-h-[32px] [&_label]:w-8 [&_label]:min-w-[32px] [&_label]:border-2 [&_label]:border-gray-300"
-              defaultValue={params[colorField.name] ?? colorField.defaultValue}
-              name={colorField.name}
-              options={colorField.options}
-              onValueChange={(value) => handleVariantChange(colorField.name, value)}
-              onOptionMouseEnter={(value) => onPrefetch(colorField.name, value)}
-            />
-          </div>
-        )}
+        {colorField &&
+        colorField.type === 'swatch-radio-group' &&
+        'options' in colorField &&
+        colorField.options.length
+          ? renderColorField(colorField, params, handleVariantChange, onPrefetch)
+          : null}
 
         {/* Other variant fields */}
-        {variantFields.filter(field => field !== colorField && field !== sizeField).map((field) => {
-          // Check if this field is likely a size/text variant (not color)
-          const isTextVariant = field.name.toLowerCase().includes('size') ||
-                               field.label.toLowerCase().includes('size') ||
-                               field.name.toLowerCase().includes('variant');
-
-          return (
-            <div className="w-full" key={field.name}>
-              <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
-                <span>{field.label}</span>
-                {params[field.name] && 'options' in field && (
-                  <span className="text-[#F92F7B] font-bold">
-                    {field.options.find((opt: any) => opt.value === params[field.name])?.label}
-                  </span>
-                )}
-              </div>
-              {/* Use circular SwatchRadioGroup for size-like fields, regular SwatchRadioGroup for color-like fields */}
-              {field.type === 'swatch-radio-group' && 'options' in field && !isTextVariant && (
-                <SwatchRadioGroup
-                  className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-1 [&_input:checked+label]:ring-pink-200 [&_label]:h-8 [&_label]:min-h-[32px] [&_label]:w-8 [&_label]:min-w-[32px] [&_label]:border-2 [&_label]:border-gray-300"
-                  defaultValue={params[field.name] ?? field.defaultValue}
-                  name={field.name}
-                  options={field.options}
-                  onValueChange={(value) => handleVariantChange(field.name, value)}
-                  onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
-                />
-              )}
-              {(field.type === 'button-radio-group' || (field.type === 'swatch-radio-group' && isTextVariant)) && 'options' in field && (
-                <SwatchRadioGroup
-                  className="justify-start gap-2 [&_input:checked+label]:border-2 [&_input:checked+label]:border-[#F92F7B] [&_input:checked+label]:ring-4 [&_input:checked+label]:ring-[#F92F7B] [&_input:checked+label]:ring-offset-1 [&_label]:h-10 [&_label]:w-10 [&_label]:border-2 [&_label]:border-gray-300 [&_label]:rounded-full [&_label]:flex [&_label]:items-center [&_label]:justify-center [&_label]:text-xs [&_label]:font-bold [&_label]:bg-white"
-                  defaultValue={params[field.name] ?? field.defaultValue}
-                  name={field.name}
-                  options={field.options.map((option: any) => ({
-                    ...option,
-                    type: 'text' as const,
-                    label: option.label
-                  }))}
-                  onValueChange={(value) => handleVariantChange(field.name, value)}
-                  onOptionMouseEnter={(value) => onPrefetch(field.name, value)}
-                />
-              )}
-            </div>
-          );
-        })}
+        {variantFields
+          .filter((field) => field !== colorField && field !== sizeField)
+          .map((field) => renderOtherVariantField(field, params, handleVariantChange, onPrefetch))}
       </div>
     </div>
   );

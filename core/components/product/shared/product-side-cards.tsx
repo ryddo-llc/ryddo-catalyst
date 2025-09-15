@@ -124,7 +124,6 @@ export function AuthorizedDealerCard<F extends Field = Field>({
           <ScooterAddToCartForm
             action={product.action}
             additionalActions={product.additionalActions}
-            colors={product.colors}
             compareProduct={{
               id: product.id,
               title: product.title,
@@ -142,7 +141,6 @@ export function AuthorizedDealerCard<F extends Field = Field>({
           <BikeAddToCartForm
             action={product.action}
             additionalActions={product.additionalActions}
-            colors={product.colors}
             compareProduct={{
               id: product.id,
               title: product.title,

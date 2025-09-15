@@ -26,7 +26,7 @@ export function BikeLeftSidebar({
   return (
     <div className="absolute left-0 top-[-20px] z-10 hidden w-64 rounded-lg bg-white/75 p-4 md:p-5 lg:p-6 md:block xl:left-1 xl:w-72 -ml-4 sm:-ml-6 md:-ml-10 lg:-ml-14 xl:-ml-18">
       <Stream
-        fallback={<BikeLeftSidebarContent brandName={brandName} colors={colors} productId={productId} onVariantChange={onVariantChange} />}
+        fallback={<BikeLeftSidebarContent brandName={brandName} colors={colors} onVariantChange={onVariantChange} productId={productId} />}
         value={Streamable.all([description || Streamable.from(() => Promise.resolve(null)), fields || Streamable.from(() => Promise.resolve([]))])}
       >
         {([descriptionContent, fieldsContent]) => (
@@ -35,8 +35,8 @@ export function BikeLeftSidebar({
             colors={colors}
             description={descriptionContent}
             fields={fieldsContent}
-            productId={productId}
             onVariantChange={onVariantChange}
+            productId={productId}
           />
         )}
       </Stream>
