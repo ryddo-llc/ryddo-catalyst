@@ -103,12 +103,16 @@ const MIN_COMMA_COUNT_FOR_RGBA = 7;
  */
 function isPct(s: string): boolean {
   const m = s.trim();
-
+  
   if (!m) return false;
 
-  const n = parseInt(m.replace('%', ''), 10);
+  const withoutSymbol = m.endsWith('%') ? m.slice(0, -1).trim() : m;
   
-  return Number.isFinite(n) && n >= 0 && n <= 100;
+  if (!/^\d+(\.\d+)?$/.test(withoutSymbol)) return false;
+  
+  const n = Number(withoutSymbol);
+  
+  return n >= 0 && n <= 100;
 }
 
 /**
@@ -176,14 +180,18 @@ function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
     }
   }
   
-  const percentage = parseInt(percentageStr, 10);
+  const percentage = Number.parseFloat(percentageStr.replace('%', '').trim());
 
-  if (Number.isNaN(percentage) || percentage < 0 || percentage > 100) {
+  if (!Number.isFinite(percentage) || percentage < 0 || percentage > 100) {
     return null;
   }
 
   // Extract category from label (convert to lowercase, remove spaces)
-  const category = label.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+  const category = label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove diacritics
+    .replace(/[^a-z0-9]/g, '');
 
   return {
     category,
@@ -211,10 +219,12 @@ function parseWheelCenter(centerStr?: string): { centerX: number; centerY: numbe
     return { centerX: DEFAULT_WHEEL_CONFIG.centerX, centerY: DEFAULT_WHEEL_CONFIG.centerY };
   }
 
-  const centerX = parseInt(parts[0]?.trim() || '0', 10);
-  const centerY = parseInt(parts[1]?.trim() || '0', 10);
+  const rawX = (parts[0] ?? '').trim();
+  const rawY = (parts[1] ?? '').trim();
+  const centerX = rawX === '' ? NaN : Number.parseInt(rawX, 10);
+  const centerY = rawY === '' ? NaN : Number.parseInt(rawY, 10);
 
-  if (Number.isNaN(centerX) || Number.isNaN(centerY)) {    
+  if (!Number.isFinite(centerX) || !Number.isFinite(centerY)) {
     return { centerX: DEFAULT_WHEEL_CONFIG.centerX, centerY: DEFAULT_WHEEL_CONFIG.centerY };
   }
 
@@ -364,9 +374,13 @@ function parseImageConfiguration(flattenedFields: FlattenedCustomFields) {
  * @returns {Object} Metrics configuration object
  */
 function parseMetricsConfiguration(flattenedFields: FlattenedCustomFields) {
-  const gapFromWheel = flattenedFields.metrics_gap_from_wheel ? parseFloat(flattenedFields.metrics_gap_from_wheel) : 20;
+  const gapFromWheel = flattenedFields.metrics_gap_from_wheel
+    ? Math.max(0, parseFloat(flattenedFields.metrics_gap_from_wheel))
+    : 20;
   const lineSpacing = flattenedFields.metrics_line_spacing ? parseFloat(flattenedFields.metrics_line_spacing) : 48;
-  const barWidth = flattenedFields.metrics_bar_width ? parseFloat(flattenedFields.metrics_bar_width) : 450;
+  const barWidth = flattenedFields.metrics_bar_width
+    ? Math.max(0, parseFloat(flattenedFields.metrics_bar_width))
+    : 450;
   const containerWidth = flattenedFields.metrics_container_width ? parseFloat(flattenedFields.metrics_container_width) : 800;
   const containerHeight = flattenedFields.metrics_container_height ? parseFloat(flattenedFields.metrics_container_height) : 1000;
   const topOffset = flattenedFields.metrics_top_offset ? parseFloat(flattenedFields.metrics_top_offset) : 0;
