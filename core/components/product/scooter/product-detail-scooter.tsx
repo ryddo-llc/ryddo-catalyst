@@ -104,7 +104,10 @@ export function ProductDetailScooter<F extends Field>({
   maxCompareLimitMessage = "You've reached the maximum number of products for comparison.",
 }: ProductDetailScooterProps<F>) {
   return (
-    <Stream fallback={<ProductDetailScooterSkeleton />} value={compareProducts || []}>
+    <Stream
+      fallback={<ProductDetailScooterSkeleton />}
+      value={compareProducts ?? Streamable.from(() => Promise.resolve([]))}
+    >
       {(compareItems) => (
         <CompareDrawerProvider
           items={compareItems}

@@ -83,7 +83,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
         <Stream fallback={<Skeleton.Box className="ml-auto h-12 w-32" />} value={product.price}>
           {(price) => {
             const displayPrice =
-              typeof price === 'string' ? price : price?.currentValue || '$3,695';
+              typeof price === 'string' ? price : (price?.currentValue ?? '');
 
             return (
               <>

@@ -602,6 +602,7 @@ export default async function Product({ params, searchParams }: Props) {
     digitalTagLink: <DigitalTagLink productSlug={slug} />,
   };
 
+  const { wishlistButton, digitalTagLink, ...basePropsWithoutOverlay } = baseProps;
   const renderProductDetail = () => {
     switch (productDetailVariant) {
       case 'bike':
@@ -615,11 +616,11 @@ export default async function Product({ params, searchParams }: Props) {
         // For default products, keep wishlist and digital tag in additionalActions
         return (
           <ProductDetail
-            {...baseProps}
+            {...basePropsWithoutOverlay}
             additionalActions={
               <div className="flex items-center gap-2">
-                {baseProps.wishlistButton}
-                {baseProps.digitalTagLink}
+                {wishlistButton}
+                {digitalTagLink}
               </div>
             }
             product={defaultProductData}
