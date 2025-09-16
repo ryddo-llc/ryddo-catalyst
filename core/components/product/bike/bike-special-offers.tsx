@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useCallback } from 'react';
+import { parseAsString, useQueryStates } from 'nuqs';
 
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
@@ -23,10 +24,20 @@ const isVariantField = (field: Field): boolean => {
 // Unified helper function to render variant fields (size and color)
 const renderVariantField = (
   field: Field,
-  handleVariantChange: (fieldName: string, value: string) => void,
   onPrefetch: () => void,
   isColorField = false,
 ) => {
+  // Use URL query states for this field
+  const [params, setParams] = useQueryStates({
+    [field.name]: parseAsString
+  });
+
+  const handleVariantChange = useCallback(
+    (value: string) => {
+      void setParams({ [field.name]: value || null });
+    },
+    [setParams, field.name],
+  );
   // Prepare options based on field type
   const getOptions = () => {
     if (!('options' in field)) return [];
@@ -71,10 +82,10 @@ const renderVariantField = (
       </div>
       <SwatchRadioGroup
         className="justify-start gap-2 [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold [&_button[data-state=checked]]:border-2 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:ring-2 [&_button[data-state=checked]]:ring-[#F92F7B] [&_label]:flex [&_label]:h-10 [&_label]:w-10 [&_label]:items-center [&_label]:justify-center [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:text-xs [&_label]:font-bold [&_label]:transition-transform [&_label]:hover:scale-105"
-        defaultValue={field.defaultValue}
+        value={params[field.name] || field.defaultValue || ''}
         name={field.name}
         onOptionMouseEnter={onPrefetch}
-        onValueChange={(value) => handleVariantChange(field.name, value)}
+        onValueChange={handleVariantChange}
         options={getOptions()}
       />
     </div>
@@ -89,35 +100,19 @@ interface BikeLeftSidebarContentProps {
   fields?: Field[];
   colors?: ColorOption[];
   productId?: string;
-  onVariantChange?: (fieldName: string, value: string) => void;
 }
 
 export function BikeLeftSidebarContent({
   brandName,
   description,
   fields = [],
-  onVariantChange,
 }: BikeLeftSidebarContentProps) {
   // Filter variant fields (color, size, etc.)
   const variantFields = fields.filter(isVariantField);
 
   const onPrefetch = useCallback(() => {
-    // Prefetch disabled to prevent unnecessary server queries on hover
-    // Variant selection is now purely client-side for better performance
+    // Prefetch can be implemented later if needed
   }, []);
-
-  const handleVariantChange = useCallback(
-    (fieldName: string, value: string) => {
-      // Skip URL updates for better performance - use state coordination instead
-      // URL persistence removed to prevent unnecessary server queries
-
-      // Notify parent component for state coordination
-      if (onVariantChange) {
-        onVariantChange(fieldName, value);
-      }
-    },
-    [onVariantChange],
-  );
 
   if (!brandName && !description && fields.length === 0) return null;
 
@@ -144,12 +139,12 @@ export function BikeLeftSidebarContent({
 
         {/* Size Options - Interactive - Circular swatches with text */}
         {sizeField && 'options' in sizeField && sizeField.options.length
-          ? renderVariantField(sizeField, handleVariantChange, onPrefetch, false)
+          ? renderVariantField(sizeField, onPrefetch, false)
           : null}
 
         {/* Color Options - Interactive - Circular swatches */}
         {colorField && 'options' in colorField && colorField.options.length
-          ? renderVariantField(colorField, handleVariantChange, onPrefetch, true)
+          ? renderVariantField(colorField, onPrefetch, true)
           : null}
       </div>
     </div>

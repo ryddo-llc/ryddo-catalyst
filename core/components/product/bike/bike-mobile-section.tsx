@@ -112,8 +112,9 @@ export function BikeMobileSection<F extends Field>({
                       }
 
                       return (
-                        <div className="text-3xl font-black text-gray-900">
-                          {displayPrice}
+                        <div className="text-4xl font-black text-gray-900 md:text-3xl">
+                          <span className="font-kanit">{displayPrice}</span>
+                          <span aria-hidden="true" className="text-[#F92F7B]">.</span>
                         </div>
                       );
                     }}

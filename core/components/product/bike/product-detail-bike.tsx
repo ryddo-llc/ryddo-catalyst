@@ -13,11 +13,7 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
 import { ProductBadges } from '../shared/product-badges';
-import {
-  BikeImageSkeleton,
-  BikeSpecsSkeleton,
-  ProductDetailBikeSkeleton,
-} from '../shared/product-detail-skeletons';
+import { BikeSpecsSkeleton, ProductDetailBikeSkeleton } from '../shared/product-detail-skeletons';
 import { ProductImageOverlay } from '../shared/product-image-overlay';
 
 import { BikeMobileSection } from './bike-mobile-section';
@@ -108,9 +104,11 @@ export function ProductDetailBike<F extends Field>({
         >
           <section aria-labelledby="product-heading" className="relative w-full">
             <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
-              {(product) =>
-                product && (
-                  <div className="relative h-[85vh] min-h-[85vh]">
+              {(product) => {
+                if (!product) return null;
+
+                return (
+                  <div className="relative min-h-[85vh] md:h-[85vh]">
                     {/* Background Image - Loaded immediately without Stream */}
                     <div className="absolute inset-0 h-full w-full opacity-55">
                       <Stream fallback={null} value={product.images}>
@@ -187,21 +185,46 @@ export function ProductDetailBike<F extends Field>({
                             warranty: product.warranty,
                           }}
                         >
+                          {/* Bike Image Display */}
                           <div className="relative flex h-[14.5rem] w-[24rem] items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] sm:w-[30rem] md:h-[20.5rem] md:w-[38rem] lg:h-[23.5rem] lg:w-[46rem] xl:h-[25.5rem] xl:w-[54rem]">
-                            <Stream fallback={<BikeImageSkeleton />} value={product.images}>
-                              {(images) => {
-                                const bikeImage = findHeroProductImage(images);
+                            <Stream
+                              fallback={
+                                <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
+                              }
+                              value={product.images}
+                            >
+                              {(imageList) => {
+                                // Robust image selection with fallback hierarchy:
+                                // 1. Variant-specific default image (first in array) - for variant switching
+                                // 2. Main product image (third position) - original main image logic
+                                // 3. Hero pattern image (product-hero, main-product, etc.)
+                                // 4. Any available image
+                                // 5. null (show error message)
+                                // Check if first image is a thumbnail, if so skip to main product image
+                                const isFirstImageThumbnail = imageList[0]?.alt
+                                  ?.toLowerCase()
+                                  .includes('thumbnail');
+                                const variantImage = isFirstImageThumbnail ? null : imageList[0];
+                                const mainProductImage = imageList[2];
+
+                                const heroImage =
+                                  variantImage ||
+                                  mainProductImage ||
+                                  findHeroProductImage(imageList) ||
+                                  imageList.find(Boolean) ||
+                                  null;
 
                                 return (
                                   <>
-                                    {bikeImage ? (
+                                    {heroImage ? (
                                       <Image
-                                        alt={bikeImage.alt}
-                                        className="sm:scale-115 h-full w-full -translate-y-2 scale-110 object-contain transition-all duration-300 sm:-translate-y-3 md:-translate-y-4 md:scale-125 lg:-translate-y-6 lg:scale-125 xl:-translate-y-8 xl:scale-125"
+                                        key={heroImage.src}
+                                        alt={heroImage.alt}
+                                        className="sm:scale-115 h-full w-full -translate-y-2 scale-110 object-contain animate-in fade-in zoom-in-95 duration-300 ease-out sm:-translate-y-3 md:-translate-y-4 md:scale-125 lg:-translate-y-6 lg:scale-125 xl:-translate-y-8 xl:scale-125"
                                         height={1500}
                                         priority
                                         sizes="(max-width: 640px) 384px, (max-width: 768px) 480px, (max-width: 1024px) 608px, (max-width: 1280px) 736px, 864px"
-                                        src={bikeImage.src}
+                                        src={heroImage.src}
                                         width={1500}
                                       />
                                     ) : (
@@ -215,7 +238,7 @@ export function ProductDetailBike<F extends Field>({
                                       digitalTagLink={digitalTagLink}
                                       galleryButton={
                                         <GalleryButtonWithModal
-                                          images={images}
+                                          images={imageList}
                                           productTitle={product.title}
                                         />
                                       }
@@ -265,8 +288,8 @@ export function ProductDetailBike<F extends Field>({
                       }}
                     />
                   </div>
-                )
-              }
+                );
+              }}
             </Stream>
           </section>
 

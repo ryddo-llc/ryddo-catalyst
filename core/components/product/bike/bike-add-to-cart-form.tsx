@@ -2,6 +2,7 @@
 
 import { ReactNode, startTransition, useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
+import { parseAsString, useQueryStates } from 'nuqs';
 
 import { Compare } from '@/vibes/soul/primitives/product-card/compare';
 import { toast } from '@/vibes/soul/primitives/toaster';
@@ -25,7 +26,6 @@ interface BikeAddToCartFormProps<F extends Field> {
   ctaLabel?: string;
   disabled?: boolean;
   additionalActions?: ReactNode;
-  selectedVariants?: Record<string, string>;
 }
 
 function SubmitButton({ children, disabled }: { children: string; disabled?: boolean }) {
@@ -50,12 +50,26 @@ export function BikeAddToCartForm<F extends Field>({
   ctaLabel = 'Add to cart',
   disabled = false,
   additionalActions,
-  selectedVariants = {},
 }: BikeAddToCartFormProps<F>) {
   const [state, formAction] = useActionState(action, {
     fields,
     lastResult: null,
   });
+
+  // Read variant selections from URL parameters
+  const variantFields = fields.filter(field =>
+    field.type === 'swatch-radio-group' ||
+    field.type === 'button-radio-group' ||
+    field.type === 'radio-group' ||
+    field.type === 'select' ||
+    field.type === 'card-radio-group'
+  );
+
+  const urlParams = variantFields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
+    return { ...acc, [field.name]: parseAsString };
+  }, {});
+
+  const [selectedVariants] = useQueryStates(urlParams);
 
   // Handle success messages and cart revalidation
   useEffect(() => {
@@ -162,9 +176,52 @@ export function BikeAddToCartForm<F extends Field>({
         )}
       </div>
 
-      {/* Interactive fields removed - variants are now handled in left sidebar */}
-
-      {/* Fallback color selection removed - variants are now handled in left sidebar */}
+      {/* Compact Variant Selection - Mobile Only for e-commerce conversion */}
+      <div className="mb-4 space-y-3 md:hidden">
+        {fields
+          .filter((field) =>
+            field.type === 'swatch-radio-group' ||
+            field.type === 'button-radio-group' ||
+            field.type === 'radio-group' ||
+            field.type === 'select'
+          )
+          .slice(0, 2) // Show max 2 most important variants (color + size)
+          .map((field) => (
+            <div key={field.name} className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
+                {field.label}:
+              </label>
+              {field.type === 'swatch-radio-group' && 'options' in field && (
+                <div className="flex flex-wrap gap-1">
+                  {field.options.slice(0, 4).map((option) => (
+                    <label
+                      key={option.value}
+                      className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-gray-300 text-xs font-bold transition-all hover:scale-105 hover:border-[#F92F7B]"
+                    >
+                      <input
+                        type="radio"
+                        name={field.name}
+                        value={option.value}
+                        defaultChecked={selectedVariants[field.name] === option.value}
+                        className="sr-only"
+                      />
+                      <span className="truncate">
+                        {option.type === 'color' ? '' : option.label.slice(0, 2)}
+                      </span>
+                      {option.type === 'color' && (
+                        <span
+                          className="h-6 w-6 rounded-full border border-gray-200"
+                          style={{ backgroundColor: option.color }}
+                        />
+                      )}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))
+        }
+      </div>
 
       {/* Wishlist Button */}
 

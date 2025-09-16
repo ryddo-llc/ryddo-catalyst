@@ -33,7 +33,6 @@ interface ProductWithSideCardData<F extends Field = Field> {
   ctaDisabled?: boolean;
   additionalActions?: ReactNode;
   productType?: 'bike' | 'scooter';
-  selectedVariants?: Record<string, string>;
 }
 
 // Offers Card Component
@@ -87,8 +86,8 @@ export function AuthorizedDealerCard<F extends Field = Field>({
 
             return (
               <>
-                <div className="mb-2 font-kanit text-5xl font-black text-zinc-800">
-                  {displayPrice}
+                <div className="mb-2 text-5xl font-black text-zinc-800">
+                  <span className="font-kanit">{displayPrice}</span>
                   <span aria-hidden="true" className="text-[#F92F7B]">
                     .
                   </span>
@@ -151,7 +150,6 @@ export function AuthorizedDealerCard<F extends Field = Field>({
             disabled={product.ctaDisabled}
             fields={product.fields}
             productId={product.id}
-            selectedVariants={product.selectedVariants}
           />
         )}
 
