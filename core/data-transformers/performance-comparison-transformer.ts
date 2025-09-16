@@ -97,12 +97,11 @@ const MIN_COMMA_COUNT_FOR_RGBA = 7;
 
 /**
  * Parse a performance metric string from BigCommerce custom field
- * Format: "Label:Percentage:Sublabel:Value"
- * Note: Sublabel may contain commas, so we need to handle that
+ * Format: "Label:Value:Percentage:Sublabel"
  */
 /**
  * Parse a performance metric from a BigCommerce custom field value
- * @param {string} fieldValue - The custom field value in format "Label:Percentage:Sublabel:Value"
+ * @param {string} fieldValue - The custom field value in format "Label:Value:Percentage:Sublabel"
  * @returns {PerformanceMetric | null} Parsed PerformanceMetric object or null if invalid
  */
 function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
@@ -111,26 +110,37 @@ function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
   }
 
   // Split by ':' but handle commas in sublabels
-  const firstColonIndex = fieldValue.indexOf(':');
-  const lastColonIndex = fieldValue.lastIndexOf(':');
+  const parts = fieldValue.split(':');
   
-  if (firstColonIndex === -1 || lastColonIndex === -1 || firstColonIndex === lastColonIndex) {
+  // Need exactly 4 parts: Label:Value:Percentage:Sublabel
+  if (parts.length !== 4) {
     return null;
   }
   
-  const label = fieldValue.substring(0, firstColonIndex);
-  const value = fieldValue.substring(lastColonIndex + 1);
-  const middlePart = fieldValue.substring(firstColonIndex + 1, lastColonIndex);
-  
-  // Find the percentage (should be a number)
-  const percentageMatch = /^(\d{1,2}|100):(.+)$/.exec(middlePart);
-  
-  if (!percentageMatch) {
+  // Validate all parts exist
+  if (!parts[0] || !parts[1] || !parts[2] || !parts[3]) {
     return null;
   }
   
-  const percentageStr = percentageMatch[1] || '';
-  const sublabel = percentageMatch[2] || '';
+  // New format: Label:Value:Percentage:Sublabel
+  const label = parts[0];
+  const value = parts[1];
+  const percentageStr = parts[2];
+  const sublabel = parts[3];
+  
+  // Parse value to extract current and total if it contains "/"
+  let displayValue = value;
+  let totalValue = null;
+  
+  if (value.includes('/')) {
+    const valueParts = value.split('/');
+    
+    if (valueParts.length === 2 && valueParts[0] && valueParts[1]) {
+      displayValue = valueParts[0].trim();
+      totalValue = valueParts[1].trim();
+    }
+  }
+  
   const percentage = parseInt(percentageStr, 10);
 
   if (Number.isNaN(percentage) || percentage < 0 || percentage > 100) {
@@ -145,7 +155,8 @@ function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
     label,
     percentage,
     sublabel,
-    value,
+    value: displayValue,
+    totalValue: totalValue || undefined,
   };
 }
 
