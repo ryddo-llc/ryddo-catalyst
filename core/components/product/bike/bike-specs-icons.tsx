@@ -85,7 +85,7 @@ export function BikeSpecsIcons({ specs }: BikeSpecsIconsProps) {
   return (
     <div
       aria-label="Bike specifications"
-      className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8"
+      className="flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-12"
       role="region"
     >
       {specs.slice(0, 6).map((spec) => {

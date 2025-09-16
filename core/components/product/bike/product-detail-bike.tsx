@@ -110,7 +110,7 @@ export function ProductDetailBike<F extends Field>({
             <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
               {(product) =>
                 product && (
-                  <div className="relative min-h-[60vh] md:max-h-[85vh] md:min-h-[70vh]">
+                  <div className="relative h-[85vh] min-h-[85vh]">
                     {/* Background Image - Loaded immediately without Stream */}
                     <div className="absolute inset-0 h-full w-full opacity-55">
                       <Stream fallback={null} value={product.images}>
@@ -137,10 +137,10 @@ export function ProductDetailBike<F extends Field>({
                     </div>
 
                     {/* Content Container */}
-                    <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 sm:px-6 md:px-8 md:py-6 lg:px-12 xl:px-16">
+                    <div className="relative z-10 flex h-full flex-col justify-start px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 lg:px-12 lg:py-5 xl:px-16 xl:py-6">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
                         {/* Top Section - Product Name and Brand */}
-                        <header className="mt-10 text-center md:mb-1">
+                        <header className="mt-6 text-center sm:mt-8 md:mb-1 md:mt-10">
                           {/* Hidden h1 for SEO - Screen readers and crawlers only */}
                           <h1 className="sr-only" id="product-heading">
                             {product.title}
@@ -152,7 +152,7 @@ export function ProductDetailBike<F extends Field>({
 
                             {/* Brand Logo - Fixed size container */}
                             {product.brandLogo && (
-                              <div className="lg:-mt-18 -mt-12 flex h-[8.4rem] w-[12.6rem] items-center justify-center sm:-mt-14 sm:h-[10.5rem] sm:w-[15.75rem] md:-mt-16 md:h-[12.6rem] md:w-[18.9rem] lg:h-[14.7rem] lg:w-[21rem] xl:-mt-20 xl:h-[16.8rem] xl:w-[25.2rem]">
+                              <div className="-mt-8 flex h-[8.4rem] w-[12.6rem] items-center justify-center sm:-mt-12 sm:h-[10.5rem] sm:w-[15.75rem] md:-mt-14 md:h-[12.6rem] md:w-[18.9rem] lg:-mt-16 lg:h-[14.7rem] lg:w-[21rem] xl:-mt-20 xl:h-[16.8rem] xl:w-[25.2rem]">
                                 <Image
                                   alt={product.brandLogo.altText || 'Brand logo'}
                                   className="max-h-full max-w-full object-contain"
@@ -197,7 +197,7 @@ export function ProductDetailBike<F extends Field>({
                                     {bikeImage ? (
                                       <Image
                                         alt={bikeImage.alt}
-                                        className="h-full w-full scale-125 -translate-y-8 object-contain transition-all duration-300"
+                                        className="sm:scale-115 h-full w-full -translate-y-2 scale-110 object-contain transition-all duration-300 sm:-translate-y-3 md:-translate-y-4 md:scale-125 lg:-translate-y-6 lg:scale-125 xl:-translate-y-8 xl:scale-125"
                                         height={1500}
                                         priority
                                         sizes="(max-width: 640px) 384px, (max-width: 768px) 480px, (max-width: 1024px) 608px, (max-width: 1280px) 736px, 864px"
@@ -228,14 +228,14 @@ export function ProductDetailBike<F extends Field>({
                           </div>
                         </BikeVariantCoordinator>
 
-                        {/* Bottom Section - Desktop/Tablet Specifications - Natural flow */}
-                        <div className="mt-auto hidden pt-16 md:block">
+                        {/* Bottom Section - Desktop/Tablet Specifications - Centered with bike */}
+                        <div className="hidden md:mt-4 md:flex md:justify-center lg:mt-2 xl:mt-0">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;
 
                               return (
-                                <div className="mx-auto max-w-4xl">
+                                <div className="w-[38rem] md:ml-8 md:w-[38rem] lg:ml-12 lg:w-[46rem] xl:ml-16 xl:w-[54rem]">
                                   <BikeSpecsIcons specs={specs} />
                                 </div>
                               );

@@ -51,7 +51,7 @@ export function BikeVariantCoordinator<F extends Field>({
   }, []);
 
   return (
-    <div className="relative -mt-2 mb-4 flex min-h-0 flex-1 items-start justify-center md:-mt-4 lg:-mt-6">
+    <div className="relative -mt-1 mb-2 flex min-h-0 items-start justify-center sm:-mt-2 sm:mb-3 md:-mt-3 md:mb-4 lg:-mt-4 lg:mb-4 xl:-mt-6">
       {/* Left Sidebar - Brand Name, Description, and Variants - Absolutely positioned */}
       <BikeLeftSidebar
         brandName={product.subtitle}
