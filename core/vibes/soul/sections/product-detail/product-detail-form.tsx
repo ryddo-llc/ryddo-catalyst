@@ -132,7 +132,7 @@ export function ProductDetailForm<F extends Field>({
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
   }, {});
 
-  const [params] = useQueryStates(searchParams, { shallow: false });
+  const [params] = useQueryStates(searchParams, { shallow: true });
 
   const onPrefetch = (fieldName: string, value: string) => {
     if (prefetch) {
@@ -407,7 +407,7 @@ function FormField({
   const controls = useInputControl(formField);
 
   const [params, setParams] = useQueryStates(
-    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: true }) } : {},
   );
 
   const handleChange = useCallback(
@@ -723,7 +723,7 @@ export function InteractiveColorSwatches({
 }: InteractiveSpecificationItemProps) {
   const controls = useInputControl(formField);
   const [params, setParams] = useQueryStates(
-    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: true }) } : {},
   );
 
   const handleColorSelect = useCallback(
@@ -795,7 +795,7 @@ export function InteractiveSizeBadges({
 }: InteractiveSpecificationItemProps) {
   const controls = useInputControl(formField);
   const [params, setParams] = useQueryStates(
-    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: true }) } : {},
   );
 
   const handleSizeSelect = useCallback(

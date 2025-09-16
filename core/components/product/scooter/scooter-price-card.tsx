@@ -42,7 +42,7 @@ export function ScooterPriceCard<F extends Field>({
   additionalActions,
 }: ScooterPriceCardProps<F>) {
   return (
-    <div className="absolute right-0 top-[-100px] z-10 hidden md:block">
+    <div className="absolute right-0 top-[-100px] z-10 hidden md:block -mr-8 sm:-mr-12 md:-mr-16 lg:-mr-20 xl:-mr-24">
       <AuthorizedDealerCard
         product={{
           id: product.id,

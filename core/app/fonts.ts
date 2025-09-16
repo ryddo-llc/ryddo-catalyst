@@ -1,4 +1,4 @@
-import { Inter, Nunito } from 'next/font/google';
+import { Inter, Kanit, Nunito } from 'next/font/google';
 
 const inter = Inter({
   display: 'swap',
@@ -12,10 +12,11 @@ const nunito = Nunito({
   variable: '--font-family-heading',
 });
 
-const nunitoMono = Nunito({
+const kanit = Kanit({
   display: 'swap',
   subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-family-mono',
 });
 
-export const fonts = [inter, nunito, nunitoMono];
+export const fonts = [inter, nunito, kanit];

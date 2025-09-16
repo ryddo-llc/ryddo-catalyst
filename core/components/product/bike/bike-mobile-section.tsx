@@ -124,7 +124,6 @@ export function BikeMobileSection<F extends Field>({
                 <BikeAddToCartForm
                   action={action}
                   additionalActions={additionalActions}
-                  colors={product.colors}
                   compareProduct={{
                     id: product.id,
                     title: product.title,

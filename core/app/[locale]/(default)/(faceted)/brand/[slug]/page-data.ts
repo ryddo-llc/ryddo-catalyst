@@ -9,6 +9,10 @@ const BrandPageQuery = graphql(`
     site {
       brand(entityId: $entityId) {
         name
+        defaultImage {
+          altText
+          url: urlTemplate(lossy: true)
+        }
         seo {
           pageTitle
           metaDescription

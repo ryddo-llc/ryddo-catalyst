@@ -10,7 +10,7 @@ export function DigitalTagLink({ productSlug, className = '', ariaLabel = 'View 
   return (
     <Link
       aria-label={ariaLabel}
-      className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-[#F92F7B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 ${className} `}
+      className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-[#F92F7B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 sm:h-8 sm:w-8 ${className} `}
       href={`/product/${productSlug}/tag`}
       title={ariaLabel}
     >

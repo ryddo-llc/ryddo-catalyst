@@ -10,7 +10,9 @@ import type { ProductSpecification } from '~/components/product/shared/product-s
 import type { ColorOption } from '~/data-transformers/scooter-product-transformer';
 import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
 import { findBackgroundImage, findHeroProductImage } from '~/lib/image-resolver';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
+import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
 import { ProductBadges } from '../shared/product-badges';
 import {
   BikeImageSkeleton,
@@ -19,6 +21,7 @@ import {
   ProductSummarySkeleton,
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
+import { ProductImageOverlay } from '../shared/product-image-overlay';
 
 import { ScooterMobileCollapsibleForm } from './scooter-mobile-collapsible-form';
 import { ScooterMobileSpecs } from './scooter-mobile-specs';
@@ -74,6 +77,9 @@ export interface ProductDetailScooterProps<F extends Field> {
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
   additionalActions?: ReactNode;
+  // Image overlay actions
+  wishlistButton?: ReactNode;
+  digitalTagLink?: ReactNode;
   // Compare functionality
   compareProducts?: Streamable<
     Array<{ id: string; image?: { src: string; alt: string }; href: string; title: string }>
@@ -90,13 +96,18 @@ export function ProductDetailScooter<F extends Field>({
   ctaLabel: streamableCtaLabel,
   ctaDisabled: streamableCtaDisabled,
   additionalActions,
+  wishlistButton,
+  digitalTagLink,
   compareProducts,
   compareLabel = 'Compare',
   maxCompareItems = 3,
   maxCompareLimitMessage = "You've reached the maximum number of products for comparison.",
 }: ProductDetailScooterProps<F>) {
   return (
-    <Stream fallback={<ProductDetailScooterSkeleton />} value={compareProducts || []}>
+    <Stream
+      fallback={<ProductDetailScooterSkeleton />}
+      value={compareProducts ?? Streamable.from(() => Promise.resolve([]))}
+    >
       {(compareItems) => (
         <CompareDrawerProvider
           items={compareItems}
@@ -116,7 +127,7 @@ export function ProductDetailScooter<F extends Field>({
                           const backgroundSrc =
                             product.backgroundImage ||
                             backgroundImage?.src ||
-                            '/images/backgrounds/default-background.webp';
+                            imageManagerImageUrl('default-ebike-background.png', 'original');
 
                           return (
                             <Image
@@ -172,24 +183,40 @@ export function ProductDetailScooter<F extends Field>({
                         <div className="relative mb-8 flex min-h-0 flex-1 items-center justify-center overflow-visible">
                           {/* Centered Scooter Image */}
                           <div className="flex items-center justify-center">
-                            <div className="mx-auto w-full max-w-[280px] px-4 md:max-w-sm">
+                            <div className="relative mx-auto w-full max-w-[280px] px-4 md:max-w-sm">
                               <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                                 {(images) => {
                                   const scooterImage = findHeroProductImage(images) ?? images[0];
 
-                                  return scooterImage ? (
-                                    <Image
-                                      alt={scooterImage.alt}
-                                      className="h-auto max-h-full w-full object-contain"
-                                      height={1000}
-                                      priority
-                                      src={scooterImage.src}
-                                      width={2000}
-                                    />
-                                  ) : (
-                                    <div className="text-center text-gray-500">
-                                      No scooter image available
-                                    </div>
+                                  return (
+                                    <>
+                                      {scooterImage ? (
+                                        <Image
+                                          alt={scooterImage.alt}
+                                          className="h-auto max-h-full w-full object-contain"
+                                          height={1000}
+                                          priority
+                                          src={scooterImage.src}
+                                          width={2000}
+                                        />
+                                      ) : (
+                                        <div className="text-center text-gray-500">
+                                          No scooter image available
+                                        </div>
+                                      )}
+
+                                      {/* Floating Action Buttons Overlay */}
+                                      <ProductImageOverlay
+                                        digitalTagLink={digitalTagLink}
+                                        galleryButton={
+                                          <GalleryButtonWithModal
+                                            images={images}
+                                            productTitle={product.title}
+                                          />
+                                        }
+                                        wishlistButton={wishlistButton}
+                                      />
+                                    </>
                                   );
                                 }}
                               </Stream>
@@ -212,7 +239,7 @@ export function ProductDetailScooter<F extends Field>({
                             {([images, fields, ctaLabel, ctaDisabled]) => (
                               <ScooterPriceCard
                                 action={action}
-                                additionalActions={additionalActions}
+                                additionalActions={null}
                                 ctaDisabled={ctaDisabled || false}
                                 ctaLabel={ctaLabel || 'Add to cart'}
                                 fields={fields}

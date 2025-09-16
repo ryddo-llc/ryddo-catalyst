@@ -146,7 +146,7 @@ export const SwatchRadioGroup = React.forwardRef<
                 return (
                     <span
                       className={clsx(
-                        'swatch-text-option flex size-full items-center justify-center border text-xs font-bold uppercase tracking-wide',
+                        'swatch-text-option flex size-full items-center justify-center rounded-full border text-xs font-bold uppercase tracking-wide',
                         {
                           light:
                             'border-[var(--swatch-radio-group-light-option-border,hsl(var(--foreground)/10%))] bg-white text-gray-900',
