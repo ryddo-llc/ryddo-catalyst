@@ -28,8 +28,8 @@ export function PerformanceMetrics({
   wheelCenterY = 0, 
   wheelRadius = 150, 
   lineSpacing = 48, 
-  barWidth = 350,
-  topOffset = 50,
+  barWidth = 450,
+  topOffset = 0,
   curveRadiusMultiplier = 0.6,
   gapFromWheel = 0
 }: PerformanceMetricsProps) {
@@ -47,33 +47,37 @@ export function PerformanceMetrics({
   };
 
   useEffect(() => {
-    // Fallback timer to ensure animation triggers even if Intersection Observer fails
-    const fallbackTimer = setTimeout(() => {
-      setIsVisible(true);
-    }, 1000); // Trigger after 1 second as fallback
+    const supportsIO = typeof IntersectionObserver !== 'undefined';
+    
+    // Fallback timer to ensure animation triggers only if Intersection Observer is unavailable
+    const fallbackTimer = !supportsIO
+      ? setTimeout(() => {
+          setIsVisible(true);
+        }, 1000) // Trigger after 1 second as fallback
+      : null;
 
     // Trigger animation when it comes on the screen
-    const observer = new IntersectionObserver(
+    const observer = supportsIO ? new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
           setIsVisible(true);
-          clearTimeout(fallbackTimer); // Clear fallback if intersection works
-          observer.disconnect(); // Stop observing after first trigger
+          if (fallbackTimer) clearTimeout(fallbackTimer); // Clear fallback if intersection works
+          observer?.disconnect(); // Stop observing after first trigger
         }
       },
       {
         threshold: 0.1, // Trigger when 10% visible
         rootMargin: '0px 0px -50px 0px', // Trigger 50px before entering viewport
       }
-    );
+    ) : null;
 
     const currentRef = ref.current;
     
-    if (currentRef) observer.observe(currentRef);
+    if (currentRef && observer) observer.observe(currentRef);
 
     return () => {
-      clearTimeout(fallbackTimer);
-      observer.disconnect();
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      if (observer) observer.disconnect();
     };
   }, []);
 
@@ -91,36 +95,70 @@ export function PerformanceMetrics({
           {/* Desktop: Curved positioning (xl and up) */}
           <div className="hidden xl:block">
             <div
-              className='font-bold text-gray-900 text-lg leading-tight mb-2'
+              className='font-bold text-gray-900 text-lg leading-tight mb-2 italic'
               style={{ 
                 position: 'relative', 
-                left: getCurveOffset(index, metrics.length, curveConfig.labelYAdjust, curveConfig, curveRadiusMultiplier, gapFromWheel) 
+                left: getCurveOffset(index, metrics.length, curveConfig.labelYAdjust, curveConfig, curveRadiusMultiplier, gapFromWheel),
+                width: `${curveConfig.barWidth}px`,
               }}
             >
-              {metric.label} - {metric.value}
+              {metric.label}
             </div>
             <div
-              className="bg-gray-200 rounded-full overflow-hidden mb-2"
+              className="relative mb-2"
               style={{
                 position: 'relative',
                 left: getCurveOffset(index, metrics.length, curveConfig.barYAdjust, curveConfig, curveRadiusMultiplier, gapFromWheel),
                 width: `${curveConfig.barWidth}px`,
-                height: '8px',
-                borderRadius: '4px',
               }}
             >
+              {/* Current value positioned above bar at percentage */}
               <div
-                className="rounded-full transition-all duration-1000 ease-out bg-[#F92F7B]"
+                className="absolute -top-6 text-md font-bold italic text-gray-900 transform -translate-x-1/2"
                 style={{
-                  width: isVisible ? `${metric.percentage}%` : '0%',
+                  left: `${Math.max(0, Math.min(100, metric.percentage))}%`,
+                  opacity: isVisible ? 1 : 0,
+                  transition: 'opacity 1000ms ease-out',
                   transitionDelay: `${index * 150}ms`,
-                  height: '8px',
-                  borderRadius: '4px',
                 }}
-              />
+              >
+                {metric.value}
+              </div>
+              
+              {/* Total value positioned at end of bar */}
+              {metric.totalValue ? (
+                <div
+                  className="absolute -top-6 text-md font-bold italic text-gray-400 transform -translate-x-1/2"
+                  style={{
+                    left: '100%',
+                    opacity: isVisible ? 1 : 0,
+                    transition: 'opacity 1000ms ease-out',
+                    transitionDelay: `${index * 150}ms`,
+                  }}
+                >
+                  {metric.totalValue}
+                </div>
+              ) : null}
+              
+              {/* Progress bar */}
+              <div
+                className="bg-gray-300 rounded-full relative"
+                style={{
+                  height: '8px',
+                }}
+              >
+                <div
+                  className="absolute top-0 left-0 rounded-full transition-all duration-1000 ease-out bg-[#F92F7B]"
+                  style={{
+                    width: isVisible ? `${metric.percentage}%` : '0%',
+                    transitionDelay: `${index * 150}ms`,
+                    height: '8px',
+                  }}
+                />
+              </div>
             </div>
             <div
-              className='text-base text-gray-500'
+              className='text-base text-gray-500 italic'
               style={{ 
                 position: 'relative', 
                 left: getCurveOffset(index, metrics.length, curveConfig.sublabelYAdjust, curveConfig, curveRadiusMultiplier, gapFromWheel) 
@@ -132,27 +170,55 @@ export function PerformanceMetrics({
 
           {/* Mobile: Normal vertical layout (below xl) */}
           <div className="block xl:hidden">
-            <div className='font-bold text-gray-900 text-lg leading-tight mb-2'>
-              {metric.label} - {metric.value}
+            <div className='font-bold text-gray-900 text-lg leading-tight mb-2 italic'>
+              {metric.label}
             </div>
-            <div 
-              className="w-full bg-gray-200 rounded-full overflow-hidden mb-2"
-              style={{
-                height: '8px',
-                borderRadius: '4px',
-              }}
-            >
+            <div className="relative mb-2">
+              {/* Current value positioned above bar at percentage */}
               <div
-                className="rounded-full transition-all duration-1000 ease-out bg-[#F92F7B]"
+                className="absolute -top-6 text-sm font-bold text-gray-900 transform -translate-x-1/2"
                 style={{
-                  width: isVisible ? `${metric.percentage}%` : '0%',
-                  height: '8px',
-                  borderRadius: '4px',
+                  left: `${Math.max(0, Math.min(100, metric.percentage))}%`,
+                  opacity: isVisible ? 1 : 0,
+                  transition: 'opacity 1000ms ease-out',
                   transitionDelay: `${index * 150}ms`,
                 }}
-              />
+              >
+                {metric.value}
+              </div>
+              
+              {/* Total value positioned at end of bar */}
+              {metric.totalValue ? (
+                <div
+                  className="absolute -top-6 text-sm font-bold text-gray-400 transform -translate-x-1/2"
+                  style={{
+                    left: '100%',
+                    opacity: isVisible ? 1 : 0,
+                    transition: 'opacity 1000ms ease-out',
+                    transitionDelay: `${index * 150}ms`,
+                  }}
+                >
+                  {metric.totalValue}
+                </div>
+              ) : null}
+              
+              {/* Progress bar */}
+              <div 
+                className="w-full bg-gray-300 rounded-full relative"
+                style={{
+                  height: '8px',
+                }}
+              >
+                <div
+                  className="absolute top-0 left-0 rounded-full transition-all duration-1000 ease-out bg-[#F92F7B]"
+                  style={{
+                    width: isVisible ? `${metric.percentage}%` : '0%',
+                    height: '8px',
+                  }}
+                />
+              </div>
             </div>
-            <div className='text-base text-gray-500'>
+            <div className='text-base text-gray-500 italic'>
               {metric.sublabel}
             </div>
           </div>

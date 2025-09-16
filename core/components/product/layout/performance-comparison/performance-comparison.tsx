@@ -36,55 +36,27 @@ export function PerformanceComparison({
   const mergedImageConfig = mergeConfig(performanceConfig.image, dynamicData?.imageConfig);
 
   return (
-          <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0 }}>
+      <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0 }}>
         <div aria-hidden="true" className="absolute inset-0 z-0">
-          {/* Venn diagram background circles */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div 
-              className="absolute rounded-full border-gray-400 opacity-10"
-              style={{
-                width: 'clamp(1200px, 90vw, 3000px)',
-                height: 'clamp(1200px, 90vw, 3000px)',
-                left: 'clamp(-300px, 0vw, 0px)',
-                top: '60%',
-                transform: 'translate(0%, -50%)',
-                borderWidth: 'clamp(1px, 2vw, 2px)',
-                borderStyle: 'solid',
-              }}
-            />
-            <div 
-              className="absolute rounded-full border-gray-500 opacity-10"
-              style={{
-                width: 'clamp(1200px, 90vw, 3000px)',
-                height: 'clamp(1200px, 90vw, 3000px)',
-                left: 'clamp(400px, 30vw, 1200px)',
-                top: '60%',
-                transform: 'translate(0%, -50%)',
-                borderWidth: 'clamp(1px, 2vw, 2px)',
-                borderStyle: 'solid',
-              }}
+          {/* Dots background pattern */}
+          <div className="absolute inset-0 pointer-events-none">
+            <Image
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-30"
+              height={800}
+              src="/images/backgrounds/performance_bg_dots.png"
+              width={1200}
             />
           </div>
         
         <Image
           alt=""
           className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 w-auto object-contain"
-          height={600}
+          height={550}
           src="/images/backgrounds/PERFORM.webp"
-          style={{ maxHeight: '100%', height: 'auto', padding: '30px 0' }}
+          style={{ maxHeight: '100%', height: 'auto' }}
           width={200}
         />
-      </div>
-
-      <div className="relative px-8 pt-20 pb-2">
-        <div className="text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-            Compare <span className="text-[#F92F7B]">Performance</span>
-          </h2>
-          <p className="text-gray-500 text-lg sm:text-xl mt-1">
-            Compare the {productTitle} to its competition
-          </p>
-        </div>
       </div>
 
       {/* Desktop Layout (xl and above) */}
@@ -100,7 +72,7 @@ export function PerformanceComparison({
         }}
       >
         <div
-          className="relative flex items-center justify-center pointer-events-none xl:max-h-[65vh] lg:max-h-[75vh] md:max-h-[80vh] sm:max-h-[85vh]"
+          className="relative flex items-center justify-center pointer-events-none"
           style={{
             height: 'auto',
             minHeight: '800px',
@@ -110,7 +82,7 @@ export function PerformanceComparison({
           }}
         >
           <Image
-            alt={productImage.alt || mergedImageConfig.alt}
+            alt={productImage.alt || mergedImageConfig.alt || ""}
             className="object-contain w-auto h-auto relative z-10"
             height={mergedImageConfig.height}
             src={productImage.src || mergedImageConfig.src}
@@ -121,6 +93,16 @@ export function PerformanceComparison({
             }}
             width={mergedImageConfig.width}
           />
+
+          {/* Compare Performance text overlay - positioned absolutely to not interfere with image */}
+          <div className="absolute top-32 right-8 z-20 pointer-events-none">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight italic text-right">
+              COMPARE <span className="text-[#F92F7B]">PERFORMANCE</span>
+            </h2>
+            <p className="text-gray-500 text-lg sm:text-xl lg:text-2xl font-bold italic mt-1 text-center">
+              Compare the {productTitle} to its competition
+            </p>
+          </div>
 
           <div
             className="absolute pointer-events-none"
@@ -172,7 +154,7 @@ export function PerformanceComparison({
         <div className="relative flex justify-center items-center pb-8 -mx-4 md:-mx-8">
           <div className="relative w-full">
             <Image
-              alt={finalProductImage.alt || mergedImageConfig.alt}
+              alt={finalProductImage.alt || mergedImageConfig.alt || ""}
               className="object-contain w-full h-auto relative z-10"
               height={mergedImageConfig.height}
               src={finalProductImage.src || mergedImageConfig.src}

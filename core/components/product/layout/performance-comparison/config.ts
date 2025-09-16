@@ -108,7 +108,7 @@ export const DEFAULT_PERFORMANCE_CONFIG: PerformanceComparisonConfig = {
       zIndex: 3,
       gapFromWheel: 20,  // 20 pixels from wheel edge to metrics center
       lineSpacing: 48,   // Space between metrics
-      barWidth: 350,     // Progress bar width
+      barWidth: 450,     // Progress bar width
       containerWidth: 800, // Container width for metrics
       containerHeight: 1000, // Container height for metrics
       topOffset: 0,     // Offset to align with wheel center

@@ -21,6 +21,7 @@ export const PERFORMANCE_METRIC_KEYS = [
   'performance_metric_6',
   'performance_metric_7',
 ] as const;
+
 export type PerformanceMetricKey = typeof PERFORMANCE_METRIC_KEYS[number];
 
 export interface FlattenedCustomFields extends Partial<Record<PerformanceMetricKey, string>> {
@@ -88,7 +89,7 @@ const DEFAULT_WHEEL_CONFIG = {
   baseColor: 'rgba(237, 216, 98, 0.1)',
   edgeColor: 'rgba(200, 180, 50, 0.5)',
   opacity: 1,
-  mobileOffsetX: 145,
+  mobileOffsetX: 0,
   mobileOffsetY: 0,
 };
 
@@ -96,13 +97,62 @@ const DEFAULT_WHEEL_CONFIG = {
 const MIN_COMMA_COUNT_FOR_RGBA = 7;
 
 /**
- * Parse a performance metric string from BigCommerce custom field
- * Format: "Label:Percentage:Sublabel:Value"
- * Note: Sublabel may contain commas, so we need to handle that
+ * Check if a string represents a valid percentage (0-100)
+ * @param {string} s - The string to check
+ * @returns {boolean} True if the string is a valid percentage
  */
+function isPct(s: string): boolean {
+  const m = s.trim();
+  
+  if (!m) return false;
+
+  const withoutSymbol = m.endsWith('%') ? m.slice(0, -1).trim() : m;
+  
+  if (!/^\d+(\.\d+)?$/.test(withoutSymbol)) return false;
+  
+  const n = Number(withoutSymbol);
+  
+  return n >= 0 && n <= 100;
+}
+
+/**
+ * Parse metric parts from field value, supporting both old and new formats
+ * @param {string[]} parts - Array of string parts from splitting the field value
+ * @returns {Object|null} Parsed metric parts or null if invalid
+ */
+function parseMetricParts(parts: string[]): { label: string; value: string; percentageStr: string; sublabel: string } | null {
+  if (parts.length < 4) return null;
+
+  const label = parts[0]?.trim();
+  let value: string;
+  let percentageStr: string;
+  let sublabel: string;
+
+  if (isPct(parts[2] || '') && !isPct(parts[1] || '')) {
+    // New format: Label:Value:Percentage:Sublabel
+    value = parts[1]?.trim() || '';
+    percentageStr = parts[2]?.trim() || '';
+    sublabel = parts.slice(3).join(':').trim();
+  } else if (isPct(parts[1] || '')) {
+    // Old format: Label:Percentage:Sublabel:Value
+    percentageStr = parts[1]?.trim() || '';
+    value = parts[parts.length - 1]?.trim() || '';
+    sublabel = parts.slice(2, parts.length - 1).join(':').trim();
+  } else {
+    return null;
+  }
+  
+  if (!label || !value || !percentageStr || !sublabel) return null;
+  
+  return { label, value, percentageStr, sublabel };
+}
+
 /**
  * Parse a performance metric from a BigCommerce custom field value
- * @param {string} fieldValue - The custom field value in format "Label:Percentage:Sublabel:Value"
+ * Supports both formats:
+ * - New: "Label:Value:Percentage:Sublabel"
+ * - Old: "Label:Percentage:Sublabel:Value"
+ * @param {string} fieldValue - The custom field value
  * @returns {PerformanceMetric | null} Parsed PerformanceMetric object or null if invalid
  */
 function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
@@ -110,42 +160,46 @@ function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
     return null;
   }
 
-  // Split by ':' but handle commas in sublabels
-  const firstColonIndex = fieldValue.indexOf(':');
-  const lastColonIndex = fieldValue.lastIndexOf(':');
+  const parts = fieldValue.split(':');
+  const parsed = parseMetricParts(parts);
   
-  if (firstColonIndex === -1 || lastColonIndex === -1 || firstColonIndex === lastColonIndex) {
-    return null;
+  if (!parsed) return null;
+  
+  const { label, value, percentageStr, sublabel } = parsed;
+  
+  // Parse value to extract current and total if it contains "/"
+  let displayValue = value;
+  let totalValue: string | undefined;
+  
+  if (value.includes('/')) {
+    const valueParts = value.split('/');
+    
+    if (valueParts.length === 2 && valueParts[0] && valueParts[1]) {
+      displayValue = valueParts[0].trim();
+      totalValue = valueParts[1].trim();
+    }
   }
   
-  const label = fieldValue.substring(0, firstColonIndex);
-  const value = fieldValue.substring(lastColonIndex + 1);
-  const middlePart = fieldValue.substring(firstColonIndex + 1, lastColonIndex);
-  
-  // Find the percentage (should be a number)
-  const percentageMatch = /^(\d{1,2}|100):(.+)$/.exec(middlePart);
-  
-  if (!percentageMatch) {
-    return null;
-  }
-  
-  const percentageStr = percentageMatch[1] || '';
-  const sublabel = percentageMatch[2] || '';
-  const percentage = parseInt(percentageStr, 10);
+  const percentage = Number.parseFloat(percentageStr.replace('%', '').trim());
 
-  if (Number.isNaN(percentage) || percentage < 0 || percentage > 100) {
+  if (!Number.isFinite(percentage) || percentage < 0 || percentage > 100) {
     return null;
   }
 
   // Extract category from label (convert to lowercase, remove spaces)
-  const category = label.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+  const category = label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove diacritics
+    .replace(/[^a-z0-9]/g, '');
 
   return {
     category,
     label,
     percentage,
     sublabel,
-    value,
+    value: displayValue,
+    totalValue: totalValue || undefined,
   };
 }
 
@@ -165,10 +219,12 @@ function parseWheelCenter(centerStr?: string): { centerX: number; centerY: numbe
     return { centerX: DEFAULT_WHEEL_CONFIG.centerX, centerY: DEFAULT_WHEEL_CONFIG.centerY };
   }
 
-  const centerX = parseInt(parts[0]?.trim() || '0', 10);
-  const centerY = parseInt(parts[1]?.trim() || '0', 10);
+  const rawX = (parts[0] ?? '').trim();
+  const rawY = (parts[1] ?? '').trim();
+  const centerX = rawX === '' ? NaN : Number.parseInt(rawX, 10);
+  const centerY = rawY === '' ? NaN : Number.parseInt(rawY, 10);
 
-  if (Number.isNaN(centerX) || Number.isNaN(centerY)) {    
+  if (!Number.isFinite(centerX) || !Number.isFinite(centerY)) {
     return { centerX: DEFAULT_WHEEL_CONFIG.centerX, centerY: DEFAULT_WHEEL_CONFIG.centerY };
   }
 
@@ -318,9 +374,13 @@ function parseImageConfiguration(flattenedFields: FlattenedCustomFields) {
  * @returns {Object} Metrics configuration object
  */
 function parseMetricsConfiguration(flattenedFields: FlattenedCustomFields) {
-  const gapFromWheel = flattenedFields.metrics_gap_from_wheel ? parseFloat(flattenedFields.metrics_gap_from_wheel) : 25;
+  const gapFromWheel = flattenedFields.metrics_gap_from_wheel
+    ? Math.max(0, parseFloat(flattenedFields.metrics_gap_from_wheel))
+    : 20;
   const lineSpacing = flattenedFields.metrics_line_spacing ? parseFloat(flattenedFields.metrics_line_spacing) : 48;
-  const barWidth = flattenedFields.metrics_bar_width ? parseFloat(flattenedFields.metrics_bar_width) : 350;
+  const barWidth = flattenedFields.metrics_bar_width
+    ? Math.max(0, parseFloat(flattenedFields.metrics_bar_width))
+    : 450;
   const containerWidth = flattenedFields.metrics_container_width ? parseFloat(flattenedFields.metrics_container_width) : 800;
   const containerHeight = flattenedFields.metrics_container_height ? parseFloat(flattenedFields.metrics_container_height) : 1000;
   const topOffset = flattenedFields.metrics_top_offset ? parseFloat(flattenedFields.metrics_top_offset) : 0;

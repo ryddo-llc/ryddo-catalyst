@@ -6,6 +6,7 @@ export interface PerformanceMetric {
   value: string;
   percentage: number;
   sublabel: string;
+  totalValue?: string; // Optional total value when value contains "/"
 }
 
 export type ProductImage = OptionalProductImage;
