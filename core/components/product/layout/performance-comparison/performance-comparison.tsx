@@ -82,7 +82,7 @@ export function PerformanceComparison({
           }}
         >
           <Image
-            alt={productImage.alt || mergedImageConfig.alt}
+            alt={productImage.alt || mergedImageConfig.alt || ""}
             className="object-contain w-auto h-auto relative z-10"
             height={mergedImageConfig.height}
             src={productImage.src || mergedImageConfig.src}
@@ -154,7 +154,7 @@ export function PerformanceComparison({
         <div className="relative flex justify-center items-center pb-8 -mx-4 md:-mx-8">
           <div className="relative w-full">
             <Image
-              alt={finalProductImage.alt || mergedImageConfig.alt}
+              alt={finalProductImage.alt || mergedImageConfig.alt || ""}
               className="object-contain w-full h-auto relative z-10"
               height={mergedImageConfig.height}
               src={finalProductImage.src || mergedImageConfig.src}

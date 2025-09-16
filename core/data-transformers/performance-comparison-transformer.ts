@@ -88,7 +88,7 @@ const DEFAULT_WHEEL_CONFIG = {
   baseColor: 'rgba(237, 216, 98, 0.1)',
   edgeColor: 'rgba(200, 180, 50, 0.5)',
   opacity: 1,
-  mobileOffsetX: 145,
+  mobileOffsetX: 0,
   mobileOffsetY: 0,
 };
 
@@ -96,12 +96,11 @@ const DEFAULT_WHEEL_CONFIG = {
 const MIN_COMMA_COUNT_FOR_RGBA = 7;
 
 /**
- * Parse a performance metric string from BigCommerce custom field
- * Format: "Label:Value:Percentage:Sublabel"
- */
-/**
  * Parse a performance metric from a BigCommerce custom field value
- * @param {string} fieldValue - The custom field value in format "Label:Value:Percentage:Sublabel"
+ * Supports both formats:
+ * - New: "Label:Value:Percentage:Sublabel"
+ * - Old: "Label:Percentage:Sublabel:Value"
+ * @param {string} fieldValue - The custom field value
  * @returns {PerformanceMetric | null} Parsed PerformanceMetric object or null if invalid
  */
 function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
@@ -109,28 +108,45 @@ function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
     return null;
   }
 
-  // Split by ':' but handle commas in sublabels
+  // Split by ":"; tolerate extra ":" in sublabel by rejoining the tail
   const parts = fieldValue.split(':');
-  
-  // Need exactly 4 parts: Label:Value:Percentage:Sublabel
-  if (parts.length !== 4) {
+  if (parts.length < 4) return null;
+
+  const isPct = (s: string) => {
+    const m = s?.trim();
+    if (!m) return false;
+    const n = parseInt(m.replace('%', ''), 10);
+    return Number.isFinite(n) && n >= 0 && n <= 100;
+  };
+
+  // Two supported formats:
+  // 1) Label : Value      : Percentage : Sublabel…
+  // 2) Label : Percentage : Sublabel…  : Value
+  let label = parts[0]?.trim();
+  let value: string;
+  let percentageStr: string;
+  let sublabel: string;
+
+  if (isPct(parts[2]) && !isPct(parts[1])) {
+    // New format: Label:Value:Percentage:Sublabel
+    value = parts[1]?.trim();
+    percentageStr = parts[2]?.trim();
+    sublabel = parts.slice(3).join(':').trim();
+  } else if (isPct(parts[1])) {
+    // Old format: Label:Percentage:Sublabel:Value
+    percentageStr = parts[1]?.trim();
+    // Sublabel may contain ":"; value is the last token
+    value = parts[parts.length - 1]?.trim();
+    sublabel = parts.slice(2, parts.length - 1).join(':').trim();
+  } else {
     return null;
   }
   
-  // Validate all parts exist
-  if (!parts[0] || !parts[1] || !parts[2] || !parts[3]) {
-    return null;
-  }
-  
-  // New format: Label:Value:Percentage:Sublabel
-  const label = parts[0];
-  const value = parts[1];
-  const percentageStr = parts[2];
-  const sublabel = parts[3];
+  if (!label || !value || !percentageStr || !sublabel) return null;
   
   // Parse value to extract current and total if it contains "/"
   let displayValue = value;
-  let totalValue = null;
+  let totalValue: string | undefined;
   
   if (value.includes('/')) {
     const valueParts = value.split('/');
@@ -329,9 +345,9 @@ function parseImageConfiguration(flattenedFields: FlattenedCustomFields) {
  * @returns {Object} Metrics configuration object
  */
 function parseMetricsConfiguration(flattenedFields: FlattenedCustomFields) {
-  const gapFromWheel = flattenedFields.metrics_gap_from_wheel ? parseFloat(flattenedFields.metrics_gap_from_wheel) : 25;
+  const gapFromWheel = flattenedFields.metrics_gap_from_wheel ? parseFloat(flattenedFields.metrics_gap_from_wheel) : 20;
   const lineSpacing = flattenedFields.metrics_line_spacing ? parseFloat(flattenedFields.metrics_line_spacing) : 48;
-  const barWidth = flattenedFields.metrics_bar_width ? parseFloat(flattenedFields.metrics_bar_width) : 350;
+  const barWidth = flattenedFields.metrics_bar_width ? parseFloat(flattenedFields.metrics_bar_width) : 450;
   const containerWidth = flattenedFields.metrics_container_width ? parseFloat(flattenedFields.metrics_container_width) : 800;
   const containerHeight = flattenedFields.metrics_container_height ? parseFloat(flattenedFields.metrics_container_height) : 1000;
   const topOffset = flattenedFields.metrics_top_offset ? parseFloat(flattenedFields.metrics_top_offset) : 0;

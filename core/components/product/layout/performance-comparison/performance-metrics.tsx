@@ -29,7 +29,7 @@ export function PerformanceMetrics({
   wheelRadius = 150, 
   lineSpacing = 48, 
   barWidth = 450,
-  topOffset = 50,
+  topOffset = 0,
   curveRadiusMultiplier = 0.6,
   gapFromWheel = 0
 }: PerformanceMetricsProps) {
@@ -47,33 +47,37 @@ export function PerformanceMetrics({
   };
 
   useEffect(() => {
-    // Fallback timer to ensure animation triggers even if Intersection Observer fails
-    const fallbackTimer = setTimeout(() => {
-      setIsVisible(true);
-    }, 1000); // Trigger after 1 second as fallback
+    const supportsIO = typeof IntersectionObserver !== 'undefined';
+    
+    // Fallback timer to ensure animation triggers only if Intersection Observer is unavailable
+    const fallbackTimer = !supportsIO
+      ? setTimeout(() => {
+          setIsVisible(true);
+        }, 1000) // Trigger after 1 second as fallback
+      : null;
 
     // Trigger animation when it comes on the screen
-    const observer = new IntersectionObserver(
+    const observer = supportsIO ? new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
           setIsVisible(true);
-          clearTimeout(fallbackTimer); // Clear fallback if intersection works
-          observer.disconnect(); // Stop observing after first trigger
+          if (fallbackTimer) clearTimeout(fallbackTimer); // Clear fallback if intersection works
+          observer?.disconnect(); // Stop observing after first trigger
         }
       },
       {
         threshold: 0.1, // Trigger when 10% visible
         rootMargin: '0px 0px -50px 0px', // Trigger 50px before entering viewport
       }
-    );
+    ) : null;
 
     const currentRef = ref.current;
     
-    if (currentRef) observer.observe(currentRef);
+    if (currentRef && observer) observer.observe(currentRef);
 
     return () => {
-      clearTimeout(fallbackTimer);
-      observer.disconnect();
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      if (observer) observer.disconnect();
     };
   }, []);
 
@@ -112,7 +116,7 @@ export function PerformanceMetrics({
               <div
                 className="absolute -top-6 text-md font-bold italic text-gray-900 transform -translate-x-1/2"
                 style={{
-                  left: `${metric.percentage}%`,
+                  left: `${Math.max(0, Math.min(100, metric.percentage))}%`,
                   opacity: isVisible ? 1 : 0,
                   transition: 'opacity 1000ms ease-out',
                   transitionDelay: `${index * 150}ms`,
@@ -140,8 +144,7 @@ export function PerformanceMetrics({
               <div
                 className="bg-gray-300 rounded-full relative"
                 style={{
-                  height: '6px',
-                  borderRadius: '3px',
+                  height: '8px',
                 }}
               >
                 <div
@@ -149,9 +152,7 @@ export function PerformanceMetrics({
                   style={{
                     width: isVisible ? `${metric.percentage}%` : '0%',
                     transitionDelay: `${index * 150}ms`,
-                    height: '10px',
-                    borderRadius: '5px',
-                    top: '-2px',
+                    height: '8px',
                   }}
                 />
               </div>
@@ -177,7 +178,7 @@ export function PerformanceMetrics({
               <div
                 className="absolute -top-6 text-sm font-bold text-gray-900 transform -translate-x-1/2"
                 style={{
-                  left: `${metric.percentage}%`,
+                  left: `${Math.max(0, Math.min(100, metric.percentage))}%`,
                   opacity: isVisible ? 1 : 0,
                   transition: 'opacity 1000ms ease-out',
                   transitionDelay: `${index * 150}ms`,
@@ -205,17 +206,14 @@ export function PerformanceMetrics({
               <div 
                 className="w-full bg-gray-300 rounded-full relative"
                 style={{
-                  height: '6px',
-                  borderRadius: '3px',
+                  height: '8px',
                 }}
               >
                 <div
                   className="absolute top-0 left-0 rounded-full transition-all duration-1000 ease-out bg-[#F92F7B]"
                   style={{
                     width: isVisible ? `${metric.percentage}%` : '0%',
-                    height: '10px',
-                    borderRadius: '5px',
-                    top: '-2px',
+                    height: '8px',
                   }}
                 />
               </div>
