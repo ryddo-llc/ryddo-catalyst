@@ -21,6 +21,7 @@ export const PERFORMANCE_METRIC_KEYS = [
   'performance_metric_6',
   'performance_metric_7',
 ] as const;
+
 export type PerformanceMetricKey = typeof PERFORMANCE_METRIC_KEYS[number];
 
 export interface FlattenedCustomFields extends Partial<Record<PerformanceMetricKey, string>> {
@@ -96,6 +97,53 @@ const DEFAULT_WHEEL_CONFIG = {
 const MIN_COMMA_COUNT_FOR_RGBA = 7;
 
 /**
+ * Check if a string represents a valid percentage (0-100)
+ * @param {string} s - The string to check
+ * @returns {boolean} True if the string is a valid percentage
+ */
+function isPct(s: string): boolean {
+  const m = s.trim();
+
+  if (!m) return false;
+
+  const n = parseInt(m.replace('%', ''), 10);
+  
+  return Number.isFinite(n) && n >= 0 && n <= 100;
+}
+
+/**
+ * Parse metric parts from field value, supporting both old and new formats
+ * @param {string[]} parts - Array of string parts from splitting the field value
+ * @returns {Object|null} Parsed metric parts or null if invalid
+ */
+function parseMetricParts(parts: string[]): { label: string; value: string; percentageStr: string; sublabel: string } | null {
+  if (parts.length < 4) return null;
+
+  const label = parts[0]?.trim();
+  let value: string;
+  let percentageStr: string;
+  let sublabel: string;
+
+  if (isPct(parts[2] || '') && !isPct(parts[1] || '')) {
+    // New format: Label:Value:Percentage:Sublabel
+    value = parts[1]?.trim() || '';
+    percentageStr = parts[2]?.trim() || '';
+    sublabel = parts.slice(3).join(':').trim();
+  } else if (isPct(parts[1] || '')) {
+    // Old format: Label:Percentage:Sublabel:Value
+    percentageStr = parts[1]?.trim() || '';
+    value = parts[parts.length - 1]?.trim() || '';
+    sublabel = parts.slice(2, parts.length - 1).join(':').trim();
+  } else {
+    return null;
+  }
+  
+  if (!label || !value || !percentageStr || !sublabel) return null;
+  
+  return { label, value, percentageStr, sublabel };
+}
+
+/**
  * Parse a performance metric from a BigCommerce custom field value
  * Supports both formats:
  * - New: "Label:Value:Percentage:Sublabel"
@@ -108,41 +156,12 @@ function parsePerformanceMetric(fieldValue: string): PerformanceMetric | null {
     return null;
   }
 
-  // Split by ":"; tolerate extra ":" in sublabel by rejoining the tail
   const parts = fieldValue.split(':');
-  if (parts.length < 4) return null;
-
-  const isPct = (s: string) => {
-    const m = s?.trim();
-    if (!m) return false;
-    const n = parseInt(m.replace('%', ''), 10);
-    return Number.isFinite(n) && n >= 0 && n <= 100;
-  };
-
-  // Two supported formats:
-  // 1) Label : Value      : Percentage : Sublabel…
-  // 2) Label : Percentage : Sublabel…  : Value
-  let label = parts[0]?.trim();
-  let value: string;
-  let percentageStr: string;
-  let sublabel: string;
-
-  if (isPct(parts[2]) && !isPct(parts[1])) {
-    // New format: Label:Value:Percentage:Sublabel
-    value = parts[1]?.trim();
-    percentageStr = parts[2]?.trim();
-    sublabel = parts.slice(3).join(':').trim();
-  } else if (isPct(parts[1])) {
-    // Old format: Label:Percentage:Sublabel:Value
-    percentageStr = parts[1]?.trim();
-    // Sublabel may contain ":"; value is the last token
-    value = parts[parts.length - 1]?.trim();
-    sublabel = parts.slice(2, parts.length - 1).join(':').trim();
-  } else {
-    return null;
-  }
+  const parsed = parseMetricParts(parts);
   
-  if (!label || !value || !percentageStr || !sublabel) return null;
+  if (!parsed) return null;
+  
+  const { label, value, percentageStr, sublabel } = parsed;
   
   // Parse value to extract current and total if it contains "/"
   let displayValue = value;
