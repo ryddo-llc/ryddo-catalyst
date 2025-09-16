@@ -6,6 +6,10 @@ export const ProductViewedFragment = graphql(`
     name
     brand {
       name
+      defaultImage {
+        altText
+        url: urlTemplate(lossy: true)
+      }
     }
     sku
     description

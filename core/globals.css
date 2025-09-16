@@ -2,6 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Fix modal z-index to appear above header */
+  body.modal-open [data-radix-portal] {
+    z-index: 250 !important;
+  }
+
+  /* Disable navigation hover AND active states when modal is open */
+  body.modal-open {
+    /* Override CSS custom properties for navigation states */
+    --nav-link-text-hover: var(--nav-link-text);
+    --nav-link-text-active: var(--nav-link-text) !important;
+    --nav-link-background-active: transparent !important;
+    --nav-mobile-link-text-hover: var(--nav-mobile-link-text);
+    --nav-mobile-link-text-active: var(--nav-mobile-link-text) !important;
+    --nav-sub-link-text-hover: var(--nav-sub-link-text);
+    --nav-button-icon-hover: var(--nav-button-icon);
+    --nav-button-background-hover: transparent;
+    --nav-link-background-hover: transparent;
+    --nav-group-background-hover: transparent;
+    --nav-sub-link-background-hover: transparent;
+    --nav-mobile-link-background-hover: transparent;
+    --nav-mobile-sub-link-background-hover: transparent;
+  }
+
+  /* Disable pointer events on navigation elements when modal is open */
+  body.modal-open nav,
+  body.modal-open header,
+  body.modal-open [class*="headroom"] {
+    pointer-events: none !important;
+  }
+
+  /* Hide borders and shadows on header when modal is open */
+  body.modal-open header,
+  body.modal-open header *,
+  body.modal-open [class*="headroom"],
+  body.modal-open [class*="headroom"] * {
+    border: none !important;
+    box-shadow: none !important;
+    border-bottom: none !important;
+    border-top: none !important;
+  }
+
+  /* Re-enable pointer events for modal content */
+  body.modal-open [data-radix-portal],
+  body.modal-open [data-radix-portal] * {
+    pointer-events: auto !important;
+  }
+
+  /* Force override navigation styles when modal is open */
+  body.modal-open nav *,
+  body.modal-open header * {
+    color: var(--nav-link-text) !important;
+    background-color: transparent !important;
+  }
+
+  /* Specifically target the pink active color */
+  body.modal-open nav a[class*="text-[var(--nav-link-text-active"],
+  body.modal-open nav *[style*="#F92F7B"],
+  body.modal-open nav *[style*="hsl(var(--primary))"] {
+    color: var(--nav-link-text) !important;
+  }
+}
+
 :root {
   --primary: 337 94% 58%;
   --accent: 96 100% 88%;

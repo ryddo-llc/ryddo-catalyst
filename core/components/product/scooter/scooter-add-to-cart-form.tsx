@@ -147,7 +147,7 @@ export function ScooterAddToCartForm<F extends Field>({
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex flex-col gap-3 mb-6 items-stretch">
           <SubmitButton disabled={disabled}>{ctaLabel}</SubmitButton>
           
           {/* Compare Button */}

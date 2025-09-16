@@ -269,6 +269,12 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableCtaLabel = Streamable.from(async () => (await streamableCtaData).label);
   const streamableCtaDisabled = Streamable.from(async () => (await streamableCtaData).disabled);
 
+  const streamableWarranty = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    return product.warranty || null;
+  });
+
   const streamableAccordions = Streamable.from(async () => {
     const product = await streamableProduct;
 
@@ -522,6 +528,10 @@ export default async function Product({ params, searchParams }: Props) {
     rating: baseProduct.reviewSummary.averageRating,
     accordions: streamableAccordions,
     inventoryStatus: streamableInventoryStatus,
+    brandLogo: baseProduct.brand?.defaultImage ? {
+      url: baseProduct.brand.defaultImage.url,
+      altText: baseProduct.brand.defaultImage.altText
+    } : null,
   };
 
   const defaultProductData = baseProductData;
@@ -530,15 +540,24 @@ export default async function Product({ params, searchParams }: Props) {
   const bikeProductData = streamableBikeData
     ? Streamable.from(async () => {
         const bikeData = await streamableBikeData;
+        const warranty = await streamableWarranty;
 
         return {
           ...baseProductData,
           backgroundImage: bikeData.backgroundImage,
           bikeSpecs: Streamable.from(() => Promise.resolve(bikeData.bikeSpecs || null)),
           colors: bikeData.colors,
+          warranty,
         };
       })
-    : baseProductData;
+    : Streamable.from(async () => {
+        const warranty = await streamableWarranty;
+
+        return {
+          ...baseProductData,
+          warranty,
+        };
+      });
 
   // Enhanced product data for scooter components
   const scooterProductData = streamableScooterData
@@ -556,16 +575,6 @@ export default async function Product({ params, searchParams }: Props) {
 
   const baseProps = {
     action: addToCart,
-    additionalActions: (
-      <div className="flex items-center gap-2">
-        <WishlistButton
-          formId={detachedWishlistFormId}
-          productId={productId}
-          productSku={streamableProductSku}
-        />
-        <DigitalTagLink productSlug={slug} />
-      </div>
-    ),
     additionalInformationTitle: t('ProductDetails.additionalInformation'),
     compareProducts: streamableCompareProducts,
     compareLabel: 'Compare',
@@ -582,8 +591,18 @@ export default async function Product({ params, searchParams }: Props) {
     thumbnailLabel: t('ProductDetails.thumbnail'),
     relatedProducts: streamableRelatedProducts,
     popularAccessories: streamablePopularAccessories,
+    // Image overlay actions
+    wishlistButton: (
+      <WishlistButton
+        formId={detachedWishlistFormId}
+        productId={productId}
+        productSku={streamableProductSku}
+      />
+    ),
+    digitalTagLink: <DigitalTagLink productSlug={slug} />,
   };
 
+  const { wishlistButton, digitalTagLink, ...basePropsWithoutOverlay } = baseProps;
   const renderProductDetail = () => {
     switch (productDetailVariant) {
       case 'bike':
@@ -594,7 +613,19 @@ export default async function Product({ params, searchParams }: Props) {
 
       case 'default':
       default:
-        return <ProductDetail {...baseProps} product={defaultProductData} />;
+        // For default products, keep wishlist and digital tag in additionalActions
+        return (
+          <ProductDetail
+            {...basePropsWithoutOverlay}
+            additionalActions={
+              <div className="flex items-center gap-2">
+                {wishlistButton}
+                {digitalTagLink}
+              </div>
+            }
+            product={defaultProductData}
+          />
+        );
     }
   };
 

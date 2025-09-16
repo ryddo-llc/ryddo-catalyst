@@ -14,6 +14,10 @@ export const ProductCardFragment = graphql(
       brand {
         name
         path
+        defaultImage {
+          altText
+          url: urlTemplate(lossy: true)
+        }
       }
       reviewSummary {
         numberOfReviews
