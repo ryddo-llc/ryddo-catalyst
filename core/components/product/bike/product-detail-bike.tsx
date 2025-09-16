@@ -150,16 +150,16 @@ export function ProductDetailBike<F extends Field>({
                             {/* Product Title Badge */}
                             <ProductBadges title={product.title} />
 
-                            {/* Brand Logo - with responsive negative margin */}
+                            {/* Brand Logo - Fixed size container */}
                             {product.brandLogo && (
-                              <div className="sm:-mt-18 -mt-16 flex justify-center md:-mt-20 lg:-mt-20 xl:-mt-20">
+                              <div className="lg:-mt-18 -mt-12 flex h-[8.4rem] w-[12.6rem] items-center justify-center sm:-mt-14 sm:h-[10.5rem] sm:w-[15.75rem] md:-mt-16 md:h-[12.6rem] md:w-[18.9rem] lg:h-[14.7rem] lg:w-[21rem] xl:-mt-20 xl:h-[16.8rem] xl:w-[25.2rem]">
                                 <Image
                                   alt={product.brandLogo.altText || 'Brand logo'}
-                                  className="h-auto max-h-32 w-auto object-contain sm:max-h-40 md:max-h-48 lg:max-h-56 xl:max-h-64"
+                                  className="max-h-full max-w-full object-contain"
                                   height={500}
                                   loading="eager"
                                   priority
-                                  sizes="(max-width: 640px) 200px, (max-width: 768px) 300px, (max-width: 1024px) 400px, (max-width: 1280px) 450px, 500px"
+                                  sizes="(max-width: 640px) 210px, (max-width: 768px) 315px, (max-width: 1024px) 420px, (max-width: 1280px) 472px, 525px"
                                   src={product.brandLogo.url}
                                   width={500}
                                 />
@@ -187,7 +187,7 @@ export function ProductDetailBike<F extends Field>({
                             warranty: product.warranty,
                           }}
                         >
-                          <div className="relative flex h-[14.5rem] w-full max-w-xl items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] md:h-[20.5rem] md:max-w-2xl lg:h-[23.5rem] lg:max-w-3xl xl:h-[25.5rem] xl:max-w-4xl">
+                          <div className="relative flex h-[14.5rem] w-[24rem] items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] sm:w-[30rem] md:h-[20.5rem] md:w-[38rem] lg:h-[23.5rem] lg:w-[46rem] xl:h-[25.5rem] xl:w-[54rem]">
                             <Stream fallback={<BikeImageSkeleton />} value={product.images}>
                               {(images) => {
                                 const bikeImage = findHeroProductImage(images);
@@ -197,10 +197,10 @@ export function ProductDetailBike<F extends Field>({
                                     {bikeImage ? (
                                       <Image
                                         alt={bikeImage.alt}
-                                        className="w-full object-contain transition-all duration-300"
+                                        className="h-full w-full scale-125 -translate-y-8 object-contain transition-all duration-300"
                                         height={1500}
                                         priority
-                                        sizes="(max-width: 640px) 460px, (max-width: 768px) 540px, (max-width: 1024px) 690px, (max-width: 1280px) 845px, 1080px"
+                                        sizes="(max-width: 640px) 384px, (max-width: 768px) 480px, (max-width: 1024px) 608px, (max-width: 1280px) 736px, 864px"
                                         src={bikeImage.src}
                                         width={1500}
                                       />
