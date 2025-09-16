@@ -12,6 +12,7 @@ import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
 import { findBackgroundImage, findHeroProductImage } from '~/lib/image-resolver';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
+import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
 import { ProductBadges } from '../shared/product-badges';
 import {
   BikeImageSkeleton,
@@ -21,7 +22,6 @@ import {
   RatingSkeleton,
 } from '../shared/product-detail-skeletons';
 import { ProductImageOverlay } from '../shared/product-image-overlay';
-import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
 
 import { ScooterMobileCollapsibleForm } from './scooter-mobile-collapsible-form';
 import { ScooterMobileSpecs } from './scooter-mobile-specs';

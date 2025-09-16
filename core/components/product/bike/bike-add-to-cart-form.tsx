@@ -110,10 +110,12 @@ export function BikeAddToCartForm<F extends Field>({
             return true;
           }
           // Always include color fields that have selected values
+
           if (isColorField(field) && selectedVariants[field.name]) {
             return true;
           }
           // Exclude interactive field types that don't have selections
+
           if (shouldRenderField(field)) return false;
           // Exclude color fields without selections
           if (isColorField(field)) return false;
@@ -140,6 +142,7 @@ export function BikeAddToCartForm<F extends Field>({
         })}
 
       {/* Show any form errors */}
+
       {state.lastResult?.status === 'error' && state.lastResult.error && (
         <div className="mb-2 text-xs text-red-600">
           {typeof state.lastResult.error === 'string'
@@ -164,6 +167,7 @@ export function BikeAddToCartForm<F extends Field>({
       {/* Fallback color selection removed - variants are now handled in left sidebar */}
 
       {/* Wishlist Button */}
+
       {additionalActions ? (
         <div className="flex justify-center sm:justify-end">{additionalActions}</div>
       ) : null}

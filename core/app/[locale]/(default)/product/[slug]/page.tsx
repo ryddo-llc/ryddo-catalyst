@@ -271,6 +271,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   const streamableWarranty = Streamable.from(async () => {
     const product = await streamableProduct;
+
     return product.warranty || null;
   });
 
@@ -551,6 +552,7 @@ export default async function Product({ params, searchParams }: Props) {
       })
     : Streamable.from(async () => {
         const warranty = await streamableWarranty;
+
         return {
           ...baseProductData,
           warranty,
