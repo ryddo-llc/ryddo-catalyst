@@ -96,10 +96,10 @@ export function PerformanceComparison({
 
           {/* Compare Performance text overlay - positioned absolutely to not interfere with image */}
           <div className="absolute top-32 right-8 z-20 pointer-events-none">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight italic text-right">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-kanit leading-tight italic text-right">
               COMPARE <span className="text-[#F92F7B]">PERFORMANCE</span>
             </h2>
-            <p className="text-gray-500 text-lg sm:text-xl lg:text-2xl font-bold italic mt-1 text-center">
+            <p className="text-stone-500 text-lg sm:text-xl lg:text-3xl font-bold font-inter italic -mt-3 text-center">
               Compare the {productTitle} to its competition
             </p>
           </div>
@@ -267,7 +267,3 @@ export function PerformanceComparison({
     </div>
   );
 }
-
-
-
-

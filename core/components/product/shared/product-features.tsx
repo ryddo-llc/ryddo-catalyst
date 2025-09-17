@@ -41,7 +41,7 @@ function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
         }`}
       >
         <div className="flex flex-col justify-start items-start max-w-md mx-auto md:mx-0 w-full">
-          <h3 className="font-extrabold leading-[0.9] text-[clamp(2rem,8vw,3rem)] xl:text-[clamp(2.5rem,10vw,4rem)]">
+          <h3 className="font-extrabold font-kanit leading-[0.9] text-[clamp(2rem,8vw,3rem)] xl:text-[clamp(2.5rem,10vw,4rem)]">
             {pinkWords ? (
               <span className="block mb-1 sm:mb-2 text-[#F92F7B]">{pinkWords}</span>
             ) : null}
@@ -49,7 +49,7 @@ function ProductFeatureItem({ feature }: ProductFeatureItemProps) {
               <span className="block text-gray-900 mb-2 sm:mb-3 -mt-1">{grayWords}</span>
             ) : null}
           </h3>
-          <p className="text-lg lg:text-xl xl:text-2xl text-gray-500 leading-relaxed pt-2 sm:pt-4 md:pt-6">
+          <p className="text-lg lg:text-xl xl:text-2xl text-gray-500 leading-relaxed font-inter pt-2 sm:pt-4 md:pt-6">
             {feature.description}
           </p>
         </div>
