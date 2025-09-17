@@ -1,7 +1,7 @@
 'use client';
 
-import { ReactNode, useCallback } from 'react';
 import { parseAsString, useQueryStates } from 'nuqs';
+import { ReactNode, useCallback } from 'react';
 
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
@@ -22,14 +22,10 @@ const isVariantField = (field: Field): boolean => {
 // Note: Selected value display removed for performance - variants now use pure state coordination
 
 // Unified helper function to render variant fields (size and color)
-const renderVariantField = (
-  field: Field,
-  onPrefetch: () => void,
-  isColorField = false,
-) => {
+const RenderVariantField = (field: Field, onPrefetch: () => void, isColorField = false) => {
   // Use URL query states for this field
   const [params, setParams] = useQueryStates({
-    [field.name]: parseAsString
+    [field.name]: parseAsString,
   });
 
   const handleVariantChange = useCallback(
@@ -82,11 +78,11 @@ const renderVariantField = (
       </div>
       <SwatchRadioGroup
         className="justify-start gap-2 [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold [&_button[data-state=checked]]:border-2 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:ring-2 [&_button[data-state=checked]]:ring-[#F92F7B] [&_label]:flex [&_label]:h-10 [&_label]:w-10 [&_label]:items-center [&_label]:justify-center [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:text-xs [&_label]:font-bold [&_label]:transition-transform [&_label]:hover:scale-105"
-        value={params[field.name] || field.defaultValue || ''}
         name={field.name}
         onOptionMouseEnter={onPrefetch}
         onValueChange={handleVariantChange}
         options={getOptions()}
+        value={params[field.name] || field.defaultValue || ''}
       />
     </div>
   );
@@ -139,12 +135,12 @@ export function BikeLeftSidebarContent({
 
         {/* Size Options - Interactive - Circular swatches with text */}
         {sizeField && 'options' in sizeField && sizeField.options.length
-          ? renderVariantField(sizeField, onPrefetch, false)
+          ? RenderVariantField(sizeField, onPrefetch, false)
           : null}
 
         {/* Color Options - Interactive - Circular swatches */}
         {colorField && 'options' in colorField && colorField.options.length
-          ? renderVariantField(colorField, onPrefetch, true)
+          ? RenderVariantField(colorField, onPrefetch, true)
           : null}
       </div>
     </div>

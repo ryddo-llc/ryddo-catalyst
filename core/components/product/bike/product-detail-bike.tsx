@@ -218,10 +218,10 @@ export function ProductDetailBike<F extends Field>({
                                   <>
                                     {heroImage ? (
                                       <Image
-                                        key={heroImage.src}
                                         alt={heroImage.alt}
-                                        className="sm:scale-115 h-full w-full -translate-y-2 scale-110 object-contain animate-in fade-in zoom-in-95 duration-300 ease-out sm:-translate-y-3 md:-translate-y-4 md:scale-125 lg:-translate-y-6 lg:scale-125 xl:-translate-y-8 xl:scale-125"
+                                        className="sm:scale-115 h-full w-full -translate-y-2 scale-110 object-contain duration-300 ease-out animate-in fade-in zoom-in-95 sm:-translate-y-3 md:-translate-y-4 md:scale-125 lg:-translate-y-6 lg:scale-125 xl:-translate-y-8 xl:scale-125"
                                         height={1500}
+                                        key={heroImage.src}
                                         priority
                                         sizes="(max-width: 640px) 384px, (max-width: 768px) 480px, (max-width: 1024px) 608px, (max-width: 1280px) 736px, 864px"
                                         src={heroImage.src}
@@ -252,13 +252,13 @@ export function ProductDetailBike<F extends Field>({
                         </BikeVariantCoordinator>
 
                         {/* Bottom Section - Desktop/Tablet Specifications - Centered with bike */}
-                        <div className="hidden md:mt-4 md:flex md:justify-center lg:mt-2 xl:mt-0">
+                        <div className="hidden md:mt-8 md:flex md:justify-center lg:mt-8 xl:mt-10">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;
 
                               return (
-                                <div className="w-[38rem] md:ml-8 md:w-[38rem] lg:ml-12 lg:w-[46rem] xl:ml-16 xl:w-[54rem]">
+                                <div className="w-[38rem] md:w-[38rem] lg:w-[46rem] xl:w-[54rem]">
                                   <BikeSpecsIcons specs={specs} />
                                 </div>
                               );
