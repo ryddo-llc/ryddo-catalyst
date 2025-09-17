@@ -13,11 +13,7 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
 import { ProductBadges } from '../shared/product-badges';
-import {
-  BikeImageSkeleton,
-  BikeSpecsSkeleton,
-  ProductDetailBikeSkeleton,
-} from '../shared/product-detail-skeletons';
+import { BikeSpecsSkeleton, ProductDetailBikeSkeleton } from '../shared/product-detail-skeletons';
 import { ProductImageOverlay } from '../shared/product-image-overlay';
 
 import { BikeMobileSection } from './bike-mobile-section';
@@ -108,9 +104,11 @@ export function ProductDetailBike<F extends Field>({
         >
           <section aria-labelledby="product-heading" className="relative w-full">
             <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
-              {(product) =>
-                product && (
-                  <div className="relative min-h-[60vh] md:max-h-[85vh] md:min-h-[70vh]">
+              {(product) => {
+                if (!product) return null;
+
+                return (
+                  <div className="relative min-h-[85vh] md:h-[85vh]">
                     {/* Background Image - Loaded immediately without Stream */}
                     <div className="absolute inset-0 h-full w-full opacity-55">
                       <Stream fallback={null} value={product.images}>
@@ -137,10 +135,10 @@ export function ProductDetailBike<F extends Field>({
                     </div>
 
                     {/* Content Container */}
-                    <div className="relative z-10 flex h-full flex-col justify-start px-4 py-4 sm:px-6 md:px-8 md:py-6 lg:px-12 xl:px-16">
+                    <div className="relative z-10 flex h-full flex-col justify-start px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 lg:px-12 lg:py-5 xl:px-16 xl:py-6">
                       <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
                         {/* Top Section - Product Name and Brand */}
-                        <header className="mt-10 text-center md:mb-1">
+                        <header className="mt-6 text-center sm:mt-8 md:mb-1 md:mt-10">
                           {/* Hidden h1 for SEO - Screen readers and crawlers only */}
                           <h1 className="sr-only" id="product-heading">
                             {product.title}
@@ -150,16 +148,16 @@ export function ProductDetailBike<F extends Field>({
                             {/* Product Title Badge */}
                             <ProductBadges title={product.title} />
 
-                            {/* Brand Logo - with responsive negative margin */}
+                            {/* Brand Logo - Fixed size container */}
                             {product.brandLogo && (
-                              <div className="sm:-mt-18 -mt-16 flex justify-center md:-mt-20 lg:-mt-20 xl:-mt-20">
+                              <div className="-mt-8 flex h-[8.4rem] w-[12.6rem] items-center justify-center sm:-mt-12 sm:h-[10.5rem] sm:w-[15.75rem] md:-mt-14 md:h-[12.6rem] md:w-[18.9rem] lg:-mt-16 lg:h-[14.7rem] lg:w-[21rem] xl:-mt-20 xl:h-[16.8rem] xl:w-[25.2rem]">
                                 <Image
                                   alt={product.brandLogo.altText || 'Brand logo'}
-                                  className="h-auto max-h-32 w-auto object-contain sm:max-h-40 md:max-h-48 lg:max-h-56 xl:max-h-64"
+                                  className="max-h-full max-w-full object-contain"
                                   height={500}
                                   loading="eager"
                                   priority
-                                  sizes="(max-width: 640px) 200px, (max-width: 768px) 300px, (max-width: 1024px) 400px, (max-width: 1280px) 450px, 500px"
+                                  sizes="(max-width: 640px) 210px, (max-width: 768px) 315px, (max-width: 1024px) 420px, (max-width: 1280px) 472px, 525px"
                                   src={product.brandLogo.url}
                                   width={500}
                                 />
@@ -187,21 +185,46 @@ export function ProductDetailBike<F extends Field>({
                             warranty: product.warranty,
                           }}
                         >
-                          <div className="relative flex h-[14.5rem] w-full max-w-xl items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] md:h-[20.5rem] md:max-w-2xl lg:h-[23.5rem] lg:max-w-3xl xl:h-[25.5rem] xl:max-w-4xl">
-                            <Stream fallback={<BikeImageSkeleton />} value={product.images}>
-                              {(images) => {
-                                const bikeImage = findHeroProductImage(images);
+                          {/* Bike Image Display */}
+                          <div className="relative flex h-[14.5rem] w-[24rem] items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] sm:w-[30rem] md:h-[20.5rem] md:w-[38rem] lg:h-[23.5rem] lg:w-[46rem] xl:h-[25.5rem] xl:w-[54rem]">
+                            <Stream
+                              fallback={
+                                <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
+                              }
+                              value={product.images}
+                            >
+                              {(imageList) => {
+                                // Robust image selection with fallback hierarchy:
+                                // 1. Variant-specific default image (first in array) - for variant switching
+                                // 2. Main product image (third position) - original main image logic
+                                // 3. Hero pattern image (product-hero, main-product, etc.)
+                                // 4. Any available image
+                                // 5. null (show error message)
+                                // Check if first image is a thumbnail, if so skip to main product image
+                                const isFirstImageThumbnail = imageList[0]?.alt
+                                  ?.toLowerCase()
+                                  .includes('thumbnail');
+                                const variantImage = isFirstImageThumbnail ? null : imageList[0];
+                                const mainProductImage = imageList[2];
+
+                                const heroImage =
+                                  variantImage ||
+                                  mainProductImage ||
+                                  findHeroProductImage(imageList) ||
+                                  imageList.find(Boolean) ||
+                                  null;
 
                                 return (
                                   <>
-                                    {bikeImage ? (
+                                    {heroImage ? (
                                       <Image
-                                        alt={bikeImage.alt}
-                                        className="w-full object-contain transition-all duration-300"
+                                        alt={heroImage.alt}
+                                        className="sm:scale-115 h-full w-full -translate-y-2 scale-110 object-contain duration-300 ease-out animate-in fade-in zoom-in-95 sm:-translate-y-3 md:-translate-y-4 md:scale-125 lg:-translate-y-6 lg:scale-125 xl:-translate-y-8 xl:scale-125"
                                         height={1500}
+                                        key={heroImage.src}
                                         priority
-                                        sizes="(max-width: 640px) 460px, (max-width: 768px) 540px, (max-width: 1024px) 690px, (max-width: 1280px) 845px, 1080px"
-                                        src={bikeImage.src}
+                                        sizes="(max-width: 640px) 384px, (max-width: 768px) 480px, (max-width: 1024px) 608px, (max-width: 1280px) 736px, 864px"
+                                        src={heroImage.src}
                                         width={1500}
                                       />
                                     ) : (
@@ -215,7 +238,7 @@ export function ProductDetailBike<F extends Field>({
                                       digitalTagLink={digitalTagLink}
                                       galleryButton={
                                         <GalleryButtonWithModal
-                                          images={images}
+                                          images={imageList}
                                           productTitle={product.title}
                                         />
                                       }
@@ -228,14 +251,14 @@ export function ProductDetailBike<F extends Field>({
                           </div>
                         </BikeVariantCoordinator>
 
-                        {/* Bottom Section - Desktop/Tablet Specifications - Natural flow */}
-                        <div className="mt-auto hidden pt-16 md:block">
+                        {/* Bottom Section - Desktop/Tablet Specifications - Centered with bike */}
+                        <div className="hidden md:mt-8 md:flex md:justify-center lg:mt-8 xl:mt-10">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;
 
                               return (
-                                <div className="mx-auto max-w-4xl">
+                                <div className="w-[38rem] md:w-[38rem] lg:w-[46rem] xl:w-[54rem]">
                                   <BikeSpecsIcons specs={specs} />
                                 </div>
                               );
@@ -265,8 +288,8 @@ export function ProductDetailBike<F extends Field>({
                       }}
                     />
                   </div>
-                )
-              }
+                );
+              }}
             </Stream>
           </section>
 

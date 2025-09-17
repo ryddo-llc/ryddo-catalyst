@@ -85,7 +85,7 @@ export function BikeSpecsIcons({ specs }: BikeSpecsIconsProps) {
   return (
     <div
       aria-label="Bike specifications"
-      className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8"
+      className="flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-12"
       role="region"
     >
       {specs.slice(0, 6).map((spec) => {
@@ -98,11 +98,11 @@ export function BikeSpecsIcons({ specs }: BikeSpecsIconsProps) {
             key={spec.name}
             role="img"
           >
-            <div className="mb-2">
+            <div className="mb-1">
               <Image alt={alt} height={50} src={iconSrc} width={50} />
             </div>
-            <span className="text-xs font-bold text-gray-800">{spec.name}</span>
-            <span className="text-xs font-medium text-gray-600">{spec.value}</span>
+            <span className="text-md font-kanit font-bold text-gray-800">{spec.name}</span>
+            <span className="text-md font-kanit font-medium text-gray-600">{spec.value}</span>
           </div>
         );
       })}

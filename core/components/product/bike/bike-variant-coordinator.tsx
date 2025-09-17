@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
@@ -40,25 +40,14 @@ export function BikeVariantCoordinator<F extends Field>({
   additionalActions,
   children,
 }: BikeVariantCoordinatorProps<F>) {
-  // State to coordinate variant selections between left and right sidebars
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
-
-  const handleVariantChange = useCallback((fieldName: string, value: string) => {
-    setSelectedVariants(prev => ({
-      ...prev,
-      [fieldName]: value
-    }));
-  }, []);
-
   return (
-    <div className="relative -mt-2 mb-4 flex min-h-0 flex-1 items-start justify-center md:-mt-4 lg:-mt-6">
+    <div className="relative -mt-1 mb-2 flex min-h-0 items-start justify-center sm:-mt-2 sm:mb-3 md:-mt-3 md:mb-4 lg:-mt-4 lg:mb-4 xl:-mt-6">
       {/* Left Sidebar - Brand Name, Description, and Variants - Absolutely positioned */}
       <BikeLeftSidebar
         brandName={product.subtitle}
         colors={product.colors}
         description={product.description}
         fields={fields}
-        onVariantChange={handleVariantChange}
         productId={product.id}
       />
 
@@ -83,7 +72,6 @@ export function BikeVariantCoordinator<F extends Field>({
           colors: product.colors,
           warranty: product.warranty,
         }}
-        selectedVariants={selectedVariants}
       />
     </div>
   );

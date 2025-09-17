@@ -92,6 +92,8 @@
   --contrast-500: 0 0% 34%;
   --font-variation-settings-body: 'slnt' 0;
   --font-variation-settings-heading: 'slnt' 0;
+  --font-feature-settings-kanit: normal;
+  --font-variation-settings-kanit: normal;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;

@@ -27,7 +27,6 @@ interface BikeRightSidebarProps<F extends Field> {
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
   additionalActions?: ReactNode;
-  selectedVariants?: Record<string, string>;
 }
 
 export function BikeRightSidebar<F extends Field>({
@@ -37,10 +36,9 @@ export function BikeRightSidebar<F extends Field>({
   ctaLabel,
   ctaDisabled,
   additionalActions,
-  selectedVariants,
 }: BikeRightSidebarProps<F>) {
   return (
-    <div className="absolute right-0 top-[-20px] z-10 hidden w-64 md:block xl:right-1 xl:w-72 -mr-4 sm:-mr-6 md:-mr-10 lg:-mr-14 xl:-mr-18">
+    <div className="absolute right-0 top-[-10px] z-10 hidden w-56 md:top-[-15px] md:block md:w-64 lg:top-[-20px] lg:w-64 xl:right-1 xl:w-72 -mr-2 sm:-mr-3 md:-mr-8 lg:-mr-12 xl:-mr-16">
       <Stream
         fallback={<ProductDetailFormSkeleton />}
         value={Streamable.all([product.images, fields, ctaLabel, ctaDisabled, product.warranty || Streamable.from(() => Promise.resolve(null))])}
@@ -61,7 +59,6 @@ export function BikeRightSidebar<F extends Field>({
               ctaDisabled: streamedCtaDisabled || undefined,
               additionalActions,
               productType: 'bike',
-              selectedVariants,
             }}
           />
         )}
