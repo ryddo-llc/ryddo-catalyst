@@ -109,3 +109,32 @@ export const getPopularProductsData = cache(
     return data;
   },
 );
+
+const BannersQuery = graphql(`
+  query BannersQuery {
+    site {
+      banners {
+        homePage(first: 10) {
+          edges {
+            node {
+              entityId
+              name
+              content
+              location
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const getBannersData = cache(async (customerAccessToken?: string) => {
+  const { data } = await client.fetch({
+    document: BannersQuery,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  return data;
+});
