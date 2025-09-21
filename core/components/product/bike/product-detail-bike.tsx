@@ -108,7 +108,7 @@ export function ProductDetailBike<F extends Field>({
                 if (!product) return null;
 
                 return (
-                  <div className="relative min-h-[85vh] md:h-[85vh]">
+                  <div className="relative min-h-[86vh] md:h-[86vh]">
                     {/* Background Image - Loaded immediately without Stream */}
                     <div className="absolute inset-0 h-full w-full opacity-55">
                       <Stream fallback={null} value={product.images}>

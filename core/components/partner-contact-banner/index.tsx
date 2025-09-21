@@ -35,8 +35,6 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
   // Get inventory status from context
   const { inventoryStatus } = useInventory();
 
-  console.log('PartnersContactBar - inventoryStatus from context:', inventoryStatus);
-
   // Use the streamable hook to get banner data
   const bannersData = useStreamable(banners);
   const bottomBanners = bannersData?.bottomBanners || [];
@@ -45,7 +43,6 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
   const getButtonTextAndStyle = () => {
     // If no inventory status, show default "Book Test Ride" (not on product page)
     if (!inventoryStatus) {
-      console.log('PartnersContactBar - Using default Book Test Ride button');
       return {
         text: 'Book Test Ride',
         className: 'bg-[#F92F7B] hover:bg-[#d41f63]',
@@ -54,7 +51,6 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
     }
 
     // Product page with inventory status
-    console.log('PartnersContactBar - Using inventory-based button, status:', inventoryStatus.status, 'isInStock:', inventoryStatus.isInStock);
 
     if (!inventoryStatus.isInStock || inventoryStatus.status === 'Unavailable') {
       return {
@@ -192,15 +188,25 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
 
       {/* Contact Actions Section - Hidden on mobile */}
       <div className="hidden w-auto md:flex">
-        {/* Phone Number */}
+        {/* Phone Number OR Shipping Info */}
         <div className="hidden h-12 w-32 lg:flex lg:w-44 xl:w-48 2xl:w-52">
-          <Link
-            aria-label="Call ryddo at 323-676-7433"
-            className="flex h-full w-full items-center justify-center border-l border-white px-2 text-xs font-bold transition-colors duration-200 hover:bg-[#F92F7B] hover:text-white md:text-sm"
-            href="tel:+13236767433"
-          >
-            <span className="font-kanit font-black italic tracking-wider">323.676.7433</span>
-          </Link>
+          {inventoryStatus ? (
+            // Product page - show shipping info
+            <div className="flex h-full w-full items-center justify-center border-l border-white px-2">
+              <span className="font-kanit font-black uppercase italic tracking-wider text-white">
+                SHIPS IN: 2-3 DAYS
+              </span>
+            </div>
+          ) : (
+            // Non-product page - show phone number
+            <Link
+              aria-label="Call ryddo at 323-676-7433"
+              className="flex h-full w-full items-center justify-center border-l border-white px-2 text-xs font-bold transition-colors duration-200 hover:bg-[#F92F7B] hover:text-white md:text-sm"
+              href="tel:+13236767433"
+            >
+              <span className="font-kanit font-black italic tracking-wider">323.676.7433</span>
+            </Link>
+          )}
         </div>
 
         {/* Book Now Button - Desktop/Tablet */}

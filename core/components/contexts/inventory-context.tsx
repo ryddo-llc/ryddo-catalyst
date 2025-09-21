@@ -25,7 +25,7 @@ interface InventoryProviderProps {
 
 export function InventoryProvider({ children }: InventoryProviderProps) {
   const [inventoryStatus, setInventoryStatus] = useState<InventoryStatus | null>(null);
-  console.log(inventoryStatus);
+
   return (
     <InventoryContext.Provider value={{ inventoryStatus, setInventoryStatus }}>
       {children}
