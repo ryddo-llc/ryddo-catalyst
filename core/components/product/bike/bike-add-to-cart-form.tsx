@@ -194,9 +194,11 @@ export function BikeAddToCartForm<F extends Field>({
               <label className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
                 {field.label}: {(() => {
                   if (!selectedVariants[field.name]) return 'None selected';
+
                   if ('options' in field) {
                     return field.options.find(opt => opt.value === selectedVariants[field.name])?.label;
                   }
+
                   return selectedVariants[field.name];
                 })()}
               </label>
