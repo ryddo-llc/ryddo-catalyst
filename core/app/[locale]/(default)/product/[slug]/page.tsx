@@ -39,6 +39,7 @@ import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fe
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
+import { ProductInventoryProvider } from './_components/inventory-provider';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
@@ -631,6 +632,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   return (
     <>
+      <ProductInventoryProvider streamableInventoryStatus={streamableInventoryStatus} />
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
         {renderProductDetail()}
       </ProductAnalyticsProvider>

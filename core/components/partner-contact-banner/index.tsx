@@ -3,6 +3,7 @@
 import React, { useRef, useState } from 'react';
 
 import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
+import { useInventory } from '~/components/contexts/inventory-context';
 
 import { Link } from '../link';
 
@@ -31,9 +32,54 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
   const [activePopup, setActivePopup] = useState<PopupType>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Get inventory status from context
+  const { inventoryStatus } = useInventory();
+
+  console.log('PartnersContactBar - inventoryStatus from context:', inventoryStatus);
+
   // Use the streamable hook to get banner data
   const bannersData = useStreamable(banners);
   const bottomBanners = bannersData?.bottomBanners || [];
+
+  // Get button text and styling based on context
+  const getButtonTextAndStyle = () => {
+    // If no inventory status, show default "Book Test Ride" (not on product page)
+    if (!inventoryStatus) {
+      console.log('PartnersContactBar - Using default Book Test Ride button');
+      return {
+        text: 'Book Test Ride',
+        className: 'bg-[#F92F7B] hover:bg-[#d41f63]',
+        disabled: false,
+      };
+    }
+
+    // Product page with inventory status
+    console.log('PartnersContactBar - Using inventory-based button, status:', inventoryStatus.status, 'isInStock:', inventoryStatus.isInStock);
+
+    if (!inventoryStatus.isInStock || inventoryStatus.status === 'Unavailable') {
+      return {
+        text: inventoryStatus.status === 'Unavailable' ? 'Unavailable' : 'Out of Stock',
+        className: 'bg-[#F92F7B] hover:bg-[#d41f63]',
+        disabled: true,
+      };
+    }
+
+    if (inventoryStatus.status === 'Preorder') {
+      return {
+        text: 'Pre-Order',
+        className: 'bg-[#F92F7B] hover:bg-[#d41f63]',
+        disabled: false,
+      };
+    }
+
+    return {
+      text: 'In Stock',
+      className: 'bg-[#F92F7B] hover:bg-[#d41f63]',
+      disabled: false,
+    };
+  };
+
+  const buttonConfig = getButtonTextAndStyle();
 
   const POPUP_TRANSITION_DURATION = 300;
   const ADVENTURES_DIALOG_ID = 'adventures-popup';
@@ -90,13 +136,14 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
         <button
           aria-controls={BOOKNOW_DIALOG_ID}
           aria-haspopup="dialog"
-          className="flex h-12 w-1/2 items-center justify-center bg-[#F92F7B] transition-colors duration-200 hover:bg-[#d41f63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          className={`flex h-12 w-1/2 items-center justify-center transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${buttonConfig.className}`}
           data-state={activePopup === 'booknow' ? 'open' : 'closed'}
-          onClick={() => openPopup('booknow')}
+          disabled={buttonConfig.disabled}
+          onClick={() => !buttonConfig.disabled && openPopup('booknow')}
           type="button"
         >
           <span className="font-kanit font-black uppercase italic tracking-wider">
-            Book Test Ride
+            {buttonConfig.text}
           </span>
         </button>
       </div>
@@ -160,13 +207,14 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
         <button
           aria-controls={BOOKNOW_DIALOG_ID}
           aria-haspopup="dialog"
-          className="flex h-12 w-32 items-center justify-center bg-[#F92F7B] px-2 text-xs transition-colors duration-200 hover:bg-[#d41f63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black md:w-40 md:border-l md:border-white md:text-sm lg:w-44 xl:w-48 2xl:w-52"
+          className={`flex h-12 w-32 items-center justify-center px-2 text-xs transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black md:w-40 md:border-l md:border-white md:text-sm lg:w-44 xl:w-48 2xl:w-52 ${buttonConfig.className}`}
           data-state={activePopup === 'booknow' ? 'open' : 'closed'}
-          onClick={() => openPopup('booknow')}
+          disabled={buttonConfig.disabled}
+          onClick={() => !buttonConfig.disabled && openPopup('booknow')}
           type="button"
         >
           <span className="font-kanit font-black uppercase italic tracking-wider">
-            Book Test Ride
+            {buttonConfig.text}
           </span>
         </button>
       </div>

@@ -5,6 +5,7 @@ import { PropsWithChildren } from 'react';
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { getBannersData } from '~/app/[locale]/(default)/page-data';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { InventoryProvider } from '~/components/contexts/inventory-context';
 import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
 import PartnersContactBar from '~/components/partner-contact-banner';
@@ -39,19 +40,21 @@ export default async function DefaultLayout({ params, children }: Props) {
   });
 
   return (
-    <div className="max-w-screen-8xl flex flex-col">
-      <Header banners={streamableBanners} />
+    <InventoryProvider>
+      <div className="max-w-screen-8xl flex flex-col">
+        <Header banners={streamableBanners} />
 
-      <main className="flex-grow">{children}</main>
+        <main className="flex-grow">{children}</main>
 
-      <Subscribe />
+        <Subscribe />
 
-      <Footer />
+        <Footer />
 
-      {/* Partners Contact Bar - Fixed at bottom of viewport */}
+        {/* Partners Contact Bar - Fixed at bottom of viewport */}
 
-      <PartnersContactBar banners={streamableBanners} />
-    </div>
+        <PartnersContactBar banners={streamableBanners} />
+      </div>
+    </InventoryProvider>
   );
 }
 
