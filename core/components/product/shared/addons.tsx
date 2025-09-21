@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { type Product } from '@/vibes/soul/primitives/product-card';
 import { Image } from '~/components/image';
-import { getFluidBackgroundTextSize } from '~/lib/dynamic-text-sizing';
 
 import { ProductModal } from './product-modal';
 
@@ -16,7 +15,7 @@ interface AddonProps {
 
 export default function Addons({ addons, name }: AddonProps) {
   // Background text based on product type
-  const backgroundText = name;
+  const backgroundText = 'Accessories';
   const titleText = 'Ryddo Recs for your';
   // Modal state
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -33,15 +32,13 @@ export default function Addons({ addons, name }: AddonProps) {
   };
 
   return (
-    <section className="relative w-full bg-white bg-gradient-to-br px-4 py-12 @container @sm:py-16 @lg:py-20">
+    <section className="relative w-full bg-white bg-gradient-to-br px-4 py-12 mb-16 @container @sm:py-16 @sm:mb-20 @lg:py-20 @lg:mb-24">
       {/* Background Text - positioned directly behind addon grid */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-8 top-[calc(50%+2rem)] z-0 flex items-center justify-center overflow-hidden @sm:bottom-12 @sm:top-[calc(50%+1rem)] @md:bottom-16 @md:top-[50%]"
       >
-        <span
-          className={`max-w-[90vw] select-none whitespace-nowrap font-black uppercase leading-loose tracking-widest text-gray-300 opacity-50 transition-opacity duration-300 @sm:max-w-none @sm:opacity-60 @md:opacity-70 ${getFluidBackgroundTextSize(backgroundText)}`}
-        >
+        <span className="select-none whitespace-nowrap font-kanit text-[6rem] font-black uppercase leading-loose tracking-[0.08em] text-gray-300 opacity-50 transition-opacity duration-300 @sm:text-[8rem] @sm:opacity-60 @md:text-[10vw] @md:opacity-70 @lg:text-[12vw] @xl:text-[14vw]">
           {backgroundText}
         </span>
       </div>
@@ -56,6 +53,24 @@ export default function Addons({ addons, name }: AddonProps) {
 
         {/* Add-Ons Grid */}
         <div className="relative z-20">
+          {/* Left Arrow */}
+          <Image
+            alt="Previous"
+            className="absolute left-0 top-1/2 z-10 h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:-translate-x-1 hover:scale-110 hidden @lg:block"
+            height={60}
+            src="/icons/arrow-left.svg"
+            width={60}
+          />
+
+          {/* Right Arrow */}
+          <Image
+            alt="Next"
+            className="absolute right-0 top-1/2 z-10 h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:translate-x-1 hover:scale-110 hidden @lg:block"
+            height={60}
+            src="/icons/arrow-right.svg"
+            width={60}
+          />
+
           <div className="grid grid-cols-1 gap-4 @xs:grid-cols-2 @xs:gap-6 @sm:grid-cols-3 @sm:gap-8 @md:grid-cols-4 @md:gap-10 @lg:grid-cols-5 @lg:gap-12 @xl:grid-cols-6">
             <Stream
               fallback={
@@ -75,7 +90,7 @@ export default function Addons({ addons, name }: AddonProps) {
                 return displayAccessories.map((accessory) => (
                   <button
                     aria-label={`View ${accessory.title} details`}
-                    className="group relative z-30 cursor-pointer overflow-hidden rounded-2xl border-none bg-transparent p-0 @container"
+                    className="group relative z-30 cursor-pointer overflow-hidden rounded-2xl border-none bg-transparent @container"
                     key={accessory.id}
                     onClick={() => handleProductClick(accessory)}
                     type="button"
