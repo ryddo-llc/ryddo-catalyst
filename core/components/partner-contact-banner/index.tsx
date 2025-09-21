@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
 import { useInventory } from '~/components/contexts/inventory-context';
@@ -30,6 +30,7 @@ type PopupType = 'adventures' | 'booknow' | null;
 
 export default function PartnersContactBar({ banners }: PartnersContactBarProps = {}) {
   const [activePopup, setActivePopup] = useState<PopupType>(null);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get inventory status from context
@@ -38,6 +39,17 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
   // Use the streamable hook to get banner data
   const bannersData = useStreamable(banners);
   const bottomBanners = bannersData?.bottomBanners || [];
+
+  // Auto-rotate banners
+  useEffect(() => {
+    if (bottomBanners.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentBannerIndex((prev) => (prev + 1) % bottomBanners.length);
+      }, 10000); // Change every 10 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [bottomBanners.length]);
 
   // Get button text and styling based on context
   const getButtonTextAndStyle = () => {
@@ -175,15 +187,23 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
 
       {/* Banner Text Section - Hidden on mobile */}
       <div className="hidden min-h-[48px] flex-1 items-center justify-center gap-x-4 px-2 py-2 md:flex md:gap-x-6 md:px-3 md:py-0 lg:px-4 xl:px-6 2xl:px-8">
-        {bottomBanners.map((banner: Banner) => (
-          <div
-            className="text-md lg:text-md flex-shrink-0 font-kanit font-black italic tracking-wider text-white transition-opacity duration-200 hover:opacity-80 md:text-base"
-            key={banner.entityId}
-          >
-            {banner.name.toLocaleUpperCase()} -{' '}
-            <span className="font-inter font-light"> LEARN MORE</span>
+        {bottomBanners.length > 0 && (
+          <div className="relative flex w-full items-center justify-center">
+            {bottomBanners.map((banner, index) => (
+              <div
+                className={`text-md lg:text-md absolute font-kanit font-black italic tracking-wider text-white transition-all duration-500 ease-in-out md:text-base ${
+                  index === currentBannerIndex
+                    ? 'translate-y-0 transform opacity-100'
+                    : 'pointer-events-none -translate-y-2 transform opacity-0'
+                }`}
+                key={banner.entityId}
+              >
+                {banner.name.toLocaleUpperCase()} -{' '}
+                <span className="font-inter font-light"> LEARN MORE</span>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
 
       {/* Contact Actions Section - Hidden on mobile */}

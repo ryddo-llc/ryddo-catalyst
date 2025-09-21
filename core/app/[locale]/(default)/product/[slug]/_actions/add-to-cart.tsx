@@ -32,15 +32,24 @@ export const addToCart = async (
 
   const submission = parseWithZod(payload, { schema: schema(prevState.fields) });
 
+  console.log('Add to cart - Form payload:', Object.fromEntries(payload.entries()));
+  console.log('Add to cart - Submission status:', submission.status);
+  console.log('Add to cart - Fields:', prevState.fields.map(f => ({ name: f.name, type: f.type, required: 'isRequired' in f ? f.isRequired : false })));
+
   if (submission.status !== 'success') {
+    console.log('Add to cart - Validation failed:', submission.reply());
     return { lastResult: submission.reply(), fields: prevState.fields };
   }
 
   const productEntityId = Number(submission.value.id);
   const quantity = Number(submission.value.quantity);
 
+  console.log('Add to cart - Product ID:', productEntityId, 'Quantity:', quantity);
+
   const selectedOptions = prevState.fields.reduce<CartSelectedOptionsInput>((accum, field) => {
     const optionValueEntityId = submission.value[field.name];
+
+    console.log(`Add to cart - Field ${field.name}: value=${optionValueEntityId}, required=${'isRequired' in field ? field.isRequired : false}`);
 
     let multipleChoicesOptionInput;
     let checkboxOptionInput;
@@ -50,7 +59,10 @@ export const addToCart = async (
     let dateFieldOptionInput;
 
     // Skip empty strings since option is empty
-    if (!optionValueEntityId) return accum;
+    if (!optionValueEntityId) {
+      console.log(`Add to cart - Skipping empty field: ${field.name}`);
+      return accum;
+    }
 
     switch (field.type) {
       case 'select':
@@ -151,7 +163,15 @@ export const addToCart = async (
     }
   }, {});
 
+  console.log('Add to cart - Selected options:', selectedOptions);
+
   try {
+    console.log('Add to cart - Calling addToOrCreateCart with:', {
+      productEntityId,
+      selectedOptions,
+      quantity,
+    });
+
     await addToOrCreateCart({
       lineItems: [
         {
@@ -161,6 +181,8 @@ export const addToCart = async (
         },
       ],
     });
+
+    console.log('Add to cart - Successfully added to cart');
 
     return {
       lastResult: submission.reply(),
