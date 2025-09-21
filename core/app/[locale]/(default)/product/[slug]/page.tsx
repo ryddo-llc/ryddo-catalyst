@@ -640,7 +640,7 @@ export default async function Product({ params, searchParams }: Props) {
       {/* Enhanced sections for bikes and scooters only */}
       {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
         <>
-          <Addons addons={streamablePopularAccessories} name={baseProduct.name} />
+          <Addons addons={streamablePopularAccessories} name={baseProduct.brand?.name} />
           
           <ProductShowcase
             aria-labelledby="product-images-heading"
