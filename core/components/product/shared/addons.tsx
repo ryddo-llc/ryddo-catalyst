@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { type Product } from '@/vibes/soul/primitives/product-card';
@@ -21,6 +21,24 @@ export default function Addons({ addons, name }: AddonProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Carousel state
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Get number of items to show based on screen size
+  const getItemsToShow = () => {
+    if (typeof window !== 'undefined') {
+      const width = window.innerWidth;
+
+      if (width >= 768) return 6; // Medium and above: always 6
+
+      if (width >= 480) return 3; // Small: 3
+
+      return 2; // Mobile: 2
+    }
+
+    return 6; // Default to 6 for SSR
+  };
+
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -30,6 +48,24 @@ export default function Addons({ addons, name }: AddonProps) {
     setIsModalOpen(false);
     setSelectedProduct(null);
   };
+
+  const handleNextClick = useCallback(() => {
+    setCurrentIndex((prev) => {
+      const itemsToShow = getItemsToShow();
+
+      return (prev + itemsToShow) % Math.max(1, Math.ceil(20 / itemsToShow) * itemsToShow); // Estimate based on query size
+    });
+  }, []);
+
+  const handlePrevClick = useCallback(() => {
+    setCurrentIndex((prev) => {
+      const itemsToShow = getItemsToShow();
+      const totalItems = Math.max(1, Math.ceil(20 / itemsToShow) * itemsToShow); // Estimate based on query size
+      const newIndex = prev - itemsToShow;
+
+      return newIndex < 0 ? totalItems + newIndex : newIndex;
+    });
+  }, []);
 
   return (
     <section className="relative mb-16 w-full bg-white bg-gradient-to-br px-4 py-12 @container @sm:mb-20 @sm:py-16 @lg:mb-24 @lg:py-20">
@@ -59,8 +95,9 @@ export default function Addons({ addons, name }: AddonProps) {
           {/* Left Arrow */}
           <Image
             alt="Previous"
-            className="absolute -left-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:-translate-x-1 hover:scale-110 @md:block @md:-left-8 @md:h-10 @md:w-10 @lg:-left-12 @lg:h-12 @lg:w-12 @xl:-left-16 @xl:h-14 @xl:w-14"
+            className="absolute -left-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:-translate-x-1 hover:scale-110 @md:-left-8 @md:block @md:h-10 @md:w-10 @lg:-left-12 @lg:h-12 @lg:w-12 @xl:-left-16 @xl:h-14 @xl:w-14"
             height={60}
+            onClick={handlePrevClick}
             src="/icons/arrow-left.svg"
             width={60}
           />
@@ -68,17 +105,18 @@ export default function Addons({ addons, name }: AddonProps) {
           {/* Right Arrow */}
           <Image
             alt="Next"
-            className="absolute -right-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:translate-x-1 hover:scale-110 @md:block @md:-right-8 @md:h-10 @md:w-10 @lg:-right-12 @lg:h-12 @lg:w-12 @xl:-right-16 @xl:h-14 @xl:w-14"
+            className="absolute -right-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:translate-x-1 hover:scale-110 @md:-right-8 @md:block @md:h-10 @md:w-10 @lg:-right-12 @lg:h-12 @lg:w-12 @xl:-right-16 @xl:h-14 @xl:w-14"
             height={60}
+            onClick={handleNextClick}
             src="/icons/arrow-right.svg"
             width={60}
           />
 
-          <div className="grid grid-cols-2 gap-3 @xs:gap-4 @sm:grid-cols-3 @sm:gap-6 @md:grid-cols-4 @md:gap-8 @lg:grid-cols-5 @lg:gap-10 @xl:grid-cols-6 @xl:gap-12">
+          <div className="grid grid-cols-2 gap-3 @xs:gap-4 @sm:grid-cols-3 @sm:gap-6 @md:grid-cols-6 @md:gap-8 @lg:grid-cols-6 @lg:gap-10 @xl:grid-cols-6 @xl:gap-12">
             <Stream
               fallback={
                 <div className="contents">
-                  {Array.from({ length: 6 }).map((_, index) => (
+                  {Array.from({ length: 5 }).map((_, index) => (
                     <div className="group cursor-pointer" key={index}>
                       <div className="aspect-square animate-pulse rounded-2xl bg-gray-200 p-4 @sm:p-6 @md:p-8" />
                     </div>
@@ -88,7 +126,28 @@ export default function Addons({ addons, name }: AddonProps) {
               value={addons}
             >
               {(accessories) => {
-                const displayAccessories = accessories;
+                // Get items to show based on screen size
+                const itemsToShow = getItemsToShow();
+
+                // Calculate visible accessories with looping
+                const getVisibleAccessories = () => {
+                  if (accessories.length === 0) return [];
+
+                  const visibleItems = [];
+
+                  for (let i = 0; i < itemsToShow; i += 1) {
+                    const index = (currentIndex + i) % accessories.length;
+                    const accessory = accessories[index];
+
+                    if (accessory) {
+                      visibleItems.push(accessory);
+                    }
+                  }
+
+                  return visibleItems;
+                };
+
+                const displayAccessories = getVisibleAccessories();
 
                 return displayAccessories.map((accessory) => (
                   <button
@@ -120,7 +179,7 @@ export default function Addons({ addons, name }: AddonProps) {
                     {/* Product Image */}
                     <Image
                       alt={accessory.title}
-                      className="relative z-20 aspect-square rounded-2xl object-contain p-3 transition-transform duration-300 group-hover:scale-105 @xs:p-4 @sm:p-6 @md:p-8"
+                      className="relative z-20 aspect-square rounded-2xl object-contain p-4 transition-transform duration-300 group-hover:scale-105 @sm:p-6 @md:p-8"
                       height={500}
                       src={accessory.image?.src || '/images/placeholder.png'}
                       width={500}
