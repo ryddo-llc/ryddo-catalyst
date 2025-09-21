@@ -233,7 +233,7 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
         <button
           aria-controls={BOOKNOW_DIALOG_ID}
           aria-haspopup="dialog"
-          className={`flex h-12 w-32 items-center justify-center px-2 text-xs transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black md:w-40 md:border-l md:border-white md:text-sm lg:w-44 xl:w-48 2xl:w-52 ${buttonConfig.className}`}
+          className={`flex h-12 w-32 items-center justify-center px-2 text-xs transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2 focus-visible:ring-offset-black md:w-40 md:text-sm lg:w-44 xl:w-48 2xl:w-52 ${buttonConfig.className}`}
           data-state={activePopup === 'booknow' ? 'open' : 'closed'}
           disabled={buttonConfig.disabled}
           onClick={() => !buttonConfig.disabled && openPopup('booknow')}
