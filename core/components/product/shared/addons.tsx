@@ -32,23 +32,26 @@ export default function Addons({ addons, name }: AddonProps) {
   };
 
   return (
-    <section className="relative w-full bg-white bg-gradient-to-br px-4 py-12 mb-16 @container @sm:py-16 @sm:mb-20 @lg:py-20 @lg:mb-24">
+    <section className="relative mb-16 w-full bg-white bg-gradient-to-br px-4 py-12 @container @sm:mb-20 @sm:py-16 @lg:mb-24 @lg:py-20">
       {/* Background Text - positioned directly behind addon grid */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-8 top-[calc(50%+2rem)] z-0 flex items-center justify-center overflow-hidden @sm:bottom-12 @sm:top-[calc(50%+1rem)] @md:bottom-16 @md:top-[50%]"
       >
-        <span className="select-none whitespace-nowrap font-kanit text-[6rem] font-black uppercase leading-loose tracking-[0.08em] text-gray-300 opacity-50 transition-opacity duration-300 @sm:text-[8rem] @sm:opacity-60 @md:text-[10vw] @md:opacity-70 @lg:text-[12vw] @xl:text-[14vw]">
+        <span className="select-none whitespace-nowrap font-kanit text-[7rem] font-black uppercase leading-loose tracking-[0.08em] text-gray-300 opacity-40 transition-opacity duration-300 @xs:text-[6rem] @xs:opacity-45 @sm:text-[7rem] @sm:opacity-50 @md:text-[9vw] @md:opacity-60 @lg:text-[11vw] @lg:opacity-65 @xl:text-[13vw] @xl:opacity-70">
           {backgroundText}
         </span>
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl text-center font-kanit">
         {/* Title */}
-        <h2 className="mb-8 text-2xl font-black text-gray-900 @sm:mb-10 @sm:text-2xl @md:mb-12 @md:text-3xl @lg:text-4xl @xl:text-5xl">
+        <h2 className="mb-6 text-xl font-black text-gray-900 @xs:text-2xl @sm:mb-8 @sm:text-2xl @md:mb-10 @md:text-3xl @lg:mb-12 @lg:text-4xl @xl:text-5xl">
           {titleText}
           <br />
-          <span className="-mt-4 block text-[#F92F7B] @sm:-mt-6 @md:-mt-8">new {name}.</span>
+          <span className="-mt-2 block text-[#F92F7B] @xs:-mt-3 @sm:-mt-4 @md:-mt-6 @lg:-mt-8">
+            new {name}
+            <span className="text-black">.</span>
+          </span>
         </h2>
 
         {/* Add-Ons Grid */}
@@ -56,7 +59,7 @@ export default function Addons({ addons, name }: AddonProps) {
           {/* Left Arrow */}
           <Image
             alt="Previous"
-            className="absolute left-0 top-1/2 z-10 h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:-translate-x-1 hover:scale-110 hidden @lg:block"
+            className="absolute -left-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:-translate-x-1 hover:scale-110 @md:block @md:-left-8 @md:h-10 @md:w-10 @lg:-left-12 @lg:h-12 @lg:w-12 @xl:-left-16 @xl:h-14 @xl:w-14"
             height={60}
             src="/icons/arrow-left.svg"
             width={60}
@@ -65,13 +68,13 @@ export default function Addons({ addons, name }: AddonProps) {
           {/* Right Arrow */}
           <Image
             alt="Next"
-            className="absolute right-0 top-1/2 z-10 h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:translate-x-1 hover:scale-110 hidden @lg:block"
+            className="absolute -right-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:translate-x-1 hover:scale-110 @md:block @md:-right-8 @md:h-10 @md:w-10 @lg:-right-12 @lg:h-12 @lg:w-12 @xl:-right-16 @xl:h-14 @xl:w-14"
             height={60}
             src="/icons/arrow-right.svg"
             width={60}
           />
 
-          <div className="grid grid-cols-1 gap-4 @xs:grid-cols-2 @xs:gap-6 @sm:grid-cols-3 @sm:gap-8 @md:grid-cols-4 @md:gap-10 @lg:grid-cols-5 @lg:gap-12 @xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 @xs:gap-4 @sm:grid-cols-3 @sm:gap-6 @md:grid-cols-4 @md:gap-8 @lg:grid-cols-5 @lg:gap-10 @xl:grid-cols-6 @xl:gap-12">
             <Stream
               fallback={
                 <div className="contents">
@@ -90,7 +93,7 @@ export default function Addons({ addons, name }: AddonProps) {
                 return displayAccessories.map((accessory) => (
                   <button
                     aria-label={`View ${accessory.title} details`}
-                    className="group relative z-30 cursor-pointer overflow-hidden rounded-2xl border-none bg-transparent @container"
+                    className="group relative z-30 min-h-[44px] cursor-pointer touch-manipulation overflow-hidden rounded-2xl border-none bg-transparent p-0 transition-transform @container active:scale-95"
                     key={accessory.id}
                     onClick={() => handleProductClick(accessory)}
                     type="button"
@@ -117,15 +120,15 @@ export default function Addons({ addons, name }: AddonProps) {
                     {/* Product Image */}
                     <Image
                       alt={accessory.title}
-                      className="relative z-20 aspect-square rounded-2xl object-contain p-4 transition-transform duration-300 group-hover:scale-105 @sm:p-6 @md:p-8"
+                      className="relative z-20 aspect-square rounded-2xl object-contain p-3 transition-transform duration-300 group-hover:scale-105 @xs:p-4 @sm:p-6 @md:p-8"
                       height={500}
                       src={accessory.image?.src || '/images/placeholder.png'}
                       width={500}
                     />
 
                     {/* Product Name Overlay (visible on hover) */}
-                    <div className="absolute bottom-2 left-1.5 right-1.5 z-40 translate-y-full transform rounded-lg bg-[#F92F7B] px-2 py-1 text-center text-white opacity-0 shadow-lg transition-all duration-300 group-hover:translate-y-0 group-hover:scale-105 group-hover:opacity-100 @sm:bottom-3 @sm:left-2 @sm:right-2">
-                      <p className="truncate text-[9px] font-medium leading-tight @sm:text-[10px]">
+                    <div className="absolute bottom-1.5 left-1 right-1 z-40 translate-y-full transform rounded-lg bg-[#F92F7B] px-1.5 py-1 text-center text-white opacity-0 shadow-lg transition-all duration-300 group-hover:translate-y-0 group-hover:scale-105 group-hover:opacity-100 @xs:bottom-2 @xs:left-1.5 @xs:right-1.5 @xs:px-2 @sm:bottom-3 @sm:left-2 @sm:right-2">
+                      <p className="truncate text-[8px] font-medium leading-tight @xs:text-[9px] @sm:text-[10px]">
                         {accessory.title}
                       </p>
                     </div>
