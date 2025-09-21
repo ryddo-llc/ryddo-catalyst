@@ -93,6 +93,7 @@ export function BikeAddToCartForm<F extends Field>({
 
   // Helper function to check if field should be rendered as interactive element
   const shouldRenderField = (field: F): boolean => {
+
     // Skip color field since it's handled by the SwatchRadioGroup
     if (isColorField(field)) {
       return false;
