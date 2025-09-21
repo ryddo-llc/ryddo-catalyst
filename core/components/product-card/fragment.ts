@@ -11,6 +11,14 @@ export const ProductCardFragment = graphql(
         url: urlTemplate(lossy: true)
       }
       path
+      categories {
+        edges {
+          node {
+            name
+            path
+          }
+        }
+      }
       brand {
         name
         path

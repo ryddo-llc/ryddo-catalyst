@@ -37,10 +37,9 @@ const getCartCount = cache(async (cartId: string, customerAccessToken?: string) 
     variables: { cartId },
     customerAccessToken,
     fetchOptions: {
-      cache: 'no-store', // Cart data should remain fresh
       next: {
         tags: [TAGS.cart],
-        revalidate: 30, // But allow brief caching for 30 seconds to reduce API calls
+        revalidate: 30, // Cache for 30 seconds to reduce API calls while keeping cart data fresh
       },
     },
   });

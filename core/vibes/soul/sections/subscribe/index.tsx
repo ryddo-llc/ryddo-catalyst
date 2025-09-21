@@ -28,15 +28,24 @@ export function Subscribe({
     <section
       className={`relative flex h-[60vh] w-full items-center justify-center overflow-hidden ${!image ? 'bg-gradient-to-br from-blue-50 to-indigo-100' : ''}`}
     >
-      {/* CSS Parallax Background */}
+      {/* Optimized Parallax Background */}
       {image && (
-        <div
-          className="absolute inset-0 h-full w-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${image.src}')`,
-            backgroundAttachment: 'fixed',
-          }}
-        />
+        <div className="absolute inset-0 h-full w-full">
+          <Image
+            alt={image.alt}
+            aria-hidden="true"
+            className="object-cover"
+            fill
+            loading="lazy"
+            priority={false}
+            quality={80}
+            sizes="100vw"
+            src={image.src}
+            style={{
+              objectPosition: 'center',
+            }}
+          />
+        </div>
       )}
 
       {/* Content Container */}

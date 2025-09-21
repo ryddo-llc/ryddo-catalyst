@@ -64,7 +64,13 @@ export default async (): Promise<NextConfig> => {
     reactStrictMode: true,
 
     experimental: {
-      optimizePackageImports: ['@icons-pack/react-simple-icons'],
+      optimizePackageImports: [
+        '@icons-pack/react-simple-icons',
+        'lucide-react',
+        '@radix-ui/react-accordion',
+        '@radix-ui/react-dialog',
+        '@radix-ui/react-dropdown-menu'
+      ],
       ppr: 'incremental',
     },
     typescript: {
@@ -93,6 +99,31 @@ export default async (): Promise<NextConfig> => {
       minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     },
 
+    webpack: (config, { isServer }) => {
+      // Optimize bundle splitting for better performance
+      if (!isServer) {
+        config.optimization.splitChunks = {
+          ...config.optimization.splitChunks,
+          chunks: 'all',
+          cacheGroups: {
+            ...config.optimization.splitChunks.cacheGroups,
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+            },
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              enforce: true,
+            },
+          },
+        };
+      }
+      return config;
+    },
+
     // default URL generation in BigCommerce uses trailing slash
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -111,6 +142,34 @@ export default async (): Promise<NextConfig> => {
               value: cspHeader.replace(/\n/g, ''),
             },
             ...cdnLinks,
+          ],
+        },
+        // Optimize cache headers for better bfcache support
+        {
+          source: '/api/(.*)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'private, max-age=300', // 5 minutes for API routes
+            },
+          ],
+        },
+        {
+          source: '/product/(.*)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=3600, stale-while-revalidate=86400', // 1 hour cache, 1 day stale
+            },
+          ],
+        },
+        {
+          source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=1800, stale-while-revalidate=86400', // 30 minutes cache, 1 day stale
+            },
           ],
         },
       ];

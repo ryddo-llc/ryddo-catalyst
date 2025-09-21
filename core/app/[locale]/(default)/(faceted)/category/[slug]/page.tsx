@@ -16,6 +16,7 @@ import { numberedPaginationTransformer } from '~/data-transformers/numbered-pagi
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { transformProductPath } from '~/lib/product-path-transformer';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts } from '../../fetch-compare-products';
@@ -203,7 +204,7 @@ export default async function Category(props: Props) {
     return products.map((product) => ({
       id: product.entityId.toString(),
       title: product.name,
-      href: product.path,
+      href: transformProductPath(product, locale),
       image: product.defaultImage
         ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
         : undefined,
@@ -323,7 +324,7 @@ export default async function Category(props: Props) {
       image: product.defaultImage
         ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
         : undefined,
-      href: product.path,
+      href: transformProductPath(product, locale),
     }));
   });
 

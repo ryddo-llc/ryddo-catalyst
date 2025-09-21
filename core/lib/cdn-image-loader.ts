@@ -24,10 +24,12 @@ export default function bcCdnImageLoader({ src, width, quality }: ImageLoaderPro
 
     url = `${url}${separator}quality=${quality}`;
   } else if (!quality && !url.includes('quality=')) {
-    // Add default quality of 85 for better compression if not specified
+    // Use more aggressive compression for large images
+    const isLargeImage = width >= 1200;
+    const defaultQuality = isLargeImage ? 75 : 85;
     const separator = url.includes('?') ? '&' : '?';
 
-    url = `${url}${separator}quality=85`;
+    url = `${url}${separator}quality=${defaultQuality}`;
   }
 
   return url;
