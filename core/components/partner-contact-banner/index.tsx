@@ -34,7 +34,7 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
 
   // Get inventory status from context
   const { inventoryStatus } = useInventory();
-
+  const shippingDuration = '2-3 DAYS';
   // Use the streamable hook to get banner data
   const bannersData = useStreamable(banners);
   const bottomBanners = bannersData?.bottomBanners || [];
@@ -192,9 +192,9 @@ export default function PartnersContactBar({ banners }: PartnersContactBarProps 
         <div className="hidden h-12 w-32 lg:flex lg:w-44 xl:w-48 2xl:w-52">
           {inventoryStatus ? (
             // Product page - show shipping info
-            <div className="flex h-full w-full items-center justify-center border-l border-white px-2">
+            <div className="flex h-full w-full items-center justify-center border-l px-2">
               <span className="font-kanit font-black uppercase italic tracking-wider text-white">
-                SHIPS IN: 2-3 DAYS
+                SHIPS IN: <span className="font-inter font-light">{shippingDuration}</span>
               </span>
             </div>
           ) : (
