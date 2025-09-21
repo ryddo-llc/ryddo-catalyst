@@ -93,6 +93,7 @@ export function BikeAddToCartForm<F extends Field>({
 
   // Helper function to check if field should be rendered as interactive element
   const shouldRenderField = (field: F): boolean => {
+
     // Skip color field since it's handled by the SwatchRadioGroup
     if (isColorField(field)) {
       return false;
@@ -177,7 +178,7 @@ export function BikeAddToCartForm<F extends Field>({
         )}
       </div>
 
-      {/* Compact Variant Selection - Mobile Only for e-commerce conversion */}
+      {/* Compact Variant Selection - Mobile Only for e-commerce conversion - DISPLAY ONLY */}
       <div className="mb-4 space-y-3 md:hidden">
         {fields
           .filter(
@@ -191,22 +192,27 @@ export function BikeAddToCartForm<F extends Field>({
           .map((field) => (
             <div className="space-y-2" key={field.name}>
               <label className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
-                {field.label}:
+                {field.label}: {(() => {
+                  if (!selectedVariants[field.name]) return 'None selected';
+
+                  if ('options' in field) {
+                    return field.options.find(opt => opt.value === selectedVariants[field.name])?.label;
+                  }
+
+                  return selectedVariants[field.name];
+                })()}
               </label>
               {field.type === 'swatch-radio-group' && 'options' in field && (
                 <div className="flex flex-wrap gap-1">
                   {field.options.slice(0, 4).map((option) => (
-                    <label
-                      className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-gray-300 text-xs font-bold transition-all hover:scale-105 hover:border-[#F92F7B]"
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold transition-all ${
+                        selectedVariants[field.name] === option.value
+                          ? 'border-[#F92F7B] bg-[#F92F7B] text-white'
+                          : 'border-gray-300'
+                      }`}
                       key={option.value}
                     >
-                      <input
-                        className="sr-only"
-                        defaultChecked={selectedVariants[field.name] === option.value}
-                        name={field.name}
-                        type="radio"
-                        value={option.value}
-                      />
                       <span className="truncate">
                         {option.type === 'color' ? '' : option.label.slice(0, 2)}
                       </span>
@@ -216,7 +222,7 @@ export function BikeAddToCartForm<F extends Field>({
                           style={{ backgroundColor: option.color }}
                         />
                       )}
-                    </label>
+                    </div>
                   ))}
                 </div>
               )}

@@ -50,7 +50,9 @@ export const addToCart = async (
     let dateFieldOptionInput;
 
     // Skip empty strings since option is empty
-    if (!optionValueEntityId) return accum;
+    if (!optionValueEntityId) {
+      return accum;
+    }
 
     switch (field.type) {
       case 'select':

@@ -55,13 +55,13 @@ const getHeaderLinks = cache(async (customerAccessToken?: string) => {
     // Since this query is needed on every page, it's a good idea not to validate the customer access token.
     // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
     validateCustomerAccessToken: false,
-    fetchOptions: customerAccessToken 
-      ? { cache: 'no-store' } 
-      : { 
-          next: { 
+    fetchOptions: customerAccessToken
+      ? { cache: 'no-store' }
+      : {
+          next: {
             revalidate: revalidate * 2, // Cache navigation data longer since it changes less frequently
-            tags: ['navigation'] // Add cache tags for more granular cache invalidation
-          } 
+            tags: ['navigation'], // Add cache tags for more granular cache invalidation
+          },
         },
   });
 
@@ -77,7 +77,23 @@ const getHeaderData = cache(async () => {
   return readFragment(HeaderFragment, response).site;
 });
 
-export const Header = async () => {
+interface Banner {
+  entityId: number;
+  name: string;
+  content: string;
+  location: 'TOP' | 'BOTTOM';
+}
+
+interface BannersData {
+  topBanners: Banner[];
+  bottomBanners: Banner[];
+}
+
+interface HeaderProps {
+  banners?: Streamable<BannersData>;
+}
+
+export const Header = async ({ banners }: HeaderProps = {}) => {
   const t = await getTranslations('Components.Header');
   const locale = await getLocale();
 
@@ -112,7 +128,7 @@ export const Header = async () => {
    */
 
     const slicedTree = categoryTree.slice(0, 6);
-    
+
     // Create the complete navigation tree with Home and Service
     const allCategories = [
       {
@@ -175,17 +191,24 @@ export const Header = async () => {
 
   const streamableAccountHref = Streamable.from(async (): Promise<string> => {
     const customerAccessToken = await getSessionCustomerAccessToken();
-    
+
     return customerAccessToken ? '/account' : '/login';
   });
 
+  // Get the first TOP banner for display
+  const bannersData = banners ? await banners : null;
+  const topBanner = bannersData?.topBanners[0] || null;
+
   return (
     <HeaderSection
-      banner={{
+      banner={topBanner ? {
+        id: `Banner-${topBanner.entityId}`,
+        className: 'compact-banner',
+        children: topBanner.name,
+      } : {
         id: 'Banner',
         className: 'compact-banner',
-        children:
-          'Get free gear with an E-Bike or Scooter purchase + free shipping on orders over $150 *',
+        children: 'Get free gear with an E-Bike or Scooter purchase + free shipping on orders over $150 *',
       }}
       navigation={{
         accountHref: streamableAccountHref,

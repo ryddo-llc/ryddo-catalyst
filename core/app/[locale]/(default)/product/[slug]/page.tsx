@@ -38,6 +38,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
 
 import { addToCart } from './_actions/add-to-cart';
+import { ProductInventoryProvider } from './_components/inventory-provider';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
@@ -631,6 +632,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   return (
     <>
+      <ProductInventoryProvider streamableInventoryStatus={streamableInventoryStatus} />
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
         {renderProductDetail()}
       </ProductAnalyticsProvider>
