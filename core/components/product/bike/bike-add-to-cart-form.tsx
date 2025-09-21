@@ -191,12 +191,13 @@ export function BikeAddToCartForm<F extends Field>({
           .map((field) => (
             <div className="space-y-2" key={field.name}>
               <label className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
-                {field.label}: {selectedVariants[field.name] ?
-                  'options' in field ?
-                    field.options.find(opt => opt.value === selectedVariants[field.name])?.label
-                    : selectedVariants[field.name]
-                  : 'None selected'
-                }
+                {field.label}: {(() => {
+                  if (!selectedVariants[field.name]) return 'None selected';
+                  if ('options' in field) {
+                    return field.options.find(opt => opt.value === selectedVariants[field.name])?.label;
+                  }
+                  return selectedVariants[field.name];
+                })()}
               </label>
               {field.type === 'swatch-radio-group' && 'options' in field && (
                 <div className="flex flex-wrap gap-1">
