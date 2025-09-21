@@ -211,7 +211,9 @@ export default async function Product({ params, searchParams }: Props) {
 
     // Get all images without filtering out the default image
     const allImages = removeEdgesAndNodes(product.images).map((image) => ({
-      src: image.url,
+      src: image.url.includes('{:size}')
+        ? image.url
+        : image.url.replace(/\/(\d+w|original)\//, '/{:size}/'),
       alt: image.altText,
     }));
 
@@ -224,13 +226,26 @@ export default async function Product({ params, searchParams }: Props) {
         const otherImages = allImages.filter((img) => img.src !== product.defaultImage?.url);
 
         return [
-          { src: product.defaultImage.url, alt: product.defaultImage.altText },
+          {
+            src: product.defaultImage.url.includes('{:size}')
+              ? product.defaultImage.url
+              : product.defaultImage.url.replace(/\/(\d+w|original)\//, '/{:size}/'),
+            alt: product.defaultImage.altText
+          },
           ...otherImages,
         ];
       }
 
       // Default image not in array, add it as first
-      return [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...allImages];
+      return [
+        {
+          src: product.defaultImage.url.includes('{:size}')
+            ? product.defaultImage.url
+            : product.defaultImage.url.replace(/\/(\d+w|original)\//, '/{:size}/'),
+          alt: product.defaultImage.altText
+        },
+        ...allImages
+      ];
     }
 
     return allImages;

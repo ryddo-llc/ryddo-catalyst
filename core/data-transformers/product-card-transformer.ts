@@ -20,7 +20,12 @@ export const singleProductCardTransformer = (
     href: product.path,
     type: 'product',
     image: product.defaultImage
-      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+      ? {
+          src: product.defaultImage.url.includes('{:size}')
+            ? product.defaultImage.url
+            : product.defaultImage.url.replace(/\/(\d+w|original)\//, '/{:size}/'),
+          alt: product.defaultImage.altText
+        }
       : undefined,
     price: priceData,
     subtitle: product.brand?.name ?? undefined,

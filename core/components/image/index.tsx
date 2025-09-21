@@ -11,7 +11,13 @@ function shouldUseLoaderProp(props: ImageProps): boolean {
 
   const { src } = props;
 
-  return buildConfig.get('urls').cdnUrls.some((cdn) => src.startsWith(`https://${cdn}`));
+  // Check if it's a BigCommerce CDN URL
+  const isBigCommerceCdn = buildConfig.get('urls').cdnUrls.some((cdn) => src.startsWith(`https://${cdn}`));
+
+  // Also check for BigCommerce stencil image paths
+  const isBigCommerceStencil = src.includes('/images/stencil/');
+
+  return isBigCommerceCdn || isBigCommerceStencil;
 }
 
 /**

@@ -135,6 +135,7 @@ export function ProductGallery({
                     fill
                     loading={idx === 0 ? "eager" : "lazy"}
                     priority={priority && idx === 0}
+                    quality={idx === 0 ? 90 : 85}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                     src={image.src}
                   />
@@ -191,6 +192,7 @@ export function ProductGallery({
                     className="object-contain"
                     fill
                     loading={index < 3 ? "eager" : "lazy"}
+                    quality={75}
                     sizes="(max-width: 768px) 80px, (max-width: 1280px) 112px, 128px"
                     src={image.src}
                   />
