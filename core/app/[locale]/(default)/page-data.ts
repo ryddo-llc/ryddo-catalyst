@@ -113,14 +113,26 @@ export const getPopularProductsData = cache(
 const BannersQuery = graphql(`
   query BannersQuery {
     site {
-      banners {
-        homePage(first: 10) {
-          edges {
-            node {
-              entityId
-              name
-              content
-              location
+      content {
+        banners {
+          homePage {
+            edges {
+              node {
+                entityId
+                name
+                content
+                location
+              }
+            }
+          }
+          searchPage {
+            edges {
+              node {
+                entityId
+                name
+                content
+                location
+              }
             }
           }
         }
@@ -138,3 +150,4 @@ export const getBannersData = cache(async (customerAccessToken?: string) => {
 
   return data;
 });
+

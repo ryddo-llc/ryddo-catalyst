@@ -3,6 +3,8 @@
 import type { StaticImageData } from 'next/image';
 import React, { useRef, useState } from 'react';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
+
 import { Image } from '../image';
 import { Link } from '../link';
 
@@ -17,9 +19,25 @@ interface BrandProps {
   name: string;
 }
 
+interface Banner {
+  entityId: number;
+  name: string;
+  content: string;
+  location: 'TOP' | 'BOTTOM';
+}
+
+interface BannersData {
+  topBanners: Banner[];
+  bottomBanners: Banner[];
+}
+
+interface PartnersContactBarProps {
+  banners?: Streamable<BannersData>;
+}
+
 type PopupType = 'adventures' | 'booknow' | null;
 
-export default function PartnersContactBar() {
+export default function PartnersContactBar({ banners }: PartnersContactBarProps = {}) {
   const [activePopup, setActivePopup] = useState<PopupType>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
