@@ -278,8 +278,10 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableShowcaseDescription = Streamable.from(async () => {
     const product = await streamableProduct;
     const customFields = removeEdgesAndNodes(product.customFields);
+    const field = customFields.find((f) => f.name.trim().toLowerCase() === 'showcase_description');
+    const value = field?.value.trim();
     
-    return customFields.find(field => field.name === 'showcase_description')?.value || null;
+    return value || null;
   });
 
   const streamableAccordions = Streamable.from(async () => {

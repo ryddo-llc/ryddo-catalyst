@@ -1,7 +1,7 @@
 'use client';
 
 import { clsx } from 'clsx';
-import useEmblaCarousel from 'embla-carousel-react';
+import type { UseEmblaCarouselType } from 'embla-carousel-react';
 import { useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -57,7 +57,7 @@ export function ProductShowcase({
   productName,
   showcaseDescription,
 }: ProductShowcaseProps) {
-  const [carouselApi, setCarouselApi] = useState<ReturnType<typeof useEmblaCarousel>[1]>();
+  const [carouselApi, setCarouselApi] = useState<UseEmblaCarouselType[1] | undefined>(undefined);
 
   return (
     <>
@@ -93,7 +93,9 @@ export function ProductShowcase({
       >
       {/* Retro Orange Stripe Background */}
       <div 
-        className="absolute bottom-0 left-0 w-full h-8 bg-cover bg-center bg-no-repeat z-10"
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-0 w-full h-8 bg-cover bg-center bg-no-repeat z-10"
+        role="presentation"
         style={{
           backgroundImage: 'url("/images/backgrounds/orange_retro_stripe.png")',
           backgroundSize: '100% 100%',
@@ -141,22 +143,23 @@ export function ProductShowcase({
                 {showcaseImages.map((image, index) => (
                   <CarouselItem
                     className="relative flex w-full items-center justify-center p-0 basis-full carousel-item"
-                    key={index}
+                    key={image.src || index}
                     style={{ width: '100vw', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
                   >
-                    <div className="relative w-full h-[100vh] max-h-[900px]" style={{ width: '100vw', marginLeft: 0, marginRight: 0 }}>
+                    <div className="relative w-full h-[100svh] max-h-[900px]" style={{ width: '100vw', marginLeft: 0, marginRight: 0 }}>
                       <Image
-                        alt={`${productName} ${image.alt} image`}
+                        alt={[productName, image.alt].filter(Boolean).join(' ') || 'Product image'}
                         className="object-cover w-full h-full"
                         fill
-                        loading="lazy"
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        priority={index === 0}
                         sizes="100vw"
                         src={image.src}
                       />
                       
                       {/* Showcase Description Text Overlay */}
                       {showcaseDescription ? (
-                        <div className="absolute bottom-32 left-4 sm:left-8 md:left-16 lg:left-24 xl:left-32 pointer-events-none z-20">
+                        <div aria-hidden="true" className="absolute bottom-32 left-4 sm:left-8 md:left-16 lg:left-24 xl:left-32 pointer-events-none z-20">
                           <div className="text-left">
                             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black font-kanit leading-none italic">
                               {showcaseDescription.split(' ').map((word, wordIndex) => (
@@ -179,12 +182,16 @@ export function ProductShowcase({
               {/* Left Button */}
               <div className="z-10 absolute left-2 sm:left-4 md:left-8 lg:left-12 xl:left-16 top-[45%] -translate-y-1/2">
                 <button
+                  aria-disabled={showcaseImages.length <= 1}
                   aria-label={previousLabel}
-                  className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                  className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
+                  disabled={showcaseImages.length <= 1}
                   onClick={() => carouselApi?.scrollPrev()}
+                  type="button"
                 >
                   <Image
-                    alt="Previous image"
+                    alt=""
+                    aria-hidden="true"
                     className="w-full h-full object-contain"
                     height={200}
                     src="/images/backgrounds/arrow_3_left.png"
@@ -196,12 +203,16 @@ export function ProductShowcase({
               {/* Right Button */}
               <div className="z-10 absolute right-2 sm:right-4 md:right-8 lg:right-12 xl:right-16 top-[45%] -translate-y-1/2">
                 <button
+                  aria-disabled={showcaseImages.length <= 1}
                   aria-label={nextLabel}
-                  className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                  className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
+                  disabled={showcaseImages.length <= 1}
                   onClick={() => carouselApi?.scrollNext()}
+                  type="button"
                 >
                   <Image
-                    alt="Next image"
+                    alt=""
+                    aria-hidden="true"
                     className="w-full h-full object-contain"
                     height={200}
                     src="/images/backgrounds/arrow_3_right.png"
