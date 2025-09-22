@@ -61,21 +61,7 @@ export function ProductShowcase({
 
   return (
     <>
-      {/* eslint-disable-next-line react/no-unknown-property */}
-      <style jsx>{`
-        .carousel-content {
-          margin-left: 0 !important;
-          margin-right: 0 !important;
-          padding-left: 0 !important;
-          padding-right: 0 !important;
-        }
-        .carousel-item {
-          margin-left: 0 !important;
-          margin-right: 0 !important;
-          padding-left: 0 !important;
-          padding-right: 0 !important;
-        }
-      `}</style>
+      {/* content/item spacing already controlled via utility classes */}
       <section
         aria-labelledby={ariaLabelledBy}
         className={clsx(
@@ -147,7 +133,7 @@ export function ProductShowcase({
                     key={image.src}
                     style={{ width: '100vw', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
                   >
-                    <div className="relative w-full h-[100svh] max-h-[900px]">
+                    <div className="relative w-full h-screen h-[100svh] max-h-[900px]">
                       {/\.(mp4|webm|ogg)$/i.test(image.src) ? (
                         <video
                           aria-label={productName ? `${productName} video` : 'Product video'}
@@ -155,7 +141,6 @@ export function ProductShowcase({
                           controls
                           muted
                           playsInline
-                          poster={undefined}
                           preload="metadata"
                           style={{ width: '100%', height: '100%' }}
                         >
@@ -195,12 +180,12 @@ export function ProductShowcase({
               </CarouselContent>
 
               {/* Left Button */}
-              <div className="z-10 absolute left-2 sm:left-4 md:left-8 lg:left-12 xl:left-16 top-[45%] -translate-y-1/2">
+              <div className="z-30 absolute left-2 sm:left-4 md:left-8 lg:left-12 xl:left-16 top-[45%] -translate-y-1/2">
                 <button
-                  aria-disabled={showcaseImages.length <= 1}
+                  aria-disabled={!carouselApi || showcaseImages.length <= 1}
                   aria-label={previousLabel}
                   className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
-                  disabled={showcaseImages.length <= 1}
+                  disabled={!carouselApi || showcaseImages.length <= 1}
                   onClick={() => carouselApi?.scrollPrev()}
                   type="button"
                 >
@@ -216,12 +201,12 @@ export function ProductShowcase({
               </div>
 
               {/* Right Button */}
-              <div className="z-10 absolute right-2 sm:right-4 md:right-8 lg:right-12 xl:right-16 top-[45%] -translate-y-1/2">
+              <div className="z-30 absolute right-2 sm:right-4 md:right-8 lg:right-12 xl:right-16 top-[45%] -translate-y-1/2">
                 <button
-                  aria-disabled={showcaseImages.length <= 1}
+                  aria-disabled={!carouselApi || showcaseImages.length <= 1}
                   aria-label={nextLabel}
                   className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
-                  disabled={showcaseImages.length <= 1}
+                  disabled={!carouselApi || showcaseImages.length <= 1}
                   onClick={() => carouselApi?.scrollNext()}
                   type="button"
                 >
