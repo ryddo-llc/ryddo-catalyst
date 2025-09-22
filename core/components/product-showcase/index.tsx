@@ -61,6 +61,7 @@ export function ProductShowcase({
 
   return (
     <>
+      {/* eslint-disable-next-line react/no-unknown-property */}
       <style jsx>{`
         .carousel-content {
           margin-left: 0 !important;
