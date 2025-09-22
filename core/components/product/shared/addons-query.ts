@@ -15,7 +15,6 @@ import { AddonsProductCardFragment } from './addons-fragment';
 const GEAR_CATEGORY_ID = 30; // Gear category
 const ACCESSORIES_CATEGORY_ID = 31; // Accessories category
 
-
 const FeaturedAddonsAndAccessoriesQuery = graphql(
   `
     query FeaturedAddonsAndAccessoriesQuery(
@@ -26,13 +25,10 @@ const FeaturedAddonsAndAccessoriesQuery = graphql(
       site {
         gear: search {
           searchProducts(
-            filters: { 
-              categoryEntityIds: $gearCategoryIds, 
-              isFeatured: true 
-            }
+            filters: { categoryEntityIds: $gearCategoryIds, isFeatured: true }
             sort: FEATURED
           ) {
-            products(first: 3) {
+            products(first: 12) {
               edges {
                 node {
                   ...AddonsProductCardFragment
@@ -43,13 +39,10 @@ const FeaturedAddonsAndAccessoriesQuery = graphql(
         }
         accessories: search {
           searchProducts(
-            filters: { 
-              categoryEntityIds: $accessoriesCategoryIds, 
-              isFeatured: true 
-            }
+            filters: { categoryEntityIds: $accessoriesCategoryIds, isFeatured: true }
             sort: FEATURED
           ) {
-            products(first: 3) {
+            products(first: 12) {
               edges {
                 node {
                   ...AddonsProductCardFragment
@@ -76,13 +69,13 @@ export const getFeaturedAddonsAndAccessories = cache(
     try {
       // Get formatter once for efficiency
       const format = await getFormatter();
-      
+
       const { data }: { data: FeaturedAddonsQueryResult } = await client.fetch({
         document: FeaturedAddonsAndAccessoriesQuery,
-        variables: { 
+        variables: {
           gearCategoryIds: [GEAR_CATEGORY_ID],
           accessoriesCategoryIds: [ACCESSORIES_CATEGORY_ID],
-          currencyCode 
+          currencyCode,
         },
         customerAccessToken,
         fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
@@ -90,18 +83,19 @@ export const getFeaturedAddonsAndAccessories = cache(
 
       // Type-safe extraction of products
       const gearProducts = removeEdgesAndNodes(data.site.gear.searchProducts.products);
-      const accessoriesProducts = removeEdgesAndNodes(data.site.accessories.searchProducts.products);
-
+      const accessoriesProducts = removeEdgesAndNodes(
+        data.site.accessories.searchProducts.products,
+      );
 
       // Combine and transform with second image preference
       const combinedProducts = [...gearProducts, ...accessoriesProducts];
-      
+
       // Return fully transformed products ready for component
       return addonsProductCardTransformer(combinedProducts, format);
     } catch {
       // Type-safe error handling - silently fail with empty array
       // Error will be logged by the framework's error boundary if needed
-      
+
       // Return empty array to prevent component failure
       return [];
     }
