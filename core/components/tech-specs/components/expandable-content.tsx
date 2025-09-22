@@ -25,7 +25,7 @@ export const ExpandableContent = ({ isExpanded, children }: ExpandableContentPro
 
   return (
     <div
-      className="duration-800 overflow-hidden transition-all ease-in-out"
+      className="duration-1000 overflow-hidden transition-all ease-in-out"
       style={{
         height: isExpanded ? height : 0,
         opacity: isExpanded ? 1 : 0,
@@ -33,7 +33,7 @@ export const ExpandableContent = ({ isExpanded, children }: ExpandableContentPro
     >
       <div
         className={clsx(
-          'duration-600 transition-transform ease-in-out',
+          'duration-800 transition-transform ease-in-out',
           isExpanded ? 'translate-y-0' : '-translate-y-2',
         )}
         ref={contentRef}
