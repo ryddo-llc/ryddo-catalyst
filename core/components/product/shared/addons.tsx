@@ -73,7 +73,7 @@ export default function Addons({ addons, name }: AddonProps) {
       {/* Background Text - positioned directly behind addon grid */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-8 top-[calc(50%+1rem)] z-0 flex items-center justify-center overflow-hidden @sm:bottom-12 @sm:top-[50%] @md:bottom-16 @md:top-[calc(50%-1rem)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 top-[calc(50%-4rem)] z-0 flex items-center justify-center overflow-hidden @sm:top-[calc(50%-5rem)] @md:top-[calc(50%-6rem)]"
       >
         <span className="select-none whitespace-nowrap font-kanit text-[14rem] font-black uppercase italic leading-loose tracking-[0.01em] text-gray-300 opacity-40 transition-opacity duration-300 @xs:text-[8rem] @xs:opacity-45 @sm:text-[9rem] @sm:opacity-50 @md:text-[12vw] @md:opacity-60 @lg:text-[14vw] @lg:opacity-65 @xl:text-[16vw] @xl:opacity-70">
           {backgroundText}
@@ -96,7 +96,7 @@ export default function Addons({ addons, name }: AddonProps) {
           {/* Left Arrow */}
           <Image
             alt="Previous"
-            className="absolute left-0 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:-translate-x-1 hover:scale-110 @md:block @md:h-10 @md:w-10 @lg:left-2 @lg:h-12 @lg:w-12 @xl:left-4 @xl:h-14 @xl:w-14"
+            className="absolute -left-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:-translate-x-1 hover:scale-110 @md:block @md:h-10 @md:w-10 @lg:-left-4 @lg:h-12 @lg:w-12 @xl:-left-8 @xl:h-16 @xl:w-16 @2xl:-left-12 @2xl:h-20 @2xl:w-20"
             height={60}
             onClick={scrollPrev}
             src="/icons/arrow-left.svg"
@@ -106,7 +106,7 @@ export default function Addons({ addons, name }: AddonProps) {
           {/* Right Arrow */}
           <Image
             alt="Next"
-            className="absolute right-0 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:translate-x-1 hover:scale-110 @md:block @md:h-10 @md:w-10 @lg:right-2 @lg:h-12 @lg:w-12 @xl:right-4 @xl:h-14 @xl:w-14"
+            className="absolute -right-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 cursor-pointer transition-all duration-300 hover:translate-x-1 hover:scale-110 @md:block @md:h-10 @md:w-10 @lg:-right-4 @lg:h-12 @lg:w-12 @xl:-right-8 @xl:h-16 @xl:w-16 @2xl:-right-12 @2xl:h-20 @2xl:w-20"
             height={60}
             onClick={scrollNext}
             src="/icons/arrow-right.svg"
