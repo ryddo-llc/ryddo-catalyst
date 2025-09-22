@@ -2,12 +2,11 @@
 
 import { clsx } from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import {
   Carousel,
-  CarouselButtons,
   CarouselContent,
   CarouselItem,
 } from '@/vibes/soul/primitives/carousel';
@@ -26,6 +25,7 @@ export interface ProductShowcaseProps {
   nextLabel?: string;
   productName?: string;
   description?: string | null;
+  showcaseDescription?: string;
 }
 
 function ProductShowcaseSkeleton() {
@@ -48,16 +48,6 @@ function ProductShowcaseSkeleton() {
   );
 }
 
-// Color palette for cycling through carousel slides
-const colorPalette = [
-  '#E5F3F9', // light blue-teal
-  '#F3E8FF', // light purple
-  '#ECFDF5', // light green
-  '#FEF3C7', // light yellow
-  '#FCE7F3', // light pink
-  '#F1F5F9', // light gray-blue
-];
-
 export function ProductShowcase({
   images,
   className,
@@ -65,74 +55,53 @@ export function ProductShowcase({
   previousLabel = 'Previous image',
   nextLabel = 'Next image',
   productName,
-  description,
+  showcaseDescription,
 }: ProductShowcaseProps) {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselApi, setCarouselApi] = useState<ReturnType<typeof useEmblaCarousel>[1]>();
 
-  // Set up carousel API to track slide changes
-  useEffect(() => {
-    if (!carouselApi) return;
-
-    const onSelect = () => {
-      setCurrentSlide(carouselApi.selectedScrollSnap());
-    };
-
-    carouselApi.on('select', onSelect);
-
-    return () => {
-      carouselApi.off('select', onSelect);
-    };
-  }, [carouselApi]);
-
-  // Get current color
-  const currentColor = colorPalette[currentSlide % colorPalette.length] || colorPalette[0];
-
   return (
-    <section
-      aria-labelledby={ariaLabelledBy}
-      className={clsx(
-        'relative flex max-h-screen min-h-[50vh] w-full items-center justify-center overflow-hidden bg-white font-[family-name:var(--product-showcase-font-family,var(--font-family-body))] @container sm:min-h-[40vh] md:min-h-[60vh] lg:min-h-[80vh]',
-        className,
-      )}
-    >
-      {/* Top colored section */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{ clipPath: 'polygon(0 0, 160% 0, 0 60%)', backgroundColor: currentColor }}
+    <>
+      {/* eslint-disable-next-line react/no-unknown-property */}
+      <style jsx>{`
+        .carousel-content {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+        }
+        .carousel-item {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+        }
+      `}</style>
+      <section
+        aria-labelledby={ariaLabelledBy}
+        className={clsx(
+          'relative flex w-full items-center justify-center overflow-hidden bg-white p-0 m-0',
+          className,
+        )}
+        style={{ 
+          width: '100vw', 
+          marginLeft: 'calc(-50vw + 50%)', 
+          marginRight: 'calc(-50vw + 50%)',
+          maxWidth: 'none',
+          left: '50%',
+          transform: 'translateX(-50%)'
+        }}
+      >
+      {/* Retro Orange Stripe Background */}
+      <div 
+        className="absolute bottom-0 left-0 w-full h-8 bg-cover bg-center bg-no-repeat z-10"
+        style={{
+          backgroundImage: 'url("/images/backgrounds/orange_retro_stripe.png")',
+          backgroundSize: '100% 100%',
+          width: '100vw',
+          left: '50%',
+          transform: 'translateX(-50%)'
+        }}
       />
-      {productName ? (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-          <span
-            className={clsx(
-              '@lg:scale-175 max-w-[95vw] scale-110 transform select-none whitespace-nowrap font-black uppercase leading-none tracking-wider text-gray-400 opacity-80 transition-opacity duration-500 @sm:max-w-none @sm:scale-125 @md:scale-150',
-            )}
-          >
-            {productName}
-          </span>
-        </div>
-      ) : null}
-
-      {/* Description Section - Responsive */}
-      {description ? (
-        <div className="z-10 absolute left-1/2 top-6 max-w-xs -translate-x-1/2 transform px-4 sm:left-auto sm:right-10 sm:top-12 sm:max-w-md sm:translate-x-0 sm:px-0">
-          <h2 className="text-center text-xl font-black leading-tight sm:text-left sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-            <span className="block text-[#F92F7B]">
-              {description
-                .split(' ')
-                .slice(0, Math.ceil(description.split(' ').length / 2))
-                .join(' ')}
-            </span>
-            <span className="-mt-3 block text-gray-900 sm:-mt-6">
-              {description
-                .split(' ')
-                .slice(Math.ceil(description.split(' ').length / 2))
-                .join(' ')
-                .toLowerCase()}
-            </span>
-          </h2>
-        </div>
-      ) : null}
 
       {/* Main carousel content */}
       <Stream fallback={<ProductShowcaseSkeleton />} value={images}>
@@ -159,7 +128,7 @@ export function ProductShowcase({
 
           return (
             <Carousel
-              className="z-10 relative flex h-full w-full items-center justify-center"
+              className="relative flex w-full items-center justify-center"
               opts={{
                 align: 'center',
                 loop: true,
@@ -168,43 +137,83 @@ export function ProductShowcase({
               }}
               setApi={setCarouselApi}
             >
-              <CarouselContent className="h-full w-full">
+              <CarouselContent className="w-full carousel-content" style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', paddingLeft: 0, paddingRight: 0 }}>
                 {showcaseImages.map((image, index) => (
                   <CarouselItem
-                    className="relative flex h-full w-full items-center justify-center px-8 py-4"
+                    className="relative flex w-full items-center justify-center p-0 basis-full carousel-item"
                     key={index}
+                    style={{ width: '100vw', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
                   >
-                    <div className="xs:h-[380px] xs:w-[505px] relative aspect-[4/3] h-[340px] w-[450px] sm:h-[420px] sm:w-[560px] md:h-[480px] md:w-[640px] lg:h-[520px] lg:w-[695px] xl:h-[560px] xl:w-[745px] 2xl:h-[600px] 2xl:w-[800px]">
+                    <div className="relative w-full h-[100vh] max-h-[900px]" style={{ width: '100vw', marginLeft: 0, marginRight: 0 }}>
                       <Image
                         alt={`${productName} ${image.alt} image`}
-                        className="object-contain"
+                        className="object-cover w-full h-full"
                         fill
                         loading="lazy"
-                        sizes="(max-width: 480px) 450px, (max-width: 640px) 505px, (max-width: 768px) 560px, (max-width: 1024px) 640px, (max-width: 1280px) 695px, (max-width: 1536px) 745px, 800px"
+                        sizes="100vw"
                         src={image.src}
                       />
+                      
+                      {/* Showcase Description Text Overlay */}
+                      {showcaseDescription ? (
+                        <div className="absolute bottom-32 left-4 sm:left-8 md:left-16 lg:left-24 xl:left-32 pointer-events-none z-20">
+                          <div className="text-left">
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black font-kanit leading-none italic">
+                              {showcaseDescription.split(' ').map((word, wordIndex) => (
+                                <span 
+                                  className={`block ${wordIndex % 2 === 0 ? 'text-white' : 'text-[#F92F7B]'} ${wordIndex > 0 ? '-mt-2 sm:-mt-3 md:-mt-4' : ''}`}
+                                  key={wordIndex}
+                                >
+                                  {word}
+                                </span>
+                              ))}
+                            </h2>
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
 
               {/* Left Button */}
-              <CarouselButtons
-                className="z-10 absolute left-0 top-1/2 -translate-y-1/2 [&>button:first-child]:flex [&>button:first-child]:h-[80px] [&>button:first-child]:w-[40px] [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-l-none [&>button:first-child]:rounded-r-2xl [&>button:first-child]:bg-[#F92F7B] [&>button:first-child]:text-white [&>button:first-child]:shadow-lg [&>button:first-child]:transition-all [&>button:first-child]:duration-300 [&>button:first-child]:hover:scale-105 [&>button:first-child]:hover:bg-[#e01b5f] [&>button:first-child]:active:scale-95 sm:[&>button:first-child]:h-[130px] sm:[&>button:first-child]:w-[55px] [&>button:last-child]:hidden"
-                nextLabel={nextLabel}
-                previousLabel={previousLabel}
-              />
+              <div className="z-10 absolute left-2 sm:left-4 md:left-8 lg:left-12 xl:left-16 top-[45%] -translate-y-1/2">
+                <button
+                  aria-label={previousLabel}
+                  className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                  onClick={() => carouselApi?.scrollPrev()}
+                >
+                  <Image
+                    alt="Previous image"
+                    className="w-full h-full object-contain"
+                    height={200}
+                    src="/images/backgrounds/arrow_3_left.png"
+                    width={200}
+                  />
+                </button>
+              </div>
 
               {/* Right Button */}
-              <CarouselButtons
-                className="z-10 absolute right-0 top-1/2 -translate-y-1/2 [&>button:first-child]:hidden [&>button:last-child]:flex [&>button:last-child]:h-[80px] [&>button:last-child]:w-[40px] [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-l-2xl [&>button:last-child]:rounded-r-none [&>button:last-child]:bg-[#F92F7B] [&>button:last-child]:text-white [&>button:last-child]:shadow-lg [&>button:last-child]:transition-all [&>button:last-child]:duration-300 [&>button:last-child]:hover:scale-105 [&>button:last-child]:hover:bg-[#e01b5f] [&>button:last-child]:active:scale-95 sm:[&>button:last-child]:h-[130px] sm:[&>button:last-child]:w-[55px]"
-                nextLabel={nextLabel}
-                previousLabel={previousLabel}
-              />
+              <div className="z-10 absolute right-2 sm:right-4 md:right-8 lg:right-12 xl:right-16 top-[45%] -translate-y-1/2">
+                <button
+                  aria-label={nextLabel}
+                  className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                  onClick={() => carouselApi?.scrollNext()}
+                >
+                  <Image
+                    alt="Next image"
+                    className="w-full h-full object-contain"
+                    height={200}
+                    src="/images/backgrounds/arrow_3_right.png"
+                    width={200}
+                  />
+                </button>
+              </div>
             </Carousel>
           );
         }}
       </Stream>
     </section>
+    </>
   );
 }
