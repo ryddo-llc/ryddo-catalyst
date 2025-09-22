@@ -16,7 +16,7 @@ export const TechSpecsSection = ({
   return (
     <div>
       <button
-        className="flex w-full items-center justify-between py-4 text-left transition-colors duration-200 hover:bg-gray-50 active:bg-gray-100 md:py-6"
+        className="flex w-full items-center justify-between pt-4 pb-2 text-left transition-colors duration-200 hover:bg-gray-50 active:bg-gray-100 md:pt-6 md:pb-3"
         onClick={() => onToggle(section.key)}
       >
         <h2
@@ -53,10 +53,11 @@ export const TechSpecsSection = ({
         </div>
       </button>
 
-      <ExpandableContent isExpanded={isExpanded}>
+      <div className="-mt-1">
+        <ExpandableContent isExpanded={isExpanded}>
         <div>
           {!section.hasContent || !specs ? (
-            <div className="rounded-lg p-4 md:p-6">
+            <div className="rounded-lg p-2 md:p-4">
               <p className="text-base text-gray-600 md:text-lg">
                 No {section.title.toLowerCase()} specifications available.
               </p>
@@ -70,6 +71,7 @@ export const TechSpecsSection = ({
           )}
         </div>
       </ExpandableContent>
+      </div>
     </div>
   );
 };
