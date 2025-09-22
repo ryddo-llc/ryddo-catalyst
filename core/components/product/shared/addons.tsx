@@ -52,6 +52,7 @@ export default function Addons({ addons, name }: AddonProps) {
     setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
+
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);
@@ -190,11 +191,11 @@ export default function Addons({ addons, name }: AddonProps) {
         <div className="mt-6 flex items-center justify-center gap-2 @lg:hidden">
           {scrollSnaps.map((_, index) => (
             <button
-              key={index}
               aria-label={`Go to slide ${index + 1}`}
               className={`h-2 w-2 rounded-full transition-all duration-300 ${
                 index === selectedIndex ? 'w-6 bg-[#F92F7B]' : 'bg-gray-300 hover:bg-gray-400'
               }`}
+              key={index}
               onClick={() => scrollTo(index)}
             />
           ))}
