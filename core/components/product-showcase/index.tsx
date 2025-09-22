@@ -61,7 +61,6 @@ export function ProductShowcase({
 
   return (
     <>
-      {/* eslint-disable-next-line react/no-unknown-property */}
       <style jsx>{`
         .carousel-content {
           margin-left: 0 !important;
@@ -86,9 +85,7 @@ export function ProductShowcase({
           width: '100vw', 
           marginLeft: 'calc(-50vw + 50%)', 
           marginRight: 'calc(-50vw + 50%)',
-          maxWidth: 'none',
-          left: '50%',
-          transform: 'translateX(-50%)'
+          maxWidth: 'none'
         }}
       >
       {/* Retro Orange Stripe Background */}
@@ -106,6 +103,9 @@ export function ProductShowcase({
       />
 
       {/* Main carousel content */}
+      {showcaseDescription ? (
+        <h2 className="sr-only">{showcaseDescription}</h2>
+      ) : null}
       <Stream fallback={<ProductShowcaseSkeleton />} value={images}>
         {(imagesData) => {
           if (imagesData.length === 0) {
@@ -139,23 +139,37 @@ export function ProductShowcase({
               }}
               setApi={setCarouselApi}
             >
-              <CarouselContent className="w-full carousel-content" style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', paddingLeft: 0, paddingRight: 0 }}>
+              <CarouselContent className="w-full carousel-content">
                 {showcaseImages.map((image, index) => (
                   <CarouselItem
                     className="relative flex w-full items-center justify-center p-0 basis-full carousel-item"
-                    key={image.src || index}
+                    key={image.src}
                     style={{ width: '100vw', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
                   >
-                    <div className="relative w-full h-[100svh] max-h-[900px]" style={{ width: '100vw', marginLeft: 0, marginRight: 0 }}>
-                      <Image
-                        alt={[productName, image.alt].filter(Boolean).join(' ') || 'Product image'}
-                        className="object-cover w-full h-full"
-                        fill
-                        loading={index === 0 ? 'eager' : 'lazy'}
-                        priority={index === 0}
-                        sizes="100vw"
-                        src={image.src}
-                      />
+                    <div className="relative w-full h-[100svh] max-h-[900px]">
+                      {/\.(mp4|webm|ogg)$/i.test(image.src) ? (
+                        <video
+                          aria-label={productName ? `${productName} video` : 'Product video'}
+                          className="object-cover w-full h-full"
+                          controls
+                          muted
+                          playsInline
+                          poster={undefined}
+                          preload="metadata"
+                          style={{ width: '100%', height: '100%' }}
+                        >
+                          <source src={image.src} />
+                        </video>
+                      ) : (
+                        <Image
+                          alt={[productName, image.alt].filter(Boolean).join(' ') || 'Product image'}
+                          className="object-cover w-full h-full"
+                          fill
+                          priority={index === 0}
+                          sizes="100vw"
+                          src={image.src}
+                        />
+                      )}
                       
                       {/* Showcase Description Text Overlay */}
                       {showcaseDescription ? (
