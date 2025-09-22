@@ -16,7 +16,7 @@ export const TechSpecsSection = ({ section, isExpanded, onToggle, specs }: TechS
         onClick={() => onToggle(section.key)}
       >
         <h2
-          className={`text-xl font-bold sm:text-2xl md:text-3xl ${
+          className={`font-kanit text-xl font-bold sm:text-2xl md:text-3xl ${
             isExpanded ? 'text-[#F92F7B]' : 'text-black'
           }`}
         >
