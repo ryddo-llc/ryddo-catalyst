@@ -54,14 +54,25 @@ function weakRefCache<K, T extends object>() {
 
 const promiseCache = weakRefCache<string, Promise<unknown>>();
 
-// eslint-disable-next-line valid-jsdoc
+function isPromise<T>(value: Streamable<T>): value is Promise<T> {
+  return value instanceof Promise;
+}
+
 /**
  * A suspense-friendly upgrade to `Promise.all`, guarantees stability of
  * the returned promise instance if passed an identical set of inputs.
  */
+
 function all<T extends readonly unknown[] | []>(
   streamables: T,
 ): Streamable<{ -readonly [P in keyof T]: Awaited<T[P]> }> {
+  // Avoid creating an unnecessary promise with the `Promise.all` call below
+  // if none of the streamables is a promise
+  if (!streamables.some(isPromise)) {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return streamables as { -readonly [P in keyof T]: Awaited<T[P]> };
+  }
+
   const cacheKey = getCompositeKey(streamables);
 
   const cached = promiseCache.get(cacheKey);
@@ -86,7 +97,7 @@ export const Streamable = {
 };
 
 export function useStreamable<T>(streamable: Streamable<T>): T {
-  return streamable instanceof Promise ? use(streamable) : streamable;
+  return isPromise(streamable) ? use(streamable) : streamable;
 }
 
 function UseStreamable<T>({

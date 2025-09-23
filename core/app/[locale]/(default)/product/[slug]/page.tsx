@@ -21,6 +21,7 @@ import { PerformanceComparisonSkeleton } from '~/components/product/layout/perfo
 import Addons from '~/components/product/shared/addons';
 import { getFeaturedAddonsAndAccessories } from '~/components/product/shared/addons-query';
 import RelatedProducts from '~/components/product/shared/related-products';
+import { ProductFeatureCarousel } from '~/components/product-feature-carousel';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
@@ -34,6 +35,7 @@ import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transfo
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { extractFeatureFields, resolveCarouselImages } from '~/lib/extract-feature-fields';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
 
@@ -234,6 +236,17 @@ export default async function Product({ params, searchParams }: Props) {
     }
 
     return allImages;
+  });
+
+  // Create streamable carousel features data
+  const streamableCarouselFeatures = Streamable.from(async () => {
+    const [product, images] = await Streamable.all([streamableProduct, streamableImages]);
+
+    // Extract features from custom fields
+    const features = extractFeatureFields(product.customFields);
+
+    // Resolve image descriptors to actual BigCommerce images
+    return resolveCarouselImages(features, images);
   });
 
   // Consolidated CTA data - combines label and disabled state
@@ -613,6 +626,7 @@ export default async function Product({ params, searchParams }: Props) {
   };
 
   const { wishlistButton, digitalTagLink, ...basePropsWithoutOverlay } = baseProps;
+
   const renderProductDetail = () => {
     switch (productDetailVariant) {
       case 'bike':
@@ -661,7 +675,10 @@ export default async function Product({ params, searchParams }: Props) {
               />
             )}
           </Stream>
-          
+
+          {/* Bike Feature Variants section */}
+          <ProductFeatureCarousel bigCommerceFeatures={streamableCarouselFeatures} />
+
           {/* Performance Comparison section - Stream handles its own loading state */}
           {streamablePerformanceComparison && (
             <Stream fallback={<PerformanceComparisonSkeleton />} value={streamablePerformanceComparison}>
