@@ -92,7 +92,7 @@ export function ProductShowcase({
 
       {/* Main carousel content */}
       {showcaseDescription ? (
-        <h2 id={headingId} className="sr-only">{showcaseDescription}</h2>
+        <h2 className="sr-only" id={headingId}>{showcaseDescription} id={headingId}</h2>
       ) : null}
       <Stream fallback={<ProductShowcaseSkeleton />} value={images}>
         {(imagesData) => {
