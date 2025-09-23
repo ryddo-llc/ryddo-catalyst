@@ -276,6 +276,15 @@ export default async function Product({ params, searchParams }: Props) {
     return product.warranty || null;
   });
 
+  const streamableShowcaseDescription = Streamable.from(async () => {
+    const product = await streamableProduct;
+    const customFields = removeEdgesAndNodes(product.customFields);
+    const field = customFields.find((f) => f.name.trim().toLowerCase() === 'showcase_description');
+    const value = field?.value.trim();
+    
+    return value || null;
+  });
+
   const streamableAccordions = Streamable.from(async () => {
     const product = await streamableProduct;
 
@@ -642,12 +651,16 @@ export default async function Product({ params, searchParams }: Props) {
         <>
           <Addons addons={streamablePopularAccessories} name={baseProduct.brand?.name} />
           
-          <ProductShowcase
-            aria-labelledby="product-images-heading"
-            description={baseProduct.plainTextDescription}
-            images={streamableImages}
-            productName={baseProduct.name}
-          />
+          <Stream fallback={<div className="h-[100vh] max-h-[900px] bg-gray-100" />} value={streamableShowcaseDescription}>
+            {(showcaseDescription) => (
+              <ProductShowcase
+                aria-labelledby="product-images-heading"
+                images={streamableImages}
+                productName={baseProduct.name}
+                showcaseDescription={showcaseDescription || undefined}
+              />
+            )}
+          </Stream>
           
           {/* Performance Comparison section - Stream handles its own loading state */}
           {streamablePerformanceComparison && (
