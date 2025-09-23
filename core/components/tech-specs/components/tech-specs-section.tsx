@@ -16,11 +16,11 @@ export const TechSpecsSection = ({
   return (
     <div>
       <button
-        className="flex w-full items-center justify-between pt-4 pb-2 text-left transition-colors duration-200 md:pt-6 md:pb-3"
+        className="flex w-full items-center justify-between pb-2 pt-4 text-left transition-colors duration-200 md:pb-3 md:pt-6"
         onClick={() => onToggle(section.key)}
       >
         <h2
-          className={`font-kanit text-xl font-bold sm:text-2xl md:text-3xl ${
+          className={`font-kanit text-5xl font-bold sm:text-3xl md:text-4xl ${
             isExpanded ? 'text-[#F92F7B]' : 'text-black'
           }`}
         >
@@ -55,22 +55,22 @@ export const TechSpecsSection = ({
 
       <div className="-mt-1">
         <ExpandableContent isExpanded={isExpanded}>
-        <div>
-          {!section.hasContent || !specs ? (
-            <div className="rounded-lg p-2 md:p-4">
-              <p className="text-base text-gray-600 md:text-lg">
-                No {section.title.toLowerCase()} specifications available.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:gap-8 lg:grid-cols-4">
-              {specs.map((spec, specIndex) => (
-                <SpecItem key={specIndex} spec={spec} />
-              ))}
-            </div>
-          )}
-        </div>
-      </ExpandableContent>
+          <div>
+            {!section.hasContent || !specs ? (
+              <div className="rounded-lg p-2 md:p-4">
+                <p className="text-base text-gray-600 md:text-lg">
+                  No {section.title.toLowerCase()} specifications available.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:gap-8 lg:grid-cols-4">
+                {specs.map((spec, specIndex) => (
+                  <SpecItem key={specIndex} spec={spec} />
+                ))}
+              </div>
+            )}
+          </div>
+        </ExpandableContent>
       </div>
     </div>
   );
