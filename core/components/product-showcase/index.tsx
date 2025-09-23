@@ -17,6 +17,23 @@ import type { ProductImage } from '~/lib/types';
 
 export type { ProductImage } from '~/lib/types';
 
+// Utility function for alternating word styling
+const getAlternatingWordClass = (wordIndex: number, baseSpacing = true) => {
+  const colorClass = wordIndex % 2 === 0 ? 'text-white' : 'text-[#F92F7B]';
+  const spacingClass = baseSpacing && wordIndex > 0 ? '-mt-2 sm:-mt-3 md:-mt-4' : '';
+  
+  return `block ${colorClass} ${spacingClass}`;
+};
+
+// Utility function for video MIME type detection
+const getVideoMimeType = (src: string) => {
+  if (/\.mp4$/i.test(src)) return 'video/mp4';
+  if (/\.webm$/i.test(src)) return 'video/webm';
+  if (/\.ogg$/i.test(src)) return 'video/ogg';
+  
+  return undefined;
+};
+
 export interface ProductShowcaseProps {
   images: Streamable<ProductImage[]>;
   className?: string;
@@ -56,7 +73,7 @@ export function ProductShowcase({
   productName,
   showcaseDescription,
 }: ProductShowcaseProps) {
-  const [carouselApi, setCarouselApi] = useState<UseEmblaCarouselType[1] | undefined>(undefined);
+  const [carouselApi, setCarouselApi] = useState<UseEmblaCarouselType[1]>();
   const headingId = useId();
   const sectionLabelId = ariaLabelledBy ?? (showcaseDescription ? headingId : undefined);
 
@@ -92,7 +109,7 @@ export function ProductShowcase({
 
       {/* Main carousel content */}
       {showcaseDescription ? (
-        <h2 className="sr-only" id={headingId}>{showcaseDescription} id={headingId}</h2>
+        <h2 className="sr-only" id={headingId}>{showcaseDescription}</h2>
       ) : null}
       <Stream fallback={<ProductShowcaseSkeleton />} value={images}>
         {(imagesData) => {
@@ -132,7 +149,7 @@ export function ProductShowcase({
                   <CarouselItem
                     className="relative flex w-full items-center justify-center p-0 basis-full carousel-item"
                     key={image.src}
-                    style={{ width: '100vw', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
+                    style={{ width: '100dvw', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
                   >
                     <div className="relative w-full h-[100svh] max-h-[900px]">
                       {/\.(mp4|webm|ogg)$/i.test(image.src) ? (
@@ -145,7 +162,11 @@ export function ProductShowcase({
                           preload="metadata"
                           style={{ width: '100%', height: '100%' }}
                         >
-                          <source src={image.src} />
+                          <source
+                            src={image.src}
+                            type={getVideoMimeType(image.src)}
+                          />
+                          {/* <track kind="captions" src={image.captionsSrc} srcLang="en" label="English" default /> */}
                         </video>
                       ) : (
                         <Image
@@ -165,7 +186,7 @@ export function ProductShowcase({
                             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black font-kanit leading-none italic">
                               {showcaseDescription.split(' ').map((word, wordIndex) => (
                                 <span 
-                                  className={`block ${wordIndex % 2 === 0 ? 'text-white' : 'text-[#F92F7B]'} ${wordIndex > 0 ? '-mt-2 sm:-mt-3 md:-mt-4' : ''}`}
+                                  className={getAlternatingWordClass(wordIndex)}
                                   key={wordIndex}
                                 >
                                   {word}
