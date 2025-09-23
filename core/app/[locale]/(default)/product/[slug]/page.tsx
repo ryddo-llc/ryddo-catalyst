@@ -653,7 +653,6 @@ export default async function Product({ params, searchParams }: Props) {
             {(showcaseDescription) => (
               <ProductShowcase
                 aria-labelledby="product-images-heading"
-                description={baseProduct.plainTextDescription}
                 images={streamableImages}
                 productName={baseProduct.name}
                 showcaseDescription={showcaseDescription || undefined}

@@ -2,7 +2,7 @@
 
 import { clsx } from 'clsx';
 import type { UseEmblaCarouselType } from 'embla-carousel-react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import {
@@ -24,7 +24,6 @@ export interface ProductShowcaseProps {
   previousLabel?: string;
   nextLabel?: string;
   productName?: string;
-  description?: string | null;
   showcaseDescription?: string;
 }
 
@@ -58,18 +57,20 @@ export function ProductShowcase({
   showcaseDescription,
 }: ProductShowcaseProps) {
   const [carouselApi, setCarouselApi] = useState<UseEmblaCarouselType[1] | undefined>(undefined);
+  const headingId = useId();
+  const sectionLabelId = ariaLabelledBy ?? (showcaseDescription ? headingId : undefined);
 
   return (
     <>
       {/* content/item spacing already controlled via utility classes */}
       <section
-        aria-labelledby={ariaLabelledBy}
+        aria-labelledby={sectionLabelId}
         className={clsx(
           'relative flex w-full items-center justify-center overflow-hidden bg-white p-0 m-0',
           className,
         )}
         style={{ 
-          width: '100vw', 
+          width: '100dvw', 
           marginLeft: 'calc(-50vw + 50%)', 
           marginRight: 'calc(-50vw + 50%)',
           maxWidth: 'none'
@@ -83,7 +84,7 @@ export function ProductShowcase({
         style={{
           backgroundImage: 'url("/images/backgrounds/orange_retro_stripe.png")',
           backgroundSize: '100% 100%',
-          width: '100vw',
+          width: '100dvw',
           left: '50%',
           transform: 'translateX(-50%)'
         }}
@@ -91,7 +92,7 @@ export function ProductShowcase({
 
       {/* Main carousel content */}
       {showcaseDescription ? (
-        <h2 className="sr-only">{showcaseDescription}</h2>
+        <h2 id={headingId} className="sr-only">{showcaseDescription}</h2>
       ) : null}
       <Stream fallback={<ProductShowcaseSkeleton />} value={images}>
         {(imagesData) => {
@@ -110,7 +111,7 @@ export function ProductShowcase({
             return (
               <div className="relative z-10 flex h-[50vh] items-center justify-center text-gray-500">
                 No showcase images available. Available images:{' '}
-                {imagesData.map((img) => img.alt).join(', ')}
+                {imagesData.map((img) => img.alt).filter(Boolean).join(', ')}
               </div>
             );
           }
@@ -133,7 +134,7 @@ export function ProductShowcase({
                     key={image.src}
                     style={{ width: '100vw', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
                   >
-                    <div className="relative w-full h-screen h-[100svh] max-h-[900px]">
+                    <div className="relative w-full h-[100svh] max-h-[900px]">
                       {/\.(mp4|webm|ogg)$/i.test(image.src) ? (
                         <video
                           aria-label={productName ? `${productName} video` : 'Product video'}
