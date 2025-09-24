@@ -144,7 +144,10 @@ export function ProductShowcase({
               }}
               setApi={setCarouselApi}
             >
-              <CarouselContent className="w-full carousel-content">
+              <CarouselContent
+                className="w-full carousel-content"
+                style={{ marginInlineStart: 0, marginLeft: 0 }}
+              >
                 {showcaseImages.map((image, index) => (
                   <CarouselItem
                     className="relative flex w-full items-center justify-center p-0 basis-full carousel-item"
