@@ -22,8 +22,8 @@ export interface ParsedFeature {
 
 /**
  * Extract and parse feature custom fields from BigCommerce
- * @param customFields - BigCommerce custom fields from GraphQL query
- * @returns Array of parsed feature objects
+ * @param {BigCommerceCustomFields} customFields - BigCommerce custom fields from GraphQL query
+ * @returns {ParsedFeature[]} Array of parsed feature objects
  */
 export function extractFeatureFields(customFields: BigCommerceCustomFields): ParsedFeature[] {
   if (!customFields.edges || customFields.edges.length === 0) {
@@ -42,16 +42,16 @@ export function extractFeatureFields(customFields: BigCommerceCustomFields): Par
         const order = orderMatch?.[1] ? parseInt(orderMatch[1], 10) : 999;
 
         // Parse the JSON value
-        const parsedFeature = JSON.parse(node.value) as ParsedFeature;
+        const parsedFeature: ParsedFeature = JSON.parse(node.value);
 
         // Validate that required fields exist
         if (parsedFeature.title && parsedFeature.desc && parsedFeature.img) {
           featureFields.push({ order, data: parsedFeature });
         } else {
-          console.warn(`Invalid feature data in ${node.name}:`, parsedFeature);
+          // Invalid feature data - skip this feature
         }
-      } catch (error) {
-        console.warn(`Failed to parse feature field ${node.name}:`, error);
+      } catch {
+        // Failed to parse feature field - skip this feature
       }
     }
   });
@@ -68,9 +68,9 @@ export function extractFeatureFields(customFields: BigCommerceCustomFields): Par
 
 /**
  * Resolve feature images for carousel format using existing image utilities
- * @param features - Parsed features with img descriptors
- * @param images - BigCommerce product images
- * @returns Features with resolved imageUrl properties
+ * @param {ParsedFeature[]} features - Parsed features with img descriptors
+ * @param {ProductImage[]} images - BigCommerce product images
+ * @returns {ParsedFeature[]} Features with resolved imageUrl properties
  */
 export function resolveCarouselImages(
   features: ParsedFeature[],

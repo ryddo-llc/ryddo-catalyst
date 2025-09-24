@@ -160,6 +160,7 @@ function CarouselItem({ className, ...props }: ComponentPropsWithoutRef<'div'>) 
     --carousel-dark-button: var(--background);
  * }
  * ```
+ * @returns {JSX.Element} JSX element for carousel navigation buttons
  */
 function CarouselButtons({
   className,
@@ -216,6 +217,7 @@ function CarouselButtons({
     --carousel-dark-scrollbar: var(--background);
  * }
  * ```
+ * @returns {JSX.Element} JSX element for carousel scrollbar
  */
 function CarouselScrollbar({
   className,
