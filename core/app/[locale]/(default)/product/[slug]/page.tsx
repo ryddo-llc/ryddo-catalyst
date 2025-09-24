@@ -12,7 +12,6 @@ import {
   getProductDetailVariant,
   ProductDetailBike,
   ProductDetailScooter,
-  ProductFeatures,
 } from '~/components/product';
 import { DigitalTagLink } from '~/components/product/digital-tag/digital-tag-link';
 import { getPerformanceConfig } from '~/components/product/layout/performance-comparison/config';
@@ -21,6 +20,7 @@ import { PerformanceComparisonSkeleton } from '~/components/product/layout/perfo
 import Addons from '~/components/product/shared/addons';
 import { getFeaturedAddonsAndAccessories } from '~/components/product/shared/addons-query';
 import RelatedProducts from '~/components/product/shared/related-products';
+import { ProductFeatureCarousel } from '~/components/product-feature-carousel';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
 import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
@@ -30,10 +30,10 @@ import {
 } from '~/data-transformers/performance-comparison-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
-import { productFeaturesTransformer, resolveFeatureImages } from '~/data-transformers/product-features-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { extractFeatureFields, resolveCarouselImages } from '~/lib/extract-feature-fields';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
 
@@ -70,7 +70,7 @@ export function generateStaticParams() {
   return [
     { locale: 'en', slug: '1' }, // Dummy entry to prevent error
   ];
-  
+
   // To pre-generate popular products, uncomment and modify:
   /*
   const locales = ['en', 'es', 'fr']; // Your supported locales
@@ -185,7 +185,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   const streamableProductSku = Streamable.from(async () => {
     const product = await streamableProduct;
-    
+
     // Return the product SKU directly now that BigCommerce has proper SKUs configured
     return product.sku || '';
   });
@@ -236,6 +236,17 @@ export default async function Product({ params, searchParams }: Props) {
     return allImages;
   });
 
+  // Create streamable carousel features data
+  const streamableCarouselFeatures = Streamable.from(async () => {
+    const [product, images] = await Streamable.all([streamableProduct, streamableImages]);
+
+    // Extract features from custom fields
+    const features = extractFeatureFields(product.customFields);
+
+    // Resolve image descriptors to actual BigCommerce images
+    return resolveCarouselImages(features, images);
+  });
+
   // Consolidated CTA data - combines label and disabled state
   const streamableCtaData = Streamable.from(async () => {
     const product = await streamableProduct;
@@ -281,7 +292,7 @@ export default async function Product({ params, searchParams }: Props) {
     const customFields = removeEdgesAndNodes(product.customFields);
     const field = customFields.find((f) => f.name.trim().toLowerCase() === 'showcase_description');
     const value = field?.value.trim();
-    
+
     return value || null;
   });
 
@@ -352,31 +363,31 @@ export default async function Product({ params, searchParams }: Props) {
     }
 
     const relatedProducts = removeEdgesAndNodes(pricingData.relatedProducts);
-    
+
     // If we have related products, return them
     if (relatedProducts.length > 0) {
       return productCardTransformer(relatedProducts, format);
     }
-    
+
     // Otherwise, fetch products from the same category as fallback
     const categories = removeEdgesAndNodes(pricingData.categories);
-    
+
     if (categories.length > 0) {
       const categoryId = categories[0]?.entityId; // Use first category
-      
+
       if (categoryId) {
         const currencyCode = await getPreferredCurrencyCode();
         const categoryProducts = await getProductsByCategory(
           categoryId,
           productId,
           currencyCode,
-          customerAccessToken
+          customerAccessToken,
         );
-      
+
         return productCardTransformer(categoryProducts, format);
       }
     }
-    
+
     return [];
   });
 
@@ -427,30 +438,20 @@ export default async function Product({ params, searchParams }: Props) {
         })
       : null;
 
-  // Create streamable product features data for bikes and scooters
-  const streamableProductFeatures =
-    (productDetailVariant === 'bike' || productDetailVariant === 'scooter')
-      ? Streamable.from(async () => {
-          const [product, images] = await Streamable.all([streamableProduct, streamableImages]);
-          
-          // Transform features from custom fields
-          const featuresData = productFeaturesTransformer(product.customFields);
-          
-          // Resolve image descriptors to actual BigCommerce images
-          return resolveFeatureImages(featuresData, images);
-        })
-      : null;
 
   // Create streamable performance comparison data for bikes and scooters
   const streamablePerformanceComparison =
-    (productDetailVariant === 'bike' || productDetailVariant === 'scooter')
+    productDetailVariant === 'bike' || productDetailVariant === 'scooter'
       ? Streamable.from(async () => {
           const [product, images] = await Streamable.all([streamableProduct, streamableImages]);
           const dynamicData = transformPerformanceComparisonData(product.customFields);
-          
+
           if (dynamicData.metrics.length === 0) return null;
-          
-          const performanceImage = findPerformanceImage(images, dynamicData.performanceImageDescription);
+
+          const performanceImage = findPerformanceImage(
+            images,
+            dynamicData.performanceImageDescription,
+          );
 
           return {
             config: getPerformanceConfig(),
@@ -538,10 +539,12 @@ export default async function Product({ params, searchParams }: Props) {
     rating: baseProduct.reviewSummary.averageRating,
     accordions: streamableAccordions,
     inventoryStatus: streamableInventoryStatus,
-    brandLogo: baseProduct.brand?.defaultImage ? {
-      url: baseProduct.brand.defaultImage.url,
-      altText: baseProduct.brand.defaultImage.altText
-    } : null,
+    brandLogo: baseProduct.brand?.defaultImage
+      ? {
+          url: baseProduct.brand.defaultImage.url,
+          altText: baseProduct.brand.defaultImage.altText,
+        }
+      : null,
   };
 
   const defaultProductData = baseProductData;
@@ -613,6 +616,7 @@ export default async function Product({ params, searchParams }: Props) {
   };
 
   const { wishlistButton, digitalTagLink, ...basePropsWithoutOverlay } = baseProps;
+
   const renderProductDetail = () => {
     switch (productDetailVariant) {
       case 'bike':
@@ -650,8 +654,11 @@ export default async function Product({ params, searchParams }: Props) {
       {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
         <>
           <Addons addons={streamablePopularAccessories} name={baseProduct.brand?.name} />
-          
-          <Stream fallback={<div className="h-[100vh] max-h-[900px] bg-gray-100" />} value={streamableShowcaseDescription}>
+
+          <Stream
+            fallback={<div className="h-[100vh] max-h-[900px] bg-gray-100" />}
+            value={streamableShowcaseDescription}
+          >
             {(showcaseDescription) => (
               <ProductShowcase
                 aria-labelledby="product-images-heading"
@@ -661,35 +668,37 @@ export default async function Product({ params, searchParams }: Props) {
               />
             )}
           </Stream>
-          
+
+          {/* Bike Feature Variants section */}
+          <ProductFeatureCarousel bigCommerceFeatures={streamableCarouselFeatures} />
+
           {/* Performance Comparison section - Stream handles its own loading state */}
           {streamablePerformanceComparison && (
-            <Stream fallback={<PerformanceComparisonSkeleton />} value={streamablePerformanceComparison}>
-              {(performanceData) => performanceData && (
-                <PerformanceComparison
-                  config={performanceData.config}
-                  dynamicData={performanceData.dynamicData}
-                  metrics={performanceData.metrics}
-                  productImage={performanceData.productImage}
-                  productTitle={performanceData.productTitle}
-                />
-              )}
+            <Stream
+              fallback={<PerformanceComparisonSkeleton />}
+              value={streamablePerformanceComparison}
+            >
+              {(performanceData) =>
+                performanceData && (
+                  <PerformanceComparison
+                    config={performanceData.config}
+                    dynamicData={performanceData.dynamicData}
+                    metrics={performanceData.metrics}
+                    productImage={performanceData.productImage}
+                    productTitle={performanceData.productTitle}
+                  />
+                )
+              }
             </Stream>
           )}
-          
-          {/* Product Features section */}
-          {streamableProductFeatures && (
-            <div className="bg-gray-50">
-              <ProductFeatures features={streamableProductFeatures} />
-            </div>
-          )}
-          
+
+
           <TechSpecs powerSpecs={streamableTechSpecFields} />
         </>
       )}
 
       {/* Related Products section with same styling as popular products */}
-      <RelatedProducts 
+      <RelatedProducts
         compareLabel="Compare"
         compareProducts={streamableCompareProducts}
         maxCompareLimitMessage="You've reached the maximum number of products for comparison."
