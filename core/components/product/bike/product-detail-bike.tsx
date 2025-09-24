@@ -102,7 +102,7 @@ export function ProductDetailBike<F extends Field>({
           maxCompareLimitMessage={maxCompareLimitMessage}
           maxItems={maxCompareItems}
         >
-          <section aria-labelledby="product-heading" className="relative w-full">
+          <section aria-labelledby="product-heading" className="relative w-full overflow-hidden">
             <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
               {(product) => {
                 if (!product) return null;
@@ -123,9 +123,9 @@ export function ProductDetailBike<F extends Field>({
                             <Image
                               alt="detail page background"
                               blurDataURL={getBase64BlurDataURL()}
-                              className="object-cover"
-                              fill
+                              className="-translate-y-16 scale-110 bg-fixed bg-center object-bottom"
                               placeholder="blur"
+                              fill
                               priority
                               src={backgroundSrc}
                             />

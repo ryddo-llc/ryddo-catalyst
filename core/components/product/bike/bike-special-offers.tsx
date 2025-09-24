@@ -122,15 +122,15 @@ export function BikeLeftSidebarContent({
 
   return (
     <div className="w-full">
-      <div className="flex w-full flex-col items-start justify-start gap-4 rounded-lg">
+      <div className="flex w-full flex-col items-start justify-start gap-4 rounded-2xl">
         {brandName ? (
-          <h1 className="font-kanit text-5xl font-black leading-normal text-zinc-800">
+          <h1 className="w-full pt-4 text-center font-kanit text-6xl font-black leading-normal text-black">
             {brandName.toUpperCase()}
           </h1>
         ) : null}
 
         {description ? (
-          <div className="text-large font-extrabold text-zinc-600">{description}</div>
+          <div className="text-large -mt-10 font-extrabold text-black">{description}</div>
         ) : null}
 
         {/* Size Options - Interactive - Circular swatches with text */}

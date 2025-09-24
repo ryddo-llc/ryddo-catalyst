@@ -86,7 +86,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
 
             return (
               <>
-                <div className="mb-2 text-5xl font-black text-zinc-800">
+                <div className="mb-2 text-6xl font-black text-zinc-800">
                   <span className="font-kanit">{displayPrice}</span>
                   <span aria-hidden="true" className="text-[#F92F7B]">
                     .
