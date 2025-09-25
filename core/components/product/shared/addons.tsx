@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { type Product } from '@/vibes/soul/primitives/product-card';
 import { Image } from '~/components/image';
+import { PulseRings } from '~/components/product/layout/performance-comparison/pulse-rings';
 
 import { ProductModal } from './product-modal';
 
@@ -144,23 +145,19 @@ export default function Addons({ addons, name }: AddonProps) {
                         onClick={() => handleProductClick(accessory)}
                         type="button"
                       >
-                        {/* Optimized ripple effect with responsive sizing */}
-                        <div className="absolute inset-0 z-10 flex items-center justify-center">
-                          {/* Center pulse */}
-                          <div className="absolute h-12 w-12 rounded-full bg-[#F92F7B] opacity-0 transition-all duration-200 ease-out group-hover:scale-125 group-hover:opacity-100 @sm:h-16 @sm:w-16" />
-
-                          {/* Inner pulse circle */}
-                          <div className="absolute h-16 w-16 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-100 duration-300 ease-out group-hover:scale-110 group-hover:opacity-80 @sm:h-20 @sm:w-20" />
-
-                          {/* First wave of ripples */}
-                          <div className="absolute h-24 w-24 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-150 duration-500 ease-out group-hover:scale-150 group-hover:opacity-0 @sm:h-32 @sm:w-32" />
-                          <div className="group-hover:scale-200 absolute h-20 w-20 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-200 duration-700 ease-out group-hover:opacity-0 @sm:h-24 @sm:w-24" />
-                          <div className="group-hover:scale-200 absolute h-24 w-24 scale-75 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-300 duration-700 ease-out group-hover:opacity-0 @sm:h-28 @sm:w-28" />
-
-                          {/* Second wave of ripples */}
-                          <div className="group-hover:scale-200 absolute h-28 w-28 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-300 duration-1000 ease-out group-hover:opacity-0 @sm:h-32 @sm:w-32" />
-                          <div className="group-hover:scale-200 absolute h-32 w-32 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-500 duration-1000 ease-out group-hover:opacity-0 @sm:h-36 @sm:w-36" />
-                          <div className="group-hover:scale-200 absolute h-36 w-36 scale-50 rounded-full bg-[#F92F7B] opacity-0 transition-all delay-700 duration-1000 ease-out group-hover:opacity-0 @sm:h-40 @sm:w-40" />
+                        {/* Pulsing rings effect - visible on hover */}
+                        <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                          <PulseRings
+                            baseColor="rgba(249, 47, 123, 0.3)"
+                            baseSize={48}
+                            disabledOnMobile={false}
+                            edgeColor="rgba(249, 47, 123, 0.05)"
+                            opacity={0.6}
+                            pulseSpeed={1500}
+                            ringSpacing={25}
+                            showWhiteRings={true}
+                            whiteRingOpacity={0.8}
+                          />
                         </div>
 
                         {/* Product Image */}
