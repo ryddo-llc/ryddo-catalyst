@@ -36,6 +36,39 @@ const KEYFRAMES_CSS = `
       opacity: 0.2;
     }
   }
+  
+  @keyframes apulser-white-1 {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(0.95);
+      opacity: var(--white-1-start, 0.3);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.08);
+      opacity: var(--white-1-mid, 0.1);
+    }
+  }
+  
+  @keyframes apulser-white-2 {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(0.95);
+      opacity: var(--white-2-start, 0.2);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.08);
+      opacity: var(--white-2-mid, 0.05);
+    }
+  }
+  
+  @keyframes apulser-white-3 {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(0.95);
+      opacity: var(--white-3-start, 0.1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.08);
+      opacity: var(--white-3-mid, 0.02);
+    }
+  }
 `;
 
 interface PulseRingsProps {
@@ -49,6 +82,8 @@ interface PulseRingsProps {
   maskInner?: number;
   maskMiddle?: number;
   maskOuter?: number;
+  showWhiteRings?: boolean;
+  whiteRingOpacity?: number;
 }
 
 // Create a separate styles object for better maintainability
@@ -95,6 +130,8 @@ export function PulseRings({
   maskInner = 35,
   maskMiddle = 25,
   maskOuter = 15,
+  showWhiteRings = false,
+  whiteRingOpacity = 0.3,
 }: PulseRingsProps) {
   const makeRing = (multiplier: number) => createRingStyles(
     baseSize,
@@ -137,6 +174,54 @@ export function PulseRings({
       <div style={makeRing(1)} />
       <div style={makeRing(2)} />
       <div style={makeRing(3)} />
+
+      {/* White separation rings (optional) */}
+      {showWhiteRings && (
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: baseSize + ringSpacing * 1 + 4,
+              height: baseSize + ringSpacing * 1 + 4,
+              borderRadius: '50%',
+              border: `2px solid rgba(255, 255, 255, ${whiteRingOpacity})`,
+              opacity: whiteRingOpacity,
+              transform: 'translate(-50%, -50%) scale(0.95)',
+              animation: `apulser-white-1 ${pulseSpeed}ms ease-in-out infinite`,
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: baseSize + ringSpacing * 2 + 4,
+              height: baseSize + ringSpacing * 2 + 4,
+              borderRadius: '50%',
+              border: `2px solid rgba(255, 255, 255, ${whiteRingOpacity})`,
+              opacity: whiteRingOpacity * 0.7,
+              transform: 'translate(-50%, -50%) scale(0.95)',
+              animation: `apulser-white-2 ${pulseSpeed}ms ease-in-out infinite`,
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: baseSize + ringSpacing * 3 + 4,
+              height: baseSize + ringSpacing * 3 + 4,
+              borderRadius: '50%',
+              border: `2px solid rgba(255, 255, 255, ${whiteRingOpacity})`,
+              opacity: whiteRingOpacity * 0.5,
+              transform: 'translate(-50%, -50%) scale(0.95)',
+              animation: `apulser-white-3 ${pulseSpeed}ms ease-in-out infinite`,
+            }}
+          />
+        </>
+      )}
 
       <style>{KEYFRAMES_CSS}</style>
     </div>
