@@ -148,12 +148,12 @@ export default function Addons({ addons, name }: AddonProps) {
                         {/* Pulsing rings effect - visible on hover */}
                         <div
                           aria-hidden="true"
-                          className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                          className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:opacity-0 motion-reduce:transition-none"
                         >
                           <PulseRings
                             baseColor="rgba(249, 47, 123, 0.3)"
                             baseSize={48}
-                            disabledOnMobile={false}
+                            disabledOnMobile={true}
                             edgeColor="rgba(249, 47, 123, 0.05)"
                             opacity={0.6}
                             pulseSpeed={1500}
