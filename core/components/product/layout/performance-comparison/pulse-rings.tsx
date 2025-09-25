@@ -40,33 +40,33 @@ const KEYFRAMES_CSS = `
   @keyframes apulser-white-1 {
     0%, 100% {
       transform: translate(-50%, -50%) scale(0.95);
-      opacity: 0.3;
+      opacity: var(--white-1-start, 0.3);
     }
     50% {
       transform: translate(-50%, -50%) scale(1.08);
-      opacity: 0.1;
+      opacity: var(--white-1-mid, 0.1);
     }
   }
   
   @keyframes apulser-white-2 {
     0%, 100% {
       transform: translate(-50%, -50%) scale(0.95);
-      opacity: 0.2;
+      opacity: var(--white-2-start, 0.2);
     }
     50% {
       transform: translate(-50%, -50%) scale(1.08);
-      opacity: 0.05;
+      opacity: var(--white-2-mid, 0.05);
     }
   }
   
   @keyframes apulser-white-3 {
     0%, 100% {
       transform: translate(-50%, -50%) scale(0.95);
-      opacity: 0.1;
+      opacity: var(--white-3-start, 0.1);
     }
     50% {
       transform: translate(-50%, -50%) scale(1.08);
-      opacity: 0.02;
+      opacity: var(--white-3-mid, 0.02);
     }
   }
 `;
