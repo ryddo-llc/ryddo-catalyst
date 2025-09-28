@@ -77,7 +77,7 @@ const RenderVariantField = (field: Field, onPrefetch: () => void, isColorField =
         <span>{isColorField ? 'Color' : 'Size'}:</span>
       </div>
       <SwatchRadioGroup
-        className="justify-start gap-2 [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold [&_button[data-state=checked]]:border-4 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:p-0 [&_label]:flex [&_label]:h-10 [&_label]:w-10 [&_label]:items-center [&_label]:justify-center [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:text-xs [&_label]:font-bold [&_label]:transition-transform [&_label]:hover:scale-105"
+        className="justify-start gap-2 [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold [&_button[data-state=checked]]:border-4 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:p-0 [&_button>span]:border-black [&_button>span]:border"
         name={field.name}
         onOptionMouseEnter={onPrefetch}
         onValueChange={handleVariantChange}
