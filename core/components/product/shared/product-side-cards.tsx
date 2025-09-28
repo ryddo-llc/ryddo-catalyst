@@ -76,7 +76,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
   product: ProductWithSideCardData<F>;
 }) {
   return (
-    <div className="max-w-sm rounded-lg bg-white/75 p-4 text-right md:p-5 lg:p-6">
+    <div className="max-w-sm rounded-2xl bg-white/75 p-4 text-right md:p-5 lg:p-6">
       {/* Price Section */}
       <div className="mb-6">
         <Stream fallback={<Skeleton.Box className="ml-auto h-12 w-32" />} value={product.price}>

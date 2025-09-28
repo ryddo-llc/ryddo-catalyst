@@ -52,7 +52,7 @@ export function BikeVariantCoordinator<F extends Field>({
       />
 
       {/* Center - Bike Image - Large central image */}
-      <div className="flex items-center justify-center px-2 sm:px-4 md:px-6 lg:px-8">
+      <div className="flex items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         {children}
       </div>
 
