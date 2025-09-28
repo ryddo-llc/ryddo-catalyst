@@ -536,8 +536,8 @@ export default async function Product({ params, searchParams }: Props) {
     images: streamableImages,
     price: streamablePrices,
     subtitle: baseProduct.brand?.name,
-    rating: baseProduct.reviewSummary?.averageRating || 4.5, // Default to 4.5 for testing
-    reviewCount: baseProduct.reviewSummary?.numberOfReviews || 15, // Default to 15 for testing
+    rating: 4.5, // Default to 4.5 for testing
+    reviewCount: 15, // Default to 15 for testing
     accordions: streamableAccordions,
     inventoryStatus: streamableInventoryStatus,
     brandLogo: baseProduct.brand?.defaultImage

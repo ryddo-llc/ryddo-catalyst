@@ -82,13 +82,13 @@ const calculateKlarnaPayment = (price: ProductPrice | string | null): string => 
   if (typeof price === 'string') {
     // Extract number from string like "$1,234.56"
     numericPrice = parseFloat(price.replace(/[$,]/g, ''));
-  } else if (price?.currentValue) {
+  } else if (price.currentValue) {
     numericPrice = parseFloat(price.currentValue.replace(/[$,]/g, ''));
   } else {
     return '$0';
   }
 
-  if (isNaN(numericPrice)) return '$0';
+  if (Number.isNaN(numericPrice)) return '$0';
 
   // Klarna monthly payments - divide by 36 months
   const monthlyPayment = numericPrice / 36;

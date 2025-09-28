@@ -125,8 +125,8 @@ export function ProductDetailBike<F extends Field>({
                               alt="detail page background"
                               blurDataURL={getBase64BlurDataURL()}
                               className="-translate-y-16 scale-110 bg-fixed bg-center object-bottom"
-                              placeholder="blur"
                               fill
+                              placeholder="blur"
                               priority
                               src={backgroundSrc}
                             />
