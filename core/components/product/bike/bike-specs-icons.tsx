@@ -94,15 +94,19 @@ export function BikeSpecsIcons({ specs }: BikeSpecsIconsProps) {
         return (
           <div
             aria-label={`${spec.name}: ${spec.value}`}
-            className="flex flex-col items-center"
+            className="group relative flex flex-col items-center"
             key={spec.name}
             role="img"
           >
             <div className="mb-1">
               <Image alt={alt} height={50} src={iconSrc} width={50} />
             </div>
-            <span className="text-md font-kanit font-bold text-gray-800">{spec.name}</span>
-            <span className="text-md font-kanit font-medium text-gray-600">{spec.value}</span>
+            <span className="text-md font-kanit font-bold italic text-black">{spec.value}</span>
+
+            {/* Tooltip that shows on hover */}
+            <div className="absolute bottom-full mb-2 hidden w-max rounded-2xl border border-white/20 bg-white/75 px-4 py-2 font-kanit text-sm font-medium text-gray-900 shadow-sm backdrop-blur-md transition-all duration-200 ease-out group-hover:block">
+              {spec.name}
+            </div>
           </div>
         );
       })}

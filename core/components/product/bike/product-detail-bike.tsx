@@ -189,7 +189,7 @@ export function ProductDetailBike<F extends Field>({
                           }}
                         >
                           {/* Bike Image Display */}
-                          <div className="relative flex h-[14.5rem] w-[24rem] items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] sm:w-[30rem] md:h-[20.5rem] md:w-[38rem] lg:h-[23.5rem] lg:w-[46rem] xl:h-[25.5rem] xl:w-[54rem]">
+                          <div className="relative flex h-[14.5rem] w-[24rem] translate-y-3 items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] sm:w-[30rem] md:h-[20.5rem] md:w-[38rem] lg:h-[23.5rem] lg:w-[46rem] xl:h-[25.5rem] xl:w-[54rem]">
                             <Stream
                               fallback={
                                 <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
@@ -255,13 +255,13 @@ export function ProductDetailBike<F extends Field>({
                         </BikeVariantCoordinator>
 
                         {/* Bottom Section - Desktop/Tablet Specifications - Centered with bike */}
-                        <div className="hidden md:mt-8 md:flex md:justify-center lg:mt-8 xl:mt-10">
+                        <div className="ml-12 hidden md:mt-10 md:flex md:justify-center lg:mt-10 xl:mt-10">
                           <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;
 
                               return (
-                                <div className="w-[38rem] md:w-[38rem] lg:w-[46rem] xl:w-[54rem]">
+                                <div className="w-[24rem] sm:w-[30rem] md:w-[38rem] lg:w-[46rem] xl:w-[54rem]">
                                   <BikeSpecsIcons specs={specs} />
                                 </div>
                               );
