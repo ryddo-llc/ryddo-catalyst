@@ -22,6 +22,8 @@ interface BikeVariantCoordinatorProps<F extends Field> {
     href: string;
     price?: ProductPrice;
     warranty?: Streamable<string | null>;
+    rating?: number | null;
+    reviewCount?: number | null;
   };
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
@@ -71,6 +73,8 @@ export function BikeVariantCoordinator<F extends Field>({
           price: product.price,
           colors: product.colors,
           warranty: product.warranty,
+          rating: product.rating,
+          reviewCount: product.reviewCount,
         }}
       />
     </div>

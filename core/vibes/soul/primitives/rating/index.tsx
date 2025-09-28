@@ -48,11 +48,11 @@ const Star = ({ type }: StarType) => {
 
   return (
     <svg
-      className="inline-block text-foreground"
+      className="inline-block text-yellow-500"
       fill="none"
-      height={20}
+      height={24}
       viewBox="0 0 20 20"
-      width={20}
+      width={24}
     >
       {paths[type]}
     </svg>

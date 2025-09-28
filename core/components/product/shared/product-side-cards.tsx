@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Compare } from '@/vibes/soul/primitives/product-card/compare';
+import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
@@ -26,6 +27,8 @@ interface ProductWithSideCardData<F extends Field = Field> {
   price?: Streamable<ProductPrice | string | null>;
   colors?: ColorOption[];
   warranty?: string | null;
+  rating?: number | null;
+  reviewCount?: number | null;
   // Form props for add to cart functionality
   action?: ProductDetailFormAction<F>;
   fields?: F[];
@@ -107,10 +110,22 @@ export function AuthorizedDealerCard<F extends Field = Field>({
           }}
         </Stream>
 
+        {/* Rating - Bikes Only */}
+        {product.productType === 'bike' && product.rating ? (
+          <div className="mt-4">
+            <div className="flex items-center justify-end gap-2">
+              <span className="font-['Inter'] text-lg font-semibold text-black">({product.reviewCount || 15})</span>
+              <div className="flex items-center">
+                <Rating rating={product.rating} showRating={false} />
+              </div>
+            </div>
+          </div>
+        ) : null}
+
         {/* Warranty Information - Bikes Only */}
         {product.productType === 'bike' && product.warranty ? (
-          <div className="mt-4 pt-4">
-            <div className="mb-2 font-['Inter'] text-sm font-black text-black">
+          <div className="mt-2 pt-2">
+            <div className="mb-2 font-kanit text-lg font-semibold text-black">
               {product.warranty}
             </div>
           </div>
@@ -129,7 +144,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
               href: product.href,
               image: product.images?.[0],
             }}
-            ctaLabel={product.ctaLabel || 'Add to cart'}
+            ctaLabel={product.ctaLabel || 'Add to Cart'}
             disabled={product.ctaDisabled}
             fields={product.fields}
             productId={product.id}
@@ -146,7 +161,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
               href: product.href,
               image: product.images?.[0],
             }}
-            ctaLabel={product.ctaLabel || 'Add to cart'}
+            ctaLabel={product.ctaLabel || 'Add to Cart'}
             disabled={product.ctaDisabled}
             fields={product.fields}
             productId={product.id}
@@ -159,7 +174,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
               className="min-h-[43px] rounded-full bg-[#F92F7B] px-4 py-2.5 text-base font-bold text-white transition-colors hover:bg-pink-600 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={product.ctaDisabled}
             >
-              {product.ctaLabel || 'Add to cart'}
+              {product.ctaLabel || 'Add to Cart'}
             </button>
             <Compare
               className="min-h-[43px] rounded-full bg-black/[.62] px-4 py-2.5 text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"

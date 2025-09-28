@@ -38,7 +38,8 @@ interface BaseProductDetailProduct {
   >;
   subtitle?: string;
   badge?: string;
-  rating?: Streamable<number | null>;
+  rating?: number | null;
+  reviewCount?: number | null;
   summary?: Streamable<string>;
   description?: Streamable<string | ReactNode | null>;
   accordions?: Streamable<
@@ -183,6 +184,8 @@ export function ProductDetailBike<F extends Field>({
                             href: product.href,
                             price: product.price,
                             warranty: product.warranty,
+                            rating: product.rating,
+                            reviewCount: product.reviewCount,
                           }}
                         >
                           {/* Bike Image Display */}

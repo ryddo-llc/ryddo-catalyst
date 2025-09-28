@@ -21,6 +21,8 @@ interface BikeRightSidebarProps<F extends Field> {
     price?: ProductPrice;
     colors?: ColorOption[];
     warranty?: Streamable<string | null>;
+    rating?: number | null;
+    reviewCount?: number | null;
   };
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
@@ -53,6 +55,8 @@ export function BikeRightSidebar<F extends Field>({
               price: product.price,
               colors: product.colors,
               warranty: streamedWarranty,
+              rating: product.rating,
+              reviewCount: product.reviewCount,
               action,
               fields: streamedFields,
               ctaLabel: streamedCtaLabel || undefined,
