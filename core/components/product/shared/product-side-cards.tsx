@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Compare } from '@/vibes/soul/primitives/product-card/compare';
+import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
@@ -26,6 +27,8 @@ interface ProductWithSideCardData<F extends Field = Field> {
   price?: Streamable<ProductPrice | string | null>;
   colors?: ColorOption[];
   warranty?: string | null;
+  rating?: number | null;
+  reviewCount?: number | null;
   // Form props for add to cart functionality
   action?: ProductDetailFormAction<F>;
   fields?: F[];
@@ -70,36 +73,59 @@ export function OffersCard() {
 }
 
 // Authorized Dealer Card Component
+// Calculate monthly payment for Klarna (36 months)
+const calculateKlarnaPayment = (price: ProductPrice | string | null | undefined): string => {
+  if (!price) return '$0';
+
+  let numericPrice: number;
+
+  if (typeof price === 'string') {
+    // Extract number from string like "$1,234.56"
+    numericPrice = parseFloat(price.replace(/[$,]/g, ''));
+  } else if (price.currentValue) {
+    numericPrice = parseFloat(price.currentValue.replace(/[$,]/g, ''));
+  } else {
+    return '$0';
+  }
+
+  if (Number.isNaN(numericPrice)) return '$0';
+
+  // Klarna monthly payments - divide by 36 months
+  const monthlyPayment = numericPrice / 36;
+
+  return `$${Math.round(monthlyPayment)}`;
+};
+
 export function AuthorizedDealerCard<F extends Field = Field>({
   product,
 }: {
   product: ProductWithSideCardData<F>;
 }) {
   return (
-    <div className="max-w-sm rounded-lg bg-white/75 p-4 text-right md:p-5 lg:p-6">
+    <div className="max-w-sm rounded-2xl bg-white/75 p-6 text-right md:p-7 lg:p-8">
       {/* Price Section */}
       <div className="mb-6">
         <Stream fallback={<Skeleton.Box className="ml-auto h-12 w-32" />} value={product.price}>
           {(price) => {
             const displayPrice =
               typeof price === 'string' ? price : (price?.currentValue ?? '');
+            const klarnaPayment = calculateKlarnaPayment(price);
 
             return (
               <>
-                <div className="mb-2 text-5xl font-black text-zinc-800">
+                <div className="mb-0 pt-2 text-6xl font-black leading-none text-zinc-800">
                   <span className="font-kanit">{displayPrice}</span>
                   <span aria-hidden="true" className="text-[#F92F7B]">
                     .
                   </span>
                 </div>
-                <div className="font-kanit text-base font-medium leading-snug text-stone-400">
-                  <span>Payment options available </span>
-                  <span className="font-kanit font-black text-pink-600">
-                    with Affirm, Klarna
+                <div className="font-kanit text-sm font-medium leading-snug text-stone-400 mt-1">
+                  <span className="font-['Inter'] font-semibold text-black text-lg">
+                    {klarnaPayment}/mo. with Klarna
                   </span>
                   <br />
-                  <span className="cursor-pointer font-['Inter'] font-black text-pink-600 underline">
-                    Learn more
+                  <span className="cursor-pointer font-['Inter'] font-semibold text-black underline">
+                    Check your purchase power
                   </span>
                 </div>
               </>
@@ -107,10 +133,22 @@ export function AuthorizedDealerCard<F extends Field = Field>({
           }}
         </Stream>
 
+        {/* Rating - Bikes Only */}
+        {product.productType === 'bike' && product.rating ? (
+          <div className="mt-4">
+            <div className="flex items-center justify-end gap-2">
+              <span className="font-['Inter'] text-lg font-semibold text-black">({product.reviewCount || 15})</span>
+              <div className="flex items-center">
+                <Rating rating={product.rating} showRating={false} />
+              </div>
+            </div>
+          </div>
+        ) : null}
+
         {/* Warranty Information - Bikes Only */}
         {product.productType === 'bike' && product.warranty ? (
-          <div className="mt-4 pt-4">
-            <div className="mb-2 font-['Inter'] text-sm font-black text-black">
+          <div className="mt-2 pt-2">
+            <div className="mb-2 font-kanit text-lg font-semibold text-black">
               {product.warranty}
             </div>
           </div>
@@ -129,7 +167,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
               href: product.href,
               image: product.images?.[0],
             }}
-            ctaLabel={product.ctaLabel || 'Add to cart'}
+            ctaLabel={product.ctaLabel || 'Add to Cart'}
             disabled={product.ctaDisabled}
             fields={product.fields}
             productId={product.id}
@@ -146,7 +184,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
               href: product.href,
               image: product.images?.[0],
             }}
-            ctaLabel={product.ctaLabel || 'Add to cart'}
+            ctaLabel={product.ctaLabel || 'Add to Cart'}
             disabled={product.ctaDisabled}
             fields={product.fields}
             productId={product.id}
@@ -159,7 +197,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
               className="min-h-[43px] rounded-full bg-[#F92F7B] px-4 py-2.5 text-base font-bold text-white transition-colors hover:bg-pink-600 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={product.ctaDisabled}
             >
-              {product.ctaLabel || 'Add to cart'}
+              {product.ctaLabel || 'Add to Cart'}
             </button>
             <Compare
               className="min-h-[43px] rounded-full bg-black/[.62] px-4 py-2.5 text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"

@@ -22,6 +22,8 @@ interface BikeVariantCoordinatorProps<F extends Field> {
     href: string;
     price?: ProductPrice;
     warranty?: Streamable<string | null>;
+    rating?: number | null;
+    reviewCount?: number | null;
   };
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
@@ -52,7 +54,7 @@ export function BikeVariantCoordinator<F extends Field>({
       />
 
       {/* Center - Bike Image - Large central image */}
-      <div className="flex items-center justify-center px-2 sm:px-4 md:px-6 lg:px-8">
+      <div className="flex items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         {children}
       </div>
 
@@ -71,6 +73,8 @@ export function BikeVariantCoordinator<F extends Field>({
           price: product.price,
           colors: product.colors,
           warranty: product.warranty,
+          rating: product.rating,
+          reviewCount: product.reviewCount,
         }}
       />
     </div>

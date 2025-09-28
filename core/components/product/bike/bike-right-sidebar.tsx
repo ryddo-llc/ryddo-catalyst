@@ -21,6 +21,8 @@ interface BikeRightSidebarProps<F extends Field> {
     price?: ProductPrice;
     colors?: ColorOption[];
     warranty?: Streamable<string | null>;
+    rating?: number | null;
+    reviewCount?: number | null;
   };
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
@@ -38,7 +40,7 @@ export function BikeRightSidebar<F extends Field>({
   additionalActions,
 }: BikeRightSidebarProps<F>) {
   return (
-    <div className="absolute right-0 top-[-10px] z-10 hidden w-56 md:top-[-15px] md:block md:w-64 lg:top-[-20px] lg:w-64 xl:right-1 xl:w-72 -mr-2 sm:-mr-3 md:-mr-8 lg:-mr-12 xl:-mr-16">
+    <div className="absolute right-0 top-[-10px] z-10 hidden w-60 min-h-[400px] md:top-[-15px] md:block md:w-72 lg:top-[-20px] lg:w-72 xl:right-1 xl:w-80 -mr-6 sm:-mr-8 md:-mr-12 lg:-mr-16 xl:-mr-20">
       <Stream
         fallback={<ProductDetailFormSkeleton />}
         value={Streamable.all([product.images, fields, ctaLabel, ctaDisabled, product.warranty || Streamable.from(() => Promise.resolve(null))])}
@@ -53,6 +55,8 @@ export function BikeRightSidebar<F extends Field>({
               price: product.price,
               colors: product.colors,
               warranty: streamedWarranty,
+              rating: product.rating,
+              reviewCount: product.reviewCount,
               action,
               fields: streamedFields,
               ctaLabel: streamedCtaLabel || undefined,

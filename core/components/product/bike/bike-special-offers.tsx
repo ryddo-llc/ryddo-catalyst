@@ -73,11 +73,11 @@ const RenderVariantField = (field: Field, onPrefetch: () => void, isColorField =
 
   return (
     <div className="w-full">
-      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-600">
+      <div className="mb-3 flex items-center gap-2 font-['Inter'] text-xs font-black uppercase tracking-wider text-black">
         <span>{isColorField ? 'Color' : 'Size'}:</span>
       </div>
       <SwatchRadioGroup
-        className="justify-start gap-2 [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold [&_button[data-state=checked]]:border-2 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:ring-2 [&_button[data-state=checked]]:ring-[#F92F7B] [&_label]:flex [&_label]:h-10 [&_label]:w-10 [&_label]:items-center [&_label]:justify-center [&_label]:rounded-full [&_label]:border-2 [&_label]:border-gray-300 [&_label]:text-xs [&_label]:font-bold [&_label]:transition-transform [&_label]:hover:scale-105"
+        className="justify-start gap-2 [&_.swatch-text-option]:text-sm [&_.swatch-text-option]:font-extrabold [&_button[data-state=checked]]:border-4 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:p-0 [&_button>span]:border-black [&_button>span]:border"
         name={field.name}
         onOptionMouseEnter={onPrefetch}
         onValueChange={handleVariantChange}
@@ -122,25 +122,25 @@ export function BikeLeftSidebarContent({
 
   return (
     <div className="w-full">
-      <div className="flex w-full flex-col items-start justify-start gap-4 rounded-lg">
+      <div className="flex w-full flex-col items-start justify-start gap-4 rounded-2xl pb-4">
         {brandName ? (
-          <h1 className="font-kanit text-5xl font-black leading-normal text-zinc-800">
+          <h1 className="w-full pt-4 text-center font-kanit text-6xl font-black leading-normal text-black">
             {brandName.toUpperCase()}
           </h1>
         ) : null}
 
         {description ? (
-          <div className="text-large font-extrabold text-zinc-600">{description}</div>
+          <div className="text-large -mt-10 font-extrabold text-black pl-3">{description}</div>
         ) : null}
 
         {/* Size Options - Interactive - Circular swatches with text */}
         {sizeField && 'options' in sizeField && sizeField.options.length
-          ? RenderVariantField(sizeField, onPrefetch, false)
+          ? <div className="pl-3">{RenderVariantField(sizeField, onPrefetch, false)}</div>
           : null}
 
         {/* Color Options - Interactive - Circular swatches */}
         {colorField && 'options' in colorField && colorField.options.length
-          ? RenderVariantField(colorField, onPrefetch, true)
+          ? <div className="pl-3">{RenderVariantField(colorField, onPrefetch, true)}</div>
           : null}
       </div>
     </div>
