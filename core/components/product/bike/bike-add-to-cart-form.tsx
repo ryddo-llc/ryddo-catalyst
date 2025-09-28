@@ -33,7 +33,7 @@ function SubmitButton({ children, disabled }: { children: string; disabled?: boo
 
   return (
     <button
-      className="flex min-h-[43px] flex-1 items-center justify-center self-stretch overflow-hidden whitespace-nowrap rounded-[50px] bg-[#F92F7B] px-3 py-2.5 font-kanit text-sm font-bold leading-normal tracking-wide text-white shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] transition-all hover:bg-[#d41f63] hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-base md:px-6"
+      className="flex min-h-[43px] flex-1 items-center justify-center self-stretch overflow-hidden whitespace-nowrap rounded-2xl border-2 border-[#F92F7B] bg-[#F92F7B] px-3 py-2.5 font-kanit text-sm font-bold leading-normal tracking-wide text-white shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] transition-all hover:bg-[#d41f63] hover:border-[#d41f63] hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-base md:px-6"
       disabled={disabled || pending}
       type="submit"
     >
@@ -171,7 +171,7 @@ export function BikeAddToCartForm<F extends Field>({
         <SubmitButton disabled={disabled}>{ctaLabel}</SubmitButton>
         {compareProduct && (
           <Compare
-            className="flex min-h-[43px] items-center justify-center whitespace-nowrap rounded-[50px] border-2 border-solid border-[#757575] bg-[#757575] px-3 py-2.5 text-sm font-kanit font-semibold text-white transition-colors hover:bg-[#606060] disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-base md:px-6"
+            className="flex min-h-[43px] flex-1 items-center justify-center self-stretch overflow-hidden whitespace-nowrap rounded-2xl border-2 border-solid border-[#757575] bg-[#757575] px-3 py-2.5 text-sm font-kanit font-semibold text-white transition-colors hover:bg-[#606060] disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-base md:px-6"
             label="Compare"
             product={compareProduct}
           />

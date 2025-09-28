@@ -73,36 +73,59 @@ export function OffersCard() {
 }
 
 // Authorized Dealer Card Component
+// Calculate monthly payment for Klarna (36 months)
+const calculateKlarnaPayment = (price: ProductPrice | string | null): string => {
+  if (!price) return '$0';
+
+  let numericPrice: number;
+
+  if (typeof price === 'string') {
+    // Extract number from string like "$1,234.56"
+    numericPrice = parseFloat(price.replace(/[$,]/g, ''));
+  } else if (price?.currentValue) {
+    numericPrice = parseFloat(price.currentValue.replace(/[$,]/g, ''));
+  } else {
+    return '$0';
+  }
+
+  if (isNaN(numericPrice)) return '$0';
+
+  // Klarna monthly payments - divide by 36 months
+  const monthlyPayment = numericPrice / 36;
+
+  return `$${Math.round(monthlyPayment)}`;
+};
+
 export function AuthorizedDealerCard<F extends Field = Field>({
   product,
 }: {
   product: ProductWithSideCardData<F>;
 }) {
   return (
-    <div className="max-w-sm rounded-2xl bg-white/75 p-4 text-right md:p-5 lg:p-6">
+    <div className="max-w-sm rounded-2xl bg-white/75 p-6 text-right md:p-7 lg:p-8">
       {/* Price Section */}
       <div className="mb-6">
         <Stream fallback={<Skeleton.Box className="ml-auto h-12 w-32" />} value={product.price}>
           {(price) => {
             const displayPrice =
               typeof price === 'string' ? price : (price?.currentValue ?? '');
+            const klarnaPayment = calculateKlarnaPayment(price);
 
             return (
               <>
-                <div className="mb-2 text-6xl font-black text-zinc-800">
+                <div className="mb-0 pt-2 text-6xl font-black leading-none text-zinc-800">
                   <span className="font-kanit">{displayPrice}</span>
                   <span aria-hidden="true" className="text-[#F92F7B]">
                     .
                   </span>
                 </div>
-                <div className="font-kanit text-base font-medium leading-snug text-stone-400">
-                  <span>Payment options available </span>
-                  <span className="font-kanit font-black text-pink-600">
-                    with Affirm, Klarna
+                <div className="font-kanit text-sm font-medium leading-snug text-stone-400 mt-1">
+                  <span className="font-['Inter'] font-semibold text-black text-lg">
+                    {klarnaPayment}/mo. with Klarna
                   </span>
                   <br />
-                  <span className="cursor-pointer font-['Inter'] font-black text-pink-600 underline">
-                    Learn more
+                  <span className="cursor-pointer font-['Inter'] font-semibold text-black underline">
+                    Check your purchase power
                   </span>
                 </div>
               </>
