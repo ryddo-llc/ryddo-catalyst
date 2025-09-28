@@ -74,7 +74,7 @@ export function OffersCard() {
 
 // Authorized Dealer Card Component
 // Calculate monthly payment for Klarna (36 months)
-const calculateKlarnaPayment = (price: ProductPrice | string | null): string => {
+const calculateKlarnaPayment = (price: ProductPrice | string | null | undefined): string => {
   if (!price) return '$0';
 
   let numericPrice: number;
