@@ -141,68 +141,6 @@ const config = {
           },
         ],
       },
-      animation: {
-        'dropdown-show': 'dropdown-show 300ms cubic-bezier(0.16, 1, 0.3, 1)',
-        'dropdown-hide': 'dropdown-hide 200ms cubic-bezier(0.16, 1, 0.3, 1)',
-        'menu-slide-down': 'menu-slide-down 300ms cubic-bezier(0.16, 1, 0.3, 1)',
-        'menu-slide-up': 'menu-slide-up 200ms cubic-bezier(0.16, 1, 0.3, 1)',
-        'fade-in': 'fade-in 200ms ease-out',
-        'scale-in': 'scale-in 200ms cubic-bezier(0.16, 1, 0.3, 1)',
-      },
-      keyframes: {
-        'dropdown-show': {
-          '0%': {
-            opacity: '0',
-            transform: 'scale(0.96) translateY(-10px)',
-            filter: 'blur(4px)'
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'scale(1) translateY(0)',
-            filter: 'blur(0px)'
-          },
-        },
-        'dropdown-hide': {
-          '0%': {
-            opacity: '1',
-            transform: 'scale(1) translateY(0)',
-            filter: 'blur(0px)'
-          },
-          '100%': {
-            opacity: '0',
-            transform: 'scale(0.96) translateY(-10px)',
-            filter: 'blur(4px)'
-          },
-        },
-        'menu-slide-down': {
-          '0%': {
-            opacity: '0',
-            transform: 'translateY(-100%)',
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'translateY(0)',
-          },
-        },
-        'menu-slide-up': {
-          '0%': {
-            opacity: '1',
-            transform: 'translateY(0)',
-          },
-          '100%': {
-            opacity: '0',
-            transform: 'translateY(-100%)',
-          },
-        },
-        'fade-in': {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        'scale-in': {
-          '0%': { transform: 'scale(0.95)' },
-          '100%': { transform: 'scale(1)' },
-        },
-      },
       backdropBlur: {
         xs: '2px',
       },
@@ -284,8 +222,66 @@ const config = {
           '0%, 100%': { transform: 'rotate(-2.5deg)' },
           '50%': { transform: 'rotate(2.5deg)' },
         },
+        'dropdown-show': {
+          '0%': {
+            opacity: '0',
+            transform: 'scale(0.96) translateY(-10px)',
+            filter: 'blur(4px)'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'scale(1) translateY(0)',
+            filter: 'blur(0px)'
+          },
+        },
+        'dropdown-hide': {
+          '0%': {
+            opacity: '1',
+            transform: 'scale(1) translateY(0)',
+            filter: 'blur(0px)'
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'scale(0.96) translateY(-10px)',
+            filter: 'blur(4px)'
+          },
+        },
+        'menu-slide-down': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-100%)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+        'menu-slide-up': {
+          '0%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(-100%)',
+          },
+        },
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        'scale-in': {
+          '0%': { transform: 'scale(0.95)' },
+          '100%': { transform: 'scale(1)' },
+        },
       },
       animation: {
+        'dropdown-show': 'dropdown-show 300ms cubic-bezier(0.16, 1, 0.3, 1)',
+        'dropdown-hide': 'dropdown-hide 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+        'menu-slide-down': 'menu-slide-down 300ms cubic-bezier(0.16, 1, 0.3, 1)',
+        'menu-slide-up': 'menu-slide-up 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+        'fade-in': 'fade-in 200ms ease-out',
+        'scale-in': 'scale-in 200ms cubic-bezier(0.16, 1, 0.3, 1)',
         collapse: 'collapse 400ms cubic-bezier(1, 0, 0.25, 1)',
         expand: 'expand 400ms cubic-bezier(1, 0, 0.25, 1)',
         marching: 'marching-ants 10s linear infinite',

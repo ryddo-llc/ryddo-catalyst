@@ -296,8 +296,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                   className={clsx(
                                     "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-300 focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
                                     "text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]",
-                                    "bg-transparent hover:bg-primary/10 hover:backdrop-blur-sm hover:border hover:border-primary/20",
-                                    isActive && "text-primary bg-primary/15 backdrop-blur-sm border border-primary/25"
+                                    "border border-transparent bg-transparent hover:bg-primary/10 hover:backdrop-blur-sm hover:border-primary/20",
+                                    isActive && "text-primary bg-primary/15 backdrop-blur-sm border-primary/25"
                                   )}
                                   href={item.href}
                                   onClick={() => setIsMobileMenuOpen(false)}
