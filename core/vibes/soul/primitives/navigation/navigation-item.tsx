@@ -99,7 +99,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                     {group.links.slice(0, 4).map((link, linkIdx) => (
                                       <Link
                                         className={clsx(
-                                          "rounded-md border border-background/30 bg-background/60 backdrop-blur-xl backdrop-saturate-150 px-2 py-0.5 text-xs font-medium text-foreground/90 shadow-sm transition-all duration-500 hover:bg-background/80 hover:text-primary hover:scale-105 hover:shadow-lg hover:border-primary/30",
+                                          "rounded-md border border-white/20 bg-white/10 backdrop-blur-xl backdrop-saturate-150 px-2 py-0.5 text-xs font-medium text-white shadow-sm transition-all duration-500 hover:bg-primary/20 hover:text-white hover:scale-105 hover:shadow-lg hover:border-primary/40",
                                           "translate-y-2 scale-95 opacity-0 group-hover/category:translate-y-0 group-hover/category:scale-100 group-hover/category:opacity-100",
                                           "motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 motion-reduce:scale-100",
                                           `group-hover/category:delay-[${linkIdx * 50}ms]`
@@ -143,7 +143,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                     {group.links.slice(0, 4).map((link, linkIdx) => (
                                       <Link
                                         className={clsx(
-                                          "rounded-md border border-white/30 bg-white/85 backdrop-blur-md px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-all duration-500 hover:bg-white hover:text-[#F92F7B] hover:scale-105 hover:shadow-lg hover:border-[#F92F7B]/30",
+                                          "rounded-md border border-white/20 bg-white/10 backdrop-blur-xl backdrop-saturate-150 px-2 py-0.5 text-xs font-medium text-white shadow-sm transition-all duration-500 hover:bg-primary/20 hover:text-white hover:scale-105 hover:shadow-lg hover:border-primary/40",
                                           "translate-y-2 scale-95 opacity-0 group-hover/category:translate-y-0 group-hover/category:scale-100 group-hover/category:opacity-100",
                                           "motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 motion-reduce:scale-100",
                                           `group-hover/category:delay-[${linkIdx * 50}ms]`

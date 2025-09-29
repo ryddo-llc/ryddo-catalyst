@@ -286,8 +286,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                   className={clsx(
                                     "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-300 focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
                                     "text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]",
-                                    "bg-transparent hover:bg-contrast-100/30 hover:backdrop-blur-sm",
-                                    isActive && "text-primary bg-contrast-100/20 backdrop-blur-sm"
+                                    "bg-transparent hover:bg-primary/10 hover:backdrop-blur-sm hover:border hover:border-primary/20",
+                                    isActive && "text-primary bg-primary/15 backdrop-blur-sm border border-primary/25"
                                   )}
                                   href={item.href}
                                   onClick={() => setIsMobileMenuOpen(false)}
@@ -301,7 +301,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                     aria-controls={`section-panel-${i}`}
                                     aria-expanded={isExpanded}
                                     aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
-                                    className="ml-1.5 p-1.5 rounded-lg hover:bg-contrast-100/25 backdrop-blur-sm transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary"
+                                    className="ml-1.5 p-1.5 rounded-lg hover:bg-primary/5 hover:backdrop-blur-md transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary"
                                     onClick={() => toggleSection(i)}
                                     type="button"
                                   >
@@ -358,7 +358,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                             aria-controls={`subsection-panel-${i}-${groupIndex}`}
                                             aria-expanded={expandedSubSections.has(`${i}-${groupIndex}`)}
                                             aria-label={expandedSubSections.has(`${i}-${groupIndex}`) ? `Collapse ${group.label}` : `Expand ${group.label}`}
-                                            className="p-1 rounded hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
+                                            className="p-1 rounded hover:bg-primary/5 hover:backdrop-blur-md transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
                                             onClick={() => toggleSubSection(i, groupIndex)}
                                             type="button"
                                           >
@@ -398,7 +398,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                               return (
                                                 <Link
                                                   aria-current={isLinkActive ? 'page' : undefined}
-                                                  className="block rounded-lg bg-transparent px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-contrast-500 ring-primary transition-all duration-200 hover:bg-contrast-100/25 hover:backdrop-blur-sm hover:text-foreground focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                  className="block rounded-lg bg-transparent px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-contrast-500 ring-primary transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:backdrop-blur-sm hover:text-foreground focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                                   href={link.href}
                                                   key={link.href}
                                                   onClick={() => setIsMobileMenuOpen(false)}
@@ -419,7 +419,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                             return (
                                               <Link
                                                 aria-current={isLinkActive ? 'page' : undefined}
-                                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:backdrop-blur-sm hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                                 href={link.href}
                                                 key={link.href}
                                                 onClick={() => setIsMobileMenuOpen(false)}
