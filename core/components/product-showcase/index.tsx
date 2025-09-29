@@ -163,7 +163,7 @@ export function ProductShowcase({
                   className="carousel-content ml-0 w-full"
                   style={{ marginInlineStart: 0, marginLeft: 0 }}
                 >
-                  {showcaseImages.map((image) => (
+                  {showcaseImages.map((image, index) => (
                     <CarouselItem
                       className="carousel-item relative flex w-full basis-full items-center justify-center p-0 pl-0"
                       key={image.src}
@@ -191,9 +191,7 @@ export function ProductShowcase({
                           </video>
                         ) : (
                           <Image
-                            alt={
-                              [productName, image.alt].filter(Boolean).join(' ') || 'Product image'
-                            }
+                            alt={`${productName} showcase image ${index + 1} of ${showcaseImages.length}${image.alt ? ` - ${image.alt}` : ''}`}
                             className="h-full w-full object-cover"
                             fill
                             loading="lazy"
@@ -242,6 +240,7 @@ export function ProductShowcase({
                       aria-hidden="true"
                       className="h-full w-full object-contain"
                       height={200}
+                      loading="lazy"
                       src="/images/backgrounds/arrow_3_left.png"
                       width={200}
                     />
@@ -263,6 +262,7 @@ export function ProductShowcase({
                       aria-hidden="true"
                       className="h-full w-full object-contain"
                       height={200}
+                      loading="lazy"
                       src="/images/backgrounds/arrow_3_right.png"
                       width={200}
                     />
