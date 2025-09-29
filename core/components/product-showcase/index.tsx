@@ -205,8 +205,7 @@ export function ProductShowcase({
                           alt={[productName, image.alt].filter(Boolean).join(' ') || 'Product image'}
                           className="object-cover w-full h-full"
                           fill
-                          priority={index === 0}
-                          loading={Math.abs(index - currentSlide) <= 1 ? "eager" : "lazy"}
+                          loading="lazy"
                           sizes="100vw"
                           src={image.src}
                         />
