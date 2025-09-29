@@ -4,7 +4,7 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import { Search, ShoppingBag, User } from 'lucide-react';
-import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
+import { forwardRef, Ref, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Logo } from '@/vibes/soul/primitives/logo';
@@ -133,6 +133,18 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   const pathname = usePathname();
 
+  // Memoize path normalization to prevent repeated calculations
+  const normalizedPathname = useMemo(() =>
+    pathname.endsWith('/') ? pathname : `${pathname}/`, [pathname]
+  );
+
+  // Memoize active state calculation to prevent repeated string operations
+  const getIsActive = useMemo(() => (href: string) => {
+    const normalizedHref = href.endsWith('/') ? href : `${href}/`;
+    return normalizedPathname === normalizedHref ||
+      (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+  }, [normalizedPathname]);
+
   const handlePathChange = useCallback(() => {
     // Only close search, keep mobile menu open for better UX
     setIsSearchOpen(false);
@@ -143,21 +155,21 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     setIsMobileMenuOpen(false);
   }, [setIsSearchOpen]);
 
-  // Add keyboard shortcut for search (Cmd/Ctrl + K)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsSearchOpen((prev) => !prev);
-      } else if (e.key === 'Escape' && isSearchOpen) {
-        setIsSearchOpen(false);
-      }
-    };
+  // Add keyboard shortcut for search (Cmd/Ctrl + K) - memoized for efficiency
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      setIsSearchOpen((prev) => !prev);
+    } else if (e.key === 'Escape' && isSearchOpen) {
+      setIsSearchOpen(false);
+    }
+  }, [isSearchOpen, setIsSearchOpen]);
 
+  useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSearchOpen, setIsSearchOpen]);
+  }, [handleKeyDown]);
 
   const handleMobileMenuToggle = useCallback(() => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -206,7 +218,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   }, [pathname, handlePathChange]);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    // Use passive listener for better scroll performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
@@ -265,12 +278,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 >
                   {(links) =>
                     links.map((item, i) => {
-                      // Active state logic - handle trailing slash differences
-                      const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
-                      const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
-                      const isActive =
-                        normalizedPathname === normalizedHref ||
-                        (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                      // Use memoized active state calculation
+                      const isActive = getIsActive(item.href);
                       const hasSubcategories = item.groups && item.groups.length > 0;
                       const hasLabel = item.label.trim() !== '';
                       const isExpanded = hasLabel ? expandedSections.has(i) : true;
@@ -391,9 +400,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                         >
                                           <div className="ml-2 space-y-0.5">
                                             {group.links.map((link) => {
-                                              const normalizedLinkHref = link.href.endsWith('/') ? link.href : `${link.href}/`;
-                                              const isLinkActive = normalizedPathname === normalizedLinkHref || 
-                                                (link.href !== '/' && normalizedPathname.startsWith(normalizedLinkHref));
+                                              const isLinkActive = getIsActive(link.href);
                                               
                                               return (
                                                 <Link
@@ -412,9 +419,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                       ) : (
                                         <div className="ml-2 space-y-0.5">
                                           {group.links.map((link) => {
-                                            const normalizedLinkHref = link.href.endsWith('/') ? link.href : `${link.href}/`;
-                                            const isLinkActive = normalizedPathname === normalizedLinkHref || 
-                                              (link.href !== '/' && normalizedPathname.startsWith(normalizedLinkHref));
+                                            const isLinkActive = getIsActive(link.href);
                                             
                                             return (
                                               <Link
@@ -537,10 +542,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           >
             {(links) => {
               return links.map((item, i) => {
-                // Handle trailing slash differences
-                const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
-                const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
-                const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                // Use memoized active state calculation
+                const isActive = getIsActive(item.href);
                 
                 return (
                   <NavigationItem
