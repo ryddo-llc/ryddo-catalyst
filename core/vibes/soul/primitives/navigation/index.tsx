@@ -141,6 +141,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   // Memoize active state calculation to prevent repeated string operations
   const getIsActive = useMemo(() => (href: string) => {
     const normalizedHref = href.endsWith('/') ? href : `${href}/`;
+
     return normalizedPathname === normalizedHref ||
       (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
   }, [normalizedPathname]);
