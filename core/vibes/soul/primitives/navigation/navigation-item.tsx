@@ -56,8 +56,8 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
         </Link>
       </NavigationMenu.Trigger>
       {item.groups != null && item.groups.length > 0 && (
-        <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] px-3 shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))] md:px-4">
-          <div className="m-auto grid w-full max-w-5xl grid-cols-2 justify-center gap-3 pb-3 pt-3 md:max-w-4xl md:grid-cols-3 lg:grid-cols-4">
+        <NavigationMenu.Content className="rounded-2xl bg-background/50 backdrop-blur-2xl backdrop-saturate-200 px-3 shadow-2xl ring-1 ring-contrast-100/15 border border-contrast-100/20 md:px-4 data-[state=open]:animate-dropdown-show data-[state=closed]:animate-dropdown-hide relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none">
+          <div className="relative m-auto grid w-full max-w-5xl grid-cols-2 justify-center gap-3 pb-3 pt-3 md:max-w-4xl md:grid-cols-3 lg:grid-cols-4">
             {item.groups.map((group, columnIndex) => (
               <ul className="flex flex-col" key={columnIndex}>
                 {/* Second Level Links */}
@@ -66,7 +66,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                     {group.href != null && group.href !== '' ? (
                       <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
                         <div
-                          className="flex flex-col items-center gap-0.5 cursor-pointer"
+                          className="flex flex-col items-center gap-0.5 cursor-pointer transition-transform duration-200 hover:scale-[1.02]"
                           onClick={() => group.href && router.push(group.href)}
                           onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -84,7 +84,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                               <Image
                                 alt={group.image.altText}
                                 blurDataURL={getBase64BlurDataURL()}
-                                className="rounded border-2 border-transparent object-cover transition-all group-hover/category:border-[#F92F7B]"
+                                className="rounded-lg border-2 border-transparent object-cover transition-all duration-300 group-hover/category:border-[#F92F7B] group-hover/category:shadow-lg"
                                 height={300}
                                 loading="lazy"
                                 placeholder="blur"
@@ -99,7 +99,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                     {group.links.slice(0, 4).map((link, linkIdx) => (
                                       <Link
                                         className={clsx(
-                                          "rounded-md border border-gray-200 bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-all duration-500 hover:bg-white hover:text-[#F92F7B] hover:scale-105 hover:shadow-md",
+                                          "rounded-md border border-background/30 bg-background/60 backdrop-blur-xl backdrop-saturate-150 px-2 py-0.5 text-xs font-medium text-foreground/90 shadow-sm transition-all duration-500 hover:bg-background/80 hover:text-primary hover:scale-105 hover:shadow-lg hover:border-primary/30",
                                           "translate-y-2 scale-95 opacity-0 group-hover/category:translate-y-0 group-hover/category:scale-100 group-hover/category:opacity-100",
                                           "motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 motion-reduce:scale-100",
                                           `group-hover/category:delay-[${linkIdx * 50}ms]`
@@ -122,13 +122,13 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                       </div>
                     ) : (
                       <div className="relative block overflow-hidden p-0.5 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
-                        <div className="flex flex-col items-center gap-0.5">
+                        <div className="flex flex-col items-center gap-0.5 transition-transform duration-200 hover:scale-[1.02]">
                           {group.image && (
                             <div className="relative">
                               <Image
                                 alt={group.image.altText}
                                 blurDataURL={getBase64BlurDataURL()}
-                                className="rounded border-2 border-transparent object-cover transition-all group-hover/category:border-[#F92F7B]"
+                                className="rounded-lg border-2 border-transparent object-cover transition-all duration-300 group-hover/category:border-[#F92F7B] group-hover/category:shadow-lg"
                                 height={300}
                                 loading="lazy"
                                 placeholder="blur"
@@ -143,7 +143,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
                                     {group.links.slice(0, 4).map((link, linkIdx) => (
                                       <Link
                                         className={clsx(
-                                          "rounded-md border border-gray-200 bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-all duration-500 hover:bg-white hover:text-[#F92F7B] hover:scale-105 hover:shadow-md",
+                                          "rounded-md border border-white/30 bg-white/85 backdrop-blur-md px-2 py-0.5 text-xs font-medium text-gray-800 shadow-sm transition-all duration-500 hover:bg-white hover:text-[#F92F7B] hover:scale-105 hover:shadow-lg hover:border-[#F92F7B]/30",
                                           "translate-y-2 scale-95 opacity-0 group-hover/category:translate-y-0 group-hover/category:scale-100 group-hover/category:opacity-100",
                                           "motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 motion-reduce:scale-100",
                                           `group-hover/category:delay-[${linkIdx * 50}ms]`

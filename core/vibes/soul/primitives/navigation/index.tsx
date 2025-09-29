@@ -238,12 +238,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             />
           </Popover.Trigger>
           <Popover.Portal>
-            <Popover.Content 
+            <Popover.Content
               align="start"
-              className="w-72 max-w-[75vw] max-h-[70vh] z-[200] overflow-y-auto overscroll-contain @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+              className="w-72 max-w-[75vw] max-h-[70vh] z-[200] overflow-y-auto overscroll-contain @container bg-background/50 backdrop-blur-2xl backdrop-saturate-200 shadow-2xl ring-1 ring-contrast-100/15 border border-contrast-100/20 rounded-2xl data-[state=open]:animate-menu-slide-down data-[state=closed]:animate-menu-slide-up relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none"
               sideOffset={4}
             >
-              <div className="divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] bg-[var(--nav-mobile-background,hsl(var(--background)))]">
+              <div className="relative divide-y divide-contrast-100/15">
                 <Stream
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
@@ -284,10 +284,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                 <Link
                                   aria-current={isActive ? 'page' : undefined}
                                   className={clsx(
-                                    "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
+                                    "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-300 focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
                                     "text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]",
-                                    "bg-[var(--nav-mobile-link-background,transparent)] hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))]",
-                                    isActive && "text-[var(--nav-mobile-link-text-active,hsl(var(--foreground)))]"
+                                    "bg-transparent hover:bg-contrast-100/30 hover:backdrop-blur-sm",
+                                    isActive && "text-primary bg-contrast-100/20 backdrop-blur-sm"
                                   )}
                                   href={item.href}
                                   onClick={() => setIsMobileMenuOpen(false)}
@@ -301,13 +301,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                     aria-controls={`section-panel-${i}`}
                                     aria-expanded={isExpanded}
                                     aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
-                                    className="ml-1.5 p-1.5 rounded-lg hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
+                                    className="ml-1.5 p-1.5 rounded-lg hover:bg-contrast-100/25 backdrop-blur-sm transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary"
                                     onClick={() => toggleSection(i)}
                                     type="button"
                                   >
                                     <svg
                                       className={clsx(
-                                        "w-4 h-4 transition-transform duration-200",
+                                        "w-4 h-4 transition-transform duration-300 ease-out",
                                         isExpanded ? "rotate-180" : "rotate-0"
                                       )}
                                       fill="none"
@@ -327,7 +327,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                             <div 
                               aria-hidden={!isExpanded}
                               className={clsx(
-                                "overflow-hidden transition-all duration-200 ease-in-out",
+                                "overflow-hidden transition-all duration-300 ease-out",
                                 isExpanded ? "max-h-[65vh] opacity-100" : "max-h-0 opacity-0"
                               )}
                               id={`section-panel-${i}`}
@@ -340,7 +340,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                       <div className="flex items-center justify-between px-2 py-1.5">
                                         {group.href ? (
                                           <Link
-                                            className="flex-1 text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-colors"
+                                            className="flex-1 text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-all duration-200"
                                             href={group.href}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                           >
@@ -398,7 +398,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                               return (
                                                 <Link
                                                   aria-current={isLinkActive ? 'page' : undefined}
-                                                  className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                  className="block rounded-lg bg-transparent px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-contrast-500 ring-primary transition-all duration-200 hover:bg-contrast-100/25 hover:backdrop-blur-sm hover:text-foreground focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                                   href={link.href}
                                                   key={link.href}
                                                   onClick={() => setIsMobileMenuOpen(false)}
@@ -578,8 +578,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 </button>
               </Popover.Trigger>
               <Popover.Portal>
-                <Popover.Content className="z-[200] max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
+                <Popover.Content className="z-[200] max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-dropdown-show data-[state=closed]:animate-dropdown-hide">
+                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-background/50 backdrop-blur-2xl backdrop-saturate-200 shadow-2xl ring-1 ring-contrast-100/15 border border-contrast-100/20 transition-all duration-200 ease-in-out @4xl:inset-x-0 relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none">
                     <SearchForm
                       searchAction={searchAction}
                       searchHref={searchHref}
@@ -662,7 +662,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       </div>
 
       <div className="perspective-[2000px] absolute left-0 right-0 top-full z-[110] flex w-full justify-center">
-        <NavigationMenu.Viewport className="relative mt-2 w-full max-w-4xl mx-auto data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95" />
+        <NavigationMenu.Viewport className="relative mt-2 w-full max-w-4xl mx-auto data-[state=open]:animate-dropdown-show data-[state=closed]:animate-dropdown-hide" />
       </div>
     </NavigationMenu.Root>
   );
