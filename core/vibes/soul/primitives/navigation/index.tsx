@@ -4,7 +4,7 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import { Search, ShoppingBag, User } from 'lucide-react';
-import { forwardRef, Ref, useCallback, useEffect, useState } from 'react';
+import { forwardRef, Ref, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Logo } from '@/vibes/soul/primitives/logo';
@@ -133,6 +133,19 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   const pathname = usePathname();
 
+  // Memoize path normalization to prevent repeated calculations
+  const normalizedPathname = useMemo(() =>
+    pathname.endsWith('/') ? pathname : `${pathname}/`, [pathname]
+  );
+
+  // Memoize active state calculation to prevent repeated string operations
+  const getIsActive = useMemo(() => (href: string) => {
+    const normalizedHref = href.endsWith('/') ? href : `${href}/`;
+
+    return normalizedPathname === normalizedHref ||
+      (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+  }, [normalizedPathname]);
+
   const handlePathChange = useCallback(() => {
     // Only close search, keep mobile menu open for better UX
     setIsSearchOpen(false);
@@ -143,21 +156,21 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     setIsMobileMenuOpen(false);
   }, [setIsSearchOpen]);
 
-  // Add keyboard shortcut for search (Cmd/Ctrl + K)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsSearchOpen((prev) => !prev);
-      } else if (e.key === 'Escape' && isSearchOpen) {
-        setIsSearchOpen(false);
-      }
-    };
+  // Add keyboard shortcut for search (Cmd/Ctrl + K) - memoized for efficiency
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      setIsSearchOpen((prev) => !prev);
+    } else if (e.key === 'Escape' && isSearchOpen) {
+      setIsSearchOpen(false);
+    }
+  }, [isSearchOpen, setIsSearchOpen]);
 
+  useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSearchOpen, setIsSearchOpen]);
+  }, [handleKeyDown]);
 
   const handleMobileMenuToggle = useCallback(() => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -206,7 +219,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   }, [pathname, handlePathChange]);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    // Use passive listener for better scroll performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
@@ -238,12 +252,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             />
           </Popover.Trigger>
           <Popover.Portal>
-            <Popover.Content 
+            <Popover.Content
               align="start"
-              className="w-72 max-w-[75vw] max-h-[70vh] z-[200] overflow-y-auto overscroll-contain @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+              className="w-72 max-w-[75vw] max-h-[70vh] z-[200] overflow-y-auto overscroll-contain @container bg-background/50 backdrop-blur-2xl backdrop-saturate-200 shadow-2xl ring-1 ring-contrast-100/15 border border-contrast-100/20 rounded-2xl data-[state=open]:animate-menu-slide-down data-[state=closed]:animate-menu-slide-up relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none"
               sideOffset={4}
             >
-              <div className="divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] bg-[var(--nav-mobile-background,hsl(var(--background)))]">
+              <div className="relative divide-y divide-contrast-100/15">
                 <Stream
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
@@ -265,12 +279,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 >
                   {(links) =>
                     links.map((item, i) => {
-                      // Active state logic - handle trailing slash differences
-                      const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
-                      const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
-                      const isActive =
-                        normalizedPathname === normalizedHref ||
-                        (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                      // Use memoized active state calculation
+                      const isActive = getIsActive(item.href);
                       const hasSubcategories = item.groups && item.groups.length > 0;
                       const hasLabel = item.label.trim() !== '';
                       const isExpanded = hasLabel ? expandedSections.has(i) : true;
@@ -284,10 +294,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                 <Link
                                   aria-current={isActive ? 'page' : undefined}
                                   className={clsx(
-                                    "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
+                                    "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-300 focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
                                     "text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]",
-                                    "bg-[var(--nav-mobile-link-background,transparent)] hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))]",
-                                    isActive && "text-[var(--nav-mobile-link-text-active,hsl(var(--foreground)))]"
+                                    "border border-transparent bg-transparent hover:bg-primary/10 hover:backdrop-blur-sm hover:border-primary/20",
+                                    isActive && "text-primary bg-primary/15 backdrop-blur-sm border-primary/25"
                                   )}
                                   href={item.href}
                                   onClick={() => setIsMobileMenuOpen(false)}
@@ -301,13 +311,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                     aria-controls={`section-panel-${i}`}
                                     aria-expanded={isExpanded}
                                     aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
-                                    className="ml-1.5 p-1.5 rounded-lg hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
+                                    className="ml-1.5 p-1.5 rounded-lg hover:bg-primary/5 hover:backdrop-blur-md transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary"
                                     onClick={() => toggleSection(i)}
                                     type="button"
                                   >
                                     <svg
                                       className={clsx(
-                                        "w-4 h-4 transition-transform duration-200",
+                                        "w-4 h-4 transition-transform duration-300 ease-out",
                                         isExpanded ? "rotate-180" : "rotate-0"
                                       )}
                                       fill="none"
@@ -327,7 +337,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                             <div 
                               aria-hidden={!isExpanded}
                               className={clsx(
-                                "overflow-hidden transition-all duration-200 ease-in-out",
+                                "overflow-hidden transition-all duration-300 ease-out",
                                 isExpanded ? "max-h-[65vh] opacity-100" : "max-h-0 opacity-0"
                               )}
                               id={`section-panel-${i}`}
@@ -340,7 +350,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                       <div className="flex items-center justify-between px-2 py-1.5">
                                         {group.href ? (
                                           <Link
-                                            className="flex-1 text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-colors"
+                                            className="flex-1 text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-all duration-200"
                                             href={group.href}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                           >
@@ -358,7 +368,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                             aria-controls={`subsection-panel-${i}-${groupIndex}`}
                                             aria-expanded={expandedSubSections.has(`${i}-${groupIndex}`)}
                                             aria-label={expandedSubSections.has(`${i}-${groupIndex}`) ? `Collapse ${group.label}` : `Expand ${group.label}`}
-                                            className="p-1 rounded hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
+                                            className="p-1 rounded hover:bg-primary/5 hover:backdrop-blur-md transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
                                             onClick={() => toggleSubSection(i, groupIndex)}
                                             type="button"
                                           >
@@ -391,14 +401,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                         >
                                           <div className="ml-2 space-y-0.5">
                                             {group.links.map((link) => {
-                                              const normalizedLinkHref = link.href.endsWith('/') ? link.href : `${link.href}/`;
-                                              const isLinkActive = normalizedPathname === normalizedLinkHref || 
-                                                (link.href !== '/' && normalizedPathname.startsWith(normalizedLinkHref));
+                                              const isLinkActive = getIsActive(link.href);
                                               
                                               return (
                                                 <Link
                                                   aria-current={isLinkActive ? 'page' : undefined}
-                                                  className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                  className="block rounded-lg bg-transparent px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-contrast-500 ring-primary transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:backdrop-blur-sm hover:text-foreground focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                                   href={link.href}
                                                   key={link.href}
                                                   onClick={() => setIsMobileMenuOpen(false)}
@@ -412,14 +420,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                       ) : (
                                         <div className="ml-2 space-y-0.5">
                                           {group.links.map((link) => {
-                                            const normalizedLinkHref = link.href.endsWith('/') ? link.href : `${link.href}/`;
-                                            const isLinkActive = normalizedPathname === normalizedLinkHref || 
-                                              (link.href !== '/' && normalizedPathname.startsWith(normalizedLinkHref));
+                                            const isLinkActive = getIsActive(link.href);
                                             
                                             return (
                                               <Link
                                                 aria-current={isLinkActive ? 'page' : undefined}
-                                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:backdrop-blur-sm hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                                 href={link.href}
                                                 key={link.href}
                                                 onClick={() => setIsMobileMenuOpen(false)}
@@ -537,10 +543,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           >
             {(links) => {
               return links.map((item, i) => {
-                // Handle trailing slash differences
-                const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
-                const normalizedHref = item.href.endsWith('/') ? item.href : `${item.href}/`;
-                const isActive = normalizedPathname === normalizedHref || (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
+                // Use memoized active state calculation
+                const isActive = getIsActive(item.href);
                 
                 return (
                   <NavigationItem
@@ -578,8 +582,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 </button>
               </Popover.Trigger>
               <Popover.Portal>
-                <Popover.Content className="z-[200] max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
+                <Popover.Content className="z-[200] max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-dropdown-show data-[state=closed]:animate-dropdown-hide">
+                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-background/50 backdrop-blur-2xl backdrop-saturate-200 shadow-2xl ring-1 ring-contrast-100/15 border border-contrast-100/20 transition-all duration-200 ease-in-out @4xl:inset-x-0 relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none">
                     <SearchForm
                       searchAction={searchAction}
                       searchHref={searchHref}
@@ -662,7 +666,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       </div>
 
       <div className="perspective-[2000px] absolute left-0 right-0 top-full z-[110] flex w-full justify-center">
-        <NavigationMenu.Viewport className="relative mt-2 w-full max-w-4xl mx-auto data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95" />
+        <NavigationMenu.Viewport className="relative mt-2 w-full max-w-4xl mx-auto data-[state=open]:animate-dropdown-show data-[state=closed]:animate-dropdown-hide" />
       </div>
     </NavigationMenu.Root>
   );

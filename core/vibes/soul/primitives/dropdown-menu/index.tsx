@@ -62,7 +62,7 @@ export const DropdownMenu = ({
         <DropdownMenuPrimitive.Content
           align={align}
           className={clsx(
-            'z-50 max-h-80 max-w-lg overflow-y-auto rounded-2xl bg-[var(--dropdown-menu-background,hsl(var(--background)))] p-2 shadow-xl ring ring-contrast-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2',
+            'z-50 max-h-80 max-w-lg overflow-y-auto rounded-2xl bg-background/50 backdrop-blur-2xl backdrop-saturate-200 p-2 shadow-2xl ring-1 ring-contrast-100/15 border border-contrast-100/20 data-[state=open]:animate-dropdown-show data-[state=closed]:animate-dropdown-hide @4xl:w-32 @4xl:rounded-2xl @4xl:p-2 relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none',
             className,
           )}
           sideOffset={slideOffset}
@@ -71,7 +71,7 @@ export const DropdownMenu = ({
             if (item === 'separator') {
               return (
                 <DropdownMenuPrimitive.Separator
-                  className="my-1.5 h-[1px] bg-contrast-100"
+                  className="my-1.5 h-[1px] bg-gradient-to-r from-transparent via-contrast-200 to-transparent opacity-30"
                   key={`dropdown-separator-${index}`}
                 />
               );
@@ -103,12 +103,12 @@ export const DropdownMenu = ({
               <DropdownMenuPrimitive.Item
                 asChild={asChild ?? labelIsComponent}
                 className={clsx(
-                  'data-disabled:bg-contrast-100/50 data-disabled:text-contrast-300/95 data-disabled:cursor-not-allowed cursor-default rounded-lg bg-[var(--dropdown-menu-item-background,transparent)] px-3 py-2 font-[family-name:var(--dropdown-menu-item-font-family,var(--font-family-body))] text-sm font-medium outline-none transition-colors',
+                  'relative data-disabled:bg-contrast-100/15 data-disabled:text-contrast-300/95 data-disabled:cursor-not-allowed cursor-default rounded-lg bg-transparent px-3 py-2 font-[family-name:var(--dropdown-menu-item-font-family,var(--font-family-body))] text-sm font-medium outline-none transition-all duration-200',
                   {
                     default:
-                      'text-[var(--dropdown-menu-item-text,hsl(var(--contrast-500)))] ring-[var(--dropdown-menu-item-focus,hsl(var(--primary)))] [&:not([data-disabled])]:hover:bg-[var(--dropdown-menu-item-background-hover,hsl(var(--contrast-100)))] [&:not([data-disabled])]:hover:text-[var(--dropdown-menu-item-text-hover,hsl(var(--foreground)))] [&:not([data-disabled])]:data-[highlighted]:bg-[var(--dropdown-menu-item-background-hover,hsl(var(--contrast-100)))] [&:not([data-disabled])]:data-[highlighted]:text-[var(--dropdown-menu-item-text-hover,hsl(var(--foreground)))]',
+                      'text-contrast-500 ring-primary [&:not([data-disabled])]:hover:bg-contrast-100/25 [&:not([data-disabled])]:hover:backdrop-blur-sm [&:not([data-disabled])]:hover:text-foreground [&:not([data-disabled])]:hover:scale-[1.02] [&:not([data-disabled])]:data-[highlighted]:bg-contrast-100/25 [&:not([data-disabled])]:data-[highlighted]:backdrop-blur-sm [&:not([data-disabled])]:data-[highlighted]:text-foreground',
                     danger:
-                      'text-[var(--dropdown-menu-item-danger-text,hsl(var(--error)))] ring-[var(--dropdown-menu-item-focus,hsl(var(--primary)))] [&:not([data-disabled])]:hover:bg-[var(--dropdown-menu-item-danger-background-hover,color-mix(in_oklab,_hsl(var(--error)),_white_75%))] [&:not([data-disabled])]:hover:text-[var(--dropdown-menu-item-danger-text-hover,color-mix(in_oklab,_hsl(var(--error)),_black_75%))] [&:not([data-disabled])]:data-[highlighted]:bg-[var(--dropdown-menu-item-danger-background-hover,color-mix(in_oklab,_hsl(var(--error)),_white_75%))] [&:not([data-disabled])]:data-[highlighted]:text-[var(--dropdown-menu-item-danger-text-hover,color-mix(in_oklab,_hsl(var(--error)),_black_75%))]',
+                      'text-error ring-primary [&:not([data-disabled])]:hover:bg-error/10 [&:not([data-disabled])]:hover:backdrop-blur-sm [&:not([data-disabled])]:hover:text-error [&:not([data-disabled])]:hover:scale-[1.02] [&:not([data-disabled])]:data-[highlighted]:bg-error/10 [&:not([data-disabled])]:data-[highlighted]:backdrop-blur-sm [&:not([data-disabled])]:data-[highlighted]:text-error',
                   }[variant],
                   itemClassName,
                 )}
