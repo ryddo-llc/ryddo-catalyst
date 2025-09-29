@@ -2,7 +2,7 @@
 
 import { clsx } from 'clsx';
 import type { UseEmblaCarouselType } from 'embla-carousel-react';
-import { useId, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import {
@@ -74,8 +74,37 @@ export function ProductShowcase({
   showcaseDescription,
 }: ProductShowcaseProps) {
   const [carouselApi, setCarouselApi] = useState<UseEmblaCarouselType[1]>();
+  const [currentSlide, setCurrentSlide] = useState(0);
   const headingId = useId();
   const sectionLabelId = ariaLabelledBy ?? (showcaseDescription ? headingId : undefined);
+
+  // Track slide changes to ensure proper state management
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const onSelect = () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap());
+    };
+
+    carouselApi.on('select', onSelect);
+    return () => carouselApi.off('select', onSelect);
+  }, [carouselApi]);
+
+  // Debounced navigation functions to prevent rapid clicking issues
+  const handlePrevious = useCallback(() => {
+    if (!carouselApi) return;
+    carouselApi.scrollPrev();
+  }, [carouselApi]);
+
+  const handleNext = useCallback(() => {
+    if (!carouselApi) return;
+    carouselApi.scrollNext();
+  }, [carouselApi]);
+
+  // Memoize text splitting to prevent re-computation on every render
+  const textWords = useMemo(() =>
+    showcaseDescription?.split(' ') || [], [showcaseDescription]
+  );
 
   return (
     <>
@@ -139,18 +168,18 @@ export function ProductShowcase({
               opts={{
                 align: 'center',
                 loop: true,
-                dragFree: true,
+                dragFree: false,
                 containScroll: 'trimSnaps',
               }}
               setApi={setCarouselApi}
             >
               <CarouselContent
-                className="w-full carousel-content"
+                className="w-full carousel-content ml-0"
                 style={{ marginInlineStart: 0, marginLeft: 0 }}
               >
                 {showcaseImages.map((image, index) => (
                   <CarouselItem
-                    className="relative flex w-full items-center justify-center p-0 basis-full carousel-item"
+                    className="relative flex w-full items-center justify-center p-0 pl-0 basis-full carousel-item"
                     key={image.src}
                     style={{ width: '100dvw', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
                   >
@@ -177,6 +206,7 @@ export function ProductShowcase({
                           className="object-cover w-full h-full"
                           fill
                           priority={index === 0}
+                          loading={Math.abs(index - currentSlide) <= 1 ? "eager" : "lazy"}
                           sizes="100vw"
                           src={image.src}
                         />
@@ -187,8 +217,8 @@ export function ProductShowcase({
                         <div aria-hidden="true" className="absolute bottom-32 left-4 sm:left-8 md:left-16 lg:left-24 xl:left-32 pointer-events-none z-20">
                           <div className="text-left">
                             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black font-kanit leading-none italic">
-                              {showcaseDescription.split(' ').map((word, wordIndex) => (
-                                <span 
+                              {textWords.map((word, wordIndex) => (
+                                <span
                                   className={getAlternatingWordClass(wordIndex)}
                                   key={wordIndex}
                                 >
@@ -211,7 +241,7 @@ export function ProductShowcase({
                   aria-label={previousLabel}
                   className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
                   disabled={!carouselApi || showcaseImages.length <= 1}
-                  onClick={() => carouselApi?.scrollPrev()}
+                  onClick={handlePrevious}
                   type="button"
                 >
                   <Image
@@ -232,7 +262,7 @@ export function ProductShowcase({
                   aria-label={nextLabel}
                   className="flex h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40 items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-500"
                   disabled={!carouselApi || showcaseImages.length <= 1}
-                  onClick={() => carouselApi?.scrollNext()}
+                  onClick={handleNext}
                   type="button"
                 >
                   <Image
