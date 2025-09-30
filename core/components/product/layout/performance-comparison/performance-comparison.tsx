@@ -184,15 +184,16 @@ export function PerformanceComparison({
               />
             </div>
 
-            {/* Static rings for mobile - positioned relative to image */}
-            <div
-              className="absolute pointer-events-none xl:hidden"
-              style={{
-                left: `${((mergedWheelConfig.centerX + (mergedWheelConfig.mobileOffsetX || 0)) / mergedImageConfig.width) * 100}%`,
-                top: `${((mergedWheelConfig.centerY + (mergedWheelConfig.mobileOffsetY || 0)) / mergedImageConfig.height) * 100}%`,
-                transform: 'translate(-50%, -50%) scale(0.3)',
-              }}
-            >
+            {/* Static rings for mobile - positioned relative to image (only if not disabled) */}
+            {!performanceConfig.disabledOnMobile && (
+              <div
+                className="absolute pointer-events-none xl:hidden"
+                style={{
+                  left: `${((mergedWheelConfig.centerX + (mergedWheelConfig.mobileOffsetX || 0)) / mergedImageConfig.width) * 100}%`,
+                  top: `${((mergedWheelConfig.centerY + (mergedWheelConfig.mobileOffsetY || 0)) / mergedImageConfig.height) * 100}%`,
+                  transform: 'translate(-50%, -50%) scale(0.3)',
+                }}
+              >
               <div
                 style={{
                   position: 'relative',
@@ -245,6 +246,7 @@ export function PerformanceComparison({
                 ))}
               </div>
             </div>
+            )}
           </div>
         </div>
 
