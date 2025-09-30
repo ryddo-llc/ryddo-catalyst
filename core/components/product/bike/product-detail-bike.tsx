@@ -189,7 +189,7 @@ export function ProductDetailBike<F extends Field>({
                           }}
                         >
                           {/* Bike Image Display */}
-                          <div className="relative flex h-[14.5rem] w-[24rem] translate-y-3 items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] sm:w-[30rem] md:h-[20.5rem] md:w-[38rem] lg:h-[23.5rem] lg:w-[46rem] xl:h-[25.5rem] xl:w-[54rem]">
+                          <div className="relative flex h-[14.14rem] w-[23.4rem] translate-y-7 items-center justify-center transition-all duration-300 ease-in-out sm:h-[17.55rem] sm:w-[29.25rem] md:h-[19.99rem] md:w-[37.05rem] lg:h-[22.91rem] lg:w-[44.85rem] xl:h-[24.86rem] xl:w-[52.65rem]">
                             <Stream
                               fallback={
                                 <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
@@ -222,7 +222,7 @@ export function ProductDetailBike<F extends Field>({
                                     {heroImage ? (
                                       <Image
                                         alt={heroImage.alt}
-                                        className="sm:scale-115 h-full w-full -translate-y-2 scale-110 object-contain duration-300 ease-out animate-in fade-in zoom-in-95 sm:-translate-y-3 md:-translate-y-4 md:scale-125 lg:-translate-y-6 lg:scale-125 xl:-translate-y-8 xl:scale-125"
+                                        className="h-full w-full -translate-y-2 scale-[1.0725] object-contain duration-300 ease-out animate-in fade-in zoom-in-95 sm:-translate-y-3 sm:scale-[1.1213] md:-translate-y-4 md:scale-[1.2188] lg:-translate-y-6 lg:scale-[1.2188] xl:-translate-y-8 xl:scale-[1.2188]"
                                         height={1500}
                                         key={heroImage.src}
                                         priority
