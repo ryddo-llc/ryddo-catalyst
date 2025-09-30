@@ -189,7 +189,7 @@ export function ProductDetailBike<F extends Field>({
                           }}
                         >
                           {/* Bike Image Display */}
-                          <div className="relative flex h-[14.14rem] w-[23.4rem] translate-y-7 items-center justify-center transition-all duration-300 ease-in-out sm:h-[17.55rem] sm:w-[29.25rem] md:h-[19.99rem] md:w-[37.05rem] lg:h-[22.91rem] lg:w-[44.85rem] xl:h-[24.86rem] xl:w-[52.65rem]">
+                          <div className="relative flex h-[14.14rem] w-[23.4rem] translate-y-7 items-center justify-center sm:h-[17.55rem] sm:w-[29.25rem] md:h-[19.99rem] md:w-[37.05rem] lg:h-[22.91rem] lg:w-[44.85rem] xl:h-[24.86rem] xl:w-[52.65rem]">
                             <Stream
                               fallback={
                                 <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
