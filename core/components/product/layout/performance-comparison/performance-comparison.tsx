@@ -187,7 +187,7 @@ export function PerformanceComparison({
             {/* Static rings for mobile - positioned relative to image (only if not disabled) */}
             {!performanceConfig.disabledOnMobile && (
               <div
-                className="absolute pointer-events-none xl:hidden"
+                className="absolute pointer-events-none"
                 style={{
                   left: `${((mergedWheelConfig.centerX + (mergedWheelConfig.mobileOffsetX || 0)) / mergedImageConfig.width) * 100}%`,
                   top: `${((mergedWheelConfig.centerY + (mergedWheelConfig.mobileOffsetY || 0)) / mergedImageConfig.height) * 100}%`,
