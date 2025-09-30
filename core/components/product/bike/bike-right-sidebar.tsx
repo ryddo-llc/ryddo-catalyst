@@ -46,8 +46,8 @@ export function BikeRightSidebar<F extends Field>({
         value={Streamable.all([
           product.images,
           fields,
-          ctaLabel,
-          ctaDisabled,
+          ctaLabel || Streamable.from(() => Promise.resolve(null)),
+          ctaDisabled || Streamable.from(() => Promise.resolve(null)),
           product.warranty || Streamable.from(() => Promise.resolve(null)),
         ])}
       >
