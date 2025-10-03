@@ -21,34 +21,39 @@ export function getOptimizedImageUrl(
   baseUrl: string,
   config: ImageOptimizationConfig = {}
 ): string {
-  const {
-    quality = 85,
-    format = 'webp',
-    width,
-    height,
-  } = config;
+  try {
+    const {
+      quality = 85,
+      format = 'webp',
+      width,
+      height,
+    } = config;
 
-  const url = new URL(baseUrl);
-  
-  // Add BigCommerce optimization parameters
-  url.searchParams.set('compression', 'lossy');
-  url.searchParams.set('quality', quality.toString());
-  
-  if (format === 'webp') {
-    url.searchParams.set('format', 'webp');
-  } else if (format === 'avif') {
-    url.searchParams.set('format', 'avif');
-  }
-  
-  if (width) {
-    url.searchParams.set('width', width.toString());
-  }
-  
-  if (height) {
-    url.searchParams.set('height', height.toString());
-  }
+    const url = new URL(baseUrl);
+    
+    // Add BigCommerce optimization parameters
+    url.searchParams.set('compression', 'lossy');
+    url.searchParams.set('quality', quality.toString());
+    
+    if (format !== 'jpeg' && format !== 'png') {
+      url.searchParams.set('format', format);
+    }
+    
+    if (width) {
+      url.searchParams.set('width', width.toString());
+    }
+    
+    if (height) {
+      url.searchParams.set('height', height.toString());
+    }
 
-  return url.toString();
+    return url.toString();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Invalid image URL:', baseUrl, error);
+
+    return baseUrl;
+  }
 }
 
 /**
@@ -81,13 +86,13 @@ export function generateResponsiveSrcSet(
 export function getResponsiveSizes(breakpoint: 'mobile' | 'tablet' | 'desktop' = 'desktop'): string {
   switch (breakpoint) {
     case 'mobile':
-      return '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
+      return '100vw';
 
     case 'tablet':
-      return '(max-width: 1200px) 50vw, 33vw';
+      return '(max-width: 1200px) 100vw, 50vw';
 
     case 'desktop':
-      return '(max-width: 1200px) 50vw, 33vw';
+      return '33vw';
 
     default:
       return '100vw';
@@ -95,7 +100,7 @@ export function getResponsiveSizes(breakpoint: 'mobile' | 'tablet' | 'desktop' =
 }
 
 /**
- * Generate blur placeholder for images
+ * Generate blur placeholder for images (server-side)
  * @param {number} width - Width of the placeholder
  * @param {number} height - Height of the placeholder
  * @returns {string} Base64 encoded SVG placeholder
@@ -111,30 +116,37 @@ export function generateBlurPlaceholder(width = 10, height = 10): string {
 }
 
 /**
+ * Generate client-safe blur placeholder for images
+ * @param {number} width - Width of the placeholder
+ * @param {number} height - Height of the placeholder
+ * @returns {string} Data URL SVG placeholder
+ */
+export function generateClientBlurPlaceholder(width = 10, height = 10): string {
+  const svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#f3f4f6"/></svg>`;
+
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+}
+
+/**
  * Check if image should be prioritized (above the fold)
  * @param {number} index - The index of the image
- * @param {number} _totalImages - Total number of images
  * @returns {boolean} Whether the image should be prioritized
  */
-export function shouldPrioritizeImage(index: number, _totalImages: number): boolean {
-  void _totalImages;
-
-  return index === 0 || index < 2; // First 2 images should be prioritized
+export function shouldPrioritizeImage(index: number): boolean {
+  return index < 2; // First 2 images should be prioritized
 }
 
 /**
  * Get optimal image configuration based on context
  * @param {'showcase' | 'gallery' | 'thumbnail'} context - The image context
  * @param {number} index - The index of the image
- * @param {number} totalImages - Total number of images
  * @returns {ImageOptimizationConfig} Image optimization configuration
  */
 export function getImageConfig(
   context: 'showcase' | 'gallery' | 'thumbnail',
-  index = 0,
-  totalImages = 1
+  index = 0
 ): ImageOptimizationConfig {
-  const isAboveFold = shouldPrioritizeImage(index, totalImages);
+  const isAboveFold = shouldPrioritizeImage(index);
   
   switch (context) {
     case 'showcase':

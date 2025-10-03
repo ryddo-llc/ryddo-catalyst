@@ -31,14 +31,15 @@ export const LazyRelatedProducts = lazy(() =>
 
 /**
  * Preload critical components
+ * @param {number} delay - Delay in milliseconds before preloading
  * @returns {void}
  */
-export function preloadCriticalComponents() {
+export function preloadCriticalComponents(delay = 1000) {
   if (typeof window !== 'undefined') {
     // Preload critical components after initial load
     setTimeout(() => {
       void import('~/components/product-showcase');
       void import('~/components/product/layout/performance-comparison/performance-comparison');
-    }, 1000);
+    }, delay);
   }
 }

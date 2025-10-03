@@ -10,6 +10,7 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { findShowcaseImages } from '~/lib/image-resolver';
 import type { ProductImage } from '~/lib/types';
+import { generateClientBlurPlaceholder, getImageConfig } from '~/lib/image-optimization';
 
 export type { ProductImage } from '~/lib/types';
 
@@ -163,7 +164,10 @@ export function ProductShowcase({
                   className="carousel-content ml-0 w-full"
                   style={{ marginInlineStart: 0, marginLeft: 0 }}
                 >
-                  {showcaseImages.map((image, index) => (
+                  {showcaseImages.map((image, index) => {
+                    const imageConfig = getImageConfig('showcase', index, showcaseImages.length);
+                    
+                    return (
                     <CarouselItem
                       className="carousel-item relative flex w-full basis-full items-center justify-center p-0 pl-0"
                       key={image.src}
@@ -192,13 +196,13 @@ export function ProductShowcase({
                         ) : (
                           <Image
                             alt={`${productName} showcase image ${index + 1} of ${showcaseImages.length}${image.alt ? ` - ${image.alt}` : ''}`}
-                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                            blurDataURL={generateClientBlurPlaceholder()}
                             className="h-full w-full object-cover"
                             fill
-                            loading={index === 0 ? "eager" : "lazy"}
+                            loading={imageConfig.loading}
                             placeholder="blur"
-                            priority={index === 0}
-                            quality={85}
+                            priority={imageConfig.priority}
+                            quality={imageConfig.quality}
                             sizes="100vw"
                             src={image.src}
                           />
@@ -226,7 +230,8 @@ export function ProductShowcase({
                         ) : null}
                       </div>
                     </CarouselItem>
-                  ))}
+                    );
+                  })}
                 </CarouselContent>
 
                 {/* Left Button */}

@@ -3,6 +3,7 @@
 
 import { Image } from '~/components/image';
 import type { TransformedPerformanceData } from '~/data-transformers/performance-comparison-transformer';
+import { generateClientBlurPlaceholder, getImageConfig } from '~/lib/image-optimization';
 
 import { getPerformanceConfig, type PerformanceComparisonConfig } from './config';
 import { PerformanceMetrics } from './performance-metrics';
@@ -34,6 +35,9 @@ export function PerformanceComparison({
   const mergedWheelConfig = mergeConfig(performanceConfig.wheel, dynamicData?.wheelConfig);
   const mergedMetricsConfig = mergeConfig(performanceConfig.performanceMetrics, dynamicData?.metricsConfig);
   const mergedImageConfig = mergeConfig(performanceConfig.image, dynamicData?.imageConfig);
+  
+  // Get image optimization config for desktop layout
+  const desktopImageConfig = getImageConfig('showcase', 0);
 
   return (
       <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0 }}>
@@ -83,13 +87,13 @@ export function PerformanceComparison({
         >
           <Image
             alt={productImage.alt || mergedImageConfig.alt || ""}
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            blurDataURL={generateClientBlurPlaceholder()}
             className="object-contain w-auto h-auto relative z-10"
             height={mergedImageConfig.height}
-            loading="eager"
+            loading={desktopImageConfig.loading}
             placeholder="blur"
-            priority
-            quality={90}
+            priority={desktopImageConfig.priority}
+            quality={desktopImageConfig.quality}
             src={productImage.src || mergedImageConfig.src}
             style={{
               maxWidth: `${mergedImageConfig.maxWidth || performanceConfig.image.maxWidth}px`,
