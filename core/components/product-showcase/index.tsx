@@ -8,9 +8,9 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Carousel, CarouselContent, CarouselItem } from '@/vibes/soul/primitives/carousel';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
+import { generateClientBlurPlaceholder, getImageConfig } from '~/lib/image-optimization';
 import { findShowcaseImages } from '~/lib/image-resolver';
 import type { ProductImage } from '~/lib/types';
-import { generateClientBlurPlaceholder, getImageConfig } from '~/lib/image-optimization';
 
 export type { ProductImage } from '~/lib/types';
 
