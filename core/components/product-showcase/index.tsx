@@ -165,7 +165,7 @@ export function ProductShowcase({
                   style={{ marginInlineStart: 0, marginLeft: 0 }}
                 >
                   {showcaseImages.map((image, index) => {
-                    const imageConfig = getImageConfig('showcase', index, showcaseImages.length);
+                    const imageConfig = getImageConfig('showcase', index);
                     
                     return (
                     <CarouselItem
