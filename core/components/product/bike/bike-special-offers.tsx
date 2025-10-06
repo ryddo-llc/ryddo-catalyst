@@ -5,7 +5,7 @@ import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 
 // Helper function to identify variant fields (color/size)
 const isVariantField = (field: Field): boolean => {

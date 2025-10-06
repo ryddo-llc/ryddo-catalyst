@@ -11,7 +11,6 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import {
   getProductDetailVariant,
   ProductDetailBike,
-  ProductDetailScooter,
 } from '~/components/product';
 import { DigitalTagLink } from '~/components/product/digital-tag/digital-tag-link';
 import { getPerformanceConfig } from '~/components/product/layout/performance-comparison/config';
@@ -23,7 +22,7 @@ import RelatedProducts from '~/components/product/shared/related-products';
 import { ProductFeatureCarousel } from '~/components/product-feature-carousel';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
-import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
+import { productTransformer } from '~/data-transformers/product-transformer';
 import {
   findPerformanceImage,
   transformPerformanceComparisonData,
@@ -31,7 +30,6 @@ import {
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
-import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { extractFeatureFields, resolveCarouselImages } from '~/lib/extract-feature-fields';
 
@@ -421,23 +419,13 @@ export default async function Product({ params, searchParams }: Props) {
   // Determine which product detail component to use based on categories
   const productDetailVariant = getProductDetailVariant(baseProduct);
 
-  // Create streamable bike-specific data for bike products
-  const streamableBikeData =
-    productDetailVariant === 'bike'
+  // Create streamable product data for bike and scooter products
+  const streamableProductData =
+    productDetailVariant === 'bike' || productDetailVariant === 'scooter'
       ? Streamable.from(async () => {
           const product = await streamableProduct;
 
-          return bikeProductTransformer(product);
-        })
-      : null;
-
-  // Create streamable scooter-specific data for scooter products
-  const streamableScooterData =
-    productDetailVariant === 'scooter'
-      ? Streamable.from(async () => {
-          const product = await streamableProduct;
-
-          return scooterProductTransformer(product);
+          return productTransformer(product);
         })
       : null;
 
@@ -539,8 +527,8 @@ export default async function Product({ params, searchParams }: Props) {
     images: streamableImages,
     price: streamablePrices,
     subtitle: baseProduct.brand?.name,
-    rating: 4.5, // Default to 4.5 for testing
-    reviewCount: 15, // Default to 15 for testing
+    rating: baseProduct.reviewSummary.averageRating,
+    reviewCount: baseProduct.reviewSummary.numberOfReviews,
     accordions: streamableAccordions,
     inventoryStatus: streamableInventoryStatus,
     brandLogo: baseProduct.brand?.defaultImage
@@ -553,39 +541,19 @@ export default async function Product({ params, searchParams }: Props) {
 
   const defaultProductData = baseProductData;
 
-  // Enhanced product data for bike components
-  const bikeProductData = streamableBikeData
+  // Enhanced product data for bike and scooter components
+  const enhancedProductData = streamableProductData
     ? Streamable.from(async () => {
-        const bikeData = await streamableBikeData;
+        const productData = await streamableProductData;
         const warranty = await streamableWarranty;
 
         return {
           ...baseProductData,
-          backgroundImage: bikeData.backgroundImage,
-          bikeSpecs: Streamable.from(() => Promise.resolve(bikeData.bikeSpecs || null)),
-          colors: bikeData.colors,
+          backgroundImage: productData.backgroundImage,
+          productSpecs: Streamable.from(() => Promise.resolve(productData.productSpecs || null)),
+          colors: productData.colors,
           warranty,
-        };
-      })
-    : Streamable.from(async () => {
-        const warranty = await streamableWarranty;
-
-        return {
-          ...baseProductData,
-          warranty,
-        };
-      });
-
-  // Enhanced product data for scooter components
-  const scooterProductData = streamableScooterData
-    ? Streamable.from(async () => {
-        const scooterData = await streamableScooterData;
-
-        return {
-          ...baseProductData,
-          backgroundImage: scooterData.backgroundImage,
-          scooterSpecs: Streamable.from(() => Promise.resolve(scooterData.scooterSpecs || null)),
-          colors: scooterData.colors,
+          wheelSpecs: productData.wheelSpecs,
         };
       })
     : baseProductData;
@@ -624,10 +592,8 @@ export default async function Product({ params, searchParams }: Props) {
   const renderProductDetail = () => {
     switch (productDetailVariant) {
       case 'bike':
-        return <ProductDetailBike {...baseProps} product={bikeProductData} />;
-
       case 'scooter':
-        return <ProductDetailScooter {...baseProps} product={scooterProductData} />;
+        return <ProductDetailBike {...baseProps} product={enhancedProductData} />;
 
       case 'default':
       default:

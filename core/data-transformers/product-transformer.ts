@@ -6,7 +6,7 @@ import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
 
 // Re-export shared type for consistency
-export { type ProductSpecification as BikeSpecifications } from '~/components/product/shared/product-specifications';
+export { type ProductSpecification } from '~/components/product/shared/product-specifications';
 
 export interface ColorOption {
   entityId: number;
@@ -44,9 +44,9 @@ type ProductWithOptions = ResultOf<typeof ProductOptionsFragment> & {
   };
 };
 
-export interface BikeProductData {
+export interface ProductData {
   backgroundImage?: string;
-  bikeSpecs?: ProductSpecification[];
+  productSpecs?: ProductSpecification[];
   colors?: ColorOption[];
   inventoryStatus?: {
     isInStock: boolean;
@@ -61,7 +61,7 @@ export interface BikeProductData {
   };
 }
 
-export const bikeProductTransformer = cache((product: ProductWithOptions): BikeProductData => {
+export const productTransformer = cache((product: ProductWithOptions): ProductData => {
   const customFields = removeEdgesAndNodes(product.customFields);
   const images = removeEdgesAndNodes(product.images);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -75,8 +75,8 @@ export const bikeProductTransformer = cache((product: ProductWithOptions): BikeP
   );
   const backgroundImage = backgroundImageField?.value || images[1]?.url;
 
-  // Return all custom fields as bike specs - let the component handle display logic
-  const bikeSpecs: ProductSpecification[] = customFields
+  // Return all custom fields as product specs - let the component handle display logic
+  const productSpecs: ProductSpecification[] = customFields
     .filter((field) => field.name !== 'Background Image URL' && field.name !== 'Hero Image')
     .map((field) => ({
       name: field.name,
@@ -109,6 +109,10 @@ export const bikeProductTransformer = cache((product: ProductWithOptions): BikeP
       blue: '#3b82f6',
       black: '#000000',
       white: '#ffffff',
+      orange: '#f97316',
+      yellow: '#eab308',
+      purple: '#a855f7',
+      pink: '#ec4899',
     };
 
     const mappedColor = colorMap[colorName];
@@ -190,7 +194,7 @@ export const bikeProductTransformer = cache((product: ProductWithOptions): BikeP
 
   return {
     backgroundImage,
-    bikeSpecs: bikeSpecs.length > 0 ? bikeSpecs : undefined,
+    productSpecs: productSpecs.length > 0 ? productSpecs : undefined,
     colors: colors.length > 0 ? colors : undefined,
     inventoryStatus,
     wheelSpecs: {

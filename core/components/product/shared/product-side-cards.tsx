@@ -9,9 +9,8 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 
-import { ColorOption } from '../../../data-transformers/bike-product-transformer';
+import { ColorOption } from '../../../data-transformers/product-transformer';
 import { BikeAddToCartForm } from '../../product/bike/bike-add-to-cart-form';
-import { ScooterAddToCartForm } from '../../product/scooter/scooter-add-to-cart-form';
 
 interface ProductPrice {
   type?: 'sale' | 'range';
@@ -134,16 +133,16 @@ export function AuthorizedDealerCard<F extends Field = Field>({
         </Stream>
 
         {/* Rating - Bikes Only */}
-        {product.productType === 'bike' && product.rating ? (
+        {product.productType === 'bike' && (
           <div className="mt-4">
             <div className="flex items-center justify-end gap-2">
-              <span className="font-['Inter'] text-lg font-semibold text-black">({product.reviewCount || 15})</span>
+              <span className="font-['Inter'] text-lg font-semibold text-black">({product.reviewCount ?? 0})</span>
               <div className="flex items-center">
-                <Rating rating={product.rating} showRating={false} />
+                <Rating rating={product.rating ?? 0} showRating={false} />
               </div>
             </div>
           </div>
-        ) : null}
+        )}
 
         {/* Warranty Information - Bikes Only */}
         {product.productType === 'bike' && product.warranty ? (
@@ -157,24 +156,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
 
       {/* Action Buttons - Side by Side */}
       <div className="mb-6">
-        {product.action && product.fields && product.productType === 'scooter' && (
-          <ScooterAddToCartForm
-            action={product.action}
-            additionalActions={product.additionalActions}
-            compareProduct={{
-              id: product.id,
-              title: product.title,
-              href: product.href,
-              image: product.images?.[0],
-            }}
-            ctaLabel={product.ctaLabel || 'Add to Cart'}
-            disabled={product.ctaDisabled}
-            fields={product.fields}
-            productId={product.id}
-          />
-        )}
-
-        {product.action && product.fields && product.productType === 'bike' && (
+        {product.action && product.fields && (product.productType === 'bike' || product.productType === 'scooter') && (
           <BikeAddToCartForm
             action={product.action}
             additionalActions={product.additionalActions}

@@ -5,7 +5,7 @@ import { ReactNode } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 
 import { ProductDetailFormSkeleton } from '../shared/product-detail-skeletons';
 import { AuthorizedDealerCard } from '../shared/product-side-cards';

@@ -205,6 +205,7 @@ const ProductQuery = graphql(
           }
           reviewSummary {
             averageRating
+            numberOfReviews
           }
           categories {
             edges {

@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 
 import { BikeLeftSidebarContent } from './bike-special-offers';
 

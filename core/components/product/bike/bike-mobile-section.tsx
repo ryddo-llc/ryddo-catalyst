@@ -5,7 +5,7 @@ import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 
 import {
   ProductDetailFormSkeleton,
@@ -26,7 +26,7 @@ interface BikeMobileSectionProps<F extends Field> {
     rating?: Streamable<number | null>;
     summary?: Streamable<string>;
     price?: ProductPrice;
-    bikeSpecs?: Streamable<ProductSpecification[] | null>;
+    productSpecs?: Streamable<ProductSpecification[] | null>;
     colors?: ColorOption[];
   };
   action: ProductDetailFormAction<F>;
@@ -142,7 +142,7 @@ export function BikeMobileSection<F extends Field>({
         </div>
 
         {/* Mobile Specifications */}
-        <BikeMobileSpecs bikeSpecs={product.bikeSpecs} />
+        <BikeMobileSpecs productSpecs={product.productSpecs} />
       </div>
     </div>
   );

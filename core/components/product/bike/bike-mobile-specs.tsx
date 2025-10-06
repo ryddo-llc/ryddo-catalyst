@@ -7,11 +7,11 @@ import type { ProductSpecification } from '~/components/product/shared/product-s
 import { BikeSpecsSkeleton } from '../shared/product-detail-skeletons';
 
 interface BikeMobileSpecsProps {
-  bikeSpecs?: Streamable<ProductSpecification[] | null>;
+  productSpecs?: Streamable<ProductSpecification[] | null>;
   className?: string;
 }
 
-export function BikeMobileSpecs({ bikeSpecs, className = "" }: BikeMobileSpecsProps) {
+export function BikeMobileSpecs({ productSpecs, className = "" }: BikeMobileSpecsProps) {
   return (
     <Accordion 
       className={`rounded-[50px] border-2 border-[#F92F7B]/20 bg-white p-4 ${className}`}
@@ -23,7 +23,7 @@ export function BikeMobileSpecs({ bikeSpecs, className = "" }: BikeMobileSpecsPr
         value="specifications"
       >
         <div className="space-y-3 pt-2">
-        <Stream fallback={<BikeSpecsSkeleton />} value={bikeSpecs}>
+        <Stream fallback={<BikeSpecsSkeleton />} value={productSpecs}>
           {(specs) => {
             if (!specs || specs.length === 0) {
               return (

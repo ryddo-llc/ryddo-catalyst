@@ -6,9 +6,9 @@ import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/pr
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
-import { findHeroProductImage } from '~/lib/image-resolver';
+import { selectProductDisplayImage } from '~/lib/image-resolver';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
@@ -55,7 +55,7 @@ interface BaseProductDetailProduct {
 }
 
 interface ProductDetailBikeProduct extends BaseProductDetailProduct {
-  bikeSpecs?: Streamable<ProductSpecification[] | null>;
+  productSpecs?: Streamable<ProductSpecification[] | null>;
   backgroundImage?: string;
   colors?: ColorOption[];
   brandLogo?: { url: string; altText: string } | null;
@@ -186,25 +186,7 @@ export function ProductDetailBike<F extends Field>({
                               value={product.images}
                             >
                               {(imageList) => {
-                                // Robust image selection with fallback hierarchy:
-                                // 1. Variant-specific default image (first in array) - for variant switching
-                                // 2. Main product image (third position) - original main image logic
-                                // 3. Hero pattern image (product-hero, main-product, etc.)
-                                // 4. Any available image
-                                // 5. null (show error message)
-                                // Check if first image is a thumbnail, if so skip to main product image
-                                const isFirstImageThumbnail = imageList[0]?.alt
-                                  ?.toLowerCase()
-                                  .includes('thumbnail');
-                                const variantImage = isFirstImageThumbnail ? null : imageList[0];
-                                const mainProductImage = imageList[2];
-
-                                const heroImage =
-                                  variantImage ||
-                                  mainProductImage ||
-                                  findHeroProductImage(imageList) ||
-                                  imageList.find(Boolean) ||
-                                  null;
+                                const heroImage = selectProductDisplayImage(imageList);
 
                                 return (
                                   <>
@@ -245,7 +227,7 @@ export function ProductDetailBike<F extends Field>({
 
                         {/* Bottom Section - Desktop/Tablet Specifications - Centered with bike */}
                         <div className="ml-12 hidden md:mt-10 md:flex md:justify-center lg:mt-10 xl:mt-10">
-                          <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
+                          <Stream fallback={<BikeSpecsSkeleton />} value={product.productSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;
 
@@ -275,7 +257,7 @@ export function ProductDetailBike<F extends Field>({
                         rating: product.rating,
                         summary: product.summary,
                         price: product.price,
-                        bikeSpecs: product.bikeSpecs,
+                        productSpecs: product.productSpecs,
                         colors: product.colors,
                       }}
                     />
