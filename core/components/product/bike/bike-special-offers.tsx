@@ -1,7 +1,7 @@
 'use client';
 
 import { parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
@@ -106,8 +106,6 @@ export function BikeLeftSidebarContent({
   // Filter variant fields (color, size, etc.)
   const variantFields = fields.filter(isVariantField);
 
-  if (!brandName && !description && fields.length === 0) return null;
-
   // Find color and size fields specifically
   const colorField = variantFields.find(
     (f) => f.label.toLowerCase().includes('color') || f.name.toLowerCase().includes('color'),
@@ -115,6 +113,44 @@ export function BikeLeftSidebarContent({
   const sizeField = variantFields.find(
     (f) => f.label.toLowerCase().includes('size') || f.name.toLowerCase().includes('size'),
   );
+
+  // Auto-select default values for size and color on mount
+  const [params, setParams] = useQueryStates({
+    ...(sizeField && { [sizeField.name]: parseAsString }),
+    ...(colorField && { [colorField.name]: parseAsString }),
+  });
+
+  useEffect(() => {
+    const updates: Record<string, string | null> = {};
+    let hasUpdates = false;
+
+    // Auto-select size if not already selected
+    if (sizeField && !params[sizeField.name] && 'options' in sizeField && sizeField.options.length > 0) {
+      const defaultValue = sizeField.defaultValue || sizeField.options[0]?.value;
+
+      if (defaultValue) {
+        updates[sizeField.name] = defaultValue;
+        hasUpdates = true;
+      }
+    }
+
+    // Auto-select color if not already selected
+    if (colorField && !params[colorField.name] && 'options' in colorField && colorField.options.length > 0) {
+      const defaultValue = colorField.defaultValue || colorField.options[0]?.value;
+
+      if (defaultValue) {
+        updates[colorField.name] = defaultValue;
+        hasUpdates = true;
+      }
+    }
+
+    // Only update if we have changes
+    if (hasUpdates) {
+      void setParams(updates);
+    }
+  }, [sizeField, colorField, params, setParams]);
+
+  if (!brandName && !description && fields.length === 0) return null;
 
   return (
     <div className="w-full">
