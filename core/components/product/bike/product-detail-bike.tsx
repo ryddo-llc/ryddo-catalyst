@@ -8,7 +8,7 @@ import { Image } from '~/components/image';
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/bike-product-transformer';
 import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
-import { findBackgroundImage, findHeroProductImage } from '~/lib/image-resolver';
+import { findHeroProductImage } from '~/lib/image-resolver';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
@@ -110,29 +110,20 @@ export function ProductDetailBike<F extends Field>({
 
                 return (
                   <div className="relative min-h-[86vh] md:h-[86vh]">
-                    {/* Background Image - Loaded immediately without Stream */}
+                    {/* Background Image - Loaded immediately */}
                     <div className="absolute inset-0 h-full w-full opacity-55">
-                      <Stream fallback={null} value={product.images}>
-                        {(images) => {
-                          const backgroundImage = findBackgroundImage(images);
-                          const backgroundSrc =
-                            product.backgroundImage ||
-                            backgroundImage?.src ||
-                            imageManagerImageUrl('default-ebike-background.png', 'original');
-
-                          return (
-                            <Image
-                              alt="detail page background"
-                              blurDataURL={getBase64BlurDataURL()}
-                              className="-translate-y-16 scale-110 bg-fixed bg-center object-bottom"
-                              fill
-                              placeholder="blur"
-                              priority
-                              src={backgroundSrc}
-                            />
-                          );
-                        }}
-                      </Stream>
+                      <Image
+                        alt="detail page background"
+                        blurDataURL={getBase64BlurDataURL()}
+                        className="-translate-y-16 scale-110 bg-center object-bottom"
+                        fill
+                        placeholder="blur"
+                        quality={60}
+                        src={
+                          product.backgroundImage ||
+                          imageManagerImageUrl('default-ebike-background.png', 'original')
+                        }
+                      />
                     </div>
 
                     {/* Content Container */}
@@ -156,8 +147,6 @@ export function ProductDetailBike<F extends Field>({
                                   alt={product.brandLogo.altText || 'Brand logo'}
                                   className="max-h-full max-w-full object-contain"
                                   height={500}
-                                  loading="eager"
-                                  priority
                                   sizes="(max-width: 640px) 210px, (max-width: 768px) 315px, (max-width: 1024px) 420px, (max-width: 1280px) 472px, 525px"
                                   src={product.brandLogo.url}
                                   width={500}
@@ -189,7 +178,7 @@ export function ProductDetailBike<F extends Field>({
                           }}
                         >
                           {/* Bike Image Display */}
-                          <div className="relative flex h-[14.5rem] w-[24rem] translate-y-3 items-center justify-center transition-all duration-300 ease-in-out sm:h-[18rem] sm:w-[30rem] md:h-[20.5rem] md:w-[38rem] lg:h-[23.5rem] lg:w-[46rem] xl:h-[25.5rem] xl:w-[54rem]">
+                          <div className="relative flex h-[14.14rem] w-[23.4rem] translate-y-7 items-center justify-center sm:h-[17.55rem] sm:w-[29.25rem] md:h-[19.99rem] md:w-[37.05rem] lg:h-[22.91rem] lg:w-[44.85rem] xl:h-[24.86rem] xl:w-[52.65rem]">
                             <Stream
                               fallback={
                                 <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
@@ -222,7 +211,7 @@ export function ProductDetailBike<F extends Field>({
                                     {heroImage ? (
                                       <Image
                                         alt={heroImage.alt}
-                                        className="sm:scale-115 h-full w-full -translate-y-2 scale-110 object-contain duration-300 ease-out animate-in fade-in zoom-in-95 sm:-translate-y-3 md:-translate-y-4 md:scale-125 lg:-translate-y-6 lg:scale-125 xl:-translate-y-8 xl:scale-125"
+                                        className="h-full w-full -translate-y-2 scale-[1.0725] object-contain sm:-translate-y-3 sm:scale-[1.1213] md:-translate-y-4 md:scale-[1.2188] lg:-translate-y-6 lg:scale-[1.2188] xl:-translate-y-8 xl:scale-[1.2188]"
                                         height={1500}
                                         key={heroImage.src}
                                         priority

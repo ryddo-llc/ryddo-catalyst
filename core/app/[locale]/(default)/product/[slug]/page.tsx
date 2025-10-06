@@ -171,6 +171,7 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
+
   // Independent parallel streams for better performance
   const streamableProduct = Streamable.from(async () => {
     const variables = await productVariables;
@@ -182,6 +183,7 @@ export default async function Product({ params, searchParams }: Props) {
 
     return product;
   });
+
 
   const streamableProductSku = Streamable.from(async () => {
     const product = await streamableProduct;
@@ -235,6 +237,7 @@ export default async function Product({ params, searchParams }: Props) {
 
     return allImages;
   });
+
 
   // Create streamable carousel features data
   const streamableCarouselFeatures = Streamable.from(async () => {

@@ -40,10 +40,16 @@ export function BikeRightSidebar<F extends Field>({
   additionalActions,
 }: BikeRightSidebarProps<F>) {
   return (
-    <div className="absolute right-0 top-[-10px] z-10 hidden w-60 min-h-[400px] md:top-[-15px] md:block md:w-72 lg:top-[-20px] lg:w-72 xl:right-1 xl:w-80 -mr-6 sm:-mr-8 md:-mr-12 lg:-mr-16 xl:-mr-20">
+    <div className="absolute right-0 top-[-10px] z-10 -mr-5 hidden min-h-[400px] w-60 sm:-mr-6 md:top-[-15px] md:-mr-8 md:block md:w-72 lg:top-[-20px] lg:-mr-11 lg:w-72 xl:right-1 xl:-mr-16 xl:w-80">
       <Stream
         fallback={<ProductDetailFormSkeleton />}
-        value={Streamable.all([product.images, fields, ctaLabel, ctaDisabled, product.warranty || Streamable.from(() => Promise.resolve(null))])}
+        value={Streamable.all([
+          product.images,
+          fields,
+          ctaLabel || Streamable.from(() => Promise.resolve(null)),
+          ctaDisabled || Streamable.from(() => Promise.resolve(null)),
+          product.warranty || Streamable.from(() => Promise.resolve(null)),
+        ])}
       >
         {([images, streamedFields, streamedCtaLabel, streamedCtaDisabled, streamedWarranty]) => (
           <AuthorizedDealerCard
