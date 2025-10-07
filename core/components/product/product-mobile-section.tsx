@@ -7,15 +7,14 @@ import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 import type { ColorOption } from '~/data-transformers/product-transformer';
 
+import { ProductAddToCartForm } from './product-add-to-cart-form';
+import { ProductMobileSpecs } from './product-mobile-specs';
+import { ProductPrice } from './product-types';
 import {
   ProductDetailFormSkeleton,
   ProductSummarySkeleton,
   RatingSkeleton,
 } from './shared/product-detail-skeletons';
-
-import { ProductAddToCartForm } from './product-add-to-cart-form';
-import { ProductMobileSpecs } from './product-mobile-specs';
-import { ProductPrice } from './product-types';
 
 interface ProductMobileSectionProps<F extends Field> {
   product: {

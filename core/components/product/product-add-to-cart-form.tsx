@@ -8,7 +8,6 @@ import { Compare } from '@/vibes/soul/primitives/product-card/compare';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-
 import { revalidateCart } from '~/vibes/soul/sections/product-detail/actions/revalidate-cart';
 
 interface CompareDrawerItem {

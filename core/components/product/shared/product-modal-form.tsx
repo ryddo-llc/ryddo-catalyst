@@ -12,7 +12,6 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Link } from '~/components/link';
-
 import { revalidateCart } from '~/vibes/soul/sections/product-detail/actions/revalidate-cart';
 
 import { addToCart } from './_actions/add-to-cart';

@@ -4,7 +4,6 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import type { CurrencyCode } from '~/components/header/fragment';
 import { ProductCardFragment } from '~/components/product-card/fragment';
@@ -153,6 +152,7 @@ export const ProductOptionsFragment = graphql(
   ],
 );
 
+// Consolidated query for metadata - minimal fields for generateMetadata only
 const ProductPageMetadataQuery = graphql(`
   query ProductPageMetadataQuery($entityId: Int!) {
     site {
@@ -179,23 +179,34 @@ export const getProductPageMetadata = cache(
       document: ProductPageMetadataQuery,
       variables: { entityId },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 3600 } }, // 1 hour for metadata
     });
 
     return data.site.product;
   },
 );
 
+// Consolidated comprehensive product query - combines old ProductQuery + StreamableProductQuery
 const ProductQuery = graphql(
   `
-    query ProductQuery($entityId: Int!) {
+    query ProductQuery(
+      $entityId: Int!
+      $optionValueIds: [OptionValueId!]
+      $useDefaultOptionSelections: Boolean
+    ) {
       site {
-        product(entityId: $entityId) {
+        product(
+          entityId: $entityId
+          optionValueIds: $optionValueIds
+          useDefaultOptionSelections: $useDefaultOptionSelections
+        ) {
           entityId
           name
           description
-          plainTextDescription(characterLimit: 300)
+          plainTextDescription(characterLimit: 1200)
+          plainTextDescriptionShort: plainTextDescription(characterLimit: 300)
           path
+          sku
           brand {
             name
             defaultImage {
@@ -212,41 +223,10 @@ const ProductQuery = graphql(
               node {
                 name
                 path
+                entityId
               }
             }
           }
-          ...ProductOptionsFragment
-        }
-      }
-    }
-  `,
-  [ProductOptionsFragment],
-);
-
-export const getProduct = cache(async (entityId: number, customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: ProductQuery,
-    variables: { entityId },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
-
-  return data.site.product;
-});
-
-const StreamableProductQuery = graphql(
-  `
-    query StreamableProductQuery(
-      $entityId: Int!
-      $optionValueIds: [OptionValueId!]
-      $useDefaultOptionSelections: Boolean
-    ) {
-      site {
-        product(
-          entityId: $entityId
-          optionValueIds: $optionValueIds
-          useDefaultOptionSelections: $useDefaultOptionSelections
-        ) {
           images(first: 20) {
             edges {
               node {
@@ -260,7 +240,6 @@ const StreamableProductQuery = graphql(
             altText
             url: urlTemplate(lossy: true)
           }
-          sku
           weight {
             value
             unit
@@ -292,20 +271,22 @@ const StreamableProductQuery = graphql(
   [ProductOptionsFragment, ProductViewedFragment, ProductSchemaFragment],
 );
 
-type Variables = VariablesOf<typeof StreamableProductQuery>;
+type Variables = VariablesOf<typeof ProductQuery>;
 
-export const getStreamableProduct = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: StreamableProductQuery,
-      variables,
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+// Consolidated function - replaces both getProduct and getStreamableProduct
+export const getProduct = cache(async (variables: Variables, customerAccessToken?: string) => {
+  const { data } = await client.fetch({
+    document: ProductQuery,
+    variables,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 3600 } }, // 1 hour for product content
+  });
 
-    return data.site.product;
-  },
-);
+  return data.site.product;
+});
+
+// Legacy alias for backwards compatibility - will be removed in page.tsx refactor
+export const getStreamableProduct = getProduct;
 
 // Fields that require currencyCode as a query variable
 // Separated from the rest to cache separately
@@ -351,7 +332,7 @@ export const getProductPricingAndRelatedProducts = cache(
       document: ProductPricingAndRelatedProductsQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } }, // 5 min for pricing
     });
 
     return data.site.product;
@@ -401,7 +382,7 @@ export const getProductsByCategory = cache(
         currencyCode,
       },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 3600 } }, // 1 hour for category products
     });
 
     const searchResults = data.site.search.searchProducts;
@@ -415,6 +396,32 @@ export const getProductsByCategory = cache(
     const products = removeEdgesAndNodes(searchResults.products);
 
     return products.filter((p) => p.entityId !== excludeProductId).slice(0, 4);
+  },
+);
+
+// Type for product card data (used in related products and category products)
+type ProductCardData = Awaited<ReturnType<typeof getProductsByCategory>>[number];
+
+// Optimized function to get related products - tries both sources in parallel
+export const getRelatedProductsOptimized = cache(
+  async (
+    relatedProducts: ProductCardData[],
+    categoryId: number | null,
+    excludeProductId: number,
+    currencyCode: CurrencyCode | undefined,
+    customerAccessToken: string | undefined,
+  ) => {
+    // If we have related products, use them immediately
+    if (relatedProducts.length > 0) {
+      return relatedProducts;
+    }
+
+    // Otherwise fall back to category products
+    if (categoryId) {
+      return getProductsByCategory(categoryId, excludeProductId, currencyCode, customerAccessToken);
+    }
+
+    return [];
   },
 );
 

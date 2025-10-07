@@ -7,11 +7,7 @@ import { DigitalTag } from '~/components/product/digital-tag/digital-tag';
 import { transformProductToDigitalTag } from '~/data-transformers/digital-tag-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
-import {
-  getProduct,
-  getProductPricingAndRelatedProducts,
-  getStreamableProduct,
-} from '../page-data';
+import { getProduct, getProductPricingAndRelatedProducts } from '../page-data';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -21,8 +17,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const customerAccessToken = await getSessionCustomerAccessToken();
   const productId = Number(slug);
+  const currencyCode = await getPreferredCurrencyCode();
 
-  const product = await getProduct(productId, customerAccessToken);
+  const variables = {
+    entityId: productId,
+    optionValueIds: [],
+    useDefaultOptionSelections: true,
+    currencyCode,
+  };
+
+  const product = await getProduct(variables, customerAccessToken);
 
   if (!product) {
     return notFound();
@@ -41,16 +45,8 @@ export default async function ProductTagPage({ params }: Props) {
   setRequestLocale(locale);
 
   const productId = Number(slug);
-
-  // Get base product data
-  const baseProduct = await getProduct(productId, customerAccessToken);
-
-  if (!baseProduct) {
-    return notFound();
-  }
-
-  // Get detailed product data
   const currencyCode = await getPreferredCurrencyCode();
+
   const variables = {
     entityId: productId,
     optionValueIds: [],
@@ -58,18 +54,18 @@ export default async function ProductTagPage({ params }: Props) {
     currencyCode,
   };
 
-  // Fetch detailed product and pricing data
-  const [detailedProduct, pricingData] = await Promise.all([
-    getStreamableProduct(variables, customerAccessToken),
+  // Fetch product and pricing data in parallel
+  const [product, pricingData] = await Promise.all([
+    getProduct(variables, customerAccessToken),
     getProductPricingAndRelatedProducts(variables, customerAccessToken),
   ]);
 
-  if (!detailedProduct) {
+  if (!product) {
     return notFound();
   }
 
   // Transform data for the tag
-  const tagData = transformProductToDigitalTag(baseProduct, detailedProduct, pricingData, slug);
+  const tagData = transformProductToDigitalTag(product, product, pricingData, slug);
 
   return <DigitalTag data={tagData} />;
 }

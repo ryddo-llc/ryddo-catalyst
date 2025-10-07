@@ -7,10 +7,9 @@ import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/pr
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import type { ColorOption } from '~/data-transformers/product-transformer';
 
+import { ProductPrice } from './product-types';
 import { ProductDetailFormSkeleton } from './shared/product-detail-skeletons';
 import { AuthorizedDealerCard } from './shared/product-side-cards';
-
-import { ProductPrice } from './product-types';
 
 interface ProductRightSidebarProps<F extends Field> {
   product: {
