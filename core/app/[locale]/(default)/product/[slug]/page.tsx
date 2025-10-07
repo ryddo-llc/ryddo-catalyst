@@ -10,7 +10,7 @@ import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
 import {
   getProductDetailVariant,
-  ProductDetailBike,
+  ProductDetail as ProductDetailCustom,
 } from '~/components/product';
 import { DigitalTagLink } from '~/components/product/digital-tag/digital-tag-link';
 import { getPerformanceConfig } from '~/components/product/layout/performance-comparison/config';
@@ -593,7 +593,7 @@ export default async function Product({ params, searchParams }: Props) {
     switch (productDetailVariant) {
       case 'bike':
       case 'scooter':
-        return <ProductDetailBike {...baseProps} product={enhancedProductData} />;
+        return <ProductDetailCustom {...baseProps} product={enhancedProductData} />;
 
       case 'default':
       default:

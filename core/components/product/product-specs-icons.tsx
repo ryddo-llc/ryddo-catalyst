@@ -14,7 +14,7 @@ interface ProductSpecification {
   value: string;
 }
 
-export interface BikeSpecsIconsProps {
+export interface ProductSpecsIconsProps {
   specs: ProductSpecification[];
 }
 
@@ -24,7 +24,7 @@ interface SpecIconConfig {
   keywords: string[];
 }
 
-// Icon configuration map for bikes - using static imports
+// Icon configuration map for products - using static imports
 const SPEC_ICON_MAP: SpecIconConfig[] = [
   {
     iconSrc: powerIcon,
@@ -81,10 +81,10 @@ function getSpecIcon(fieldName: string): Omit<SpecIconConfig, 'keywords'> {
   return config || DEFAULT_SPEC_ICON;
 }
 
-export function BikeSpecsIcons({ specs }: BikeSpecsIconsProps) {
+export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
   return (
     <div
-      aria-label="Bike specifications"
+      aria-label="Product specifications"
       className="flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-12"
       role="region"
     >
@@ -115,4 +115,4 @@ export function BikeSpecsIcons({ specs }: BikeSpecsIconsProps) {
 }
 
 // Export types for reuse
-export type { ProductSpecification as BikeSpecification };
+export type { ProductSpecification };

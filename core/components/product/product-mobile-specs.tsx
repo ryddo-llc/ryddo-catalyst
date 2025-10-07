@@ -4,14 +4,14 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 
-import { BikeSpecsSkeleton } from '../shared/product-detail-skeletons';
+import { ProductSpecsSkeleton } from './shared/product-detail-skeletons';
 
-interface BikeMobileSpecsProps {
+interface ProductMobileSpecsProps {
   productSpecs?: Streamable<ProductSpecification[] | null>;
   className?: string;
 }
 
-export function BikeMobileSpecs({ productSpecs, className = "" }: BikeMobileSpecsProps) {
+export function ProductMobileSpecs({ productSpecs, className = "" }: ProductMobileSpecsProps) {
   return (
     <Accordion 
       className={`rounded-[50px] border-2 border-[#F92F7B]/20 bg-white p-4 ${className}`}
@@ -23,7 +23,7 @@ export function BikeMobileSpecs({ productSpecs, className = "" }: BikeMobileSpec
         value="specifications"
       >
         <div className="space-y-3 pt-2">
-        <Stream fallback={<BikeSpecsSkeleton />} value={productSpecs}>
+        <Stream fallback={<ProductSpecsSkeleton />} value={productSpecs}>
           {(specs) => {
             if (!specs || specs.length === 0) {
               return (

@@ -7,12 +7,12 @@ import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/pr
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import type { ColorOption } from '~/data-transformers/product-transformer';
 
-import { ProductDetailFormSkeleton } from '../shared/product-detail-skeletons';
-import { AuthorizedDealerCard } from '../shared/product-side-cards';
+import { ProductDetailFormSkeleton } from './shared/product-detail-skeletons';
+import { AuthorizedDealerCard } from './shared/product-side-cards';
 
-import { ProductPrice } from './types';
+import { ProductPrice } from './product-types';
 
-interface BikeRightSidebarProps<F extends Field> {
+interface ProductRightSidebarProps<F extends Field> {
   product: {
     id: string;
     title: string;
@@ -31,14 +31,14 @@ interface BikeRightSidebarProps<F extends Field> {
   additionalActions?: ReactNode;
 }
 
-export function BikeRightSidebar<F extends Field>({
+export function ProductRightSidebar<F extends Field>({
   product,
   action,
   fields,
   ctaLabel,
   ctaDisabled,
   additionalActions,
-}: BikeRightSidebarProps<F>) {
+}: ProductRightSidebarProps<F>) {
   return (
     <div className="absolute right-0 top-[-10px] z-10 -mr-5 hidden min-h-[400px] w-60 sm:-mr-6 md:top-[-15px] md:-mr-8 md:block md:w-72 lg:top-[-20px] lg:-mr-11 lg:w-72 xl:right-1 xl:-mr-16 xl:w-80">
       <Stream

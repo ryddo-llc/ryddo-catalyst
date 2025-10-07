@@ -10,7 +10,7 @@ import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/pr
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 
 import { ColorOption } from '../../../data-transformers/product-transformer';
-import { BikeAddToCartForm } from '../../product/bike/bike-add-to-cart-form';
+import { ProductAddToCartForm } from '../product-add-to-cart-form';
 
 interface ProductPrice {
   type?: 'sale' | 'range';
@@ -157,7 +157,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
       {/* Action Buttons - Side by Side */}
       <div className="mb-6">
         {product.action && product.fields && (product.productType === 'bike' || product.productType === 'scooter') && (
-          <BikeAddToCartForm
+          <ProductAddToCartForm
             action={product.action}
             additionalActions={product.additionalActions}
             compareProduct={{
