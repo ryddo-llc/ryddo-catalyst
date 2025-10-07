@@ -243,9 +243,6 @@ export async function wishlistAction(payload: FormData): Promise<void> {
 
     revalidateTag(TAGS.customer);
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-
     if (error instanceof BigCommerceGQLError) {
       if (error.message.includes('Please sign in')) {
         redirect({ href: getLoginRedirect(submission.value.menuItem.redirectTo), locale });

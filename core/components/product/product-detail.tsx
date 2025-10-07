@@ -6,19 +6,18 @@ import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/pr
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { Image } from '~/components/image';
 import { type ProductSpecification } from '~/components/product/shared/product-specifications';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
-import { findHeroProductImage } from '~/lib/image-resolver';
+import { selectProductDisplayImage } from '~/lib/image-resolver';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
-import { GalleryButtonWithModal } from '../shared/gallery-button-with-modal';
-import { ProductBadges } from '../shared/product-badges';
-import { BikeSpecsSkeleton, ProductDetailBikeSkeleton } from '../shared/product-detail-skeletons';
-import { ProductImageOverlay } from '../shared/product-image-overlay';
-
-import { BikeMobileSection } from './bike-mobile-section';
-import { BikeSpecsIcons } from './bike-specs-icons';
-import { BikeVariantCoordinator } from './bike-variant-coordinator';
+import { ProductMobileSection } from './product-mobile-section';
+import { ProductSpecsIcons } from './product-specs-icons';
+import { ProductVariantCoordinator } from './product-variant-coordinator';
+import { GalleryButtonWithModal } from './shared/gallery-button-with-modal';
+import { ProductBadges } from './shared/product-badges';
+import { ProductDetailSkeleton, ProductSpecsSkeleton } from './shared/product-detail-skeletons';
+import { ProductImageOverlay } from './shared/product-image-overlay';
 
 interface BaseProductDetailProduct {
   id: string;
@@ -54,16 +53,16 @@ interface BaseProductDetailProduct {
   } | null>;
 }
 
-interface ProductDetailBikeProduct extends BaseProductDetailProduct {
-  bikeSpecs?: Streamable<ProductSpecification[] | null>;
+interface ProductDetailProduct extends BaseProductDetailProduct {
+  productSpecs?: Streamable<ProductSpecification[] | null>;
   backgroundImage?: string;
   colors?: ColorOption[];
   brandLogo?: { url: string; altText: string } | null;
   warranty?: string | null;
 }
 
-export interface ProductDetailBikeProps<F extends Field> {
-  product: Streamable<ProductDetailBikeProduct | null>;
+export interface ProductDetailProps<F extends Field> {
+  product: Streamable<ProductDetailProduct | null>;
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
   ctaLabel?: Streamable<string | null>;
@@ -81,7 +80,7 @@ export interface ProductDetailBikeProps<F extends Field> {
   maxCompareLimitMessage?: string;
 }
 
-export function ProductDetailBike<F extends Field>({
+export function ProductDetail<F extends Field>({
   product: streamableProduct,
   action,
   fields: streamableFields,
@@ -94,9 +93,9 @@ export function ProductDetailBike<F extends Field>({
   compareLabel = 'Compare',
   maxCompareItems = 3,
   maxCompareLimitMessage = "You've reached the maximum number of products for comparison.",
-}: ProductDetailBikeProps<F>) {
+}: ProductDetailProps<F>) {
   return (
-    <Stream fallback={<ProductDetailBikeSkeleton />} value={compareProducts || []}>
+    <Stream fallback={<ProductDetailSkeleton />} value={compareProducts || []}>
       {(compareItems) => (
         <CompareDrawerProvider
           items={compareItems}
@@ -104,7 +103,7 @@ export function ProductDetailBike<F extends Field>({
           maxItems={maxCompareItems}
         >
           <section aria-labelledby="product-heading" className="relative w-full overflow-hidden">
-            <Stream fallback={<ProductDetailBikeSkeleton />} value={streamableProduct}>
+            <Stream fallback={<ProductDetailSkeleton />} value={streamableProduct}>
               {(product) => {
                 if (!product) return null;
 
@@ -156,8 +155,8 @@ export function ProductDetailBike<F extends Field>({
                           </div>
                         </header>
 
-                        {/* Middle Section - Center bike image with absolutely positioned sidebars */}
-                        <BikeVariantCoordinator
+                        {/* Middle Section - Center product image with absolutely positioned sidebars */}
+                        <ProductVariantCoordinator
                           action={action}
                           additionalActions={additionalActions}
                           ctaDisabled={streamableCtaDisabled}
@@ -177,7 +176,7 @@ export function ProductDetailBike<F extends Field>({
                             reviewCount: product.reviewCount,
                           }}
                         >
-                          {/* Bike Image Display */}
+                          {/* Product Image Display */}
                           <div className="relative flex h-[14.14rem] w-[23.4rem] translate-y-7 items-center justify-center sm:h-[17.55rem] sm:w-[29.25rem] md:h-[19.99rem] md:w-[37.05rem] lg:h-[22.91rem] lg:w-[44.85rem] xl:h-[24.86rem] xl:w-[52.65rem]">
                             <Stream
                               fallback={
@@ -186,25 +185,7 @@ export function ProductDetailBike<F extends Field>({
                               value={product.images}
                             >
                               {(imageList) => {
-                                // Robust image selection with fallback hierarchy:
-                                // 1. Variant-specific default image (first in array) - for variant switching
-                                // 2. Main product image (third position) - original main image logic
-                                // 3. Hero pattern image (product-hero, main-product, etc.)
-                                // 4. Any available image
-                                // 5. null (show error message)
-                                // Check if first image is a thumbnail, if so skip to main product image
-                                const isFirstImageThumbnail = imageList[0]?.alt
-                                  ?.toLowerCase()
-                                  .includes('thumbnail');
-                                const variantImage = isFirstImageThumbnail ? null : imageList[0];
-                                const mainProductImage = imageList[2];
-
-                                const heroImage =
-                                  variantImage ||
-                                  mainProductImage ||
-                                  findHeroProductImage(imageList) ||
-                                  imageList.find(Boolean) ||
-                                  null;
+                                const heroImage = selectProductDisplayImage(imageList);
 
                                 return (
                                   <>
@@ -221,7 +202,7 @@ export function ProductDetailBike<F extends Field>({
                                       />
                                     ) : (
                                       <div className="text-center text-gray-500">
-                                        No bike image available
+                                        No product image available
                                       </div>
                                     )}
 
@@ -241,17 +222,17 @@ export function ProductDetailBike<F extends Field>({
                               }}
                             </Stream>
                           </div>
-                        </BikeVariantCoordinator>
+                        </ProductVariantCoordinator>
 
-                        {/* Bottom Section - Desktop/Tablet Specifications - Centered with bike */}
+                        {/* Bottom Section - Desktop/Tablet Specifications - Centered with product */}
                         <div className="ml-12 hidden md:mt-10 md:flex md:justify-center lg:mt-10 xl:mt-10">
-                          <Stream fallback={<BikeSpecsSkeleton />} value={product.bikeSpecs}>
+                          <Stream fallback={<ProductSpecsSkeleton />} value={product.productSpecs}>
                             {(specs) => {
                               if (!specs || specs.length === 0) return null;
 
                               return (
                                 <div className="w-[24rem] sm:w-[30rem] md:w-[38rem] lg:w-[46rem] xl:w-[54rem]">
-                                  <BikeSpecsIcons specs={specs} />
+                                  <ProductSpecsIcons specs={specs} />
                                 </div>
                               );
                             }}
@@ -261,7 +242,7 @@ export function ProductDetailBike<F extends Field>({
                     </div>
 
                     {/* Additional Content Below - Only show on mobile */}
-                    <BikeMobileSection
+                    <ProductMobileSection
                       action={action}
                       additionalActions={null}
                       ctaDisabled={streamableCtaDisabled}
@@ -275,7 +256,7 @@ export function ProductDetailBike<F extends Field>({
                         rating: product.rating,
                         summary: product.summary,
                         price: product.price,
-                        bikeSpecs: product.bikeSpecs,
+                        productSpecs: product.productSpecs,
                         colors: product.colors,
                       }}
                     />
@@ -293,4 +274,4 @@ export function ProductDetailBike<F extends Field>({
 }
 
 // Re-export the skeleton for external use
-export { ProductDetailBikeSkeleton };
+export { ProductDetailSkeleton };

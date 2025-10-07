@@ -5,13 +5,13 @@ import { ReactNode } from 'react';
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 
-import { BikeLeftSidebar } from './bike-left-sidebar';
-import { BikeRightSidebar } from './bike-right-sidebar';
-import { ProductPrice } from './types';
+import { ProductLeftSidebar } from './product-left-sidebar';
+import { ProductRightSidebar } from './product-right-sidebar';
+import { ProductPrice } from './product-types';
 
-interface BikeVariantCoordinatorProps<F extends Field> {
+interface ProductVariantCoordinatorProps<F extends Field> {
   product: {
     id: string;
     subtitle?: string;
@@ -33,7 +33,7 @@ interface BikeVariantCoordinatorProps<F extends Field> {
   children?: ReactNode;
 }
 
-export function BikeVariantCoordinator<F extends Field>({
+export function ProductVariantCoordinator<F extends Field>({
   product,
   action,
   fields,
@@ -41,11 +41,11 @@ export function BikeVariantCoordinator<F extends Field>({
   ctaDisabled,
   additionalActions,
   children,
-}: BikeVariantCoordinatorProps<F>) {
+}: ProductVariantCoordinatorProps<F>) {
   return (
     <div className="relative -mt-1 mb-2 flex min-h-0 items-start justify-center sm:-mt-2 sm:mb-3 md:-mt-3 md:mb-4 lg:-mt-4 lg:mb-4 xl:-mt-6">
       {/* Left Sidebar - Brand Name, Description, and Variants - Absolutely positioned */}
-      <BikeLeftSidebar
+      <ProductLeftSidebar
         brandName={product.subtitle}
         colors={product.colors}
         description={product.description}
@@ -59,7 +59,7 @@ export function BikeVariantCoordinator<F extends Field>({
       </div>
 
       {/* Right Sidebar - Price Card - Absolutely positioned */}
-      <BikeRightSidebar
+      <ProductRightSidebar
         action={action}
         additionalActions={additionalActions}
         ctaDisabled={ctaDisabled}

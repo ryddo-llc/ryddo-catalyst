@@ -41,9 +41,9 @@ export function findHeroProductImage(images: ProductImage[]): ProductImage | nul
 
   // Try to find by alt text first
   const heroPatterns = ['product-hero', 'main-product', 'hero-product'];
-  
+
   const found = heroPatterns
-    .map(pattern => images.find(img => 
+    .map(pattern => images.find(img =>
       img.alt.toLowerCase().includes(pattern.toLowerCase())
     ))
     .find(Boolean);
@@ -54,6 +54,39 @@ export function findHeroProductImage(images: ProductImage[]): ProductImage | nul
 
   // Fallback to position-based selection (current behavior)
   return images[2] || images[0] || null;
+}
+
+/**
+ * Selects the best product image to display with fallback hierarchy
+ *
+ * Priority:
+ * 1. Variant-specific default image (first in array, if not a thumbnail)
+ * 2. Main product image (third position)
+ * 3. Hero pattern image (product-hero, main-product, etc.)
+ * 4. Any available image
+ * 5. null (no image available)
+ *
+ * @param {ProductImage[]} images - Array of product images
+ * @returns {ProductImage | null} Selected image or null if none available
+ */
+export function selectProductDisplayImage(images: ProductImage[]): ProductImage | null {
+  if (!images.length) {
+    return null;
+  }
+
+  // Check if first image is a thumbnail, if so skip to main product image
+  const isFirstImageThumbnail = images[0]?.alt?.toLowerCase().includes('thumbnail');
+  const variantImage = isFirstImageThumbnail ? null : images[0];
+  const mainProductImage = images[2];
+
+  const selectedImage =
+    variantImage ||
+    mainProductImage ||
+    findHeroProductImage(images) ||
+    images.find(Boolean) ||
+    null;
+
+  return selectedImage;
 }
 
 /**

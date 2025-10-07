@@ -1,12 +1,12 @@
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
-// Bike Image Skeleton
-export function BikeImageSkeleton() {
+// Product Image Skeleton
+export function ProductImageSkeleton() {
   return <Skeleton.Box className="aspect-square w-full max-w-lg rounded-lg" />;
 }
 
-// Bike Specs Skeleton
-export function BikeSpecsSkeleton() {
+// Product Specs Skeleton
+export function ProductSpecsSkeleton() {
   return (
     <div className="flex justify-center space-x-8">
       {Array.from({ length: 6 }).map((_, idx) => (
@@ -51,8 +51,8 @@ export function ProductDetailFormSkeleton() {
   );
 }
 
-// Full Product Detail Bike Skeleton
-export function ProductDetailBikeSkeleton() {
+// Full Product Detail Skeleton
+export function ProductDetailSkeleton() {
   return (
     <section className="relative w-full">
       <div className="relative min-h-[60vh] md:min-h-[70vh] lg:min-h-[80vh]">
@@ -90,7 +90,7 @@ export function ProductDetailBikeSkeleton() {
 
               {/* Bottom Specs */}
               <div className="mt-auto">
-                <BikeSpecsSkeleton />
+                <ProductSpecsSkeleton />
               </div>
             </Skeleton.Root>
           </div>

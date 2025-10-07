@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs/server';
+import { Suspense } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
@@ -10,8 +11,7 @@ import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
 import {
   getProductDetailVariant,
-  ProductDetailBike,
-  ProductDetailScooter,
+  ProductDetail as ProductDetailCustom,
 } from '~/components/product';
 import { DigitalTagLink } from '~/components/product/digital-tag/digital-tag-link';
 import { getPerformanceConfig } from '~/components/product/layout/performance-comparison/config';
@@ -23,7 +23,6 @@ import RelatedProducts from '~/components/product/shared/related-products';
 import { ProductFeatureCarousel } from '~/components/product-feature-carousel';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
-import { bikeProductTransformer } from '~/data-transformers/bike-product-transformer';
 import {
   findPerformanceImage,
   transformPerformanceComparisonData,
@@ -31,9 +30,9 @@ import {
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
-import { scooterProductTransformer } from '~/data-transformers/scooter-product-transformer';
+import { productTransformer } from '~/data-transformers/product-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
-import { extractFeatureFields, resolveCarouselImages } from '~/lib/extract-feature-fields';
+import { resolveCarouselImages } from '~/lib/extract-feature-fields';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
 
@@ -45,12 +44,14 @@ import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
 import { WishlistButton } from './_components/wishlist-button';
 import { WishlistButtonForm } from './_components/wishlist-button/form';
+import { calculateCtaState } from './_lib/cta-state';
+import { processCustomFields } from './_lib/custom-fields-processing';
+import { processProductImages } from './_lib/image-processing';
 import {
   getProduct,
   getProductPageMetadata,
   getProductPricingAndRelatedProducts,
   getProductsByCategory,
-  getStreamableProduct,
 } from './page-data';
 
 const compareLoader = createCompareLoader();
@@ -60,26 +61,31 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
-// Revalidate product pages every 30 minutes
-export const revalidate = 1800;
+// Product content revalidates every hour (pricing has shorter 5min revalidation)
+export const revalidate = 3600;
 
 // Generate static pages for popular products at build time
 export function generateStaticParams() {
-  // Return at least one locale to satisfy Next.js requirements
-  // You can expand this to pre-generate popular products
-  return [
-    { locale: 'en', slug: '1' }, // Dummy entry to prevent error
+  // Default: minimal static generation (one dummy page to satisfy Next.js)
+  // All other product pages will be generated on-demand with ISR (revalidate: 3600)
+  return [{ locale: 'en', slug: '1' }];
+
+  // PERFORMANCE BOOST: Pre-generate your top-selling products at build time
+  // This makes the first visit to these pages instant (no server rendering needed)
+  /*
+  // Example: Pre-generate 10-20 most popular products
+  const locales = ['en']; // Add more locales as needed: ['en', 'es', 'fr']
+  const topProductIds = [
+    '123', // Replace with your actual best-selling product IDs
+    '456', // Check BigCommerce dashboard > Products > Sort by Sales
+    '789',
+    // ... add 10-20 of your top products
   ];
 
-  // To pre-generate popular products, uncomment and modify:
-  /*
-  const locales = ['en', 'es', 'fr']; // Your supported locales
-  const popularProductIds = await getPopularProductIds();
-  
-  return locales.flatMap(locale => 
-    popularProductIds.map(id => ({
+  return locales.flatMap(locale =>
+    topProductIds.map(slug => ({
       locale,
-      slug: id.toString(),
+      slug,
     }))
   );
   */
@@ -143,243 +149,80 @@ export default async function Product({ params, searchParams }: Props) {
 
   const productId = Number(slug);
 
-  const baseProduct = await getProduct(productId, customerAccessToken);
+  // Build variables immediately (synchronous)
+  const options = await searchParams;
+  const optionValueIds = Object.keys(options)
+    .map((option) => ({
+      optionEntityId: Number(option),
+      valueEntityId: Number(options[option]),
+    }))
+    .filter(
+      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
+    );
 
-  if (!baseProduct) {
+  const currencyCode = await getPreferredCurrencyCode();
+
+  const productVariables = {
+    entityId: Number(productId),
+    optionValueIds,
+    useDefaultOptionSelections: true,
+    currencyCode,
+  };
+
+  // Fetch main product and pricing in parallel immediately
+  const [product, pricingData] = await Promise.all([
+    getProduct(productVariables, customerAccessToken),
+    getProductPricingAndRelatedProducts(productVariables, customerAccessToken),
+  ]);
+
+  if (!product) {
     return notFound();
   }
 
-  // Create product variables for fetching
-  const productVariables = Streamable.from(async () => {
-    const options = await searchParams;
-    const optionValueIds = Object.keys(options)
-      .map((option) => ({
-        optionEntityId: Number(option),
-        valueEntityId: Number(options[option]),
-      }))
-      .filter(
-        (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-      );
+  // Process all data synchronously using helper functions
+  const processedImages = processProductImages(product);
+  const { features, showcaseDescription, techSpecFields, accordions } = processCustomFields(
+    product,
+    t,
+  );
+  const carouselFeatures = resolveCarouselImages(features, processedImages);
+  const ctaData = calculateCtaState(product, t);
 
-    const currencyCode = await getPreferredCurrencyCode();
+  // Create streamables (instant resolution)
+  const streamableProductSku = Streamable.from(() => Promise.resolve(product.sku || ''));
+  const streamableImages = Streamable.from(() => Promise.resolve(processedImages));
+  const streamablePrices = Streamable.from(() =>
+    Promise.resolve(pricingData ? pricesTransformer(pricingData.prices, format) ?? null : null),
+  );
+  const streamableCarouselFeatures = Streamable.from(() => Promise.resolve(carouselFeatures));
+  const streamableCtaLabel = Streamable.from(() => Promise.resolve(ctaData.label));
+  const streamableCtaDisabled = Streamable.from(() => Promise.resolve(ctaData.disabled));
+  const streamableWarranty = Streamable.from(() => Promise.resolve(product.warranty || null));
+  const streamableShowcaseDescription = Streamable.from(() => Promise.resolve(showcaseDescription));
+  const streamableAccordions = Streamable.from(() => Promise.resolve(accordions));
+  const streamableTechSpecFields = Streamable.from(() => Promise.resolve(techSpecFields));
+  const streamableInventoryStatus = Streamable.from(() =>
+    Promise.resolve({
+      isInStock: product.inventory.isInStock,
+      status: product.availabilityV2.status,
+    }),
+  );
 
-    return {
-      entityId: Number(productId),
-      optionValueIds,
-      useDefaultOptionSelections: true,
-      currencyCode,
-    };
-  });
-
-
-  // Independent parallel streams for better performance
-  const streamableProduct = Streamable.from(async () => {
-    const variables = await productVariables;
-    const product = await getStreamableProduct(variables, customerAccessToken);
-
-    if (!product) {
-      return notFound();
-    }
-
-    return product;
-  });
-
-
-  const streamableProductSku = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    // Return the product SKU directly now that BigCommerce has proper SKUs configured
-    return product.sku || '';
-  });
-
-  const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
-    const variables = await productVariables;
-
-    return getProductPricingAndRelatedProducts(variables, customerAccessToken);
-  });
-
-  const streamablePrices = Streamable.from(async () => {
-    const pricingData = await streamableProductPricingAndRelatedProducts;
-
-    if (!pricingData) {
-      return null;
-    }
-
-    return pricesTransformer(pricingData.prices, format) ?? null;
-  });
-
-  const streamableImages = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    // Get all images without filtering out the default image
-    const allImages = removeEdgesAndNodes(product.images).map((image) => ({
-      src: image.url,
-      alt: image.altText,
-    }));
-
-    // If we have a default image and it's not already in the array, ensure it's first
-    if (product.defaultImage) {
-      const defaultImageInArray = allImages.find((img) => img.src === product.defaultImage?.url);
-
-      if (defaultImageInArray) {
-        // Default image is already in array, reorder to put it first
-        const otherImages = allImages.filter((img) => img.src !== product.defaultImage?.url);
-
-        return [
-          { src: product.defaultImage.url, alt: product.defaultImage.altText },
-          ...otherImages,
-        ];
-      }
-
-      // Default image not in array, add it as first
-      return [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...allImages];
-    }
-
-    return allImages;
-  });
-
-
-  // Create streamable carousel features data
-  const streamableCarouselFeatures = Streamable.from(async () => {
-    const [product, images] = await Streamable.all([streamableProduct, streamableImages]);
-
-    // Extract features from custom fields
-    const features = extractFeatureFields(product.customFields);
-
-    // Resolve image descriptors to actual BigCommerce images
-    return resolveCarouselImages(features, images);
-  });
-
-  // Consolidated CTA data - combines label and disabled state
-  const streamableCtaData = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    if (product.availabilityV2.status === 'Unavailable') {
-      return {
-        label: t('ProductDetails.Submit.unavailable'),
-        disabled: true,
-      };
-    }
-
-    if (product.availabilityV2.status === 'Preorder') {
-      return {
-        label: t('ProductDetails.Submit.preorder'),
-        disabled: false,
-      };
-    }
-
-    if (!product.inventory.isInStock) {
-      return {
-        label: t('ProductDetails.Submit.outOfStock'),
-        disabled: true,
-      };
-    }
-
-    return {
-      label: t('ProductDetails.Submit.addToCart'),
-      disabled: false,
-    };
-  });
-
-  const streamableCtaLabel = Streamable.from(async () => (await streamableCtaData).label);
-  const streamableCtaDisabled = Streamable.from(async () => (await streamableCtaData).disabled);
-
-  const streamableWarranty = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    return product.warranty || null;
-  });
-
-  const streamableShowcaseDescription = Streamable.from(async () => {
-    const product = await streamableProduct;
-    const customFields = removeEdgesAndNodes(product.customFields);
-    const field = customFields.find((f) => f.name.trim().toLowerCase() === 'showcase_description');
-    const value = field?.value.trim();
-
-    return value || null;
-  });
-
-  const streamableAccordions = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    const customFields = removeEdgesAndNodes(product.customFields);
-
-    const specifications = [
-      {
-        name: t('ProductDetails.Accordions.sku'),
-        value: product.sku,
-      },
-      {
-        name: t('ProductDetails.Accordions.weight'),
-        value: `${product.weight?.value} ${product.weight?.unit}`,
-      },
-      {
-        name: t('ProductDetails.Accordions.condition'),
-        value: product.condition,
-      },
-      ...customFields.map((field) => ({
-        name: field.name,
-        value: field.value,
-      })),
-    ];
-
-    return [
-      ...(specifications.length
-        ? [
-            {
-              title: t('ProductDetails.Accordions.specifications'),
-              content: (
-                <div className="prose @container">
-                  <dl className="flex flex-col gap-4">
-                    {specifications.map((field, index) => (
-                      <div className="grid grid-cols-1 gap-2 @lg:grid-cols-2" key={index}>
-                        <dt>
-                          <strong>{field.name}</strong>
-                        </dt>
-                        <dd>{field.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              ),
-            },
-          ]
-        : []),
-      ...(product.warranty
-        ? [
-            {
-              title: t('ProductDetails.Accordions.warranty'),
-              content: (
-                <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
-              ),
-            },
-          ]
-        : []),
-    ];
-  });
+  // Related products - optimize with early data
+  const relatedProductsRaw = pricingData ? removeEdgesAndNodes(pricingData.relatedProducts) : [];
+  const categories = pricingData ? removeEdgesAndNodes(pricingData.categories) : [];
 
   const streamableRelatedProducts = Streamable.from(async () => {
-    const pricingData = await streamableProductPricingAndRelatedProducts;
-
-    if (!pricingData) {
-      return [];
-    }
-
-    const relatedProducts = removeEdgesAndNodes(pricingData.relatedProducts);
-
-    // If we have related products, return them
-    if (relatedProducts.length > 0) {
-      return productCardTransformer(relatedProducts, format);
+    // If we have related products, return them immediately
+    if (relatedProductsRaw.length > 0) {
+      return productCardTransformer(relatedProductsRaw, format);
     }
 
     // Otherwise, fetch products from the same category as fallback
-    const categories = removeEdgesAndNodes(pricingData.categories);
-
     if (categories.length > 0) {
-      const categoryId = categories[0]?.entityId; // Use first category
+      const categoryId = categories[0]?.entityId;
 
       if (categoryId) {
-        const currencyCode = await getPreferredCurrencyCode();
         const categoryProducts = await getProductsByCategory(
           categoryId,
           productId,
@@ -394,69 +237,46 @@ export default async function Product({ params, searchParams }: Props) {
     return [];
   });
 
+  // Popular accessories - can fetch independently
   const streamablePopularAccessories = Streamable.from(async () => {
-    const currency = await getPreferredCurrencyCode();
-
-    // Get 3 featured gear + 3 featured accessories (6 total) with second image preference
-    // Already transformed and optimized - no additional transformation needed
-    return getFeaturedAddonsAndAccessories(currency, customerAccessToken);
+    return getFeaturedAddonsAndAccessories(currencyCode, customerAccessToken);
   });
 
-  const streamableAnalyticsData = Streamable.from(async () => {
-    const [product, pricingData] = await Streamable.all([
-      streamableProduct,
-      streamableProductPricingAndRelatedProducts,
-    ]);
+  // Analytics data (synchronous from already-fetched data)
+  const analyticsData = {
+    id: product.entityId,
+    name: product.name,
+    sku: product.sku,
+    brand: product.brand?.name ?? '',
+    price: pricingData?.prices?.price.value ?? 0,
+    currency: pricingData?.prices?.price.currencyCode ?? '',
+  };
 
-    return {
-      id: product.entityId,
-      name: product.name,
-      sku: product.sku,
-      brand: product.brand?.name ?? '',
-      price: pricingData?.prices?.price.value ?? 0,
-      currency: pricingData?.prices?.price.currencyCode ?? '',
-    };
-  });
+  const streamableAnalyticsData = Streamable.from(() => Promise.resolve(analyticsData));
 
-  // Determine which product detail component to use based on categories
-  const productDetailVariant = getProductDetailVariant(baseProduct);
+  // Determine which product detail component to use
+  const productDetailVariant = getProductDetailVariant(product);
 
-  // Create streamable bike-specific data for bike products
-  const streamableBikeData =
-    productDetailVariant === 'bike'
-      ? Streamable.from(async () => {
-          const product = await streamableProduct;
-
-          return bikeProductTransformer(product);
-        })
+  // Product data for bike/scooter (synchronous transformation)
+  const streamableProductData =
+    productDetailVariant === 'bike' || productDetailVariant === 'scooter'
+      ? Streamable.from(() => Promise.resolve(productTransformer(product)))
       : null;
 
-  // Create streamable scooter-specific data for scooter products
-  const streamableScooterData =
-    productDetailVariant === 'scooter'
-      ? Streamable.from(async () => {
-          const product = await streamableProduct;
-
-          return scooterProductTransformer(product);
-        })
-      : null;
-
-
-  // Create streamable performance comparison data for bikes and scooters
+  // Performance comparison (synchronous with already-processed data)
   const streamablePerformanceComparison =
     productDetailVariant === 'bike' || productDetailVariant === 'scooter'
-      ? Streamable.from(async () => {
-          const [product, images] = await Streamable.all([streamableProduct, streamableImages]);
+      ? Streamable.from(() => {
           const dynamicData = transformPerformanceComparisonData(product.customFields);
 
-          if (dynamicData.metrics.length === 0) return null;
+          if (dynamicData.metrics.length === 0) return Promise.resolve(null);
 
           const performanceImage = findPerformanceImage(
-            images,
+            processedImages,
             dynamicData.performanceImageDescription,
           );
 
-          return {
+          return Promise.resolve({
             config: getPerformanceConfig(),
             dynamicData,
             metrics: dynamicData.metrics,
@@ -465,127 +285,67 @@ export default async function Product({ params, searchParams }: Props) {
               alt: product.defaultImage?.altText || `${product.name} Performance`,
             },
             productTitle: product.name,
-          };
+          });
         })
       : null;
 
-  // Create streamable inventory status for all products
-  const streamableInventoryStatus = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    return {
-      isInStock: product.inventory.isInStock,
-      status: product.availabilityV2.status,
-    };
-  });
-
-  // Create streamable compare products
+  // Compare products
   const streamableCompareProducts = Streamable.from(async () => {
-    const searchParamsData = await searchParams;
-
-    const { compare } = compareLoader(searchParamsData);
+    const { compare } = compareLoader(options);
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
     if (compareIds.entityIds.length === 0) {
       return [];
     }
 
-    const products = await getCompareProductsData(compareIds, customerAccessToken);
+    const compareProducts = await getCompareProductsData(compareIds, customerAccessToken);
 
-    return products.map((product) => ({
-      id: product.entityId.toString(),
-      title: product.name,
-      image: product.defaultImage
-        ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+    return compareProducts.map((compareProduct) => ({
+      id: compareProduct.entityId.toString(),
+      title: compareProduct.name,
+      image: compareProduct.defaultImage
+        ? { src: compareProduct.defaultImage.url, alt: compareProduct.defaultImage.altText }
         : undefined,
-      href: product.path,
+      href: compareProduct.path,
     }));
   });
 
-  // Direct custom field filtering for TechSpecs
-  const streamableTechSpecFields = Streamable.from(async () => {
-    const product = await streamableProduct;
-    const customFields = removeEdgesAndNodes(product.customFields);
-
-    const fieldNames = {
-      Power: ['Battery', 'Charge Time', 'Class', 'Motor/s', 'Speed-Tech', 'Pedal Assist'],
-      Components: ['Brakes', 'Class', 'Frame Material', 'Speed', 'Tires', 'Throttle'],
-      Safety: [
-        'Brake Lights',
-        'Class',
-        'Headlights',
-        'Mobile App',
-        'Speed',
-        'Horn',
-        'Tail Light',
-        'Turn Signals',
-      ],
-      Other: ['Color', 'Class', 'Max Load', 'Model', 'Speed', 'Display', 'Seat Height'],
-    };
-
-    return {
-      Power: customFields.filter((field) => fieldNames.Power.includes(field.name)),
-      Components: customFields.filter((field) => fieldNames.Components.includes(field.name)),
-      Safety: customFields.filter((field) => fieldNames.Safety.includes(field.name)),
-      Other: customFields.filter((field) => fieldNames.Other.includes(field.name)),
-    };
-  });
-
+  // Base product data object
   const baseProductData = {
-    id: baseProduct.entityId.toString(),
-    title: baseProduct.name,
-    description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
-    href: baseProduct.path,
+    id: product.entityId.toString(),
+    title: product.name,
+    description: <div dangerouslySetInnerHTML={{ __html: product.description }} />,
+    href: product.path,
     images: streamableImages,
     price: streamablePrices,
-    subtitle: baseProduct.brand?.name,
-    rating: 4.5, // Default to 4.5 for testing
-    reviewCount: 15, // Default to 15 for testing
+    subtitle: product.brand?.name,
+    rating: product.reviewSummary.averageRating,
+    reviewCount: product.reviewSummary.numberOfReviews,
     accordions: streamableAccordions,
     inventoryStatus: streamableInventoryStatus,
-    brandLogo: baseProduct.brand?.defaultImage
+    brandLogo: product.brand?.defaultImage
       ? {
-          url: baseProduct.brand.defaultImage.url,
-          altText: baseProduct.brand.defaultImage.altText,
+          url: product.brand.defaultImage.url,
+          altText: product.brand.defaultImage.altText,
         }
       : null,
   };
 
   const defaultProductData = baseProductData;
 
-  // Enhanced product data for bike components
-  const bikeProductData = streamableBikeData
+  // Enhanced product data for bike and scooter components
+  const enhancedProductData = streamableProductData
     ? Streamable.from(async () => {
-        const bikeData = await streamableBikeData;
+        const productData = await streamableProductData;
         const warranty = await streamableWarranty;
 
         return {
           ...baseProductData,
-          backgroundImage: bikeData.backgroundImage,
-          bikeSpecs: Streamable.from(() => Promise.resolve(bikeData.bikeSpecs || null)),
-          colors: bikeData.colors,
+          backgroundImage: productData.backgroundImage,
+          productSpecs: Streamable.from(() => Promise.resolve(productData.productSpecs || null)),
+          colors: productData.colors,
           warranty,
-        };
-      })
-    : Streamable.from(async () => {
-        const warranty = await streamableWarranty;
-
-        return {
-          ...baseProductData,
-          warranty,
-        };
-      });
-
-  // Enhanced product data for scooter components
-  const scooterProductData = streamableScooterData
-    ? Streamable.from(async () => {
-        const scooterData = await streamableScooterData;
-
-        return {
-          ...baseProductData,
-          backgroundImage: scooterData.backgroundImage,
-          scooterSpecs: Streamable.from(() => Promise.resolve(scooterData.scooterSpecs || null)),
-          colors: scooterData.colors,
+          wheelSpecs: productData.wheelSpecs,
         };
       })
     : baseProductData;
@@ -599,7 +359,7 @@ export default async function Product({ params, searchParams }: Props) {
     ctaLabel: streamableCtaLabel,
     decrementLabel: t('ProductDetails.decreaseQuantity'),
     emptySelectPlaceholder: t('ProductDetails.emptySelectPlaceholder'),
-    fields: Streamable.from(() => productOptionsTransformer(baseProduct.productOptions)),
+    fields: Streamable.from(() => productOptionsTransformer(product.productOptions)),
     incrementLabel: t('ProductDetails.increaseQuantity'),
     maxCompareItems: 3,
     maxCompareLimitMessage: "You've reached the maximum number of products for comparison.",
@@ -624,10 +384,8 @@ export default async function Product({ params, searchParams }: Props) {
   const renderProductDetail = () => {
     switch (productDetailVariant) {
       case 'bike':
-        return <ProductDetailBike {...baseProps} product={bikeProductData} />;
-
       case 'scooter':
-        return <ProductDetailScooter {...baseProps} product={scooterProductData} />;
+        return <ProductDetailCustom {...baseProps} product={enhancedProductData} />;
 
       case 'default':
       default:
@@ -657,18 +415,18 @@ export default async function Product({ params, searchParams }: Props) {
       {/* Enhanced sections for bikes and scooters only */}
       {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
         <>
-          <Addons addons={streamablePopularAccessories} name={baseProduct.brand?.name} />
+          <Addons addons={streamablePopularAccessories} name={product.brand?.name} />
 
           <Stream
             fallback={<div className="h-[100vh] max-h-[900px] bg-gray-100" />}
             value={streamableShowcaseDescription}
           >
-            {(showcaseDescription) => (
+            {(showcaseDesc) => (
               <ProductShowcase
                 aria-labelledby="product-images-heading"
                 images={streamableImages}
-                productName={baseProduct.name}
-                showcaseDescription={showcaseDescription || undefined}
+                productName={product.name}
+                showcaseDescription={showcaseDesc || undefined}
               />
             )}
           </Stream>
@@ -696,7 +454,6 @@ export default async function Product({ params, searchParams }: Props) {
             </Stream>
           )}
 
-
           <TechSpecs powerSpecs={streamableTechSpecFields} />
         </>
       )}
@@ -711,25 +468,14 @@ export default async function Product({ params, searchParams }: Props) {
         showCompare={true}
       />
 
-      <Reviews productId={productId} searchParams={searchParams} />
+      {/* Defer reviews rendering - below the fold */}
+      <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100" />}>
+        <Reviews productId={productId} searchParams={searchParams} />
+      </Suspense>
 
-      <Stream
-        fallback={null}
-        value={Streamable.from(async () =>
-          Streamable.all([streamableProduct, streamableProductPricingAndRelatedProducts]),
-        )}
-      >
-        {([extendedProduct, pricingProduct]) => (
-          <>
-            <ProductSchema
-              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
-            />
-            <ProductViewed
-              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
-            />
-          </>
-        )}
-      </Stream>
+      {/* Product Schema and Analytics - instant with already-fetched data */}
+      <ProductSchema product={{ ...product, prices: pricingData?.prices ?? null }} />
+      <ProductViewed product={{ ...product, prices: pricingData?.prices ?? null }} />
 
       <WishlistButtonForm
         formId={detachedWishlistFormId}

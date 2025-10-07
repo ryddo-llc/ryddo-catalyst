@@ -2,8 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 
-import { ProductDetailBike } from '../bike/product-detail-bike';
-import { ProductDetailScooter } from '../scooter/product-detail-scooter';
+import { ProductDetail as ProductDetailCustom } from '../product-detail';
 
 interface ProductCategory {
   name: string;
@@ -54,4 +53,4 @@ export function getProductDetailVariant(product: ProductWithCategories): Product
 
 
 // Export component variants for easy access
-export { ProductDetail, ProductDetailBike, ProductDetailScooter };
+export { ProductDetail, ProductDetailCustom };

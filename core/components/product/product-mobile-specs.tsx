@@ -4,14 +4,14 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
 
-import { BikeSpecsSkeleton } from '../shared/product-detail-skeletons';
+import { ProductSpecsSkeleton } from './shared/product-detail-skeletons';
 
-interface ScooterMobileSpecsProps {
-  scooterSpecs?: Streamable<ProductSpecification[] | null>;
+interface ProductMobileSpecsProps {
+  productSpecs?: Streamable<ProductSpecification[] | null>;
   className?: string;
 }
 
-export function ScooterMobileSpecs({ scooterSpecs, className = "" }: ScooterMobileSpecsProps) {
+export function ProductMobileSpecs({ productSpecs, className = "" }: ProductMobileSpecsProps) {
   return (
     <Accordion 
       className={`rounded-[50px] border-2 border-[#F92F7B]/20 bg-white p-4 ${className}`}
@@ -23,7 +23,7 @@ export function ScooterMobileSpecs({ scooterSpecs, className = "" }: ScooterMobi
         value="specifications"
       >
         <div className="space-y-3 pt-2">
-        <Stream fallback={<BikeSpecsSkeleton />} value={scooterSpecs}>
+        <Stream fallback={<ProductSpecsSkeleton />} value={productSpecs}>
           {(specs) => {
             if (!specs || specs.length === 0) {
               return (
@@ -53,18 +53,6 @@ export function ScooterMobileSpecs({ scooterSpecs, className = "" }: ScooterMobi
           }}
         </Stream>
         
-        {/* Show More Button for additional specs */}
-        <Stream fallback={null} value={scooterSpecs}>
-          {(specs) => {
-            if (!specs || specs.length <= 6) return null;
-            
-            return (
-              <button className="w-full mt-4 px-4 py-2 text-sm font-medium text-pink-600 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors">
-                View All Specifications ({specs.length - 6} more)
-              </button>
-            );
-          }}
-        </Stream>
         </div>
       </AccordionItem>
     </Accordion>

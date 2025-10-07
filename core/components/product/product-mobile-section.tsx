@@ -5,19 +5,18 @@ import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import type { ProductSpecification } from '~/components/product/shared/product-specifications';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 
+import { ProductAddToCartForm } from './product-add-to-cart-form';
+import { ProductMobileSpecs } from './product-mobile-specs';
+import { ProductPrice } from './product-types';
 import {
   ProductDetailFormSkeleton,
   ProductSummarySkeleton,
   RatingSkeleton,
-} from '../shared/product-detail-skeletons';
+} from './shared/product-detail-skeletons';
 
-import { BikeAddToCartForm } from './bike-add-to-cart-form';
-import { BikeMobileSpecs } from './bike-mobile-specs';
-import { ProductPrice } from './types';
-
-interface BikeMobileSectionProps<F extends Field> {
+interface ProductMobileSectionProps<F extends Field> {
   product: {
     id: string;
     title: string;
@@ -26,7 +25,7 @@ interface BikeMobileSectionProps<F extends Field> {
     rating?: Streamable<number | null>;
     summary?: Streamable<string>;
     price?: ProductPrice;
-    bikeSpecs?: Streamable<ProductSpecification[] | null>;
+    productSpecs?: Streamable<ProductSpecification[] | null>;
     colors?: ColorOption[];
   };
   action: ProductDetailFormAction<F>;
@@ -37,7 +36,7 @@ interface BikeMobileSectionProps<F extends Field> {
   defaultPrice?: string;
 }
 
-export function BikeMobileSection<F extends Field>({
+export function ProductMobileSection<F extends Field>({
   product,
   action,
   fields,
@@ -45,7 +44,7 @@ export function BikeMobileSection<F extends Field>({
   ctaDisabled,
   additionalActions,
   defaultPrice = '$0',
-}: BikeMobileSectionProps<F>) {
+}: ProductMobileSectionProps<F>) {
   return (
     <div className="relative z-20 bg-white p-4 md:hidden">
       <div className="mx-auto max-w-2xl space-y-6">
@@ -121,8 +120,8 @@ export function BikeMobileSection<F extends Field>({
                   </Stream>
                 </div>
 
-                {/* Mobile Bike Add to Cart Form with Colors */}
-                <BikeAddToCartForm
+                {/* Mobile Product Add to Cart Form with Colors */}
+                <ProductAddToCartForm
                   action={action}
                   additionalActions={additionalActions}
                   compareProduct={{
@@ -142,7 +141,7 @@ export function BikeMobileSection<F extends Field>({
         </div>
 
         {/* Mobile Specifications */}
-        <BikeMobileSpecs bikeSpecs={product.bikeSpecs} />
+        <ProductMobileSpecs productSpecs={product.productSpecs} />
       </div>
     </div>
   );

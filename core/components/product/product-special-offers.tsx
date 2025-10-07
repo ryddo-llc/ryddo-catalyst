@@ -5,7 +5,7 @@ import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import type { ColorOption } from '~/data-transformers/bike-product-transformer';
+import type { ColorOption } from '~/data-transformers/product-transformer';
 
 // Helper function to identify variant fields (color/size)
 const isVariantField = (field: Field): boolean => {
@@ -90,7 +90,7 @@ const RenderVariantField = (field: Field, isColorField = false) => {
 
 // Other variant fields removed for performance - now using unified renderVariantField
 
-interface BikeLeftSidebarContentProps {
+interface ProductLeftSidebarContentProps {
   brandName?: string;
   description?: ReactNode;
   fields?: Field[];
@@ -98,11 +98,11 @@ interface BikeLeftSidebarContentProps {
   productId?: string;
 }
 
-export function BikeLeftSidebarContent({
+export function ProductLeftSidebarContent({
   brandName,
   description,
   fields = [],
-}: BikeLeftSidebarContentProps) {
+}: ProductLeftSidebarContentProps) {
   // Filter variant fields (color, size, etc.)
   const variantFields = fields.filter(isVariantField);
 

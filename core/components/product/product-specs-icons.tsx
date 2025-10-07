@@ -14,7 +14,7 @@ interface ProductSpecification {
   value: string;
 }
 
-export interface ScooterSpecsIconsProps {
+export interface ProductSpecsIconsProps {
   specs: ProductSpecification[];
 }
 
@@ -24,7 +24,7 @@ interface SpecIconConfig {
   keywords: string[];
 }
 
-// Icon configuration map for scooters - using static imports
+// Icon configuration map for products - using static imports
 const SPEC_ICON_MAP: SpecIconConfig[] = [
   {
     iconSrc: powerIcon,
@@ -81,11 +81,11 @@ function getSpecIcon(fieldName: string): Omit<SpecIconConfig, 'keywords'> {
   return config || DEFAULT_SPEC_ICON;
 }
 
-export function ScooterSpecsIcons({ specs }: ScooterSpecsIconsProps) {
+export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
   return (
     <div
-      aria-label="Scooter specifications"
-      className="grid grid-cols-3 gap-1 md:gap-1"
+      aria-label="Product specifications"
+      className="flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-12"
       role="region"
     >
       {specs.slice(0, 6).map((spec) => {
@@ -94,15 +94,19 @@ export function ScooterSpecsIcons({ specs }: ScooterSpecsIconsProps) {
         return (
           <div
             aria-label={`${spec.name}: ${spec.value}`}
-            className="flex flex-col items-center"
+            className="group relative flex flex-col items-center"
             key={spec.name}
             role="img"
           >
-            <div className="mb-2">
+            <div className="mb-1">
               <Image alt={alt} height={50} src={iconSrc} width={50} />
             </div>
-            <span className="text-xs font-bold text-gray-800">{spec.name}</span>
-            <span className="text-xs font-medium text-gray-600">{spec.value}</span>
+            <span className="text-md font-kanit font-bold italic text-black">{spec.value}</span>
+
+            {/* Tooltip that shows on hover */}
+            <div className="absolute bottom-full mb-2 hidden w-max rounded-2xl border border-white/20 bg-white/75 px-4 py-2 font-kanit text-sm font-medium text-gray-900 shadow-sm backdrop-blur-md transition-all duration-200 ease-out group-hover:block">
+              {spec.name}
+            </div>
           </div>
         );
       })}
@@ -111,4 +115,4 @@ export function ScooterSpecsIcons({ specs }: ScooterSpecsIconsProps) {
 }
 
 // Export types for reuse
-export type { ProductSpecification as ScooterSpecification };
+export type { ProductSpecification };

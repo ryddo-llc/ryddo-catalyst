@@ -8,8 +8,7 @@ import { Compare } from '@/vibes/soul/primitives/product-card/compare';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { ProductDetailFormAction } from '@/vibes/soul/sections/product-detail/product-detail-form';
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-
-import { revalidateCart } from '../../../vibes/soul/sections/product-detail/actions/revalidate-cart';
+import { revalidateCart } from '~/vibes/soul/sections/product-detail/actions/revalidate-cart';
 
 interface CompareDrawerItem {
   id: string;
@@ -18,7 +17,7 @@ interface CompareDrawerItem {
   title: string;
 }
 
-interface BikeAddToCartFormProps<F extends Field> {
+interface ProductAddToCartFormProps<F extends Field> {
   productId: string;
   action: ProductDetailFormAction<F>;
   fields: F[];
@@ -42,7 +41,7 @@ function SubmitButton({ children, disabled }: { children: string; disabled?: boo
   );
 }
 
-export function BikeAddToCartForm<F extends Field>({
+export function ProductAddToCartForm<F extends Field>({
   productId,
   action,
   fields,
@@ -50,7 +49,7 @@ export function BikeAddToCartForm<F extends Field>({
   ctaLabel = 'Add to cart',
   disabled = false,
   additionalActions,
-}: BikeAddToCartFormProps<F>) {
+}: ProductAddToCartFormProps<F>) {
   const [state, formAction] = useActionState(action, {
     fields,
     lastResult: null,
