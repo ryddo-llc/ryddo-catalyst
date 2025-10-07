@@ -11,14 +11,13 @@ import { getBase64BlurDataURL } from '~/lib/generate-blur-placeholder';
 import { selectProductDisplayImage } from '~/lib/image-resolver';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
-import { GalleryButtonWithModal } from './shared/gallery-button-with-modal';
-import { ProductBadges } from './shared/product-badges';
-import { ProductSpecsSkeleton, ProductDetailSkeleton } from './shared/product-detail-skeletons';
-import { ProductImageOverlay } from './shared/product-image-overlay';
-
 import { ProductMobileSection } from './product-mobile-section';
 import { ProductSpecsIcons } from './product-specs-icons';
 import { ProductVariantCoordinator } from './product-variant-coordinator';
+import { GalleryButtonWithModal } from './shared/gallery-button-with-modal';
+import { ProductBadges } from './shared/product-badges';
+import { ProductDetailSkeleton, ProductSpecsSkeleton } from './shared/product-detail-skeletons';
+import { ProductImageOverlay } from './shared/product-image-overlay';
 
 interface BaseProductDetailProduct {
   id: string;
