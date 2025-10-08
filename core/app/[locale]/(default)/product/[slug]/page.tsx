@@ -134,6 +134,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images: [url],
       }),
     },
+    alternates: {
+      canonical: product.path,
+    },
   };
 }
 

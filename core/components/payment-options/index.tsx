@@ -9,10 +9,7 @@ export function PaymentOptions() {
     <section
       className="relative w-full h-screen h-[min(100dvh,800px)] min-h-[600px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] md:bg-fixed motion-reduce:bg-scroll bg-neutral-100"
       style={{
-        backgroundImage: `image-set(
-          url('${imageManagerImageUrl('payment-options.jpg', '1920w')}') 1x,
-          url('${imageManagerImageUrl('payment-options.jpg', '3840w')}') 2x
-        )`
+        backgroundImage: `url('${imageManagerImageUrl('payment-options.jpg', '1920w')}')`
       }}
     >
       <div

@@ -9,6 +9,7 @@ const BrandPageQuery = graphql(`
     site {
       brand(entityId: $entityId) {
         name
+        path
         defaultImage {
           altText
           url: urlTemplate(lossy: true)

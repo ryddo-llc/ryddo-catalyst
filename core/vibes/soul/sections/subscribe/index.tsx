@@ -30,13 +30,21 @@ export function Subscribe({
     >
       {/* CSS Parallax Background */}
       {image && (
-        <div
-          className="absolute inset-0 h-full w-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${image.src}')`,
-            backgroundAttachment: 'fixed',
-          }}
-        />
+        <div className="absolute inset-0 h-full w-full">
+          <Image
+            alt={image.alt}
+            className="object-cover motion-reduce:bg-scroll"
+            fill
+            loading="lazy"
+            priority={false}
+            quality={75}
+            sizes="100vw"
+            src={image.src}
+            style={{
+              objectPosition: 'center',
+            }}
+          />
+        </div>
       )}
 
       {/* Content Container */}
