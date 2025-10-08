@@ -51,6 +51,7 @@ function CategoryItem({ category, className, layout = 'default', index = 0 }: Ca
             fill
             loading={index < 2 ? 'eager' : 'lazy'}
             priority={index < 2}
+            quality={80}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 600px"
             src={backgroundImage || category.image.url}
           />

@@ -66,6 +66,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: t('title'),
+    alternates: {
+      canonical: '/search',
+    },
   };
 }
 

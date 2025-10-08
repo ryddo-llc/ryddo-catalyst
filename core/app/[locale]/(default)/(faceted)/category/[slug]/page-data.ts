@@ -13,6 +13,7 @@ const CategoryPageQuery = graphql(
         category(entityId: $entityId) {
           entityId
           name
+          path
           ...BreadcrumbsFragment
           ...PageHeaderFragment
           seo {

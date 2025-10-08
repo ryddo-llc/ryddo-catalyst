@@ -54,17 +54,23 @@ export const contentImageUrl = (path: string, sizeParam?: string): string => {
  * @param {string} filename - The filename of the image managed by the image manager.
  * @param {string} sizeParam - The optional size parameter. Can be of the form `{:size}` (to make it a urlTemplate) or `original` or `123w` or `123x123`. If omitted, will return the templated string containing `{:size}`.
  * @param {boolean} lossy - Whether to apply lossy compression. Defaults to true for better performance.
+ * @param {number} quality - Optional quality parameter (1-100). If specified and sizeParam is not a template, adds quality param to URL.
  * @returns {string} The resizeable URL template for the image, which can be used with `<Image>`.
  */
-export const imageManagerImageUrl = (filename: string, sizeParam?: string, lossy = true): string => {
+export const imageManagerImageUrl = (filename: string, sizeParam?: string, lossy = true, quality?: number): string => {
   // return a urlTemplate that can be used with the <Image> component
   let url = cdnImageUrlBuilder(sizeParam || '{:size}', 'image-manager', filename);
-  
+
   // Add compression parameter for better performance unless explicitly disabled
   // Don't add query params to URL templates as it breaks CDN loader template replacement
   if (lossy && sizeParam !== 'original' && sizeParam !== '{:size}') {
     url = `${url}?compression=lossy`;
+
+    // Add quality parameter if specified and not a template
+    if (quality && sizeParam !== '{:size}') {
+      url = `${url}&quality=${quality}`;
+    }
   }
-  
+
   return url;
 };
