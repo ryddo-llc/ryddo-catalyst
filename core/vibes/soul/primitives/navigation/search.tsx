@@ -138,6 +138,16 @@ export function SearchForm<S extends SearchResult>({
         <SubmitButton loading={isPending} submitLabel={searchSubmitLabel} />
       </form>
 
+      {/* Minimum character hint */}
+      {query.length > 0 && query.length < 3 && (
+        <div className="border-b border-[var(--search-popup-border,hsl(var(--contrast-100)))] px-3 py-2 @sm:px-4 @4xl:px-6">
+          <p className="flex items-center gap-2 text-xs text-[var(--search-section-title,hsl(var(--contrast-400)))] @sm:text-sm">
+            <SearchIcon aria-hidden="true" className="h-3 w-3 @sm:h-4 @sm:w-4" />
+            Type at least 3 characters to search
+          </p>
+        </div>
+      )}
+
       {/* Recent & Trending Searches */}
       {query === '' && hasSearched && recentSearches.length > 0 && (
         <div aria-label="Recent searches" className="border-b border-[var(--search-popup-border,hsl(var(--contrast-100)))] p-3 @sm:p-4 @4xl:p-6" role="region">
@@ -169,7 +179,6 @@ export function SearchForm<S extends SearchResult>({
         errors={form.errors}
         query={query}
         searchHref={searchHref}
-        searchParamName={searchParamName}
         searchResults={searchResults}
         stale={isPending}
       />
@@ -201,7 +210,6 @@ function SubmitButton({ loading, submitLabel }: SubmitButtonProps) {
 interface SearchResultsProps {
   query: string;
   searchHref: string;
-  searchParamName: string;
   emptySearchTitle?: string;
   emptySearchSubtitle?: string;
   searchResults: SearchResult[] | null;
@@ -314,8 +322,8 @@ function SearchResults({
                     <TrendingUp size={14} />
                     {result.title}
                   </h3>
-                  <Link 
-                    className="text-sm font-medium text-[var(--search-input-border-focus,hsl(var(--primary)))] hover:underline" 
+                  <Link
+                    className="text-sm font-medium text-[var(--search-input-border-focus,hsl(var(--primary)))] hover:underline"
                     href={searchHref}
                   >
                     View all →

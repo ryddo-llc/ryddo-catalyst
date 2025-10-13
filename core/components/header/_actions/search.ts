@@ -8,8 +8,6 @@ import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { SearchResult } from '@/vibes/soul/primitives/navigation';
-
-// Import required Algolia dependencies, including the transformer and client
 import {
   AlgoliaHit,
   algoliaResultsTransformer,
