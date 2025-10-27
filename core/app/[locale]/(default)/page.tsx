@@ -5,8 +5,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { CategoryShowcase } from '~/components/category-showcase';
-import { getHeaderCategories } from '~/components/category-showcase/query';
+import { BrandShowcase } from '~/components/brand-showcase';
 import { PaymentOptions } from '~/components/payment-options';
 import { PopularProducts } from '~/components/popular-products';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -80,14 +79,6 @@ export default async function Home({ params, searchParams }: Props) {
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
-  const streamableCategories = Streamable.from(async () => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const categoryTree = await getHeaderCategories(customerAccessToken);
-
-    // Take first 5 top-level categories
-    return categoryTree.slice(0, 5);
-  });
-
   const streamablePopularProducts = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const currencyCode = await getPreferredCurrencyCode();
@@ -128,7 +119,29 @@ export default async function Home({ params, searchParams }: Props) {
     <>
       <OrganizationSchema />
       <Slideshow />
-      <CategoryShowcase categories={streamableCategories} />
+      <BrandShowcase
+        adventureGuarantee={{
+          title: t('BrandShowcase.adventureGuarantee.title'),
+          description: t('BrandShowcase.adventureGuarantee.description'),
+        }}
+        certifiedPreOwned={{
+          title: t('BrandShowcase.certifiedPreOwned.title'),
+          description: t('BrandShowcase.certifiedPreOwned.description'),
+        }}
+        certifiedService={{
+          title: t('BrandShowcase.certifiedService.title'),
+          description: t('BrandShowcase.certifiedService.description'),
+        }}
+        sameDayDelivery={{
+          title: t('BrandShowcase.sameDayDelivery.title'),
+          description: t('BrandShowcase.sameDayDelivery.description'),
+        }}
+        subtitle={t('BrandShowcase.subtitle')}
+        tradeInUp={{
+          title: t('BrandShowcase.tradeInUp.title'),
+          description: t('BrandShowcase.tradeInUp.description'),
+        }}
+      />
 
       <PaymentOptions />
 

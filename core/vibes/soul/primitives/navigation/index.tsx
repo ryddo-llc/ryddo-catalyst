@@ -101,11 +101,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     logo: streamableLogo,
     logoHref = '/',
     logoLabel = 'Home',
-    logoWidth = 200,
-    logoHeight = 40,
+    logoWidth = 190,
+    logoHeight = 38,
     mobileLogo: streamableMobileLogo,
-    mobileLogoWidth = 100,
-    mobileLogoHeight = 40,
+    mobileLogoWidth = 95,
+    mobileLogoHeight = 38,
     linksPosition = 'center',
     activeLocaleId,
     locales,
@@ -236,7 +236,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     >
       <div
         className={clsx(
-          'flex items-center justify-between gap-4 bg-[var(--nav-background,hsl(var(--background)))] py-1.5 px-4 transition-shadow @4xl:rounded-2xl',
+          'flex items-center justify-between gap-4 bg-[var(--nav-background,hsl(var(--background)))] py-1.5 pl-16 pr-4 transition-shadow @4xl:rounded-2xl',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
@@ -668,6 +668,14 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 )
               }
             </Stream>
+          </Link>
+
+          {/* Contact Us Pill Button */}
+          <Link
+            className="hidden rounded-full bg-gray-200 px-4 py-2 text-sm font-semibold font-[family-name:Inter,sans-serif] text-foreground ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 hover:bg-gray-300 focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
+            href="/contact"
+          >
+            Contact Us
           </Link>
 
           {/* Locale / Language Dropdown */}

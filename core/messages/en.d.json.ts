@@ -49,6 +49,30 @@ declare const messages: {
       "cta": "Visit Our Store",
       "emptyStateTitle": "No popular products found",
       "emptyStateSubtitle": "Try browsing our complete catalog of products."
+    },
+    "BrandShowcase": {
+      "title": "Rethinking the ride",
+      "subtitle": "Not just selling e-rides—redefining the industry",
+      "sameDayDelivery": {
+        "title": "Same day delivery",
+        "description": "Available in select US Cities."
+      },
+      "adventureGuarantee": {
+        "title": "10-day adventure guarantee",
+        "description": "Swap within 10 days—credit applies anywhere."
+      },
+      "tradeInUp": {
+        "title": "Trade-In & Trade-Up",
+        "description": "Instant credit toward your new ride."
+      },
+      "certifiedPreOwned": {
+        "title": "Certified Pre-Owned Bikes",
+        "description": "Inspected to meet the highest standards."
+      },
+      "certifiedService": {
+        "title": "Certified Service Centers",
+        "description": "Nationwide Service to meet brand standards."
+      }
     }
   },
   "Auth": {
