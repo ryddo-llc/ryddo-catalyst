@@ -41,14 +41,25 @@ export default async function DefaultLayout({ params, children }: Props) {
 
   return (
     <InventoryProvider>
-      <div className="max-w-screen-8xl flex flex-col">
-        <Header banners={streamableBanners} />
+      <div className="flex flex-col bg-black">
+        {/* Header wrapper */}
+        <div className="w-full pt-4">
+          <div className="mx-auto max-w-7xl rounded-t-2xl bg-white">
+            <Header banners={streamableBanners} />
+          </div>
+        </div>
 
-        <main className="flex-grow">{children}</main>
+        <main className="flex-grow">
+          <div className="w-full">
+            <div className="mx-auto max-w-7xl rounded-b-2xl bg-white px-4 pb-8 sm:px-6 lg:px-8">
+              {children}
 
-        <Subscribe />
+              <Subscribe />
 
-        <Footer />
+              <Footer />
+            </div>
+          </div>
+        </main>
 
         {/* Partners Contact Bar - Fixed at bottom of viewport */}
 
