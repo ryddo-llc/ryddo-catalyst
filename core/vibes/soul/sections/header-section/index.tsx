@@ -44,10 +44,7 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
           pinStart={bannerHeight}
           style={{ zIndex: isFloating ? 150 : 100 }}
         >
-          <div className={clsx(
-            'p-2',
-            !isFloating && 'border-b border-solid border-b-[#DBDBDB]'
-          )}>
+          <div className="p-2">
             <Navigation {...navigation} isFloating={isFloating} />
           </div>
         </Headroom>

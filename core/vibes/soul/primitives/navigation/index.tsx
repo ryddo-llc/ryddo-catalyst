@@ -4,7 +4,7 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import { Search, ShoppingBag, User } from 'lucide-react';
-import { forwardRef, Ref, useCallback, useEffect, useMemo, useState } from 'react';
+import { forwardRef, Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Logo } from '@/vibes/soul/primitives/logo';
@@ -130,6 +130,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const { isSearchOpen, setIsSearchOpen } = useSearch();
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
   const [expandedSubSections, setExpandedSubSections] = useState<Set<string>>(new Set());
+  const [activePillStyle, setActivePillStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const navItemsRef = useRef<(HTMLElement | null)[]>([]);
 
   const pathname = usePathname();
 
@@ -234,7 +236,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     >
       <div
         className={clsx(
-          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-1.5 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-5 @4xl:pr-2',
+          'flex items-center justify-between gap-4 bg-[var(--nav-background,hsl(var(--background)))] py-1.5 px-4 transition-shadow @4xl:rounded-2xl',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
@@ -514,7 +516,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Top Level Nav Links */}
         <ul
           className={clsx(
-            'hidden gap-1 @4xl:flex @4xl:flex-1',
+            'hidden gap-1 rounded-full bg-gray-100 p-1.5 @4xl:flex @4xl:flex-1 relative',
             {
               left: '@4xl:justify-start',
               center: '@4xl:justify-center',
@@ -522,6 +524,18 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             }[linksPosition],
           )}
         >
+          {/* Animated sliding background pill */}
+          <div
+            className="absolute bg-white shadow-md rounded-full transition-all duration-300 ease-out pointer-events-none"
+            style={{
+              left: `${activePillStyle.left}px`,
+              width: `${activePillStyle.width}px`,
+              height: 'calc(100% - 12px)',
+              top: '6px',
+              opacity: activePillStyle.opacity,
+            }}
+          />
+
           <Stream
             fallback={
               <ul className="flex min-h-[41px] animate-pulse flex-row items-center @4xl:gap-6 @4xl:p-2.5">
@@ -542,10 +556,29 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             value={streamableLinks}
           >
             {(links) => {
+              // Update active pill position when links or pathname changes
+              useEffect(() => {
+                const activeIndex = links.findIndex((link) => getIsActive(link.href));
+                if (activeIndex !== -1 && navItemsRef.current[activeIndex]) {
+                  const activeElement = navItemsRef.current[activeIndex];
+                  if (activeElement) {
+                    const containerLeft = activeElement.offsetParent?.getBoundingClientRect().left || 0;
+                    const elementRect = activeElement.getBoundingClientRect();
+                    setActivePillStyle({
+                      left: elementRect.left - containerLeft,
+                      width: activeElement.offsetWidth,
+                      opacity: 1,
+                    });
+                  }
+                } else {
+                  setActivePillStyle((prev) => ({ ...prev, opacity: 0 }));
+                }
+              }, [links, pathname]);
+
               return links.map((item, i) => {
                 // Use memoized active state calculation
                 const isActive = getIsActive(item.href);
-                
+
                 return (
                   <NavigationItem
                     index={i}
@@ -553,6 +586,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     isFloating={isFloating}
                     item={item}
                     key={i}
+                    ref={(el: HTMLElement | null) => {
+                      navItemsRef.current[i] = el;
+                    }}
                   />
                 );
               });
