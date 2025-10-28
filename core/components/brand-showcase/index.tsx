@@ -113,7 +113,7 @@ export function BrandShowcase({
 
         <div className="space-y-6">
           {/* Top Row - Middle card largest, side cards bigger, all same height */}
-          <div className="grid grid-cols-1 gap-2 md:gap-2 lg:grid-cols-7">
+          <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-7">
             <div className="lg:col-span-2">
               <BrandCard
                 bgColor="bg-blue-500"
