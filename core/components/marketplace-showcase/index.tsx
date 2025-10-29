@@ -33,19 +33,19 @@ function MarketplaceCard({
   return (
     <Link
       className={clsx(
-        'group block w-full min-w-[120px] max-w-[200px] overflow-hidden rounded-[13%] bg-white p-1 transition-all hover:shadow-lg',
+        'group block w-full min-w-[120px] max-w-[200px] overflow-hidden rounded-[13px] bg-white p-1 transition-all hover:shadow-lg',
         className,
       )}
       href={product.path}
     >
       <div
         className={clsx(
-          'relative flex aspect-[3/4] flex-col overflow-hidden rounded-[calc(13%-1px)]',
+          'relative flex aspect-[3/4] flex-col overflow-hidden rounded-[12px]',
           bgColor,
         )}
       >
-        {/* Top 50% - Content Area */}
-        <div className="relative h-1/2 p-3">
+        {/* Top 45% - Content Area */}
+        <div className="relative h-[45%] p-3">
           {/* Badge Text - Top Left */}
           {badgeText && (
             <span className="absolute left-3 top-3 font-[family-name:var(--font-family-body)] text-xs font-extralight italic text-white">
@@ -71,8 +71,8 @@ function MarketplaceCard({
           </div>
         </div>
 
-        {/* Bottom 50% - Image Area */}
-        <div className="relative h-1/2 overflow-hidden rounded-t-[13%]">
+        {/* Bottom 55% - Image Area */}
+        <div className="relative h-[55%] overflow-hidden rounded-t-[13px]">
           {product.defaultImage ? (
             <Image
               alt={product.defaultImage.altText}
@@ -119,21 +119,21 @@ export async function MarketplaceShowcase({
   return (
     <section className="rounded-b-[30px] pb-8 md:pb-12 lg:pb-16">
       <div className="mx-auto max-w-[var(--section-max-width-2xl,1536px)] px-4 @xl:px-6 @4xl:px-8">
-        <div className="rounded-[30px] bg-blue-100 px-4 pb-2 pt-12 md:px-8 md:pb-2 md:pt-16">
+        <div className="rounded-[30px] bg-blue-100 px-4 pb-4 pt-12 md:px-8 md:pb-4 md:pt-16">
           {/* Header Section */}
-          <header className="mb-6 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
-            <h1 className="leading-none">
+          <header className="mb-12 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
+            <h1 className="leading-[0.8]">
               <span className="block font-[family-name:var(--font-family-kanit)] text-4xl font-semibold text-orange-500">
                 THE E-RIDE
               </span>
-              <span className="block font-[family-name:var(--font-family-kanit)] text-7xl font-black italic text-orange-600">
+              <span className="block -ml-2 font-[family-name:var(--font-family-kanit)] text-7xl font-black italic text-[rgb(196,69,49)]">
                 MARKETPLACE
               </span>
             </h1>
             <p className="mt-3 font-[family-name:var(--font-family-body)] text-3xl font-normal text-gray-700">
               Only the Good Stuff.
             </p>
-            <p className="mt-2 font-[family-name:var(--font-family-body)] text-3xl font-black italic leading-tight text-yellow-400">
+            <p className="mt-6 font-[family-name:var(--font-family-body)] text-3xl font-black italic leading-tight text-yellow-400">
               10-DAY ADVENTURE
               <br />
               GUARANTEE
