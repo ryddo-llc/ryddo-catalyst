@@ -105,6 +105,7 @@ export default async function Home({ params, searchParams }: Props) {
       name: product.name,
       path: product.path,
       defaultImage: product.defaultImage,
+      brand: product.brand,
     }));
   });
 
@@ -135,12 +136,7 @@ export default async function Home({ params, searchParams }: Props) {
   return (
     <>
       <OrganizationSchema />
-      <MarketplaceShowcase
-        guarantee={t('MarketplaceShowcase.guarantee')}
-        products={streamableMarketplaceProducts}
-        subtitle={t('MarketplaceShowcase.subtitle')}
-        title={t('MarketplaceShowcase.title')}
-      />
+      <MarketplaceShowcase products={streamableMarketplaceProducts} />
       <BrandShowcase
         adventureGuarantee={{
           title: t('BrandShowcase.adventureGuarantee.title'),

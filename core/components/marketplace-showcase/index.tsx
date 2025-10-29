@@ -12,49 +12,78 @@ interface MarketplaceProduct {
     altText: string;
     url: string;
   } | null;
+  brand?: {
+    name: string;
+  } | null;
 }
 
 interface MarketplaceCardProps {
   product: MarketplaceProduct;
   bgColor?: string;
+  badgeText?: string | null;
   className?: string;
 }
 
-function MarketplaceCard({ product, bgColor = 'bg-blue-500', className }: MarketplaceCardProps) {
+function MarketplaceCard({
+  product,
+  bgColor = 'bg-blue-500',
+  badgeText,
+  className,
+}: MarketplaceCardProps) {
   return (
     <Link
       className={clsx(
-        'group block w-[200px] overflow-hidden rounded-[30px] bg-white p-1.5 transition-all hover:shadow-lg',
+        'group block w-full min-w-[120px] max-w-[200px] overflow-hidden rounded-[13%] bg-white p-1 transition-all hover:shadow-lg',
         className,
       )}
       href={product.path}
     >
       <div
         className={clsx(
-          'relative flex h-[275px] flex-col items-center justify-between overflow-hidden rounded-[28px] p-4',
+          'relative flex aspect-[3/4] flex-col overflow-hidden rounded-[calc(13%-1px)]',
           bgColor,
         )}
       >
-        {/* Product Name at Top */}
-        <div className="w-full text-center">
-          <h3 className="font-[family-name:var(--font-family-body)] text-sm font-bold uppercase text-white">
-            {product.name}
-          </h3>
+        {/* Top 50% - Content Area */}
+        <div className="relative h-1/2 p-3">
+          {/* Badge Text - Top Left */}
+          {badgeText && (
+            <span className="absolute left-3 top-3 font-[family-name:var(--font-family-body)] text-xs font-extralight italic text-white">
+              {badgeText}
+            </span>
+          )}
+
+          {/* Circle Button - Top Right */}
+          <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-black">
+            <span className="relative -top-[3px] text-xl font-bold leading-none text-white">+</span>
+          </div>
+
+          {/* Brand & Product Names - Centered Vertically */}
+          <div className="flex h-full flex-col items-start justify-center px-1">
+            {product.brand?.name && (
+              <p className="font-[family-name:var(--font-family-body)] text-lg font-extrabold text-black">
+                {product.brand.name}
+              </p>
+            )}
+            <h3 className="font-[family-name:var(--font-family-body)] text-sm font-light italic text-black">
+              {product.name}
+            </h3>
+          </div>
         </div>
 
-        {/* Product Image in Middle */}
-        <div className="relative flex flex-1 items-center justify-center">
+        {/* Bottom 50% - Image Area */}
+        <div className="relative h-1/2 overflow-hidden rounded-t-[13%]">
           {product.defaultImage ? (
             <Image
               alt={product.defaultImage.altText}
-              className="object-contain"
+              className="object-cover"
               fill
-              sizes="200px"
+              sizes="(max-width: 640px) 120px, 200px"
               src={product.defaultImage.url}
             />
           ) : (
-            <div className="flex h-32 w-32 items-center justify-center bg-white/20 text-white">
-              No Image
+            <div className="flex h-full w-full items-center justify-center bg-white/20">
+              <span className="text-xs text-white">No Image</span>
             </div>
           )}
         </div>
@@ -64,9 +93,6 @@ function MarketplaceCard({ product, bgColor = 'bg-blue-500', className }: Market
 }
 
 export interface MarketplaceShowcaseProps {
-  title: string;
-  subtitle: string;
-  guarantee: string;
   products: Streamable<MarketplaceProduct[]>;
 }
 
@@ -79,10 +105,10 @@ const cardColors = [
   'bg-orange-500',
 ];
 
+// Placeholder badge texts (will be replaced with real logic later)
+const PLACEHOLDER_BADGES = ['New!', 'Sale', 'Top Seller', 'Pre-Order', null, null];
+
 export async function MarketplaceShowcase({
-  title,
-  subtitle,
-  guarantee,
   products: streamableProducts,
 }: MarketplaceShowcaseProps) {
   const products = await streamableProducts;
@@ -91,22 +117,34 @@ export async function MarketplaceShowcase({
   const displayProducts = products.slice(0, 6);
 
   return (
-    <section className="pb-8 md:pb-12 lg:pb-16">
+    <section className="rounded-b-[30px] pb-8 md:pb-12 lg:pb-16">
       <div className="mx-auto max-w-[var(--section-max-width-2xl,1536px)] px-4 @xl:px-6 @4xl:px-8">
-        <div className="rounded-[30px] bg-gray-100 px-4 pb-12 pt-4 md:px-8 md:pb-16 md:pt-6">
+        <div className="rounded-[30px] bg-blue-100 px-4 pb-2 pt-12 md:px-8 md:pb-2 md:pt-16">
           {/* Header Section */}
-          <header className="mb-12 text-center font-[family-name:var(--font-family-body)]">
-            <h1 className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold text-[hsl(var(--foreground))] md:text-6xl lg:text-7xl">
-              {title}
+          <header className="mb-6 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
+            <h1 className="leading-none">
+              <span className="block font-[family-name:var(--font-family-kanit)] text-4xl font-semibold text-orange-500">
+                THE E-RIDE
+              </span>
+              <span className="block font-[family-name:var(--font-family-kanit)] text-7xl font-black italic text-orange-600">
+                MARKETPLACE
+              </span>
             </h1>
-            <p className="mt-3 text-xl font-medium text-gray-700 md:text-2xl">{subtitle}</p>
-            <p className="mt-2 text-lg font-light text-gray-600">{guarantee}</p>
+            <p className="mt-3 font-[family-name:var(--font-family-body)] text-3xl font-normal text-gray-700">
+              Only the Good Stuff.
+            </p>
+            <p className="mt-2 font-[family-name:var(--font-family-body)] text-3xl font-black italic leading-tight text-yellow-400">
+              10-DAY ADVENTURE
+              <br />
+              GUARANTEE
+            </p>
           </header>
 
           {/* Products Grid - Always 6 columns */}
-          <div className="flex justify-center gap-4 overflow-x-auto">
+          <div className="flex justify-start gap-4 overflow-x-auto pl-8 md:pl-12">
             {displayProducts.map((product, index) => (
               <MarketplaceCard
+                badgeText={PLACEHOLDER_BADGES[index]}
                 bgColor={cardColors[index % cardColors.length]}
                 key={product.entityId}
                 product={product}
