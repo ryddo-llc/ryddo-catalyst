@@ -73,6 +73,11 @@ declare const messages: {
         "title": "Certified Service Centers",
         "description": "Nationwide Service to meet brand standards."
       }
+    },
+    "MarketplaceShowcase": {
+      "title": "The E-Ride Marketplace",
+      "subtitle": "Only the Good Stuff",
+      "guarantee": "10 day adventure Guarantee"
     }
   },
   "Auth": {

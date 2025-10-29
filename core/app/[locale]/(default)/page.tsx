@@ -6,6 +6,7 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { BrandShowcase } from '~/components/brand-showcase';
+import { MarketplaceShowcase } from '~/components/marketplace-showcase';
 import { PaymentOptions } from '~/components/payment-options';
 import { PopularProducts } from '~/components/popular-products';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -14,7 +15,6 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getCompareProducts as getCompareProductsData } from './(faceted)/fetch-compare-products';
 import { getSearchPageData } from './(faceted)/search/page-data';
 import { OrganizationSchema } from './_components/organization-schema';
-import { Slideshow } from './_components/slideshow';
 import { getPopularProductsData } from './page-data';
 
 const compareLoader = createCompareLoader();
@@ -91,6 +91,23 @@ export default async function Home({ params, searchParams }: Props) {
     return productCardTransformer(searchProducts.slice(0, 8), format);
   });
 
+  const streamableMarketplaceProducts = Streamable.from(async () => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const currencyCode = await getPreferredCurrencyCode();
+
+    const data = await getPopularProductsData(currencyCode, customerAccessToken);
+
+    const searchProducts = removeEdgesAndNodes(data.site.search.searchProducts.products);
+
+    // Take first 6 products for marketplace showcase
+    return searchProducts.slice(0, 6).map((product) => ({
+      entityId: product.entityId,
+      name: product.name,
+      path: product.path,
+      defaultImage: product.defaultImage,
+    }));
+  });
+
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParamsData = await searchParams;
     const customerAccessToken = await getSessionCustomerAccessToken();
@@ -118,7 +135,12 @@ export default async function Home({ params, searchParams }: Props) {
   return (
     <>
       <OrganizationSchema />
-      <Slideshow />
+      <MarketplaceShowcase
+        guarantee={t('MarketplaceShowcase.guarantee')}
+        products={streamableMarketplaceProducts}
+        subtitle={t('MarketplaceShowcase.subtitle')}
+        title={t('MarketplaceShowcase.title')}
+      />
       <BrandShowcase
         adventureGuarantee={{
           title: t('BrandShowcase.adventureGuarantee.title'),
