@@ -6,11 +6,13 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { BrandShowcase } from '~/components/brand-showcase';
+import { LegitBrands } from '~/components/legit-brands';
 import { MarketplaceShowcase } from '~/components/marketplace-showcase';
 import { PaymentOptions } from '~/components/payment-options';
 import { PopularProducts } from '~/components/popular-products';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { getCompareProducts as getCompareProductsData } from './(faceted)/fetch-compare-products';
 import { getSearchPageData } from './(faceted)/search/page-data';
@@ -161,7 +163,29 @@ export default async function Home({ params, searchParams }: Props) {
         }}
       />
 
-      <PaymentOptions />
+      <LegitBrands
+        title={{
+          line1: t('LegitBrands.title.line1'),
+          line2: t('LegitBrands.title.line2'),
+          line2Highlight: t('LegitBrands.title.line2Highlight'),
+          line3: t('LegitBrands.title.line3'),
+          line4: t('LegitBrands.title.line4'),
+          line5: t('LegitBrands.title.line5'),
+        }}
+        description={{
+          line1: t('LegitBrands.description.line1'),
+          line2: t('LegitBrands.description.line2'),
+          line3: t('LegitBrands.description.line3'),
+        }}
+        linkText={{
+          highlight: t('LegitBrands.linkText.highlight'),
+          rest: t('LegitBrands.linkText.rest'),
+        }}
+        imageAlt={t('LegitBrands.imageAlt')}
+        imageUrl={imageManagerImageUrl('legit-brands-hero.jpg', 'original')}
+      />
+
+      {/* <PaymentOptions /> */}
 
       <PopularProducts
         compareHref="/compare"

@@ -75,6 +75,26 @@
       "title": "The E-Ride Marketplace",
       "subtitle": "Only the Good Stuff",
       "guarantee": "10 day adventure Guarantee"
+    },
+    "LegitBrands": {
+      "title": {
+        "line1": "Where",
+        "line2": "the",
+        "line2Highlight": "Legit",
+        "line3": "Brands",
+        "line4": "Ride",
+        "line5": "Together"
+      },
+      "description": {
+        "line1": "A selection of e-rides selected by Ryddo",
+        "line2": "as the best in the industry. These",
+        "line3": "premium brands with high build"
+      },
+      "linkText": {
+        "highlight": "Learn more",
+        "rest": "about becoming a Ryddo brand or dealer partner."
+      },
+      "imageAlt": "Premium e-ride brands partnership"
     }
   },
   "Auth": {
