@@ -17,10 +17,8 @@ import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
-import ContactSection from './contact-section';
 import Copyright from './copyright';
 import { FooterFragment, FooterSectionsFragment } from './fragment';
-import InfoSection from './info-section';
 
 const socialIcons: Record<string, { icon: JSX.Element }> = {
   Facebook: { icon: <SiFacebook title="Facebook" /> },
@@ -70,9 +68,14 @@ export const Footer = async () => {
 
     const sectionsData = await getFooterSections(customerAccessToken);
 
+    // Get Instagram link from social media
+    const instagramLink = socialMediaLinks?.find((link) =>
+      link.icon?.props?.title === 'Instagram'
+    )?.href || 'https://instagram.com/ryddousa';
+
     return [
       {
-        title: t('shop'),
+        title: t('products'),
         links: sectionsData.categoryTree
           .map((category) => ({
             label: category.name,
@@ -80,24 +83,43 @@ export const Footer = async () => {
           })),
       },
       {
-        title: t('explore'),
+        title: t('company'),
         links: [
-          { label: 'About', href: '/about/' },
-          { label: 'Terms & Conditions', href: '/terms-conditions/' },
-          { label: 'My Account', href: '/login/' },
-          { label: 'Contact Us', href: '/contact/' },
+          { label: t('aboutUs'), href: '/about/' },
+          { label: t('theTeam'), href: '/team/' },
+          { label: t('contactUs'), href: '/contact/' },
+          { label: t('privacyPolicy'), href: '/privacy-policy/' },
         ],
+      },
+      {
+        title: t('support'),
+        links: [
+          { label: t('emailUs'), href: '/contact/' },
+          { label: t('suggestions'), href: '/suggestions/' },
+          { label: t('chatLive'), href: '/chat/' },
+          { label: t('returns'), href: '/returns/' },
+          { label: t('exchanges'), href: '/exchanges/' },
+        ],
+      },
+      {
+        title: t('partnerWithRyddo'),
+        links: [
+          { label: t('dealerPrograms'), href: '/dealer-programs/' },
+          { label: t('brandPrograms'), href: '/brand-programs/' },
+        ],
+        contact: {
+          phone: '(323) 676-7433',
+          email: 'hey@ryddo.com',
+          instagram: instagramLink,
+        },
       },
     ];
   });
 
   return (
     <FooterSection
-      contactSection={<ContactSection />}
       copyright={<Copyright />}
-      infoSection={<InfoSection />}
       sections={streamableSections}
-      socialMediaLinks={socialMediaLinks}
     />
   );
 };

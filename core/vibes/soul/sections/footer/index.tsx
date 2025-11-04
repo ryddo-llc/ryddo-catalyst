@@ -10,21 +10,20 @@ interface Link {
   label: string;
 }
 
+interface ContactInfo {
+  phone: string;
+  email: string;
+  instagram: string;
+}
+
 export interface Section {
   title?: string;
   links: Link[];
-}
-
-interface SocialMediaLink {
-  href: string;
-  icon: ReactNode;
+  contact?: ContactInfo;
 }
 
 export interface FooterProps {
   sections: Streamable<Section[]>;
-  socialMediaLinks?: Streamable<SocialMediaLink[]>;
-  infoSection?: ReactNode;
-  contactSection?: ReactNode;
   copyright?: ReactNode;
   className?: string;
 }
@@ -53,91 +52,94 @@ export interface FooterProps {
  */
 export const Footer = ({
   sections: streamableSections,
-  socialMediaLinks: streamableSocialMediaLinks,
-  infoSection,
-  contactSection,
   copyright,
   className,
 }: FooterProps) => {
   return (
     <footer
       className={clsx(
-        'group/footer border-t border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
+        'group/footer bg-[#001F3F] text-white @container',
         className,
       )}
     >
-      <div className="mx-auto max-w-screen-2xl px-6 py-6 @xl:px-10 @xl:py-10 @4xl:px-16 @4xl:py-12">
-        <div className="flex flex-col justify-between gap-x-20 gap-y-12 xl:flex-row">
-          <div className="flex flex-col gap-4 text-center sm:text-left xl:w-1/4 xl:gap-6">
-            {infoSection}
-
-            {/* Social Media Links */}
-            <Stream fallback={<SocialMediaLinksSkeleton />} value={streamableSocialMediaLinks}>
-              {(socialMediaLinks) => {
-                if (socialMediaLinks != null) {
-                  return (
-                    <div className="flex items-center justify-center gap-3 sm:justify-start">
-                      {socialMediaLinks.map(({ href, icon }, i) => {
-                        return (
-                          <Link
-                            className="flex items-center justify-center rounded-lg fill-[var(--footer-social-icon,hsl(var(--contrast-400)))] p-1 ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 ease-out hover:fill-[var(--footer-social-icon-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                            href={href}
-                            key={i}
-                          >
-                            {icon}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  );
-                }
-              }}
-            </Stream>
-          </div>
-
-          {/* Footer Columns of Links */}
-          <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>
-            {(sections) => {
-              if (sections.length > 0) {
-                return (
-                  <div
-                    className={clsx(
-                      'mx-4 grid flex-1 grid-cols-1 justify-items-center gap-y-8 text-center sm:grid-cols-3 sm:justify-items-start sm:text-left md:gap-x-2 lg:gap-x-6 xl:gap-y-10',
-                    )}
-                  >
-                    {sections.map(({ title, links }, i) => (
-                      <div className="pr-2" key={i}>
+      <div className="mx-auto max-w-screen-2xl px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+        {/* Footer Columns with Newsletter */}
+        <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>
+          {(sections) => {
+            if (sections.length > 0) {
+              return (
+                <div className="flex flex-col gap-12 lg:flex-row lg:gap-8">
+                  {/* Footer Link Columns */}
+                  <div className="grid flex-1 grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+                    {sections.map(({ title, links, contact }, i) => (
+                      <div key={i}>
                         {title != null && (
-                          <span className="mb-3 block font-semibold text-[var(--footer-section-title,hsl(var(--foreground)))]">
+                          <h3 className="mb-4 font-semibold text-white">
                             {title}
-                          </span>
+                          </h3>
                         )}
 
-                        <ul>
-                          {links.map((link, idx) => {
-                            return (
-                              <li key={idx}>
-                                <Link
-                                  className="block rounded-lg py-2 text-sm font-medium text-[var(--footer-link,hsl(var(--contrast-500)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                                  href={link.href}
-                                >
-                                  {link.label}
-                                </Link>
-                              </li>
-                            );
-                          })}
+                        <ul className="space-y-2">
+                          {links.map((link, idx) => (
+                            <li key={idx}>
+                              <Link
+                                className="block text-sm text-blue-300 transition-colors hover:text-white"
+                                href={link.href}
+                              >
+                                {link.label}
+                              </Link>
+                            </li>
+                          ))}
                         </ul>
+
+                        {/* Contact Info for Partner section */}
+                        {contact && (
+                          <div className="mt-4 space-y-2 text-sm">
+                            <p className="text-white">Contact Us</p>
+                            <p className="text-blue-300">p. {contact.phone}</p>
+                            <p className="text-blue-300">e. {contact.email}</p>
+                            <p className="text-blue-300">
+                              ig.{' '}
+                              <Link
+                                className="text-pink-500 underline hover:text-pink-400"
+                                href={contact.instagram}
+                              >
+                                RyddoUSA
+                              </Link>
+                            </p>
+                          </div>
+                        )}
                       </div>
                     ))}
-
-                    {contactSection}
                   </div>
-                );
-              }
-            }}
-          </Stream>
-        </div>
 
+                  {/* Newsletter Section */}
+                  <div className="lg:w-80">
+                    <h3 className="mb-4 font-semibold text-white">Newsletter Sign Up</h3>
+                    <div className="space-y-4">
+                      <input
+                        className="w-full rounded border border-blue-300 bg-transparent px-4 py-2 text-white placeholder-blue-300 focus:border-white focus:outline-none"
+                        placeholder="Enter your email"
+                        type="email"
+                      />
+                      <button
+                        className="w-full rounded bg-pink-500 px-6 py-2 font-semibold text-white transition-colors hover:bg-pink-600"
+                        type="button"
+                      >
+                        Sign Up
+                      </button>
+                      <p className="text-xs text-blue-300">
+                        Receive our weekly newsletter with new product releases, discounts, promotions, trade-in deals, service tips, and much more.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          }}
+        </Stream>
+
+        {/* Copyright Section */}
         {copyright}
       </div>
     </footer>
