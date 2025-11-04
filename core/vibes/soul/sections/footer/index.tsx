@@ -66,10 +66,12 @@ export const Footer = ({ sections: streamableSections, copyright, className }: F
                       {sections.map(({ title, links, contact }, i) => (
                         <div key={i}>
                           {title != null && (
-                            <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">{title}</h3>
+                            <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">
+                              {title}
+                            </h3>
                           )}
 
-                          <ul className="space-y-2">
+                          <ul className="space-y-1">
                             {links.map((link, idx) => (
                               <li key={idx}>
                                 <Link
@@ -84,10 +86,16 @@ export const Footer = ({ sections: streamableSections, copyright, className }: F
 
                           {/* Contact Info for Partner section */}
                           {contact && (
-                            <div className="mt-4 space-y-2 text-sm">
-                              <p className="font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">Contact Us</p>
-                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">p. {contact.phone}</p>
-                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">e. {contact.email}</p>
+                            <div className="mt-6 space-y-1 text-sm">
+                              <p className="font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">
+                                Contact Us
+                              </p>
+                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
+                                p. {contact.phone}
+                              </p>
+                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
+                                e. {contact.email}
+                              </p>
                               <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
                                 ig.{' '}
                                 <Link
@@ -105,22 +113,28 @@ export const Footer = ({ sections: streamableSections, copyright, className }: F
 
                     {/* Newsletter Section */}
                     <div className="lg:w-80">
-                      <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">Newsletter Sign Up</h3>
+                      <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">
+                        Newsletter Sign Up
+                      </h3>
                       <div className="space-y-4">
-                        <input
-                          className="w-full rounded border border-[rgb(0,94,255)] bg-transparent px-4 py-2 font-[family-name:var(--font-family-body)] font-medium text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
-                          placeholder="Enter your email"
-                          type="email"
-                        />
-                        <button
-                          className="w-full rounded bg-pink-500 px-6 py-2 font-[family-name:var(--font-family-body)] font-semibold text-white transition-colors hover:bg-pink-600"
-                          type="button"
-                        >
-                          Sign Up
-                        </button>
+                        <div className="relative">
+                          <input
+                            className="w-full rounded-[10px] border border-[rgb(0,94,255)] bg-transparent py-2 pl-4 pr-24 font-[family-name:var(--font-family-body)] text-sm text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
+                            placeholder="Enter your email"
+                            type="email"
+                          />
+                          <button
+                            className="absolute right-1 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-[8px] bg-[#F92F7B] px-3 py-1.5 font-[family-name:var(--font-family-body)] text-sm font-semibold text-white transition-colors hover:bg-pink-600"
+                            type="button"
+                          >
+                            Sign Up
+                          </button>
+                        </div>
                         <p className="font-[family-name:var(--font-family-body)] text-xs font-medium text-[rgb(0,94,255)]">
-                          Receive our weekly newsletter with new product releases, discounts,
-                          promotions, trade-in deals, service tips, and much more.
+                          Receive our weekly newsletter <br /> with new product releases,
+                          <br /> discounts, promotions, trade- <br />
+                          in deals, service tips, and <br />
+                          much more.
                         </p>
                       </div>
                     </div>

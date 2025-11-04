@@ -16,6 +16,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 import Copyright from './copyright';
 import { FooterFragment, FooterSectionsFragment } from './fragment';
@@ -55,6 +56,8 @@ export const Footer = async () => {
   const t = await getTranslations('Components.Footer');
 
   const data = await getFooterData();
+
+  const logo = data.settings ? logoTransformer(data.settings) : '';
 
   const socialMediaLinks = data.settings?.socialMediaLinks
     .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))
@@ -118,7 +121,7 @@ export const Footer = async () => {
 
   return (
     <FooterSection
-      copyright={<Copyright />}
+      copyright={<Copyright logo={logo} />}
       sections={streamableSections}
     />
   );
