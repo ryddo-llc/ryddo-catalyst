@@ -121,7 +121,7 @@ export async function MarketplaceShowcase({
   const displayProducts = products.slice(0, 6);
 
   return (
-    <section className="relative z-10 rounded-b-[30px] bg-white pb-6 md:pb-10 lg:pb-14">
+    <section className="relative z-20 rounded-b-[30px] bg-white pb-6 md:pb-10 lg:pb-14">
       <div className="mx-auto max-w-[var(--section-max-width-2xl,1536px)] px-4 @xl:px-6 @4xl:px-8">
         <div
           className="rounded-[30px] bg-blue-100 bg-cover bg-center px-4 pb-8 pt-12 md:px-8 md:pb-12 md:pt-16 lg:pb-16"

@@ -187,18 +187,21 @@ export default async function Home({ params, searchParams }: Props) {
         rolloutCards={[
           {
             badge: t('ProcessSection.rollout.cards.online.badge'),
+            imageUrl: imageManagerImageUrl('rollout-online-image.png', 'original'),
             title: t('ProcessSection.rollout.cards.online.title'),
             subtitle: t('ProcessSection.rollout.cards.online.subtitle'),
             description: t('ProcessSection.rollout.cards.online.description'),
           },
           {
             badge: t('ProcessSection.rollout.cards.kiosk.badge'),
+            imageUrl: imageManagerImageUrl('rollout-kisok-image.png', 'original'),
             title: t('ProcessSection.rollout.cards.kiosk.title'),
             subtitle: t('ProcessSection.rollout.cards.kiosk.subtitle'),
             description: t('ProcessSection.rollout.cards.kiosk.description'),
           },
           {
             badge: t('ProcessSection.rollout.cards.inStore.badge'),
+            imageUrl: imageManagerImageUrl('rollout-in-store-image.png', 'original'),
             title: t('ProcessSection.rollout.cards.inStore.title'),
             subtitle: t('ProcessSection.rollout.cards.inStore.subtitle'),
             description: t('ProcessSection.rollout.cards.inStore.description'),
