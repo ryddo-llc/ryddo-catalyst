@@ -50,98 +50,88 @@ export interface FooterProps {
  * }
  * ```
  */
-export const Footer = ({
-  sections: streamableSections,
-  copyright,
-  className,
-}: FooterProps) => {
+export const Footer = ({ sections: streamableSections, copyright, className }: FooterProps) => {
   return (
-    <footer
-      className={clsx(
-        'group/footer bg-[rgb(0,12,31)] text-white @container',
-        className,
-      )}
-    >
-      <div className="mx-auto max-w-screen-2xl p-[25px]">
-        <div className="bg-[rgb(0,16,43)] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
-        {/* Footer Columns with Newsletter */}
-        <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>
-          {(sections) => {
-            if (sections.length > 0) {
-              return (
-                <div className="flex flex-col gap-12 lg:flex-row lg:gap-8">
-                  {/* Footer Link Columns */}
-                  <div className="grid flex-1 grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
-                    {sections.map(({ title, links, contact }, i) => (
-                      <div key={i}>
-                        {title != null && (
-                          <h3 className="mb-4 font-semibold text-white">
-                            {title}
-                          </h3>
-                        )}
+    <footer className={clsx('group/footer bg-[rgb(0,12,31)] text-white @container', className)}>
+      <div className="mx-auto max-w-screen-2xl px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+        <div className="rounded-[30px] border-[rgb(0,12,31)] bg-[rgb(0,16,43)] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+          {/* Footer Columns with Newsletter */}
+          <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>
+            {(sections) => {
+              if (sections.length > 0) {
+                return (
+                  <div className="flex flex-col gap-12 lg:flex-row lg:gap-8">
+                    {/* Footer Link Columns */}
+                    <div className="grid flex-1 grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+                      {sections.map(({ title, links, contact }, i) => (
+                        <div key={i}>
+                          {title != null && (
+                            <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">{title}</h3>
+                          )}
 
-                        <ul className="space-y-2">
-                          {links.map((link, idx) => (
-                            <li key={idx}>
-                              <Link
-                                className="block text-sm text-blue-300 transition-colors hover:text-white"
-                                href={link.href}
-                              >
-                                {link.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
+                          <ul className="space-y-2">
+                            {links.map((link, idx) => (
+                              <li key={idx}>
+                                <Link
+                                  className="block font-[family-name:var(--font-family-body)] text-sm font-medium text-[rgb(0,94,255)] transition-colors hover:text-white"
+                                  href={link.href}
+                                >
+                                  {link.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
 
-                        {/* Contact Info for Partner section */}
-                        {contact && (
-                          <div className="mt-4 space-y-2 text-sm">
-                            <p className="text-white">Contact Us</p>
-                            <p className="text-blue-300">p. {contact.phone}</p>
-                            <p className="text-blue-300">e. {contact.email}</p>
-                            <p className="text-blue-300">
-                              ig.{' '}
-                              <Link
-                                className="text-pink-500 underline hover:text-pink-400"
-                                href={contact.instagram}
-                              >
-                                RyddoUSA
-                              </Link>
-                            </p>
-                          </div>
-                        )}
+                          {/* Contact Info for Partner section */}
+                          {contact && (
+                            <div className="mt-4 space-y-2 text-sm">
+                              <p className="font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">Contact Us</p>
+                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">p. {contact.phone}</p>
+                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">e. {contact.email}</p>
+                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
+                                ig.{' '}
+                                <Link
+                                  className="text-pink-500 underline hover:text-pink-400"
+                                  href={contact.instagram}
+                                >
+                                  RyddoUSA
+                                </Link>
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Newsletter Section */}
+                    <div className="lg:w-80">
+                      <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">Newsletter Sign Up</h3>
+                      <div className="space-y-4">
+                        <input
+                          className="w-full rounded border border-[rgb(0,94,255)] bg-transparent px-4 py-2 font-[family-name:var(--font-family-body)] font-medium text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
+                          placeholder="Enter your email"
+                          type="email"
+                        />
+                        <button
+                          className="w-full rounded bg-pink-500 px-6 py-2 font-[family-name:var(--font-family-body)] font-semibold text-white transition-colors hover:bg-pink-600"
+                          type="button"
+                        >
+                          Sign Up
+                        </button>
+                        <p className="font-[family-name:var(--font-family-body)] text-xs font-medium text-[rgb(0,94,255)]">
+                          Receive our weekly newsletter with new product releases, discounts,
+                          promotions, trade-in deals, service tips, and much more.
+                        </p>
                       </div>
-                    ))}
-                  </div>
-
-                  {/* Newsletter Section */}
-                  <div className="lg:w-80">
-                    <h3 className="mb-4 font-semibold text-white">Newsletter Sign Up</h3>
-                    <div className="space-y-4">
-                      <input
-                        className="w-full rounded border border-blue-300 bg-transparent px-4 py-2 text-white placeholder-blue-300 focus:border-white focus:outline-none"
-                        placeholder="Enter your email"
-                        type="email"
-                      />
-                      <button
-                        className="w-full rounded bg-pink-500 px-6 py-2 font-semibold text-white transition-colors hover:bg-pink-600"
-                        type="button"
-                      >
-                        Sign Up
-                      </button>
-                      <p className="text-xs text-blue-300">
-                        Receive our weekly newsletter with new product releases, discounts, promotions, trade-in deals, service tips, and much more.
-                      </p>
                     </div>
                   </div>
-                </div>
-              );
-            }
-          }}
-        </Stream>
+                );
+              }
+            }}
+          </Stream>
 
-        {/* Copyright Section */}
-        {copyright}
+          {/* Copyright Section */}
+          {copyright}
         </div>
       </div>
     </footer>
