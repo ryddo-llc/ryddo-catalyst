@@ -159,6 +159,18 @@ export default async function Home({ params, searchParams }: Props) {
       />
 
       <LegitBrands
+        backgroundImageUrl={imageManagerImageUrl('legit-brands-bg.png', 'original')}
+        description={{
+          line1: t('LegitBrands.description.line1'),
+          line2: t('LegitBrands.description.line2'),
+          line3: t('LegitBrands.description.line3'),
+        }}
+        imageAlt={t('LegitBrands.imageAlt')}
+        imageUrl={imageManagerImageUrl('legit-brands-hero.jpg', 'original')}
+        linkText={{
+          highlight: t('LegitBrands.linkText.highlight'),
+          rest: t('LegitBrands.linkText.rest'),
+        }}
         title={{
           line1: t('LegitBrands.title.line1'),
           line2: t('LegitBrands.title.line2'),
@@ -167,17 +179,6 @@ export default async function Home({ params, searchParams }: Props) {
           line4: t('LegitBrands.title.line4'),
           line5: t('LegitBrands.title.line5'),
         }}
-        description={{
-          line1: t('LegitBrands.description.line1'),
-          line2: t('LegitBrands.description.line2'),
-          line3: t('LegitBrands.description.line3'),
-        }}
-        linkText={{
-          highlight: t('LegitBrands.linkText.highlight'),
-          rest: t('LegitBrands.linkText.rest'),
-        }}
-        imageAlt={t('LegitBrands.imageAlt')}
-        imageUrl={imageManagerImageUrl('legit-brands-hero.jpg', 'original')}
       />
 
       <ProcessSection

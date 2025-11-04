@@ -9,7 +9,6 @@ import { InventoryProvider } from '~/components/contexts/inventory-context';
 import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
 import PartnersContactBar from '~/components/partner-contact-banner';
-import { Subscribe } from '~/components/subscribe';
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
@@ -53,8 +52,6 @@ export default async function DefaultLayout({ params, children }: Props) {
           <div className="w-full">
             <div className="mx-auto max-w-screen-2xl">
               {children}
-
-              <Subscribe />
 
               <Footer />
             </div>

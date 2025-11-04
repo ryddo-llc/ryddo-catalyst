@@ -18,6 +18,7 @@ export interface LegitBrandsProps {
   };
   imageUrl: string;
   imageAlt: string;
+  backgroundImageUrl?: string;
   className?: string;
   'aria-labelledby'?: string;
 }
@@ -45,60 +46,81 @@ export function LegitBrands({
   linkText,
   imageUrl,
   imageAlt,
+  backgroundImageUrl,
   className,
 }: LegitBrandsProps) {
   return (
-    <section
-      aria-labelledby={ariaLabelledBy}
-      className={clsx(
-        'w-full bg-white pb-8 pt-0 font-[family-name:var(--legit-brands-font-family,var(--font-family-body))] @container md:pb-12 md:pt-0 lg:pb-16 lg:pt-0',
-        className,
+    <div className="relative w-full">
+      {/* Background Image - Below the fold, lazy loaded */}
+      {backgroundImageUrl && (
+        <div className="absolute inset-0 left-1/2 w-screen -translate-x-1/2">
+          <Image
+            alt=""
+            className="object-cover"
+            fill
+            loading="lazy"
+            priority={false}
+            quality={60}
+            sizes="100vw"
+            src={backgroundImageUrl}
+          />
+        </div>
       )}
-    >
-      <div className="mx-auto w-full max-w-screen-2xl px-4 @xl:px-6 @4xl:px-8">
-        <div className="overflow-hidden rounded-[30px] border-y-[30px] border-white bg-white">
-          <div className="flex flex-col lg:flex-row">
-            {/* Left Side - Text Content (40%) */}
-            <div className="flex flex-col justify-start pb-8 pl-8 pr-4 pt-8 md:pb-12 md:pl-12 md:pr-6 md:pt-12 lg:w-2/5 lg:pb-16 lg:pl-16 lg:pr-8 lg:pt-16">
-              <h2
-                className="mb-6 font-[family-name:var(--font-family-body)] text-7xl font-extrabold leading-tight text-[var(--legit-brands-title,hsl(var(--foreground)))]"
-                id={ariaLabelledBy}
-              >
-                <span className="block">{title.line1}</span>
-                <span className="block">
-                  {title.line2} <span className="text-yellow-400">{title.line2Highlight}</span>
-                </span>
-                <span className="block">{title.line3}</span>
-                <span className="block">{title.line4}</span>
-                <span className="block">{title.line5}</span>
-              </h2>
-              <p className="mb-6 font-[family-name:var(--font-family-body)] text-xl font-medium text-gray-400">
-                <span className="block">{description.line1}</span>
-                <span className="block">{description.line2}</span>
-                <span className="block">{description.line3}</span>
-              </p>
-              <p className="font-[family-name:var(--font-family-body)] text-base text-gray-600 md:text-base">
-                <span className="text-[rgb(219,64,117)] underline">{linkText.highlight}</span>{' '}
-                {linkText.rest}
-              </p>
-            </div>
 
-            {/* Right Side - Image (60%) */}
-            <div className="relative rounded-[30px] bg-slate-400 lg:w-3/5">
-              <div className="relative aspect-[4/3] overflow-hidden lg:aspect-auto lg:h-full">
-                <Image
-                  alt={imageAlt}
-                  className="rounded-[30px] object-cover p-8 md:p-12 lg:p-16"
-                  fill
-                  priority={false}
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  src={imageUrl}
-                />
+      <section
+        aria-labelledby={ariaLabelledBy}
+        className={clsx(
+          'relative z-10 w-full rounded-b-[30px] bg-white pb-6 pt-6 font-[family-name:var(--legit-brands-font-family,var(--font-family-body))]',
+          className,
+        )}
+      >
+        <div className="mx-auto w-full max-w-screen-2xl px-4 @xl:px-6 @4xl:px-8">
+          <div className="overflow-hidden rounded-[30px] bg-white">
+            <div className="flex flex-col lg:flex-row">
+              {/* Left Side - Text Content (40%) */}
+              <div className="flex flex-col justify-start pb-8 pl-8 pr-4 pt-8 md:pb-12 md:pl-12 md:pr-6 md:pt-12 lg:w-2/5 lg:pb-16 lg:pl-16 lg:pr-8 lg:pt-16">
+                <h2
+                  className="mb-6 font-[family-name:var(--font-family-body)] text-7xl font-extrabold leading-tight text-[var(--legit-brands-title,hsl(var(--foreground)))]"
+                  id={ariaLabelledBy}
+                >
+                  <span className="block">{title.line1}</span>
+                  <span className="block">
+                    {title.line2} <span className="text-yellow-400">{title.line2Highlight}</span>
+                  </span>
+                  <span className="block">{title.line3}</span>
+                  <span className="block">{title.line4}</span>
+                  <span className="block">{title.line5}</span>
+                </h2>
+                <p className="mb-6 font-[family-name:var(--font-family-body)] text-xl font-medium text-gray-400">
+                  <span className="block">{description.line1}</span>
+                  <span className="block">{description.line2}</span>
+                  <span className="block">{description.line3}</span>
+                </p>
+                <p className="font-[family-name:var(--font-family-body)] text-base text-gray-600 md:text-base">
+                  <span className="text-[rgb(219,64,117)] underline">{linkText.highlight}</span>{' '}
+                  {linkText.rest}
+                </p>
+              </div>
+
+              {/* Right Side - Image (60%) */}
+              <div className="relative rounded-[30px] bg-slate-400 lg:w-3/5">
+                <div className="relative aspect-[4/3] overflow-hidden p-8 md:p-12 lg:h-full lg:p-16">
+                  <div className="relative h-full w-full overflow-hidden rounded-[30px]">
+                    <Image
+                      alt={imageAlt}
+                      className="object-cover"
+                      fill
+                      priority={false}
+                      sizes="(max-width: 1024px) 100vw, 60vw"
+                      src={imageUrl}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
