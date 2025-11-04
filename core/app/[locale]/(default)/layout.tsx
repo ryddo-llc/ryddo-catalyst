@@ -52,10 +52,10 @@ export default async function DefaultLayout({ params, children }: Props) {
           <div className="w-full">
             <div className="mx-auto max-w-screen-2xl">
               {children}
-
-              <Footer />
             </div>
           </div>
+
+          <Footer />
         </main>
 
         {/* Partners Contact Bar - Fixed at bottom of viewport */}
