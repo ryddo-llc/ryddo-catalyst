@@ -58,11 +58,12 @@ export const Footer = ({
   return (
     <footer
       className={clsx(
-        'group/footer bg-[#001F3F] text-white @container',
+        'group/footer bg-[rgb(0,12,31)] text-white @container',
         className,
       )}
     >
-      <div className="mx-auto max-w-screen-2xl px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+      <div className="mx-auto max-w-screen-2xl p-[25px]">
+        <div className="bg-[rgb(0,16,43)] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
         {/* Footer Columns with Newsletter */}
         <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>
           {(sections) => {
@@ -141,6 +142,7 @@ export const Footer = ({
 
         {/* Copyright Section */}
         {copyright}
+        </div>
       </div>
     </footer>
   );
