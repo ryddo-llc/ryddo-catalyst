@@ -159,14 +159,14 @@ export default async function Home({ params, searchParams }: Props) {
       />
 
       <LegitBrands
-        backgroundImageUrl={imageManagerImageUrl('legit-brands-bg.png', 'original')}
+        backgroundImageUrl={imageManagerImageUrl('legit-brands-image.png', 'original')}
         description={{
           line1: t('LegitBrands.description.line1'),
           line2: t('LegitBrands.description.line2'),
           line3: t('LegitBrands.description.line3'),
         }}
         imageAlt={t('LegitBrands.imageAlt')}
-        imageUrl={imageManagerImageUrl('legit-brands-hero.jpg', 'original')}
+        imageUrl={imageManagerImageUrl('legit-brands-image.png', 'original')}
         linkText={{
           highlight: t('LegitBrands.linkText.highlight'),
           rest: t('LegitBrands.linkText.rest'),

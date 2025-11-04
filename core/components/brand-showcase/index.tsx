@@ -93,15 +93,21 @@ export function BrandShowcase({
 }: BrandShowcaseProps) {
   console.log(imageUrl);
   return (
-    <section
-      aria-labelledby={ariaLabelledBy}
-      className={clsx(
-        'w-full bg-gray-100 bg-cover bg-center font-[family-name:var(--brand-showcase-font-family,var(--font-family-body))] @container -mt-8 md:-mt-12 lg:-mt-16 md:py-12 lg:py-16',
-        className,
-      )}
-      style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
-    >
-      <div className="mx-auto w-full max-w-screen-2xl px-2 sm:px-3 lg:px-4">
+    <div className="relative">
+      {/* Background extension that extends downward */}
+      <div
+        className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-[calc(100%+3rem)] bg-gray-100 bg-cover bg-center md:h-[calc(100%+4rem)] lg:h-[calc(100%+5rem)]"
+        style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
+      />
+
+      <section
+        aria-labelledby={ariaLabelledBy}
+        className={clsx(
+          'relative z-20 w-full font-[family-name:var(--brand-showcase-font-family,var(--font-family-body))] @container -mt-8 md:-mt-12 lg:-mt-16 md:py-12 lg:py-16',
+          className,
+        )}
+      >
+        <div className="mx-auto w-full max-w-screen-2xl px-2 sm:px-3 lg:px-4">
         {/* Header Section */}
         <header className="mb-8 pt-8 text-center md:mb-12 md:pt-12 lg:pt-16">
           <h2
@@ -165,5 +171,6 @@ export function BrandShowcase({
         </div>
       </div>
     </section>
+    </div>
   );
 }

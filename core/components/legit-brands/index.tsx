@@ -53,7 +53,7 @@ export function LegitBrands({
     <div className="relative w-full">
       {/* Background Image - Below the fold, lazy loaded */}
       {backgroundImageUrl && (
-        <div className="absolute inset-0 left-1/2 w-screen -translate-x-1/2">
+        <div className="absolute inset-0 left-1/2 z-0 w-screen -translate-x-1/2">
           <Image
             alt=""
             className="object-cover"
@@ -70,7 +70,7 @@ export function LegitBrands({
       <section
         aria-labelledby={ariaLabelledBy}
         className={clsx(
-          'relative z-10 w-full rounded-b-[30px] bg-white pb-6 pt-6 font-[family-name:var(--legit-brands-font-family,var(--font-family-body))]',
+          'relative z-30 w-full rounded-[30px] bg-white pb-6 pt-6 font-[family-name:var(--legit-brands-font-family,var(--font-family-body))]',
           className,
         )}
       >
@@ -83,8 +83,8 @@ export function LegitBrands({
                   className="mb-6 font-[family-name:var(--font-family-body)] text-7xl font-extrabold leading-tight text-[var(--legit-brands-title,hsl(var(--foreground)))]"
                   id={ariaLabelledBy}
                 >
-                  <span className="block">{title.line1}</span>
-                  <span className="block">
+                  <span className="block text-[rgb(128,128,128)]">{title.line1}</span>
+                  <span className="block text-[rgb(128,128,128)]">
                     {title.line2} <span className="text-yellow-400">{title.line2Highlight}</span>
                   </span>
                   <span className="block">{title.line3}</span>
@@ -103,18 +103,17 @@ export function LegitBrands({
               </div>
 
               {/* Right Side - Image (60%) */}
-              <div className="relative rounded-[30px] bg-slate-400 lg:w-3/5">
-                <div className="relative aspect-[4/3] overflow-hidden p-8 md:p-12 lg:h-full lg:p-16">
-                  <div className="relative h-full w-full overflow-hidden rounded-[30px]">
-                    <Image
-                      alt={imageAlt}
-                      className="object-cover"
-                      fill
-                      priority={false}
-                      sizes="(max-width: 1024px) 100vw, 60vw"
-                      src={imageUrl}
-                    />
-                  </div>
+              <div className="relative overflow-hidden rounded-[30px] bg-slate-400 lg:w-3/5">
+                <div className="relative aspect-[4/3] lg:h-full">
+                  <Image
+                    alt={imageAlt}
+                    className="object-cover"
+                    fill
+                    loading="lazy"
+                    priority={false}
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    src={imageUrl}
+                  />
                 </div>
               </div>
             </div>
