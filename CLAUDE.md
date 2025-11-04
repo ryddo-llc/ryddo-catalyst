@@ -1,215 +1,269 @@
-# CLAUDE.md - Codebase Reference Guide
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-This is a **BigCommerce Catalyst** storefront - a composable, headless e-commerce platform built on Next.js 15. It's a monorepo managed with pnpm workspaces and Turbo.
 
-## Critical Commands
+**BigCommerce Catalyst** - A composable, headless e-commerce storefront framework built on Next.js 15. This is a monorepo managed with pnpm workspaces and Turbo.
+
+**Important:** As of January 6, 2025, the `main` branch is frozen. The default branch is now `canary`. Always work with and submit PRs to the `canary` branch.
+
+## Requirements
+
+- Node.js version 20 or 22
+- pnpm 10.12.4 (enable with `corepack enable pnpm`)
+
+## Essential Commands
+
 ```bash
-pnpm dev        # Start development server
-pnpm build      # Build for production
-pnpm lint       # Run ESLint
-pnpm typecheck  # Run TypeScript type checking
+# Development
+pnpm dev                    # Start dev server (uses .env.local)
+pnpm build                  # Build for production (uses .env.local)
+pnpm lint                   # Run ESLint across all packages
+pnpm typecheck              # Run TypeScript type checking
+
+# Core package specific (from /core directory)
+cd core
+npm run dev                 # Generate GraphQL types + start Next.js dev
+npm run generate            # Generate GraphQL types only
+npm run build               # Generate types + build Next.js
+npm run build:analyze       # Build with bundle analyzer
+npm run typecheck           # Type check without building
+npm run lint                # Lint the core package
+
+# Testing
+cd core && npx playwright test              # Run all Playwright tests
+cd core && npx playwright test --ui         # Run tests in UI mode
+cd core && npx playwright test <file>       # Run specific test file
 ```
 
-## Project Structure
+## Monorepo Structure
+
 ```
-/core                    # Main Next.js application
-  /app                   # App Router pages and layouts
-    /[locale]           # Internationalized routes
-      /(default)        # Main storefront routes
-      /(auth)           # Authentication routes
-    /api                # API routes
-  /components           # Shared UI components
-    /ui                 # Base UI components
-    /product            # Product-related components
-    /header             # Header components
-    /footer             # Footer components
-  /client               # GraphQL client setup
-    /fragments          # GraphQL fragments
-  /lib                  # Utility functions
-  /messages             # i18n translation files
-  /tests                # Playwright tests
-    /ui                 # UI tests
-    /visual-regression  # Visual regression tests
-/packages               # Shared packages
-  /catalyst-client      # BigCommerce client
-/components             # Global components
-  /arrow-button         # Shared arrow button component
+/
+├── core/                          # Main Next.js storefront application
+│   ├── app/[locale]/             # Internationalized App Router
+│   │   ├── (default)/            # Main storefront route group
+│   │   │   ├── (auth)/          # Auth-related routes (login, register, etc.)
+│   │   │   ├── product/[slug]/  # Product pages
+│   │   │   ├── cart/            # Cart functionality
+│   │   │   └── ...
+│   │   └── layout.tsx           # Root locale layout
+│   ├── client/                   # GraphQL client configuration
+│   │   ├── index.ts             # Main client export
+│   │   ├── graphql.ts           # gql.tada setup
+│   │   └── fragments/           # Reusable GraphQL fragments
+│   ├── components/               # Shared UI components
+│   ├── lib/                      # Utility functions
+│   ├── middlewares/              # Next.js middlewares (composed)
+│   ├── messages/                 # i18n translation files
+│   ├── tests/                    # Playwright tests
+│   ├── vibes/                    # Design system/theme
+│   ├── middleware.ts             # Middleware composition
+│   ├── channels.config.ts        # Multi-channel locale mapping
+│   └── next.config.ts            # Next.js config (async function)
+├── packages/
+│   ├── client/                   # @bigcommerce/catalyst-client
+│   ├── cli/                      # CLI tools
+│   ├── create-catalyst/          # Starter template generator
+│   └── eslint-config-catalyst/   # Shared ESLint config
+├── pnpm-workspace.yaml
+└── turbo.json                    # Turbo build configuration
 ```
 
 ## Tech Stack
 
-### Core Technologies
-- **Framework**: Next.js 15.4.0 (App Router)
-- **Language**: TypeScript 5.8.3
-- **Runtime**: React 19.1.0
-- **Package Manager**: pnpm 10.12.4
+### Core
+- **Next.js**: 15.4.0-canary.0 with App Router, PPR (incremental)
+- **React**: 19.1.0
+- **TypeScript**: 5.8.3
+- **pnpm**: 10.12.4 + Turborepo 2.5.4
 
-### Styling & UI
-- **CSS Framework**: TailwindCSS 3.4.17
-- **Component Library**: Radix UI
-- **Icons**: Lucide React (primary), React Icons
-- **Animations**: tailwindcss-animate, Embla Carousel
-- **Fonts**: 
-  - Inter (body text)
-  - Nunito (headings)
-  - Kanit (special text, weights 100-900)
+### GraphQL & Data
+- **gql.tada**: Type-safe GraphQL queries with full IDE support
+- **@bigcommerce/catalyst-client**: Custom GraphQL client wrapper
+- GraphQL introspection types auto-generated via `npm run generate`
+- Client setup: `/core/client/index.ts` with `beforeRequest`, `onError` hooks
 
-### Data & State
-- **GraphQL**: gql.tada (type-safe queries)
-- **Forms**: Conform + Zod validation
-- **Authentication**: NextAuth v5 (Auth.js)
-- **Cache**: Vercel KV, Upstash Redis
+### Styling
+- **TailwindCSS**: 3.4.17 + container queries, typography plugins
+- **Radix UI**: Primitive components (accordion, dialog, dropdown, etc.)
+- **Icons**: lucide-react (primary), react-icons, @icons-pack/react-simple-icons
+- **Animations**: tailwindcss-animate, tailwindcss-radix, Embla Carousel
+- **Fonts**: Inter (body), Nunito (headings), Kanit (special text, weights 100-900)
 
-### Internationalization
-- **i18n**: next-intl with locale support
+### Forms & Validation
+- **Conform**: Form state management (`@conform-to/react`, `@conform-to/zod`)
+- **Zod**: Schema validation
 
-### Analytics & Monitoring
-- **Analytics**: Vercel Analytics
-- **Speed Insights**: Vercel Speed Insights
+### Auth & i18n
+- **NextAuth (Auth.js)**: 5.0.0-beta.25
+- **next-intl**: 4.1.0 with locale-based routing
 
-## Component Patterns
+### Other
+- **Caching**: @vercel/kv, @upstash/redis, lru-cache
+- **Search**: Algolia (algoliasearch 5.40.0, react-instantsearch 7.16.3)
+- **Analytics**: @vercel/analytics, @vercel/speed-insights
+- **Notifications**: sonner (toast notifications)
 
-### Server Actions
-- Located in `_actions` folders
-- Used for mutations and form submissions
-- Example: `/cart/_actions/update-quantity.ts`
+## Architecture Patterns
 
-### GraphQL Queries
-- Use `gql.tada` for type safety
-- Fragments defined in component folders
-- Client located at `/core/client/`
-
-### Form Handling
+### Middleware Composition
+All middlewares are composed in `/core/middleware.ts`:
 ```typescript
-// Use Conform with Zod schemas
-import { conform } from '@conform-to/react';
-import { z } from 'zod';
+export const middleware = composeMiddlewares(
+  withAuth,
+  withIntl,
+  withAnalyticsCookies,
+  withChannelId,
+  withRoutes,
+);
+```
+Each middleware is in `/core/middlewares/` and can be modified independently.
+
+### Server Actions Pattern
+Server actions are colocated with their routes in `_actions/` folders:
+```
+app/[locale]/(default)/(auth)/login/
+  ├── page.tsx
+  └── _actions/
+      └── login.ts          # Server action for login
+```
+Always check for existing server actions before creating new ones.
+
+### GraphQL Fragments
+Reusable GraphQL fragments live in `/core/client/fragments/`:
+- `pricing.ts` - Product pricing data
+- `pagination.ts` - Pagination info
+- More fragments for common data patterns
+
+**Pattern**: Define fragments once, reuse across queries.
+```typescript
+import { PricingFragment } from '~/client/fragments/pricing';
+
+const ProductQuery = graphql(`
+  query Product($slug: String!) {
+    product(slug: $slug) {
+      ...PricingFragment
+    }
+  }
+`, [PricingFragment]);
 ```
 
-### Component Structure
-- Server Components by default
-- Client Components marked with 'use client'
-- Shared components in `/core/components/`
+### Component Architecture
+- **Default**: Server Components (data fetching on server)
+- **Client**: Mark with `'use client'` directive only when needed
+- **Fragments**: GraphQL fragments often colocated with components
+- **Actions**: Server actions in `_actions/` folders for mutations
 
-## Styling Guidelines
+### Route Groups
+Routes use Next.js route groups for organization:
+- `(default)` - Main storefront routes
+- `(auth)` - Authentication flows (login, register, change-password)
 
-### TailwindCSS Configuration
-- Custom colors: primary, accent, success, error, warning, info
-- Contrast levels: 100-500
-- Shadow utilities: sm, base, md, lg, xl
-- Container queries enabled
-
-### CSS Variables
-```css
---primary: 337 94% 58%    /* Ryddo pink */
---accent: 96 100% 88%
---background: 0 0% 100%
---foreground: 0 100% 0%
-```
-
-### Responsive Design
-- Mobile-first approach
-- Container queries for component-level responsiveness
-- Breakpoints: sm, md, lg, xl, 2xl
-
-## Important Conventions
-
-### File Naming
-- Components: PascalCase (e.g., `ProductCard.tsx`)
-- Utilities: camelCase (e.g., `formatPrice.ts`)
-- Server Actions: kebab-case (e.g., `update-cart.ts`)
-
-### Data Fetching
-1. **Always check for existing GraphQL fragments** before creating new queries
-2. **Use server components** for data fetching when possible
-3. **Implement proper error boundaries** for data loading states
-
-### Component Creation Checklist
-Before creating a new component:
-1. ✅ Check `/core/components/` for existing similar components
-2. ✅ Check Radix UI for primitive components
-3. ✅ Review nearby components for patterns and conventions
-4. ✅ Check if server actions already exist for your use case
-5. ✅ Verify dependencies in `package.json`
+### Multi-Channel & i18n
+- Channel ID determined by locale (see `channels.config.ts`)
+- Override `localeToChannelsMappings` for locale-specific channels
+- Middleware handles locale routing automatically
 
 ## Environment Variables
-Required variables (see `.env.example`):
-- `BIGCOMMERCE_STORE_HASH`
-- `BIGCOMMERCE_STOREFRONT_TOKEN`
-- `BIGCOMMERCE_CHANNEL_ID`
-- `AUTH_SECRET`
-- `DEFAULT_REVALIDATE_TARGET`
 
-## Testing
-
-### Test Structure
-- **Location**: `/core/tests/`
-- **E2E Tests**: `/core/tests/ui/e2e/`
-- **Visual Tests**: `/core/tests/visual-regression/`
-- **Test Files**: `*.spec.ts`
-
-### Running Tests
+Required in `.env.local` (see `.env.example`):
 ```bash
-# Run Playwright tests
-cd core && npx playwright test
+BIGCOMMERCE_STORE_HASH=           # From store control panel URL
+BIGCOMMERCE_STOREFRONT_TOKEN=     # JWT for Storefront API
+BIGCOMMERCE_CHANNEL_ID=1          # Channel ID (1 = default, create new for production)
+AUTH_SECRET=                      # Generate: openssl rand -hex 32
+DEFAULT_REVALIDATE_TARGET=3600    # Cache revalidation (seconds)
+
+# Optional
+ENABLE_ADMIN_ROUTE=true           # Enable /admin redirect to control panel
+TURBO_REMOTE_CACHE_SIGNATURE_KEY= # For signed Turborepo artifacts
+
+# Algolia (optional)
+ALGOLIA_APPLICATION_ID=
+ALGOLIA_SEARCH_API_KEY=
+ALGOLIA_INDEX_NAME=
+NEXT_PUBLIC_ALGOLIA_APP_ID=
+NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=
+NEXT_PUBLIC_ALGOLIA_INDEX_NAME=
 ```
 
-## Available Components
+## Development Workflow
 
-### Core UI Components
-- `/core/components/ui/` - Base UI components
-- `/core/components/product/` - Product displays, galleries, forms
-- `/core/components/header/` - Navigation, search, account
-- `/core/components/footer/` - Footer sections
-- `/core/components/breadcrumbs/` - Navigation breadcrumbs
+### 1. GraphQL Development
+- Types are auto-generated on `npm run dev` and `npm run build`
+- Use `graphql()` from `~/client/graphql` for type-safe queries
+- IDE autocomplete works automatically with gql.tada
+- Check existing fragments before writing new queries
 
-### Feature Components
-- `/core/components/featured-products-carousel/`
-- `/core/components/featured-products-list/`
-- `/core/components/category-showcase/`
-- `/core/components/product-showcase/`
-- `/core/components/popular-products/`
+### 2. Creating Components
+**Before creating a new component:**
+1. Check `/core/components/` for existing components
+2. Check if Radix UI has a primitive component
+3. Review similar components for patterns
+4. Check if required data can use existing GraphQL fragments
+5. Verify if server actions already exist for the use case
 
-### Utility Components
-- `/core/components/analytics/` - Analytics providers
-- `/core/components/force-refresh/` - Page refresh utilities
-- `/core/components/modal/` - Modal dialogs
-- `/core/components/wishlist/` - Wishlist functionality
+### 3. Styling
+- Use Tailwind utility classes (configured in `tailwind.config.js`)
+- Custom colors via CSS variables: `--primary`, `--accent`, `--success`, `--error`, `--warning`, `--info`, `--contrast-{100-500}`
+- Font families: `font-heading` (Nunito), `font-body` (Inter), `font-kanit` (Kanit)
+- Always use Next.js `<Image>` component for images
+- Container queries enabled: use `@container` utilities
 
-## DO NOT CREATE
-❌ New documentation files unless explicitly requested
-❌ Duplicate components that already exist
-❌ New dependencies without checking package.json first
-❌ Custom UI primitives if Radix UI has them
-❌ New styling systems (use TailwindCSS)
+### 4. Testing
+- E2E tests in `/core/tests/ui/e2e/`
+- Visual regression tests in `/core/tests/visual-regression/`
+- Tests use Playwright with custom environment configuration
+- Worker count set to 1 (single-threaded for now)
 
-## ALWAYS CHECK BEFORE CODING
-✅ Existing components in `/core/components/`
-✅ Server actions in `_actions` folders
-✅ GraphQL fragments for data patterns
-✅ Radix UI for UI primitives
-✅ Existing utilities in `/core/lib/`
-✅ Current imports and patterns in nearby files
+## Key Files to Know
 
-## Code Quality Standards
-- TypeScript strict mode enabled
-- ESLint configuration from `@bigcommerce/eslint-config`
-- Prettier with TailwindCSS plugin
-- No `any` types without justification
-- Proper error handling in server actions
-- Accessibility standards (WCAG 2.1 AA)
+- `/core/client/index.ts` - GraphQL client with channel ID logic, auth error handling
+- `/core/middleware.ts` - Middleware composition pipeline
+- `/core/next.config.ts` - Async config that fetches store settings
+- `/core/channels.config.ts` - Locale-to-channel mapping
+- `/core/tailwind.config.js` - Tailwind customization
+- `/core/app/[locale]/layout.tsx` - Root locale layout with fonts, providers
 
-## Performance Guidelines
-- Use Next.js Image component for images
-- Implement proper loading states
-- Use Suspense boundaries for async components
-- Minimize client-side JavaScript
-- Leverage ISR/SSG where appropriate
+## Common Gotchas
 
-## Security
-- Never expose API keys in client code
-- Validate all user inputs with Zod
-- Use server actions for mutations
-- Implement proper CSRF protection
-- Follow CSP guidelines in `next.config.ts`
+1. **GraphQL Types**: Run `npm run generate` if you get GraphQL type errors
+2. **Environment**: Commands use `.env.local` via dotenv-cli wrapper
+3. **Route Matching**: Middleware excludes `/api`, `/admin`, `/_next`, static assets
+4. **BigCommerce Auth**: Client automatically redirects to signout on auth errors
+5. **Build Config**: `next.config.ts` is async and fetches store settings at build time
+6. **Branches**: Always use `canary` branch, not `main`
+
+## File Naming Conventions
+
+- **Components**: PascalCase (`ProductCard.tsx`)
+- **Utilities**: camelCase (`formatPrice.ts`)
+- **Server Actions**: kebab-case (`update-cart.ts`)
+- **Routes**: Lowercase with dashes (`forgot-password/`)
+
+## Code Quality
+
+- **TypeScript**: Strict mode enabled, avoid `any` types
+- **ESLint**: `@bigcommerce/eslint-config` + `@bigcommerce/eslint-config-catalyst`
+- **CI Behavior**: Builds ignore TS and ESLint errors when `CI=true`
+- **Prettier**: Configured with `prettier-plugin-tailwindcss`
+
+## DO NOT
+
+- ❌ Create new documentation files unless explicitly requested
+- ❌ Duplicate existing components
+- ❌ Add new dependencies without checking `package.json`
+- ❌ Build custom UI primitives if Radix UI has them
+- ❌ Introduce new styling systems (always use TailwindCSS)
+- ❌ Submit PRs to `main` branch (use `canary`)
+
+## ALWAYS CHECK FIRST
+
+- ✅ `/core/components/` for existing components
+- ✅ `_actions/` folders for existing server actions
+- ✅ `/core/client/fragments/` for GraphQL fragments
+- ✅ Radix UI documentation for primitive components
+- ✅ `/core/lib/` for utility functions
+- ✅ Nearby files for import patterns and conventions

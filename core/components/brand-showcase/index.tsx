@@ -12,6 +12,7 @@ export interface BrandShowcaseProps {
   tradeInUp: CardContent;
   certifiedPreOwned: CardContent;
   certifiedService: CardContent;
+  imageUrl?: string;
   className?: string;
   'aria-labelledby'?: string;
 }
@@ -87,27 +88,31 @@ export function BrandShowcase({
   tradeInUp,
   certifiedPreOwned,
   certifiedService,
+  imageUrl,
   className,
 }: BrandShowcaseProps) {
+  console.log(imageUrl);
   return (
     <section
       aria-labelledby={ariaLabelledBy}
       className={clsx(
-        'w-full bg-gray-100 font-[family-name:var(--brand-showcase-font-family,var(--font-family-body))] @container md:py-12 lg:py-16',
+        'w-full bg-gray-100 bg-cover bg-center font-[family-name:var(--brand-showcase-font-family,var(--font-family-body))] @container -mt-8 md:-mt-12 lg:-mt-16 md:py-12 lg:py-16',
         className,
       )}
+      style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
     >
       <div className="mx-auto w-full max-w-screen-2xl px-2 sm:px-3 lg:px-4">
         {/* Header Section */}
-        <header className="mb-8 text-center md:mb-12">
+        <header className="mb-8 pt-8 text-center md:mb-12 md:pt-12 lg:pt-16">
           <h2
-            className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold text-[var(--brand-showcase-title,hsl(var(--foreground)))] md:text-6xl lg:text-7xl xl:text-8xl"
+            className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold text-black md:text-6xl lg:text-7xl xl:text-8xl"
             id={ariaLabelledBy}
           >
-            Rethinking the <span className="text-red-800">Ride</span>
+            Rethinking the <span className="text-white">Ride</span>
           </h2>
-          <p className="font-[family-name:var(--font-family-body)] text-3xl font-light text-gray-600">
-            {subtitle}
+          <p className="font-[family-name:var(--font-family-body)] text-3xl font-normal text-white">
+            <span className="bg-blue-500 px-2 py-1">Not just selling</span>{' '}
+            {subtitle.replace('Not just selling', '').trim()}
           </p>
         </header>
 

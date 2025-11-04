@@ -51,8 +51,8 @@ export default async function DefaultLayout({ params, children }: Props) {
 
         <main className="flex-grow">
           <div className="w-full">
-            <div className="mx-auto max-w-screen-2xl rounded-b-[30px] bg-white">
-              <div className="overflow-hidden rounded-[30px]">{children}</div>
+            <div className="mx-auto max-w-screen-2xl">
+              {children}
 
               <Subscribe />
 

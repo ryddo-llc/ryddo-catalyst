@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import { getTranslations } from 'next-intl/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Image } from '~/components/image';
@@ -94,6 +95,7 @@ function MarketplaceCard({
 
 export interface MarketplaceShowcaseProps {
   products: Streamable<MarketplaceProduct[]>;
+  imageUrl?: string;
 }
 
 const cardColors = [
@@ -110,33 +112,38 @@ const PLACEHOLDER_BADGES = ['New!', 'Sale', 'Top Seller', 'Pre-Order', null, nul
 
 export async function MarketplaceShowcase({
   products: streamableProducts,
+  imageUrl,
 }: MarketplaceShowcaseProps) {
+  const t = await getTranslations('Home.MarketplaceShowcase');
   const products = await streamableProducts;
 
   // Limit to max 6 products
   const displayProducts = products.slice(0, 6);
 
   return (
-    <section className="rounded-b-[30px] pb-8 md:pb-12 lg:pb-16">
+    <section className="relative z-10 rounded-b-[30px] bg-white pb-6 md:pb-10 lg:pb-14">
       <div className="mx-auto max-w-[var(--section-max-width-2xl,1536px)] px-4 @xl:px-6 @4xl:px-8">
-        <div className="rounded-[30px] bg-blue-100 px-4 pb-4 pt-12 md:px-8 md:pb-4 md:pt-16">
+        <div
+          className="rounded-[30px] bg-blue-100 bg-cover bg-center px-4 pb-8 pt-12 md:px-8 md:pb-12 md:pt-16 lg:pb-16"
+          style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
+        >
           {/* Header Section */}
           <header className="mb-12 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
             <h1 className="leading-[0.8]">
               <span className="block font-[family-name:var(--font-family-kanit)] text-4xl font-semibold text-orange-500">
-                THE E-RIDE
+                {t('title.line1')}
               </span>
-              <span className="block -ml-2 font-[family-name:var(--font-family-kanit)] text-7xl font-black italic text-[rgb(196,69,49)]">
-                MARKETPLACE
+              <span className="-ml-2 block font-[family-name:var(--font-family-kanit)] text-7xl font-black italic text-[rgb(196,69,49)]">
+                {t('title.line2')}
               </span>
             </h1>
-            <p className="mt-3 font-[family-name:var(--font-family-body)] text-3xl font-normal text-gray-700">
-              Only the Good Stuff.
+            <p className="mt-3 font-[family-name:var(--font-family-body)] text-3xl font-normal text-white">
+              {t('subtitle')}
             </p>
             <p className="mt-6 font-[family-name:var(--font-family-body)] text-3xl font-black italic leading-tight text-yellow-400">
-              10-DAY ADVENTURE
+              {t('guarantee').split(' ').slice(0, 2).join(' ').toUpperCase()}
               <br />
-              GUARANTEE
+              {t('guarantee').split(' ').slice(2).join(' ').toUpperCase()}
             </p>
           </header>
 

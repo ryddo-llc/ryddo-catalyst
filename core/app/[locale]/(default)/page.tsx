@@ -8,8 +8,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { BrandShowcase } from '~/components/brand-showcase';
 import { LegitBrands } from '~/components/legit-brands';
 import { MarketplaceShowcase } from '~/components/marketplace-showcase';
-import { PaymentOptions } from '~/components/payment-options';
-import { PopularProducts } from '~/components/popular-products';
+import { ProcessSection } from '~/components/process-section';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { imageManagerImageUrl } from '~/lib/store-assets';
@@ -37,10 +36,12 @@ export async function generateMetadata({
 
   const t = await getTranslations('Home');
 
+  const pageDescription =
+    'Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle. Free shipping, expert support, and financing available.';
+
   return {
     title: t('title'),
-    description:
-      'Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle. Free shipping, expert support, and financing available.',
+    description: pageDescription,
     keywords: [
       'electric bikes',
       'e-bikes',
@@ -52,16 +53,14 @@ export async function generateMetadata({
     openGraph: {
       type: 'website',
       title: t('title'),
-      description:
-        'Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle.',
+      description: pageDescription,
       siteName: 'Ryddo',
       url: '/',
     },
     twitter: {
       card: 'summary_large_image',
       title: t('title'),
-      description:
-        'Discover premium electric bikes at Ryddo. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle.',
+      description: pageDescription,
     },
     alternates: {
       canonical: '/',
@@ -81,28 +80,20 @@ export default async function Home({ params, searchParams }: Props) {
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
-  const streamablePopularProducts = Streamable.from(async () => {
+  // Constants for product limits
+  const MAX_MARKETPLACE_PRODUCTS = 6;
+
+  // Fetch products once and share the data
+  const streamableProductsData = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const currencyCode = await getPreferredCurrencyCode();
-
     const data = await getPopularProductsData(currencyCode, customerAccessToken);
-
-    const searchProducts = removeEdgesAndNodes(data.site.search.searchProducts.products);
-
-    // Take only first 8 products for popular products section
-    return productCardTransformer(searchProducts.slice(0, 8), format);
+    return removeEdgesAndNodes(data.site.search.searchProducts.products);
   });
 
   const streamableMarketplaceProducts = Streamable.from(async () => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const currencyCode = await getPreferredCurrencyCode();
-
-    const data = await getPopularProductsData(currencyCode, customerAccessToken);
-
-    const searchProducts = removeEdgesAndNodes(data.site.search.searchProducts.products);
-
-    // Take first 6 products for marketplace showcase
-    return searchProducts.slice(0, 6).map((product) => ({
+    const products = await streamableProductsData;
+    return products.slice(0, MAX_MARKETPLACE_PRODUCTS).map((product) => ({
       entityId: product.entityId,
       name: product.name,
       path: product.path,
@@ -138,7 +129,10 @@ export default async function Home({ params, searchParams }: Props) {
   return (
     <>
       <OrganizationSchema />
-      <MarketplaceShowcase products={streamableMarketplaceProducts} />
+      <MarketplaceShowcase
+        imageUrl={imageManagerImageUrl('hero-bg.png', 'original')}
+        products={streamableMarketplaceProducts}
+      />
       <BrandShowcase
         adventureGuarantee={{
           title: t('BrandShowcase.adventureGuarantee.title'),
@@ -152,6 +146,7 @@ export default async function Home({ params, searchParams }: Props) {
           title: t('BrandShowcase.certifiedService.title'),
           description: t('BrandShowcase.certifiedService.description'),
         }}
+        imageUrl={imageManagerImageUrl('rethink-the-ride-bg.png', 'original')}
         sameDayDelivery={{
           title: t('BrandShowcase.sameDayDelivery.title'),
           description: t('BrandShowcase.sameDayDelivery.description'),
@@ -185,19 +180,57 @@ export default async function Home({ params, searchParams }: Props) {
         imageUrl={imageManagerImageUrl('legit-brands-hero.jpg', 'original')}
       />
 
-      {/* <PaymentOptions /> */}
-
-      <PopularProducts
-        compareHref="/compare"
-        compareProducts={streamableCompareProducts}
-        cta={{ label: t('PopularProducts.cta'), href: '/e-bikes/' }}
-        description={t('PopularProducts.description')}
-        emptyStateSubtitle={t('PopularProducts.emptyStateSubtitle')}
-        emptyStateTitle={t('PopularProducts.emptyStateTitle')}
-        maxItems={4}
-        products={streamablePopularProducts}
-        showCompare={productComparisonsEnabled}
-        title={t('PopularProducts.title')}
+      <ProcessSection
+        howItWorksTitle={t('ProcessSection.howItWorks.title')}
+        imageUrl={imageManagerImageUrl('process-bg.png', 'original')}
+        rolloutCards={[
+          {
+            badge: t('ProcessSection.rollout.cards.online.badge'),
+            title: t('ProcessSection.rollout.cards.online.title'),
+            subtitle: t('ProcessSection.rollout.cards.online.subtitle'),
+            description: t('ProcessSection.rollout.cards.online.description'),
+          },
+          {
+            badge: t('ProcessSection.rollout.cards.kiosk.badge'),
+            title: t('ProcessSection.rollout.cards.kiosk.title'),
+            subtitle: t('ProcessSection.rollout.cards.kiosk.subtitle'),
+            description: t('ProcessSection.rollout.cards.kiosk.description'),
+          },
+          {
+            badge: t('ProcessSection.rollout.cards.inStore.badge'),
+            title: t('ProcessSection.rollout.cards.inStore.title'),
+            subtitle: t('ProcessSection.rollout.cards.inStore.subtitle'),
+            description: t('ProcessSection.rollout.cards.inStore.description'),
+          },
+        ]}
+        rolloutSubtitle={t('ProcessSection.rollout.subtitle')}
+        rolloutTitle={t('ProcessSection.rollout.title')}
+        steps={[
+          {
+            number: t('ProcessSection.howItWorks.steps.step01.number'),
+            description: t('ProcessSection.howItWorks.steps.step01.description'),
+          },
+          {
+            number: t('ProcessSection.howItWorks.steps.step02.number'),
+            description: t('ProcessSection.howItWorks.steps.step02.description'),
+          },
+          {
+            number: t('ProcessSection.howItWorks.steps.step03.number'),
+            description: t('ProcessSection.howItWorks.steps.step03.description'),
+          },
+          {
+            number: t('ProcessSection.howItWorks.steps.step04.number'),
+            description: t('ProcessSection.howItWorks.steps.step04.description'),
+          },
+          {
+            number: t('ProcessSection.howItWorks.steps.step05.number'),
+            description: t('ProcessSection.howItWorks.steps.step05.description'),
+          },
+          {
+            number: t('ProcessSection.howItWorks.steps.step06.number'),
+            description: t('ProcessSection.howItWorks.steps.step06.description'),
+          },
+        ]}
       />
     </>
   );
