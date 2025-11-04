@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import { Info } from 'lucide-react';
 
 interface CardContent {
   title: string;
@@ -48,10 +49,15 @@ function BrandCard({
           bgColor,
         )}
       >
+        {/* Info Icon */}
+        <div className="absolute right-4 top-4">
+          <Info className="h-10 w-10 text-white opacity-80 transition-opacity hover:opacity-100" />
+        </div>
+
         <div
           className={clsx(
             'w-full px-6 py-2 font-[family-name:var(--font-family-body)]',
-            showOpaqueBackground && 'bg-white/80 backdrop-blur-sm',
+            showOpaqueBackground && 'bg-white/50 backdrop-blur-sm',
           )}
         >
           <h3 className="text-lg font-bold uppercase text-black @lg:text-2xl">{title}</h3>
@@ -92,6 +98,7 @@ export function BrandShowcase({
   className,
 }: BrandShowcaseProps) {
   console.log(imageUrl);
+
   return (
     <div className="relative">
       {/* Background extension that extends downward */}
@@ -103,74 +110,74 @@ export function BrandShowcase({
       <section
         aria-labelledby={ariaLabelledBy}
         className={clsx(
-          'relative z-20 w-full font-[family-name:var(--brand-showcase-font-family,var(--font-family-body))] @container -mt-8 md:-mt-12 lg:-mt-16 md:py-12 lg:py-16',
+          'relative z-20 -mt-8 w-full font-[family-name:var(--brand-showcase-font-family,var(--font-family-body))] @container md:-mt-12 md:py-12 lg:-mt-16 lg:py-16',
           className,
         )}
       >
         <div className="mx-auto w-full max-w-screen-2xl px-2 sm:px-3 lg:px-4">
-        {/* Header Section */}
-        <header className="mb-8 pt-8 text-center md:mb-12 md:pt-12 lg:pt-16">
-          <h2
-            className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold text-black md:text-6xl lg:text-7xl xl:text-8xl"
-            id={ariaLabelledBy}
-          >
-            Rethinking the <span className="text-white">Ride</span>
-          </h2>
-          <p className="font-[family-name:var(--font-family-body)] text-3xl font-normal text-white">
-            <span className="bg-blue-500 px-2 py-1">Not just selling</span>{' '}
-            {subtitle.replace('Not just selling', '').trim()}
-          </p>
-        </header>
+          {/* Header Section */}
+          <header className="mb-8 pt-8 text-center md:mb-12 md:pt-12 lg:pt-16">
+            <h2
+              className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold text-black md:text-6xl lg:text-7xl xl:text-8xl"
+              id={ariaLabelledBy}
+            >
+              Rethinking the <span className="text-white">Ride</span>
+            </h2>
+            <p className="font-[family-name:var(--font-family-body)] text-3xl font-normal text-white">
+              <span className="bg-blue-500 px-2 py-1">Not just selling</span>{' '}
+              {subtitle.replace('Not just selling', '').trim()}
+            </p>
+          </header>
 
-        <div className="space-y-6">
-          {/* Top Row - Middle card largest, side cards bigger, all same height */}
-          <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-7">
-            <div className="lg:col-span-2">
-              <BrandCard
-                bgColor="bg-blue-500"
-                description={sameDayDelivery.description}
-                height="h-64 md:h-80 lg:h-96"
-                title={sameDayDelivery.title}
-              />
+          <div className="space-y-6">
+            {/* Top Row - Middle card largest, side cards bigger, all same height */}
+            <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-7">
+              <div className="lg:col-span-2">
+                <BrandCard
+                  bgColor="bg-blue-500"
+                  description={sameDayDelivery.description}
+                  height="h-64 md:h-80 lg:h-96"
+                  title={sameDayDelivery.title}
+                />
+              </div>
+              <div className="lg:col-span-3">
+                <BrandCard
+                  bgColor="bg-yellow-400"
+                  description={adventureGuarantee.description}
+                  height="h-64 md:h-80 lg:h-96"
+                  title={adventureGuarantee.title}
+                />
+              </div>
+              <div className="lg:col-span-2">
+                <BrandCard
+                  bgColor="bg-[rgb(255,229,252)]"
+                  description={tradeInUp.description}
+                  height="h-64 md:h-80 lg:h-96"
+                  title={tradeInUp.title}
+                />
+              </div>
             </div>
-            <div className="lg:col-span-3">
-              <BrandCard
-                bgColor="bg-yellow-400"
-                description={adventureGuarantee.description}
-                height="h-64 md:h-80 lg:h-96"
-                title={adventureGuarantee.title}
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <BrandCard
-                bgColor="bg-pink-500"
-                description={tradeInUp.description}
-                height="h-64 md:h-80 lg:h-96"
-                title={tradeInUp.title}
-              />
-            </div>
-          </div>
 
-          {/* Bottom Row - Two items, equal width */}
-          <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2">
-            <BrandCard
-              bgColor="bg-gray-500"
-              description={certifiedPreOwned.description}
-              height="h-40 md:h-48 lg:h-56"
-              showOpaqueBackground={false}
-              title={certifiedPreOwned.title}
-            />
-            <BrandCard
-              bgColor="bg-gray-500"
-              description={certifiedService.description}
-              height="h-40 md:h-48 lg:h-56"
-              showOpaqueBackground={false}
-              title={certifiedService.title}
-            />
+            {/* Bottom Row - Two items, equal width */}
+            <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2">
+              <BrandCard
+                bgColor="bg-[rgb(226,226,226)]"
+                description={certifiedPreOwned.description}
+                height="h-40 md:h-48 lg:h-56"
+                showOpaqueBackground={false}
+                title={certifiedPreOwned.title}
+              />
+              <BrandCard
+                bgColor="bg-[rgb(226,226,226)]"
+                description={certifiedService.description}
+                height="h-40 md:h-48 lg:h-56"
+                showOpaqueBackground={false}
+                title={certifiedService.title}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
     </div>
   );
 }
