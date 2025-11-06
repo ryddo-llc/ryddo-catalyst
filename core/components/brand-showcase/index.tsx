@@ -1,6 +1,9 @@
 import { clsx } from 'clsx';
 import { Info } from 'lucide-react';
 
+import { imageManagerImageUrl } from '~/lib/store-assets';
+import { Image } from '~/components/image';
+
 interface CardContent {
   title: string;
   description?: string;
@@ -24,6 +27,7 @@ interface BrandCardProps {
   bgColor?: string;
   height?: string;
   showOpaqueBackground?: boolean;
+  overlayImageUrl?: string;
   className?: string;
 }
 
@@ -33,6 +37,7 @@ function BrandCard({
   bgColor = 'bg-white',
   height = 'h-80 md:h-96 lg:h-[28rem]',
   showOpaqueBackground = true,
+  overlayImageUrl,
   className,
 }: BrandCardProps) {
   return (
@@ -49,14 +54,27 @@ function BrandCard({
           bgColor,
         )}
       >
+        {/* Overlay Image - positioned above background color */}
+        {overlayImageUrl && (
+          <div className="absolute inset-0 z-0">
+            <Image
+              alt={title}
+              className="object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
+              src={overlayImageUrl}
+            />
+          </div>
+        )}
+
         {/* Info Icon */}
-        <div className="absolute right-4 top-4">
+        <div className="absolute right-4 top-4 z-10">
           <Info className="h-10 w-10 text-white opacity-80 transition-opacity hover:opacity-100" />
         </div>
 
         <div
           className={clsx(
-            'w-full px-6 py-2 font-[family-name:var(--font-family-body)]',
+            'relative z-10 w-full px-6 py-2 font-[family-name:var(--font-family-body)]',
             showOpaqueBackground && 'bg-white/50 backdrop-blur-sm',
           )}
         >
@@ -97,8 +115,6 @@ export function BrandShowcase({
   imageUrl,
   className,
 }: BrandShowcaseProps) {
-  console.log(imageUrl);
-
   return (
     <div className="relative">
       {/* Background extension that extends downward */}
@@ -145,6 +161,7 @@ export function BrandShowcase({
                   bgColor="bg-yellow-400"
                   description={adventureGuarantee.description}
                   height="h-64 md:h-80 lg:h-96"
+                  overlayImageUrl={imageManagerImageUrl('adventure-guarantee.png', '{:size}')}
                   title={adventureGuarantee.title}
                 />
               </div>
@@ -153,6 +170,7 @@ export function BrandShowcase({
                   bgColor="bg-[rgb(255,229,252)]"
                   description={tradeInUp.description}
                   height="h-64 md:h-80 lg:h-96"
+                  overlayImageUrl={imageManagerImageUrl('trade-in.png', '{:size}')}
                   title={tradeInUp.title}
                 />
               </div>
