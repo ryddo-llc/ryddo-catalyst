@@ -1,8 +1,8 @@
 import { clsx } from 'clsx';
 import { Info } from 'lucide-react';
 
-import { imageManagerImageUrl } from '~/lib/store-assets';
 import { Image } from '~/components/image';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface CardContent {
   title: string;
@@ -55,7 +55,7 @@ function BrandCard({
         )}
       >
         {/* Overlay Image - positioned above background color */}
-        {overlayImageUrl && (
+        {overlayImageUrl ? (
           <div className="absolute inset-0 z-0">
             <Image
               alt={title}
@@ -65,7 +65,7 @@ function BrandCard({
               src={overlayImageUrl}
             />
           </div>
-        )}
+        ) : null}
 
         {/* Info Icon */}
         <div className="absolute right-4 top-4 z-10">

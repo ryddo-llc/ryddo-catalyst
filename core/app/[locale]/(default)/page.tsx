@@ -73,11 +73,13 @@ const streamableProductsData = Streamable.from(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
   const data = await getPopularProductsData(currencyCode, customerAccessToken);
+
   return removeEdgesAndNodes(data.site.search.searchProducts.products);
 });
 
 const streamableMarketplaceProducts = Streamable.from(async () => {
   const products = await streamableProductsData;
+
   return products.map((product) => ({
     entityId: product.entityId,
     name: product.name,
