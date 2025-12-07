@@ -9,6 +9,7 @@ import { InventoryProvider } from '~/components/contexts/inventory-context';
 import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
 import PartnersContactBar from '~/components/partner-contact-banner';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
@@ -40,7 +41,14 @@ export default async function DefaultLayout({ params, children }: Props) {
 
   return (
     <InventoryProvider>
-      <div className="flex flex-col bg-black">
+      <div
+        className="flex flex-col bg-no-repeat"
+        style={{
+          backgroundImage: `url('${imageManagerImageUrl('home-page-bg.png', '1920w')}')`,
+          backgroundPosition: 'center top',
+          backgroundSize: '100% auto',
+        }}
+      >
         {/* Header wrapper */}
         <div className="w-full pt-2">
           <div className="mx-auto max-w-screen-2xl rounded-t-[30px] bg-white">
@@ -50,9 +58,7 @@ export default async function DefaultLayout({ params, children }: Props) {
 
         <main className="flex-grow">
           <div className="w-full">
-            <div className="mx-auto max-w-screen-2xl">
-              {children}
-            </div>
+            <div className="mx-auto max-w-screen-2xl">{children}</div>
           </div>
 
           <Footer />

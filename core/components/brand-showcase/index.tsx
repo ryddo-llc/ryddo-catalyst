@@ -153,6 +153,7 @@ export function BrandShowcase({
                   bgColor="bg-blue-500"
                   description={sameDayDelivery.description}
                   height="h-64 md:h-80 lg:h-96"
+                  overlayImageUrl={imageManagerImageUrl('same-day-delivery-v1.png', '{:size}')}
                   title={sameDayDelivery.title}
                 />
               </div>
@@ -161,7 +162,7 @@ export function BrandShowcase({
                   bgColor="bg-yellow-400"
                   description={adventureGuarantee.description}
                   height="h-64 md:h-80 lg:h-96"
-                  overlayImageUrl={imageManagerImageUrl('adventure-guarantee.png', '{:size}')}
+                  overlayImageUrl={imageManagerImageUrl('adventure-guarantee-v1.png', '{:size}')}
                   title={adventureGuarantee.title}
                 />
               </div>
@@ -170,7 +171,7 @@ export function BrandShowcase({
                   bgColor="bg-[rgb(255,229,252)]"
                   description={tradeInUp.description}
                   height="h-64 md:h-80 lg:h-96"
-                  overlayImageUrl={imageManagerImageUrl('trade-in.png', '{:size}')}
+                  overlayImageUrl={imageManagerImageUrl('trade-in-v1.png', '{:size}')}
                   title={tradeInUp.title}
                 />
               </div>
