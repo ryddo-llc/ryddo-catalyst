@@ -28,6 +28,7 @@ interface BrandCardProps {
   height?: string;
   showOpaqueBackground?: boolean;
   overlayImageUrl?: string;
+  iconUrl?: string;
   className?: string;
 }
 
@@ -38,6 +39,7 @@ function BrandCard({
   height = 'h-80 md:h-96 lg:h-[28rem]',
   showOpaqueBackground = true,
   overlayImageUrl,
+  iconUrl,
   className,
 }: BrandCardProps) {
   return (
@@ -72,15 +74,32 @@ function BrandCard({
           <Info className="h-10 w-10 text-white opacity-80 transition-opacity hover:opacity-100" />
         </div>
 
+        {/* Text content with opaque background - z-10 */}
         <div
           className={clsx(
-            'relative z-10 w-full px-6 py-2 font-[family-name:var(--font-family-body)]',
+            'relative z-10 w-full px-6 py-1 font-[family-name:var(--font-family-body)]',
             showOpaqueBackground && 'bg-white/50 backdrop-blur-sm',
           )}
         >
-          <h3 className="text-lg font-bold uppercase text-black @lg:text-2xl">{title}</h3>
+          {/* Icon badge on the left - absolutely positioned */}
+          {iconUrl ? (
+            <div className="absolute -left-48 top-[60%] h-[700px] w-[600px] -translate-y-1/2">
+              <Image
+                alt={`${title} icon`}
+                className="object-contain brightness-0 invert"
+                fill
+                sizes="800px"
+                src={iconUrl}
+              />
+            </div>
+          ) : null}
+
+          {/* Text content */}
+          <h3 className="text-lg font-extrabold uppercase italic leading-tight text-black @lg:text-2xl">
+            {title}
+          </h3>
           {description ? (
-            <p className="mt-0.5 text-base font-light text-black @lg:text-lg">{description}</p>
+            <p className="-mt-1 text-base font-light text-black @lg:text-lg">{description}</p>
           ) : null}
         </div>
       </div>
@@ -134,12 +153,12 @@ export function BrandShowcase({
           {/* Header Section */}
           <header className="mb-8 pt-8 text-center md:mb-12 md:pt-12 lg:pt-16">
             <h2
-              className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold text-black md:text-6xl lg:text-7xl xl:text-8xl"
+              className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold leading-tight text-black md:text-7xl lg:text-7xl xl:text-7xl"
               id={ariaLabelledBy}
             >
               Rethinking the <span className="text-white">Ride</span>
             </h2>
-            <p className="font-[family-name:var(--font-family-body)] text-3xl font-normal text-white">
+            <p className="-mt-2 font-[family-name:var(--font-family-body)] text-3xl font-normal text-white">
               <span className="bg-blue-500 px-2 py-1">Not just selling</span>{' '}
               {subtitle.replace('Not just selling', '').trim()}
             </p>
@@ -182,15 +201,16 @@ export function BrandShowcase({
               <BrandCard
                 bgColor="bg-[rgb(226,226,226)]"
                 description={certifiedPreOwned.description}
-                height="h-40 md:h-48 lg:h-56"
-                showOpaqueBackground={false}
+                height="h-36 md:h-44 lg:h-52"
+                overlayImageUrl={imageManagerImageUrl('certified-pre-owned.png', '{:size}')}
                 title={certifiedPreOwned.title}
               />
               <BrandCard
                 bgColor="bg-[rgb(226,226,226)]"
                 description={certifiedService.description}
-                height="h-40 md:h-48 lg:h-56"
-                showOpaqueBackground={false}
+                height="h-36 md:h-44 lg:h-52"
+                overlayImageUrl={imageManagerImageUrl('cert-service-bg.png', '{:size}')}
+                iconUrl={imageManagerImageUrl('cert-service-bg-badge.png', '{:size}')}
                 title={certifiedService.title}
               />
             </div>
