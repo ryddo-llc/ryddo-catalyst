@@ -8,7 +8,6 @@ import type { ParsedFeature } from '~/lib/extract-feature-fields';
 
 import { FeatureDetailModal } from '../feature-detail-modal';
 
-
 const productFeatureVariants = [
   {
     href: '/features/battery',
@@ -16,10 +15,10 @@ const productFeatureVariants = [
     subtitle: 'Detachable with up\nto 70+ miles of range\nIn Eco Mode',
     image: {
       src: '/images/battery-feature.jpg',
-      alt: 'High-capacity bike battery'
+      alt: 'High-capacity bike battery',
     },
     showPlusButton: true,
-    cardBackground: 'white' as const
+    cardBackground: 'white' as const,
   },
   {
     href: '/features/lights',
@@ -27,10 +26,10 @@ const productFeatureVariants = [
     subtitle: 'Roxim Z4E Elite, 600 Lumen LED headlight & Tail Light',
     image: {
       src: '/images/lights-feature.jpg',
-      alt: 'LED headlight and taillight system'
+      alt: 'LED headlight and taillight system',
     },
     showPlusButton: true,
-    cardBackground: 'white' as const
+    cardBackground: 'white' as const,
   },
   {
     href: '/features/tires',
@@ -38,10 +37,10 @@ const productFeatureVariants = [
     subtitle: '20x4.5 Front & 20x5 Rear BDGR off-road tires.',
     image: {
       src: '/images/tires-feature.jpg',
-      alt: 'All-terrain off-road tires'
+      alt: 'All-terrain off-road tires',
     },
     showPlusButton: true,
-    cardBackground: 'white' as const
+    cardBackground: 'white' as const,
   },
   {
     href: '/features/suspension',
@@ -49,11 +48,11 @@ const productFeatureVariants = [
     subtitle: 'Smooth ride over rough terrain',
     image: {
       src: '/images/suspension-feature.jpg',
-      alt: 'Advanced suspension system'
+      alt: 'Advanced suspension system',
     },
     showPlusButton: true,
-    cardBackground: 'white' as const
-  }
+    cardBackground: 'white' as const,
+  },
 ];
 
 interface ProductFeatureCarouselProps {
@@ -76,7 +75,7 @@ export function ProductFeatureCarousel({ bigCommerceFeatures }: ProductFeatureCa
 
   return (
     <>
-      <div className="pt-24 pb-16" style={{ backgroundColor: '#E8F4FF' }}>
+      <div className="pb-16 pt-24">
         <div className="pl-12 pr-0">
           <Stream
             fallback={
@@ -97,6 +96,7 @@ export function ProductFeatureCarousel({ bigCommerceFeatures }: ProductFeatureCa
                   },
                 }))}
                 carouselColorScheme="light"
+                hideOverflow={false}
                 nextLabel="Next Feature"
                 previousLabel="Previous Feature"
                 scrollbarLabel="Browse bike features"
@@ -132,7 +132,8 @@ export function ProductFeatureCarousel({ bigCommerceFeatures }: ProductFeatureCa
                         const feature: ParsedFeature = {
                           title: variant.title,
                           desc: variant.subtitle,
-                          img: variant.image.src.split('/').pop()?.replace('-feature.jpg', '') || '',
+                          img:
+                            variant.image.src.split('/').pop()?.replace('-feature.jpg', '') || '',
                           imageUrl: variant.image.src,
                         };
 
@@ -145,6 +146,7 @@ export function ProductFeatureCarousel({ bigCommerceFeatures }: ProductFeatureCa
                   aspectRatio="7:11"
                   cards={cardsToUse}
                   carouselColorScheme="light"
+                  hideOverflow={false}
                   nextLabel="Next Feature"
                   previousLabel="Previous Feature"
                   scrollbarLabel="Browse bike features"
