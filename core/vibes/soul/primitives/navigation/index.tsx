@@ -16,7 +16,61 @@ import { CurrencyForm, LocaleSwitcher } from './locale-currency';
 import { MobileMenuButton } from './mobile-navigation';
 import { NavigationItem } from './navigation-item';
 import { SearchForm } from './search';
-import type { NavigationProps, SearchResult } from './types';
+import type { Link as NavigationLink, NavigationProps, SearchResult } from './types';
+
+// Extracted component to avoid useEffect inside callback
+interface NavigationLinksProps {
+  links: NavigationLink[];
+  getIsActive: (href: string) => boolean;
+  isFloating: boolean;
+  navItemsRef: React.RefObject<Array<HTMLElement | null>>;
+  setActivePillStyle: React.Dispatch<React.SetStateAction<{ left: number; width: number; opacity: number }>>;
+}
+
+function NavigationLinks({ links, getIsActive, isFloating, navItemsRef, setActivePillStyle }: NavigationLinksProps) {
+  const pathname = usePathname();
+
+  // Update active pill position when links or pathname changes
+  useEffect(() => {
+    const activeIndex = links.findIndex((link) => getIsActive(link.href));
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (activeIndex !== -1 && navItemsRef.current?.[activeIndex]) {
+      const activeElement = navItemsRef.current[activeIndex];
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (activeElement != null) {
+        const containerLeft = activeElement.offsetParent?.getBoundingClientRect().left ?? 0;
+        const elementRect = activeElement.getBoundingClientRect();
+        setActivePillStyle({
+          left: elementRect.left - containerLeft,
+          width: activeElement.offsetWidth,
+          opacity: 1,
+        });
+      }
+    } else {
+      setActivePillStyle((prev) => ({ ...prev, opacity: 0 }));
+    }
+  }, [links, pathname, getIsActive, navItemsRef, setActivePillStyle]);
+
+  return (
+    <>
+      {links.map((item, i) => {
+        const isActive = getIsActive(item.href);
+        return (
+          <NavigationItem
+            index={i}
+            isActive={isActive}
+            isFloating={isFloating}
+            item={item}
+            key={i}
+            ref={(el: HTMLElement | null) => {
+              navItemsRef.current[i] = el;
+            }}
+          />
+        );
+      })}
+    </>
+  );
+}
 
 const navButtonClassName =
   'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
@@ -131,7 +185,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
   const [expandedSubSections, setExpandedSubSections] = useState<Set<string>>(new Set());
   const [activePillStyle, setActivePillStyle] = useState({ left: 0, width: 0, opacity: 0 });
-  const navItemsRef = useRef<(HTMLElement | null)[]>([]);
+  const navItemsRef = useRef<Array<HTMLElement | null>>([]);
 
   const pathname = usePathname();
 
@@ -555,44 +609,15 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             }
             value={streamableLinks}
           >
-            {(links) => {
-              // Update active pill position when links or pathname changes
-              useEffect(() => {
-                const activeIndex = links.findIndex((link) => getIsActive(link.href));
-                if (activeIndex !== -1 && navItemsRef.current[activeIndex]) {
-                  const activeElement = navItemsRef.current[activeIndex];
-                  if (activeElement) {
-                    const containerLeft = activeElement.offsetParent?.getBoundingClientRect().left || 0;
-                    const elementRect = activeElement.getBoundingClientRect();
-                    setActivePillStyle({
-                      left: elementRect.left - containerLeft,
-                      width: activeElement.offsetWidth,
-                      opacity: 1,
-                    });
-                  }
-                } else {
-                  setActivePillStyle((prev) => ({ ...prev, opacity: 0 }));
-                }
-              }, [links, pathname]);
-
-              return links.map((item, i) => {
-                // Use memoized active state calculation
-                const isActive = getIsActive(item.href);
-
-                return (
-                  <NavigationItem
-                    index={i}
-                    isActive={isActive}
-                    isFloating={isFloating}
-                    item={item}
-                    key={i}
-                    ref={(el: HTMLElement | null) => {
-                      navItemsRef.current[i] = el;
-                    }}
-                  />
-                );
-              });
-            }}
+{(links) => (
+              <NavigationLinks
+                getIsActive={getIsActive}
+                isFloating={isFloating}
+                links={links}
+                navItemsRef={navItemsRef}
+                setActivePillStyle={setActivePillStyle}
+              />
+            )}
           </Stream>
         </ul>
 

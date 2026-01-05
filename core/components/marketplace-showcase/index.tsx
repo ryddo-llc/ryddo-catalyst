@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { SectionContainer } from '~/components/section-container';
 
 interface MarketplaceProduct {
   entityId: number;
@@ -48,11 +49,11 @@ function MarketplaceCard({
         {/* Top 45% - Content Area */}
         <div className="relative h-[45%] p-3">
           {/* Badge Text - Top Left */}
-          {badgeText && (
+          {badgeText != null && badgeText !== '' ? (
             <span className="absolute left-3 top-3 font-[family-name:var(--font-family-body)] text-xs font-extralight italic text-white">
               {badgeText}
             </span>
-          )}
+          ) : null}
 
           {/* Circle Button - Top Right */}
           <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-black">
@@ -61,11 +62,11 @@ function MarketplaceCard({
 
           {/* Brand & Product Names - Centered Vertically */}
           <div className="flex h-full flex-col items-start justify-center px-1">
-            {product.brand?.name && (
+            {product.brand?.name != null && product.brand.name !== '' ? (
               <p className="font-[family-name:var(--font-family-body)] text-lg font-extrabold text-black">
                 {product.brand.name}
               </p>
-            )}
+            ) : null}
             <h3 className="font-[family-name:var(--font-family-body)] text-sm font-light italic text-black">
               {product.name}
             </h3>
@@ -121,11 +122,13 @@ export async function MarketplaceShowcase({
   const displayProducts = products.slice(0, 6);
 
   return (
-    <section className="relative z-20 rounded-b-[30px] bg-white pb-6 md:pb-10 lg:pb-14">
-      <div className="mx-auto max-w-[var(--section-max-width-2xl,1536px)] px-4 @xl:px-6 @4xl:px-8">
-        <div
-          className="rounded-[30px] bg-blue-100 bg-cover bg-center px-4 pb-8 pt-12 md:px-8 md:pb-12 md:pt-16 lg:pb-16"
-          style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
+    <SectionContainer>
+      <SectionContainer.Outer radius={30} rounded="bottom" padding="pb-6 md:pb-10 lg:pb-14">
+        <SectionContainer.Inner
+          radius={30}
+          bgColor="bg-blue-100"
+          bgImage={imageUrl}
+          padding="px-1 pb-8 pt-12 md:px-8 md:pb-12 md:pt-16 lg:pb-16"
         >
           {/* Header Section */}
           <header className="mb-12 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
@@ -165,8 +168,8 @@ export async function MarketplaceShowcase({
               <p>No products available at this time.</p>
             </div>
           )}
-        </div>
-      </div>
-    </section>
+        </SectionContainer.Inner>
+      </SectionContainer.Outer>
+    </SectionContainer>
   );
 }

@@ -64,7 +64,7 @@ export function ProcessSection({
       )}
     >
       {/* Background Image - Below the fold, lazy loaded */}
-      {imageUrl && (
+      {imageUrl != null && imageUrl !== '' ? (
         <div className="absolute inset-0 left-1/2 w-screen -translate-x-1/2">
           <Image
             alt=""
@@ -77,7 +77,7 @@ export function ProcessSection({
             src={imageUrl}
           />
         </div>
-      )}
+      ) : null}
 
       <div className="relative z-10 mx-auto w-full max-w-screen-2xl px-8 @xl:px-12 @4xl:px-16">
         {/* HOW IT WORKS SECTION */}

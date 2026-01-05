@@ -1,7 +1,8 @@
 import { getProduct } from '../page-data';
 
-// Type alias for translation function
-type TranslationFunction = Awaited<ReturnType<typeof import('next-intl/server').getTranslations>>;
+// Type for the translation function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TranslationFunction = (key: any) => string;
 
 interface CtaState {
   label: string;

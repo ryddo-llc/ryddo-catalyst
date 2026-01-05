@@ -72,9 +72,11 @@ export const Footer = async () => {
     const sectionsData = await getFooterSections(customerAccessToken);
 
     // Get Instagram link from social media
+    /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unnecessary-condition */
     const instagramLink = socialMediaLinks?.find((link) =>
-      link.icon?.props?.title === 'Instagram'
-    )?.href || 'https://instagram.com/ryddousa';
+      (link.icon?.props as { title?: string })?.title === 'Instagram'
+    )?.href ?? 'https://instagram.com/ryddousa';
+    /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unnecessary-condition */
 
     return [
       {

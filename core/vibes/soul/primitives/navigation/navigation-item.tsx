@@ -1,6 +1,5 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { clsx } from 'clsx';
-import { ChevronDown } from 'lucide-react';
 import { forwardRef, memo, useRef } from 'react';
 
 import { Image } from '~/components/image';
@@ -17,7 +16,8 @@ interface NavigationItemProps {
   index: number;
 }
 
-export const NavigationItem = memo(forwardRef<HTMLElement, NavigationItemProps>(({ item, isActive, isFloating, index }, ref) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const NavigationItem = memo(forwardRef<HTMLElement, NavigationItemProps>(({ item, isActive, isFloating: _isFloating, index }, ref) => {
   const router = useRouter();
   const prefetchedRefs = useRef<Set<string>>(new Set());
 
@@ -29,7 +29,8 @@ export const NavigationItem = memo(forwardRef<HTMLElement, NavigationItemProps>(
   };
 
   return (
-    <NavigationMenu.Item key={index} value={index.toString()} ref={ref as any}>
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    <NavigationMenu.Item key={index} ref={ref as React.Ref<HTMLLIElement>} value={index.toString()}>
       <NavigationMenu.Trigger asChild>
         <Link
           className={clsx(

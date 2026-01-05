@@ -152,7 +152,9 @@ export const Footer = ({ sections: streamableSections, copyright, className }: F
   );
 };
 
-function SocialMediaLinksSkeleton() {
+// Keeping for potential future use
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-underscore-dangle
+function _SocialMediaLinksSkeleton() {
   return (
     <Skeleton.Root className="group-has-[[data-pending]]/footer:animate-pulse" pending>
       <div className="flex items-center gap-3" data-pending>

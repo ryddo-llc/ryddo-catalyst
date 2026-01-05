@@ -1,6 +1,5 @@
 'use client';
 
-import { clsx } from 'clsx';
 import { forwardRef, useEffect, useState } from 'react';
 import Headroom from 'react-headroom';
 

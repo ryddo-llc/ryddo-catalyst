@@ -52,7 +52,7 @@ export function LegitBrands({
   return (
     <div className="relative w-full">
       {/* Background Image - Below the fold, lazy loaded */}
-      {backgroundImageUrl && (
+      {backgroundImageUrl != null && backgroundImageUrl !== '' ? (
         <div className="absolute inset-0 left-1/2 z-0 w-screen -translate-x-1/2">
           <Image
             alt=""
@@ -65,7 +65,7 @@ export function LegitBrands({
             src={backgroundImageUrl}
           />
         </div>
-      )}
+      ) : null}
 
       <section
         aria-labelledby={ariaLabelledBy}
