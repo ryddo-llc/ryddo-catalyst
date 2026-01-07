@@ -85,13 +85,13 @@ export function LegitBrands({
                 >
                   <span className="block text-[rgb(128,128,128)]">{title.line1}</span>
                   <span className="block text-[rgb(128,128,128)]">
-                    {title.line2} <span className="text-yellow-400">{title.line2Highlight}</span>
+                    {title.line2} <span className="text-[rgb(128,128,128)]">{title.line2Highlight}</span>
                   </span>
-                  <span className="block">{title.line3}</span>
-                  <span className="block">{title.line4}</span>
-                  <span className="block">{title.line5}</span>
+                  <span className="block text-[rgb(128,128,128)]">{title.line3}</span>
+                  <span className="block text-[rgb(223,7,91)]">{title.line4}</span>
+                  <span className="block text-[rgb(223,7,91)]">{title.line5}</span>
                 </h2>
-                <p className="mb-6 font-[family-name:var(--font-family-body)] text-xl font-medium text-gray-400">
+                <p className="mb-6 font-body text-2xl font-semibold text-gray-400">
                   <span className="block">{description.line1}</span>
                   <span className="block">{description.line2}</span>
                   <span className="block">{description.line3}</span>

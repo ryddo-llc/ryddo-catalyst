@@ -20,6 +20,7 @@ import { PerformanceComparisonSkeleton } from '~/components/product/layout/perfo
 import Addons from '~/components/product/shared/addons';
 import { getFeaturedAddonsAndAccessories } from '~/components/product/shared/addons-query';
 import RelatedProducts from '~/components/product/shared/related-products';
+import { Image } from '~/components/image';
 import { ProductFeatureCarousel } from '~/components/product-feature-carousel';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';
@@ -33,6 +34,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { productTransformer } from '~/data-transformers/product-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { resolveCarouselImages } from '~/lib/extract-feature-fields';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
 
@@ -195,7 +197,7 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableProductSku = Streamable.from(() => Promise.resolve(product.sku || ''));
   const streamableImages = Streamable.from(() => Promise.resolve(processedImages));
   const streamablePrices = Streamable.from(() =>
-    Promise.resolve(pricingData ? pricesTransformer(pricingData.prices, format) ?? null : null),
+    Promise.resolve(pricingData ? (pricesTransformer(pricingData.prices, format) ?? null) : null),
   );
   const streamableCarouselFeatures = Streamable.from(() => Promise.resolve(carouselFeatures));
   const streamableCtaLabel = Streamable.from(() => Promise.resolve(ctaData.label));
@@ -410,6 +412,16 @@ export default async function Product({ params, searchParams }: Props) {
 
   return (
     <>
+      <div className="fixed inset-0 left-1/2 -z-10 w-screen -translate-x-1/2">
+        <Image
+          alt=""
+          aria-hidden="true"
+          className="object-cover object-center"
+          fill
+          priority
+          src={imageManagerImageUrl('home-page-bg.png')}
+        />
+      </div>
       <ProductInventoryProvider streamableInventoryStatus={streamableInventoryStatus} />
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
         {renderProductDetail()}

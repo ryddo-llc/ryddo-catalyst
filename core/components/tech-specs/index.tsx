@@ -17,9 +17,9 @@ const TechSpecs = ({ powerSpecs }: TechSpecsProps) => {
         const allSections = getSections(finalSpecs);
 
         return (
-          <div className="max-w-8xl mx-auto bg-[#F5F5F5] p-4 sm:p-6 md:p-10 lg:p-16">
+          <div className="max-w-8xl mx-auto p-4 sm:p-6 md:p-10 lg:p-16">
             <TechSpecsHeader />
-            
+
             <div className="space-y-0">
               {allSections.map((section) => (
                 <TechSpecsSection

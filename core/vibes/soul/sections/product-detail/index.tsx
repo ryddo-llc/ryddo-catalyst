@@ -6,6 +6,7 @@ import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
+import { SectionContainer } from '~/components/section-container';
 
 import { ProductDetailFormAction } from './product-detail-form';
 import { ProductSpecifications } from './product-specifications';
@@ -74,17 +75,24 @@ export function ProductDetail<F extends Field>({
   additionalActions,
 }: ProductDetailProps<F>) {
   return (
-    <section className="vh-[85] relative min-h-screen overflow-hidden bg-white @container">
-      {/* Dynamic background with gradient */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          clipPath: 'polygon(0 0, 100% 0, 100% 60%, 0 80%)',
-          background: 'linear-gradient(135deg, #E5F3F9 0%, #F0F8FF 100%)',
-        }}
-      />
+    <SectionContainer>
+      <SectionContainer.Outer
+        radius={30}
+        rounded="bottom"
+        containerQuery={true}
+        className="vh-[85] relative min-h-screen overflow-hidden"
+      >
+        <div className="relative">
+          {/* Dynamic background with gradient */}
+          <div
+            className="absolute inset-0 z-0"
+            style={{
+              clipPath: 'polygon(0 0, 100% 0, 100% 60%, 0 80%)',
+              background: 'linear-gradient(135deg, #E5F3F9 0%, #F0F8FF 100%)',
+            }}
+          />
 
-      <div className="group/product-detail z-10 relative mx-auto w-full max-w-screen-2xl px-4 py-8 @xl:px-6 @xl:py-12 @4xl:px-8 @4xl:py-16">
+          <div className="group/product-detail relative z-10 py-8 @xl:py-12 @4xl:py-16">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">
             <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -232,8 +240,10 @@ export function ProductDetail<F extends Field>({
             )
           }
         </Stream>
-      </div>
-    </section>
+          </div>
+        </div>
+      </SectionContainer.Outer>
+    </SectionContainer>
   );
 }
 
