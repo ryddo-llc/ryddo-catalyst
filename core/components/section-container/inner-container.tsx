@@ -23,6 +23,7 @@ export function InnerContainer({
   rounded = 'all',
   bgColor,
   bgImage,
+  bgImageOpacity = 100,
   minHeight,
   maxHeight,
   padding,
@@ -31,7 +32,6 @@ export function InnerContainer({
   overflow = 'hidden',
 }: InnerContainerProps) {
   const radiusStyle = getRadiusStyle(radius, rounded);
-  const bgImageStyle = bgImage ? { backgroundImage: `url(${bgImage})` } : {};
 
   return (
     <div
@@ -43,12 +43,21 @@ export function InnerContainer({
         padding,
         overflow === 'hidden' && 'overflow-hidden',
         overflow === 'auto' && 'overflow-auto',
-        bgImage && 'bg-cover bg-center',
         className,
       )}
-      style={{ ...radiusStyle, ...bgImageStyle }}
+      style={radiusStyle}
     >
-      {children}
+      {bgImage && (
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${bgImage})`,
+            opacity: bgImageOpacity / 100,
+            borderRadius: 'inherit',
+          }}
+        />
+      )}
+      <div className="relative">{children}</div>
     </div>
   );
 }

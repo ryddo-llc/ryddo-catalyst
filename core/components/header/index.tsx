@@ -129,7 +129,7 @@ export const Header = async ({ banners }: HeaderProps = {}) => {
 
     const slicedTree = categoryTree.slice(0, 6);
 
-    // Create the complete navigation tree with Home and Service
+    // Create the complete navigation tree with Home, Service and Dealers
     const allCategories = [
       {
         name: 'Home',
@@ -142,10 +142,15 @@ export const Header = async ({ banners }: HeaderProps = {}) => {
         path: '/service/',
         children: [],
       },
+      {
+        name: 'Dealers',
+        path: '/dealers/',
+        children: [],
+      },
     ];
 
     return allCategories.map(({ name, path, children }) => ({
-      label: name.toLocaleLowerCase(locale),
+      label: name.toLowerCase() === 'e-rides' ? 'e-Rides' : name,
       href: path,
       groups: children.map((firstChild) => ({
         label: firstChild.name,

@@ -79,8 +79,11 @@ declare const messages: {
         "line1": "THE E-RIDE",
         "line2": "MARKETPLACE"
       },
-      "subtitle": "Only the Good Stuff",
-      "guarantee": "10 day adventure Guarantee"
+      "subtitle": "A Coalition of Premium E-Ride Brands",
+      "guarantee": {
+        "line1": "10-DAY ADVENTURE",
+        "line2": "GUARANTEE"
+      }
     },
     "LegitBrands": {
       "title": {

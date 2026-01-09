@@ -48,6 +48,9 @@ export interface InnerContainerProps {
   /** Background image URL */
   bgImage?: string;
 
+  /** Background image opacity (0-100, default: 100) */
+  bgImageOpacity?: number;
+
   /** Minimum height constraint */
   minHeight?: string;
 

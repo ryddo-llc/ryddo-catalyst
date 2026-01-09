@@ -128,25 +128,25 @@ export async function MarketplaceShowcase({
           radius={30}
           bgColor="bg-blue-100"
           bgImage={imageUrl}
-          padding="px-1 pb-8 pt-12 md:px-8 md:pb-12 md:pt-16 lg:pb-16"
+          padding="px-1 pb-4 pt-16 md:px-8 md:pb-6 md:pt-20 lg:pb-8"
         >
           {/* Header Section */}
-          <header className="mb-12 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
+          <header className="mb-16 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
             <h1 className="leading-[0.8]">
-              <span className="block font-[family-name:var(--font-family-kanit)] text-4xl font-semibold text-orange-500">
+              <span className="mb-2 block font-[family-name:var(--font-family-kanit)] text-[2.34rem] font-semibold italic text-[rgb(255,237,0)]">
                 {t('title.line1')}
               </span>
-              <span className="-ml-2 block font-[family-name:var(--font-family-kanit)] text-7xl font-black italic text-[rgb(196,69,49)]">
+              <span className="-ml-2 block font-[family-name:var(--font-family-kanit)] text-[4.68rem] font-black italic text-white">
                 {t('title.line2')}
               </span>
             </h1>
-            <p className="mt-3 font-[family-name:var(--font-family-body)] text-3xl font-normal text-white">
+            <p className="mt-3 font-[family-name:var(--font-family-body)] text-[2.26rem] font-medium italic leading-[28px] text-[rgb(164,206,246)]">
               {t('subtitle')}
             </p>
-            <p className="mt-6 font-[family-name:var(--font-family-body)] text-3xl font-black italic leading-tight text-yellow-400">
-              {t('guarantee').split(' ').slice(0, 2).join(' ').toUpperCase()}
+            <p className="mt-10 font-[family-name:var(--font-family-body)] text-3xl font-black italic leading-[28px] text-[rgb(255,255,0)]">
+              {t('guarantee.line1')}
               <br />
-              {t('guarantee').split(' ').slice(2).join(' ').toUpperCase()}
+              {t('guarantee.line2')}
             </p>
           </header>
 

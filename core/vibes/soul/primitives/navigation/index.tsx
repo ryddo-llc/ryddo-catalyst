@@ -570,7 +570,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Top Level Nav Links */}
         <ul
           className={clsx(
-            'hidden gap-1 rounded-full bg-gray-100 p-1.5 @4xl:flex @4xl:flex-1 relative',
+            'hidden gap-1 rounded-full bg-gray-200 p-1.5 @4xl:flex @4xl:flex-1 relative',
             {
               left: '@4xl:justify-start',
               center: '@4xl:justify-center',
@@ -693,14 +693,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 )
               }
             </Stream>
-          </Link>
-
-          {/* Contact Us Pill Button */}
-          <Link
-            className="hidden rounded-full bg-gray-200 px-4 py-2 text-sm font-semibold font-[family-name:Inter,sans-serif] text-foreground ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 hover:bg-gray-300 focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
-            href="/contact"
-          >
-            Contact Us
           </Link>
 
           {/* Locale / Language Dropdown */}

@@ -34,11 +34,11 @@ export const NavigationItem = memo(forwardRef<HTMLElement, NavigationItemProps>(
       <NavigationMenu.Trigger asChild>
         <Link
           className={clsx(
-            'text-sm group relative hidden items-center whitespace-nowrap rounded-full px-4 py-2 font-[family-name:Inter,sans-serif] font-semibold ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex z-10',
+            'text-sm group relative hidden items-center whitespace-nowrap rounded-full px-4 py-2 font-[family-name:Inter,sans-serif] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex z-10',
             {
-              'text-[var(--nav-link-text-active,#F92F7B)]':
+              'text-[var(--nav-link-text-active,#F92F7B)] font-bold':
                 isActive,
-              'text-[var(--nav-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))]':
+              'text-[var(--nav-link-text,rgb(110,110,110))] hover:text-[var(--nav-link-text-hover,rgb(110,110,110))] font-normal':
                 !isActive,
             },
           )}
