@@ -151,7 +151,7 @@ export function BrandShowcase({
           className,
         )}
       >
-        <div className="mx-auto w-full max-w-screen-2xl px-2 sm:px-3 lg:px-4">
+        <div className="mx-auto w-full max-w-[1400px] px-2 sm:px-3 lg:px-4">
           {/* Header Section */}
           <header className="mb-8 pt-8 text-center md:mb-12 md:pt-12 lg:pt-16">
             <h2

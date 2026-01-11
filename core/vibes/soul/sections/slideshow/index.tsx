@@ -150,7 +150,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-4 left-1/2 flex w-full max-w-screen-2xl -translate-x-1/2 flex-wrap items-center px-4 @xl:bottom-6 @xl:px-6 @4xl:px-8">
+      <div className="absolute bottom-4 left-1/2 flex w-full max-w-[1400px] -translate-x-1/2 flex-wrap items-center px-4 @xl:bottom-6 @xl:px-6 @4xl:px-8">
         {/* Progress Buttons */}
         {scrollSnaps.map((_: number, index: number) => {
           return (

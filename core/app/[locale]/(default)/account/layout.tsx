@@ -18,7 +18,7 @@ export default function Layout({ children }: PropsWithChildren) {
         title="My Account"
       />
       
-      <div className="mx-auto max-w-screen-2xl @container">
+      <div className="mx-auto max-w-[1400px] @container">
 
         {/* Sidebar + Content Layout */}
         <div className="flex min-h-[calc(100vh-200px)] border-t border-[var(--account-card-border,hsl(var(--contrast-200)))] bg-[var(--account-card-background,hsl(var(--background)))]">

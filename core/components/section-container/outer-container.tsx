@@ -24,7 +24,7 @@ export function OuterContainer({
   bgColor = 'bg-white',
   padding = 'pb-6',
   innerPadding = 'px-2 @xl:px-2 @4xl:px-4',
-  maxWidth = 'max-w-[var(--section-max-width-2xl,1536px)]',
+  maxWidth = 'max-w-[var(--section-max-width-2xl,1400px)]',
   containerQuery = true,
   className,
   'aria-labelledby': ariaLabelledBy,

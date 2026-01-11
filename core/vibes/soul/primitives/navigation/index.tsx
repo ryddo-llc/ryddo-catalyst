@@ -283,7 +283,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   return (
     <NavigationMenu.Root
-      className={clsx('relative mx-auto w-full max-w-screen-2xl @container', className)}
+      className={clsx('relative mx-auto w-full max-w-[1400px] @container', className)}
       delayDuration={0}
       onValueChange={() => setIsSearchOpen(false)}
       ref={ref}

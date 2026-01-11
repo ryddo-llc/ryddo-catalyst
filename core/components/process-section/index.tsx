@@ -79,7 +79,7 @@ export function ProcessSection({
         </div>
       ) : null}
 
-      <div className="relative z-10 mx-auto w-full max-w-screen-2xl px-8 @xl:px-12 @4xl:px-16">
+      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-8 @xl:px-12 @4xl:px-16">
         {/* HOW IT WORKS SECTION */}
         <HowItWorks aria-labelledby={ariaLabelledBy} steps={steps} title={howItWorksTitle} />
 

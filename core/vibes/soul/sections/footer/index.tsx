@@ -53,7 +53,7 @@ export interface FooterProps {
 export const Footer = ({ sections: streamableSections, copyright, className }: FooterProps) => {
   return (
     <footer className={clsx('group/footer bg-[rgb(0,12,31)] text-white @container', className)}>
-      <div className="mx-auto max-w-screen-2xl px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+      <div className="mx-auto max-w-[1400px] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
         <div className="rounded-[30px] border-[rgb(0,12,31)] bg-[rgb(0,16,43)] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
           {/* Footer Columns with Newsletter */}
           <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>

@@ -311,7 +311,7 @@ export function ProductDetailForm<F extends Field>({
       <div className="mt-16">
         <div className="w-full">
           <div className="bg-gradient-to-r from-gray-50 to-white border-t border-gray-200 py-12 px-4 @xl:px-6 @4xl:px-8">
-            <div className="mx-auto max-w-screen-2xl">
+            <div className="mx-auto max-w-[1400px]">
               <InteractiveSpecificationsSection 
                 fields={fields}
                 formFields={formFields}
@@ -334,7 +334,7 @@ export function SpecificationsClient() {
   return (
     <div className="w-full">
       <div className="bg-gradient-to-r from-gray-50 to-white border-t border-gray-200 py-12 px-4 @xl:px-6 @4xl:px-8">
-        <div className="mx-auto max-w-screen-2xl">
+        <div className="mx-auto max-w-[1400px]">
           <InteractiveSpecificationsSection 
             fields={fields}
             formFields={formFields}
