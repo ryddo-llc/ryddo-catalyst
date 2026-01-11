@@ -30,6 +30,7 @@ interface BrandCardProps {
   overlayImageUrl?: string;
   iconUrl?: string;
   className?: string;
+  bottomPadding?: string;
 }
 
 function BrandCard({
@@ -41,6 +42,7 @@ function BrandCard({
   overlayImageUrl,
   iconUrl,
   className,
+  bottomPadding = 'pb-12',
 }: BrandCardProps) {
   return (
     <div
@@ -51,7 +53,7 @@ function BrandCard({
     >
       <div
         className={clsx(
-          'relative flex flex-col items-center justify-end overflow-hidden rounded-[28px] pb-12 text-center',
+          `relative flex flex-col items-center justify-end overflow-hidden rounded-[28px] text-center ${bottomPadding}`,
           height,
           bgColor,
         )}
@@ -83,7 +85,7 @@ function BrandCard({
         >
           {/* Icon badge on the left - absolutely positioned */}
           {iconUrl ? (
-            <div className="absolute -left-48 top-[60%] h-[700px] w-[600px] -translate-y-1/2">
+            <div className="absolute -left-48 top-[0%] h-[700px] w-[600px] -translate-y-1/2">
               <Image
                 alt={`${title} icon`}
                 className="object-contain brightness-0 invert"
@@ -164,9 +166,9 @@ export function BrandShowcase({
             </p>
           </header>
 
-          <div className="space-y-6">
+          <div className="space-y-3">
             {/* Top Row - Middle card largest, side cards bigger, all same height */}
-            <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-7">
+            <div className="grid grid-cols-1 gap-2 md:gap-3 lg:grid-cols-7">
               <div className="lg:col-span-2">
                 <BrandCard
                   bgColor="bg-blue-500"
@@ -196,18 +198,18 @@ export function BrandShowcase({
               </div>
             </div>
 
-            {/* Bottom Row - Two items, equal width */}
-            <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2">
+            {/* Bottom Row - Two items, equal width (title only, no description) */}
+            <div className="grid grid-cols-1 gap-2 md:gap-3 lg:grid-cols-2">
               <BrandCard
                 bgColor="bg-[rgb(226,226,226)]"
-                description={certifiedPreOwned.description}
+                bottomPadding="pb-8"
                 height="h-36 md:h-44 lg:h-52"
                 overlayImageUrl={imageManagerImageUrl('certified-pre-owned.png', '{:size}')}
                 title={certifiedPreOwned.title}
               />
               <BrandCard
                 bgColor="bg-[rgb(226,226,226)]"
-                description={certifiedService.description}
+                bottomPadding="pb-8"
                 height="h-36 md:h-44 lg:h-52"
                 overlayImageUrl={imageManagerImageUrl('cert-service-bg.png', '{:size}')}
                 iconUrl={imageManagerImageUrl('cert-service-bg-badge.png', '{:size}')}
