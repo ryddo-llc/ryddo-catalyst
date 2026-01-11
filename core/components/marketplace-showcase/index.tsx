@@ -35,14 +35,14 @@ function MarketplaceCard({
   return (
     <Link
       className={clsx(
-        'group block w-full min-w-[120px] max-w-[200px] overflow-hidden rounded-[13px] bg-white p-1 transition-all hover:shadow-lg',
+        'group block w-full min-w-[110px] max-w-[180px] overflow-hidden rounded-[24px] bg-white p-1 transition-all hover:shadow-lg',
         className,
       )}
       href={product.path}
     >
       <div
         className={clsx(
-          'relative flex aspect-[3/4] flex-col overflow-hidden rounded-[12px]',
+          'relative flex aspect-[3/4.2] flex-col overflow-hidden rounded-[22px]',
           bgColor,
         )}
       >
@@ -50,31 +50,31 @@ function MarketplaceCard({
         <div className="relative h-[45%] p-3">
           {/* Badge Text - Top Left */}
           {badgeText != null && badgeText !== '' ? (
-            <span className="absolute left-3 top-3 font-[family-name:var(--font-family-body)] text-xs font-extralight italic text-white">
+            <span className="absolute left-4 top-3 font-[family-name:var(--font-family-body)] text-sm font-extralight italic text-white">
               {badgeText}
             </span>
           ) : null}
 
           {/* Circle Button - Top Right */}
-          <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-black">
-            <span className="relative -top-[3px] text-xl font-bold leading-none text-white">+</span>
+          <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white">
+            <span className="relative -top-[3px] text-xl font-bold leading-none text-black">+</span>
           </div>
 
           {/* Brand & Product Names - Centered Vertically */}
-          <div className="flex h-full flex-col items-start justify-center px-1">
+          <div className="flex h-full flex-col items-start justify-end px-1 pb-2">
             {product.brand?.name != null && product.brand.name !== '' ? (
               <p className="font-[family-name:var(--font-family-body)] text-lg font-extrabold text-black">
                 {product.brand.name}
               </p>
             ) : null}
-            <h3 className="font-[family-name:var(--font-family-body)] text-sm font-light italic text-black">
+            <h3 className="w-full truncate font-[family-name:var(--font-family-body)] text-sm font-light italic text-black">
               {product.name}
             </h3>
           </div>
         </div>
 
         {/* Bottom 55% - Image Area */}
-        <div className="relative h-[55%] overflow-hidden rounded-t-[13px]">
+        <div className="relative h-[55%] overflow-hidden rounded-t-[22px]">
           {product.defaultImage ? (
             <Image
               alt={product.defaultImage.altText}
@@ -109,7 +109,7 @@ const cardColors = [
 ];
 
 // Placeholder badge texts (will be replaced with real logic later)
-const PLACEHOLDER_BADGES = ['New!', 'Sale', 'Top Seller', 'Pre-Order', null, null];
+const PLACEHOLDER_BADGES = ['New!', 'Sale!', 'Top Seller', 'Pre-Order', null, null];
 
 export async function MarketplaceShowcase({
   products: streamableProducts,
@@ -128,7 +128,7 @@ export async function MarketplaceShowcase({
           radius={30}
           bgColor="bg-blue-100"
           bgImage={imageUrl}
-          padding="px-1 pb-4 pt-16 md:px-8 md:pb-6 md:pt-20 lg:pb-8"
+          padding="px-1 pb-2 pt-16 md:px-8 md:pb-3 md:pt-20 lg:pb-4"
         >
           {/* Header Section */}
           <header className="mb-16 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
