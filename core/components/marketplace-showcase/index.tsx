@@ -123,7 +123,7 @@ export async function MarketplaceShowcase({
 
   return (
     <SectionContainer>
-      <SectionContainer.Outer radius={30} rounded="bottom" padding="pb-6 md:pb-10 lg:pb-14">
+      <SectionContainer.Outer radius={30} rounded="bottom" padding="pb-5 md:pb-8 lg:pb-12" innerPadding="px-1 @xl:px-1 @4xl:px-2">
         <SectionContainer.Inner
           radius={30}
           bgColor="bg-blue-100"
