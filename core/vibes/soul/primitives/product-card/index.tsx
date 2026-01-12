@@ -106,7 +106,7 @@ export function ProductCard({
               className="object-cover"
               fill
               loading="lazy"
-              priority={imagePriority}
+              preload={imagePriority}
               sizes={imageSizes ?? '(max-width: 640px) 40vw, (max-width: 1024px) 25vw, 180px'}
               src={imageUrl}
             />

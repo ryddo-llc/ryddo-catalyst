@@ -59,7 +59,7 @@ export function LegitBrands({
             className="object-cover"
             fill
             loading="lazy"
-            priority={false}
+            preload={false}
             quality={60}
             sizes="100vw"
             src={backgroundImageUrl}
@@ -97,7 +97,7 @@ export function LegitBrands({
                   <span className="block">{description.line3}</span>
                 </p>
                 <p className="font-[family-name:var(--font-family-body)] text-base text-gray-600 md:text-base">
-                  <span className="text-[rgb(219,64,117)] underline">{linkText.highlight}</span>{' '}
+                  <span className="text-[rgb(219,64,117)]">{linkText.highlight}</span>{' '}
                   {linkText.rest}
                 </p>
               </div>
@@ -110,7 +110,7 @@ export function LegitBrands({
                     className="object-cover"
                     fill
                     loading="lazy"
-                    priority={false}
+                    preload={false}
                     sizes="(max-width: 1024px) 100vw, 60vw"
                     src={imageUrl}
                   />

@@ -77,7 +77,7 @@ export function ProductDetail<F extends Field>({
   return (
     <SectionContainer>
       <SectionContainer.Outer
-        className="vh-[85] relative min-h-screen overflow-hidden"
+        className="h-[85vh] relative min-h-screen overflow-hidden"
         containerQuery={true}
         radius={30}
         rounded="bottom"
@@ -114,7 +114,7 @@ export function ProductDetail<F extends Field>({
                             <ProductGallery
                               aspectRatio="4:5"
                               images={images}
-                              priority={true}
+                              preload={true}
                               productTitle={product.title}
                               thumbnailLabel={thumbnailLabel}
                             />

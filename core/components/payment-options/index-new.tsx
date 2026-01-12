@@ -20,7 +20,7 @@ export function PaymentOptions() {
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover opacity-90"
           fill
-          priority={false}
+          preload={false}
           src="/images/backgrounds/newsletter-form.webp"
         />
 

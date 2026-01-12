@@ -417,7 +417,7 @@ export default async function Product({ params, searchParams }: Props) {
           aria-hidden="true"
           className="object-cover object-center"
           fill
-          priority
+          preload
           src={imageManagerImageUrl('home-page-bg.png')}
         />
       </div>
