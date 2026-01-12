@@ -262,15 +262,15 @@ export default async function Product({ params, searchParams }: Props) {
   // Determine which product detail component to use
   const productDetailVariant = getProductDetailVariant(product);
 
-  // Product data for bike/scooter (synchronous transformation)
+  // Product data for e-rides (synchronous transformation)
   const streamableProductData =
-    productDetailVariant === 'bike' || productDetailVariant === 'scooter'
+    productDetailVariant === 'e-rides'
       ? Streamable.from(() => Promise.resolve(productTransformer(product)))
       : null;
 
   // Performance comparison (synchronous with already-processed data)
   const streamablePerformanceComparison =
-    productDetailVariant === 'bike' || productDetailVariant === 'scooter'
+    productDetailVariant === 'e-rides'
       ? Streamable.from(() => {
           const dynamicData = transformPerformanceComparisonData(product.customFields);
 
@@ -388,8 +388,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   const renderProductDetail = () => {
     switch (productDetailVariant) {
-      case 'bike':
-      case 'scooter':
+      case 'e-rides':
         return <ProductDetailCustom {...baseProps} product={enhancedProductData} />;
 
       case 'default':
@@ -427,8 +426,8 @@ export default async function Product({ params, searchParams }: Props) {
         {renderProductDetail()}
       </ProductAnalyticsProvider>
 
-      {/* Enhanced sections for bikes and scooters only */}
-      {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
+      {/* Enhanced sections for e-rides only */}
+      {productDetailVariant === 'e-rides' && (
         <>
           <Addons addons={streamablePopularAccessories} name={product.brand?.name} />
 
