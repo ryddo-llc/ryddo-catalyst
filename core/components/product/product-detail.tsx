@@ -105,11 +105,11 @@ export function ProductDetail<F extends Field>({
         >
           <SectionContainer>
             <SectionContainer.Outer
+              aria-labelledby="product-heading"
+              innerPadding="px-2"
+              padding="pb-10"
               radius={30}
               rounded="bottom"
-              padding="pb-10"
-              innerPadding="px-2"
-              aria-labelledby="product-heading"
             >
               <Stream fallback={<ProductDetailSkeleton />} value={streamableProduct}>
                 {(product) => {
@@ -117,10 +117,10 @@ export function ProductDetail<F extends Field>({
 
                   return (
                     <SectionContainer.Inner
-                      radius={30}
+                      className="relative"
                       minHeight="min-h-[70vh]"
                       overflow="hidden"
-                      className="relative"
+                      radius={30}
                     >
                       {/* Background Image - Loaded immediately */}
                       <div className="absolute inset-0 h-full w-full overflow-hidden rounded-[30px] opacity-55">

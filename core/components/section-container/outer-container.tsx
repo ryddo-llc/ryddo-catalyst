@@ -8,10 +8,13 @@ function getRadiusStyle(radius: number, rounded: RoundedStyle): React.CSSPropert
   switch (rounded) {
     case 'all':
       return { borderRadius: value };
+
     case 'top':
       return { borderTopLeftRadius: value, borderTopRightRadius: value };
+
     case 'bottom':
       return { borderBottomLeftRadius: value, borderBottomRightRadius: value };
+
     case 'none':
     default:
       return {};

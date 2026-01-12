@@ -123,12 +123,12 @@ export async function MarketplaceShowcase({
 
   return (
     <SectionContainer>
-      <SectionContainer.Outer radius={30} rounded="bottom" padding="pb-5 md:pb-8 lg:pb-12" innerPadding="px-1 @xl:px-1 @4xl:px-2">
+      <SectionContainer.Outer innerPadding="px-1 @xl:px-1 @4xl:px-2" padding="pb-5 md:pb-8 lg:pb-12" radius={30} rounded="bottom">
         <SectionContainer.Inner
-          radius={30}
           bgColor="bg-blue-100"
           bgImage={imageUrl}
           padding="px-1 pb-2 pt-16 md:px-8 md:pb-3 md:pt-20 lg:pb-4"
+          radius={30}
         >
           {/* Header Section */}
           <header className="mb-16 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">

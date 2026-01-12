@@ -9,6 +9,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { Image } from '~/components/image';
 import {
   getProductDetailVariant,
   ProductDetail as ProductDetailCustom,
@@ -20,7 +21,6 @@ import { PerformanceComparisonSkeleton } from '~/components/product/layout/perfo
 import Addons from '~/components/product/shared/addons';
 import { getFeaturedAddonsAndAccessories } from '~/components/product/shared/addons-query';
 import RelatedProducts from '~/components/product/shared/related-products';
-import { Image } from '~/components/image';
 import { ProductFeatureCarousel } from '~/components/product-feature-carousel';
 import { ProductShowcase } from '~/components/product-showcase';
 import TechSpecs from '~/components/tech-specs';

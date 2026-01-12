@@ -6,7 +6,7 @@ import { extractFeatureFields } from '~/lib/extract-feature-fields';
 import { getProduct } from '../page-data';
 
 // Type alias for translation function
-type TranslationFunction = Awaited<ReturnType<typeof import('next-intl/server').getTranslations>>;
+type TranslationFunction = (key: string) => string;
 
 interface ProcessedCustomFields {
   features: ReturnType<typeof extractFeatureFields>;

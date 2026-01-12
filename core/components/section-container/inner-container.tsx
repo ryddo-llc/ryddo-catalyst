@@ -8,10 +8,13 @@ function getRadiusStyle(radius: number, rounded: RoundedStyle): React.CSSPropert
   switch (rounded) {
     case 'all':
       return { borderRadius: value };
+
     case 'top':
       return { borderTopLeftRadius: value, borderTopRightRadius: value };
+
     case 'bottom':
       return { borderBottomLeftRadius: value, borderBottomRightRadius: value };
+
     case 'none':
     default:
       return {};
@@ -47,7 +50,7 @@ export function InnerContainer({
       )}
       style={radiusStyle}
     >
-      {bgImage && (
+      {bgImage ? (
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -56,7 +59,7 @@ export function InnerContainer({
             borderRadius: 'inherit',
           }}
         />
-      )}
+      ) : null}
       <div className="relative">{children}</div>
     </div>
   );

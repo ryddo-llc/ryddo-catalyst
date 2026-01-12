@@ -33,13 +33,16 @@ function NavigationLinks({ links, getIsActive, isFloating, navItemsRef, setActiv
   // Update active pill position when links or pathname changes
   useEffect(() => {
     const activeIndex = links.findIndex((link) => getIsActive(link.href));
+
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (activeIndex !== -1 && navItemsRef.current?.[activeIndex]) {
       const activeElement = navItemsRef.current[activeIndex];
+
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (activeElement != null) {
         const containerLeft = activeElement.offsetParent?.getBoundingClientRect().left ?? 0;
         const elementRect = activeElement.getBoundingClientRect();
+
         setActivePillStyle({
           left: elementRect.left - containerLeft,
           width: activeElement.offsetWidth,
@@ -55,6 +58,7 @@ function NavigationLinks({ links, getIsActive, isFloating, navItemsRef, setActiv
     <>
       {links.map((item, i) => {
         const isActive = getIsActive(item.href);
+
         return (
           <NavigationItem
             index={i}

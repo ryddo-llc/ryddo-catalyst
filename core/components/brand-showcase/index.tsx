@@ -211,8 +211,8 @@ export function BrandShowcase({
                 bgColor="bg-[rgb(226,226,226)]"
                 bottomPadding="pb-8"
                 height="h-36 md:h-44 lg:h-52"
-                overlayImageUrl={imageManagerImageUrl('cert-service-bg.png', '{:size}')}
                 iconUrl={imageManagerImageUrl('cert-service-bg-badge.png', '{:size}')}
+                overlayImageUrl={imageManagerImageUrl('cert-service-bg.png', '{:size}')}
                 title={certifiedService.title}
               />
             </div>
