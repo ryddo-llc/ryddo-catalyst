@@ -58,7 +58,7 @@ export const Banner = forwardRef(
     return (
       <div
         className={clsx(
-          'relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] transition-all duration-300 ease-in @container',
+          'relative w-full overflow-hidden rounded-t-[30px] bg-[var(--banner-background,hsl(var(--primary)))] transition-all duration-300 ease-in @container',
           banner.dismissed ? 'pointer-events-none max-h-0' : 'max-h-32',
           className,
         )}

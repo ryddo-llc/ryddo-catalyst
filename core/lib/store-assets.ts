@@ -55,21 +55,37 @@ export const contentImageUrl = (path: string, sizeParam?: string): string => {
  * @param {string} sizeParam - The optional size parameter. Can be of the form `{:size}` (to make it a urlTemplate) or `original` or `123w` or `123x123`. If omitted, will return the templated string containing `{:size}`.
  * @param {boolean} lossy - Whether to apply lossy compression. Defaults to true for better performance.
  * @param {number} quality - Optional quality parameter (1-100). If specified and sizeParam is not a template, adds quality param to URL.
+ * @param {boolean} bustCache - Whether to add a cache-busting parameter based on build time. Defaults to true.
  * @returns {string} The resizeable URL template for the image, which can be used with `<Image>`.
  */
-export const imageManagerImageUrl = (filename: string, sizeParam?: string, lossy = true, quality?: number): string => {
+export const imageManagerImageUrl = (filename: string, sizeParam?: string, lossy = true, quality?: number, bustCache = true): string => {
   // return a urlTemplate that can be used with the <Image> component
   let url = cdnImageUrlBuilder(sizeParam || '{:size}', 'image-manager', filename);
 
+  // Determine if we should add query parameters
+  const shouldAddParams = sizeParam !== '{:size}';
+  let hasParams = false;
+
   // Add compression parameter for better performance unless explicitly disabled
   // Don't add query params to URL templates as it breaks CDN loader template replacement
-  if (lossy && sizeParam !== 'original' && sizeParam !== '{:size}') {
+  if (lossy && sizeParam !== 'original' && shouldAddParams) {
     url = `${url}?compression=lossy`;
+    hasParams = true;
 
     // Add quality parameter if specified and not a template
-    if (quality && sizeParam !== '{:size}') {
+    if (quality) {
       url = `${url}&quality=${quality}`;
     }
+  }
+
+  // Add cache-busting parameter to force fresh image fetches when content changes
+  // Uses build time or deployment ID as cache key to invalidate on each deploy
+  if (bustCache && shouldAddParams) {
+    // Use NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA for Vercel deployments, or build time for local dev
+    const cacheKey = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || process.env.BUILD_ID || 'dev';
+    const separator = hasParams ? '&' : '?';
+
+    url = `${url}${separator}v=${cacheKey}`;
   }
 
   return url;

@@ -126,7 +126,7 @@ export function CategoryShowcase({
         className,
       )}
     >
-      <div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <Stream
           fallback={
             <div className="space-y-6">

@@ -46,6 +46,120 @@
       "cta": "Visit Our Store",
       "emptyStateTitle": "No popular products found",
       "emptyStateSubtitle": "Try browsing our complete catalog of products."
+    },
+    "BrandShowcase": {
+      "title": "Rethinking the ride",
+      "subtitle": "Not just selling e-rides-redefining the industry",
+      "sameDayDelivery": {
+        "title": "Same day delivery",
+        "description": "Available in select US Cities."
+      },
+      "adventureGuarantee": {
+        "title": "10-day adventure guarantee",
+        "description": "Swap within 10 days—credit applies anywhere."
+      },
+      "tradeInUp": {
+        "title": "Trade-In & Trade-Up",
+        "description": "Instant credit toward your new ride."
+      },
+      "certifiedPreOwned": {
+        "title": "Certified Pre-Owned Bikes",
+        "description": "Inspected to meet the highest standards."
+      },
+      "certifiedService": {
+        "title": "Certified Service Centers",
+        "description": "Nationwide Service to meet brand standards."
+      }
+    },
+    "MarketplaceShowcase": {
+      "title": {
+        "line1": "THE E-RIDE",
+        "line2": "MARKETPLACE"
+      },
+      "subtitle": "A Coalition of Premium E-Ride Brands",
+      "guarantee": {
+        "line1": "10-DAY ADVENTURE",
+        "line2": "GUARANTEE"
+      }
+    },
+    "LegitBrands": {
+      "title": {
+        "line1": "Where",
+        "line2": "the",
+        "line2Highlight": "Legit",
+        "line3": "Brands",
+        "line4": "Ride",
+        "line5": "Together"
+      },
+      "description": {
+        "line1": "Ryddo's curated selection of premium",
+        "line2": "e-rides with industry-leading",
+        "line3": "build quality."
+      },
+      "linkText": {
+        "highlight": "Learn more",
+        "rest": "about becoming a Ryddo brand or dealer partner."
+      },
+      "imageAlt": "Premium e-ride brands partnership"
+    },
+    "ProcessSection": {
+      "howItWorks": {
+        "title": "How it Works",
+        "steps": {
+          "step01": {
+            "number": "01",
+            "description": "Order online and select your choice of home delivery, white-glove build & deliver, or in-store build & pickup. (Coming Soon!)"
+          },
+          "step02": {
+            "number": "02",
+            "description": "Choose from our curated selection of premium e-ride brands backed by the Ryddo guarantee."
+          },
+          "step03": {
+            "number": "03",
+            "description": "Track your order in real-time and receive updates via text or email throughout the delivery process."
+          },
+          "step04": {
+            "number": "04",
+            "description": "Receive expert assembly and setup with white-glove delivery, or pick up ready-to-ride from your local store."
+          },
+          "step05": {
+            "number": "05",
+            "description": "Enjoy your new ride with our 10-day adventure guarantee and nationwide service network."
+          },
+          "step06": {
+            "number": "06",
+            "description": "Access ongoing support, maintenance tips, and exclusive owner benefits through your Ryddo account."
+          }
+        }
+      },
+      "quote": {
+        "text": "Ryddo is doing what the industry has needed for years.",
+        "author": "Cargocycle"
+      },
+      "rollout": {
+        "title": "The Rollout",
+        "subtitle": "We have you covered from online to in-store",
+        "cards": {
+          "online": {
+            "badge": "LIVE",
+            "title": "ONLINE",
+            "subtitle": "The Premium Marketplace",
+            "description": "Premium e-rides with same-day deliveries and nationwide"
+          },
+          "kiosk": {
+            "badge": "JAN",
+            "title": "KIOSK",
+            "subtitle": "Buy all Brands In-Store",
+            "description": "Premium e-rides with same-day deliveries and nationwide"
+          },
+          "inStore": {
+            "badge": "MAR",
+            "title": "IN-STORE",
+            "subtitle": "Demo, Sales & Service",
+            "description": "Premium sales and support from your local Ryddo Dealer"
+          }
+        }
+      }
     }
   },
   "Auth": {
@@ -474,7 +588,25 @@
       "shop": "Shop",
       "brands": "Brands",
       "navigate": "Navigate",
-      "explore": "Explore"
+      "explore": "Explore",
+      "products": "Products",
+      "company": "Company",
+      "aboutUs": "About Us",
+      "theTeam": "The Team",
+      "privacyPolicy": "Privacy Policy",
+      "support": "Support",
+      "emailUs": "Email Us",
+      "suggestions": "Suggestions",
+      "chatLive": "Chat Live",
+      "returns": "Returns",
+      "exchanges": "Exchanges",
+      "partnerWithRyddo": "Partner with Ryddo",
+      "dealerPrograms": "Dealer Programs",
+      "brandPrograms": "Brand Programs",
+      "newsletterSignUp": "Newsletter Sign Up",
+      "newsletterDescription": "Receive our weekly newsletter with new product releases, discounts, promotions, trade-in deals, service tips, and much more.",
+      "enterYourEmail": "Enter your email",
+      "signUp": "Sign Up"
     },
     "Subscribe": {
       "title": "Let's stay in touch",

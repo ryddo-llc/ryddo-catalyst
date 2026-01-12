@@ -9,6 +9,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { Image } from '~/components/image';
 import {
   getProductDetailVariant,
   ProductDetail as ProductDetailCustom,
@@ -33,6 +34,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { productTransformer } from '~/data-transformers/product-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { resolveCarouselImages } from '~/lib/extract-feature-fields';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { getCompareProducts as getCompareProductsData } from '../../(faceted)/fetch-compare-products';
 
@@ -195,7 +197,7 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableProductSku = Streamable.from(() => Promise.resolve(product.sku || ''));
   const streamableImages = Streamable.from(() => Promise.resolve(processedImages));
   const streamablePrices = Streamable.from(() =>
-    Promise.resolve(pricingData ? pricesTransformer(pricingData.prices, format) ?? null : null),
+    Promise.resolve(pricingData ? (pricesTransformer(pricingData.prices, format) ?? null) : null),
   );
   const streamableCarouselFeatures = Streamable.from(() => Promise.resolve(carouselFeatures));
   const streamableCtaLabel = Streamable.from(() => Promise.resolve(ctaData.label));
@@ -260,15 +262,15 @@ export default async function Product({ params, searchParams }: Props) {
   // Determine which product detail component to use
   const productDetailVariant = getProductDetailVariant(product);
 
-  // Product data for bike/scooter (synchronous transformation)
+  // Product data for e-rides (synchronous transformation)
   const streamableProductData =
-    productDetailVariant === 'bike' || productDetailVariant === 'scooter'
+    productDetailVariant === 'e-rides'
       ? Streamable.from(() => Promise.resolve(productTransformer(product)))
       : null;
 
   // Performance comparison (synchronous with already-processed data)
   const streamablePerformanceComparison =
-    productDetailVariant === 'bike' || productDetailVariant === 'scooter'
+    productDetailVariant === 'e-rides'
       ? Streamable.from(() => {
           const dynamicData = transformPerformanceComparisonData(product.customFields);
 
@@ -386,8 +388,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   const renderProductDetail = () => {
     switch (productDetailVariant) {
-      case 'bike':
-      case 'scooter':
+      case 'e-rides':
         return <ProductDetailCustom {...baseProps} product={enhancedProductData} />;
 
       case 'default':
@@ -410,13 +411,23 @@ export default async function Product({ params, searchParams }: Props) {
 
   return (
     <>
+      <div className="fixed inset-0 left-1/2 -z-10 w-screen -translate-x-1/2">
+        <Image
+          alt=""
+          aria-hidden="true"
+          className="object-cover object-center"
+          fill
+          priority
+          src={imageManagerImageUrl('home-page-bg.png')}
+        />
+      </div>
       <ProductInventoryProvider streamableInventoryStatus={streamableInventoryStatus} />
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
         {renderProductDetail()}
       </ProductAnalyticsProvider>
 
-      {/* Enhanced sections for bikes and scooters only */}
-      {(productDetailVariant === 'bike' || productDetailVariant === 'scooter') && (
+      {/* Enhanced sections for e-rides only */}
+      {productDetailVariant === 'e-rides' && (
         <>
           <Addons addons={streamablePopularAccessories} name={product.brand?.name} />
 

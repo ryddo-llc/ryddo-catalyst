@@ -1,7 +1,6 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { clsx } from 'clsx';
-import { ChevronDown } from 'lucide-react';
-import { memo, useRef } from 'react';
+import { forwardRef, memo, useRef } from 'react';
 
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
@@ -17,42 +16,35 @@ interface NavigationItemProps {
   index: number;
 }
 
-export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFloating, index }) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const NavigationItem = memo(forwardRef<HTMLElement, NavigationItemProps>(({ item, isActive, isFloating: _isFloating, index }, ref) => {
   const router = useRouter();
   const prefetchedRefs = useRef<Set<string>>(new Set());
-  
+
   const handlePrefetch = (href: string | undefined) => {
     if (href && !prefetchedRefs.current.has(href)) {
       router.prefetch(href);
       prefetchedRefs.current.add(href);
     }
   };
-  
+
   return (
-    <NavigationMenu.Item key={index} value={index.toString()}>
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    <NavigationMenu.Item key={index} ref={ref as React.Ref<HTMLLIElement>} value={index.toString()}>
       <NavigationMenu.Trigger asChild>
         <Link
           className={clsx(
-            'text-md group relative hidden items-center whitespace-nowrap rounded-xl p-2 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-extrabold ring-[var(--nav-focus,hsl(var(--primary)))] ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex',
+            'text-sm group relative hidden items-center whitespace-nowrap rounded-full px-4 py-2 font-[family-name:Inter,sans-serif] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 ease-in-out focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex z-10',
             {
-              'bg-[var(--nav-link-background-active,transparent)] text-[var(--nav-link-text-active,#F92F7B)]':
+              'text-[var(--nav-link-text-active,#F92F7B)] font-bold':
                 isActive,
-              'bg-[var(--nav-link-background,transparent)] text-[var(--nav-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))]':
+              'text-[var(--nav-link-text,rgb(110,110,110))] hover:text-[var(--nav-link-text-hover,rgb(110,110,110))] font-normal':
                 !isActive,
             },
           )}
           href={item.href}
         >
           <span>{item.label}</span>
-          {item.groups != null && item.groups.length > 0 && (
-            <ChevronDown
-              className={clsx(
-                'absolute left-1/2 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100',
-                isFloating ? 'top-[calc(100%-8px)]' : 'top-full',
-              )}
-              size={16}
-            />
-          )}
         </Link>
       </NavigationMenu.Trigger>
       {item.groups != null && item.groups.length > 0 && (
@@ -173,7 +165,7 @@ export const NavigationItem = memo<NavigationItemProps>(({ item, isActive, isFlo
       )}
     </NavigationMenu.Item>
   );
-});
+}));
 
 NavigationItem.displayName = 'NavigationItem';
 

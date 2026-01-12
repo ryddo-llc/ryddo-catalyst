@@ -71,13 +71,13 @@ export default function Addons({ addons, name }: AddonProps) {
   };
 
   return (
-    <section className="relative mb-16 w-full overflow-hidden bg-white bg-gradient-to-br py-12 @container @sm:mb-20 @sm:py-16 @lg:mb-24 @lg:py-20">
+    <section className="relative mb-16 w-full py-12 @container @sm:mb-20 @sm:py-16 @lg:mb-24 @lg:py-20">
       {/* Background Text - positioned directly behind addon grid */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 top-[calc(50%-4rem)] z-0 flex items-center justify-center overflow-hidden @sm:top-[calc(50%-5rem)] @md:top-[calc(50%-6rem)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 top-[calc(50%-4rem)] z-0 flex items-center justify-center @sm:top-[calc(50%-5rem)] @md:top-[calc(50%-6rem)]"
       >
-        <span className="select-none whitespace-nowrap font-kanit text-[296px] font-black uppercase italic tracking-[0.01em] text-gray-200 opacity-40 transition-opacity duration-300 @xs:text-[8rem] @xs:opacity-45 @sm:text-[9rem] @sm:opacity-50 @md:text-[12vw] @md:opacity-60 @lg:text-[14vw] @lg:opacity-65 @xl:text-[16vw] @xl:opacity-70">
+        <span className="select-none whitespace-nowrap font-kanit text-[239px] font-black uppercase italic tracking-[0.01em] text-white opacity-40 transition-opacity duration-300 @xs:text-[6.5rem] @xs:opacity-45 @sm:text-[7.3rem] @sm:opacity-50 @md:text-[9.7vw] @md:opacity-60 @lg:text-[11.3vw] @lg:opacity-65 @xl:text-[13vw] @xl:opacity-70">
           {backgroundText}
         </span>
       </div>

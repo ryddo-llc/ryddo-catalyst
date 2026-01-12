@@ -10,21 +10,20 @@ interface Link {
   label: string;
 }
 
+interface ContactInfo {
+  phone: string;
+  email: string;
+  instagram: string;
+}
+
 export interface Section {
   title?: string;
   links: Link[];
-}
-
-interface SocialMediaLink {
-  href: string;
-  icon: ReactNode;
+  contact?: ContactInfo;
 }
 
 export interface FooterProps {
   sections: Streamable<Section[]>;
-  socialMediaLinks?: Streamable<SocialMediaLink[]>;
-  infoSection?: ReactNode;
-  contactSection?: ReactNode;
   copyright?: ReactNode;
   className?: string;
 }
@@ -51,100 +50,111 @@ export interface FooterProps {
  * }
  * ```
  */
-export const Footer = ({
-  sections: streamableSections,
-  socialMediaLinks: streamableSocialMediaLinks,
-  infoSection,
-  contactSection,
-  copyright,
-  className,
-}: FooterProps) => {
+export const Footer = ({ sections: streamableSections, copyright, className }: FooterProps) => {
   return (
-    <footer
-      className={clsx(
-        'group/footer border-t border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
-        className,
-      )}
-    >
-      <div className="mx-auto max-w-screen-2xl px-6 py-6 @xl:px-10 @xl:py-10 @4xl:px-16 @4xl:py-12">
-        <div className="flex flex-col justify-between gap-x-20 gap-y-12 xl:flex-row">
-          <div className="flex flex-col gap-4 text-center sm:text-left xl:w-1/4 xl:gap-6">
-            {infoSection}
-
-            {/* Social Media Links */}
-            <Stream fallback={<SocialMediaLinksSkeleton />} value={streamableSocialMediaLinks}>
-              {(socialMediaLinks) => {
-                if (socialMediaLinks != null) {
-                  return (
-                    <div className="flex items-center justify-center gap-3 sm:justify-start">
-                      {socialMediaLinks.map(({ href, icon }, i) => {
-                        return (
-                          <Link
-                            className="flex items-center justify-center rounded-lg fill-[var(--footer-social-icon,hsl(var(--contrast-400)))] p-1 ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 ease-out hover:fill-[var(--footer-social-icon-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                            href={href}
-                            key={i}
-                          >
-                            {icon}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  );
-                }
-              }}
-            </Stream>
-          </div>
-
-          {/* Footer Columns of Links */}
+    <footer className={clsx('group/footer bg-[rgb(0,12,31)] text-white @container', className)}>
+      <div className="mx-auto max-w-[1400px] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+        <div className="rounded-[30px] border-[rgb(0,12,31)] bg-[rgb(0,16,43)] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+          {/* Footer Columns with Newsletter */}
           <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>
             {(sections) => {
               if (sections.length > 0) {
                 return (
-                  <div
-                    className={clsx(
-                      'mx-4 grid flex-1 grid-cols-1 justify-items-center gap-y-8 text-center sm:grid-cols-3 sm:justify-items-start sm:text-left md:gap-x-2 lg:gap-x-6 xl:gap-y-10',
-                    )}
-                  >
-                    {sections.map(({ title, links }, i) => (
-                      <div className="pr-2" key={i}>
-                        {title != null && (
-                          <span className="mb-3 block font-semibold text-[var(--footer-section-title,hsl(var(--foreground)))]">
-                            {title}
-                          </span>
-                        )}
+                  <div className="flex flex-col gap-12 lg:flex-row lg:gap-8">
+                    {/* Footer Link Columns */}
+                    <div className="grid flex-1 grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+                      {sections.map(({ title, links, contact }, i) => (
+                        <div key={i}>
+                          {title != null && (
+                            <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">
+                              {title}
+                            </h3>
+                          )}
 
-                        <ul>
-                          {links.map((link, idx) => {
-                            return (
+                          <ul className="space-y-1">
+                            {links.map((link, idx) => (
                               <li key={idx}>
                                 <Link
-                                  className="block rounded-lg py-2 text-sm font-medium text-[var(--footer-link,hsl(var(--contrast-500)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
+                                  className="block font-[family-name:var(--font-family-body)] text-sm font-medium text-[rgb(0,94,255)] transition-colors hover:text-white"
                                   href={link.href}
                                 >
                                   {link.label}
                                 </Link>
                               </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    ))}
+                            ))}
+                          </ul>
 
-                    {contactSection}
+                          {/* Contact Info for Partner section */}
+                          {contact && (
+                            <div className="mt-6 space-y-1 text-sm">
+                              <p className="font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">
+                                Contact Us
+                              </p>
+                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
+                                p. {contact.phone}
+                              </p>
+                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
+                                e. {contact.email}
+                              </p>
+                              <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
+                                ig.{' '}
+                                <Link
+                                  className="text-pink-500 underline hover:text-pink-400"
+                                  href={contact.instagram}
+                                >
+                                  RyddoUSA
+                                </Link>
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Newsletter Section */}
+                    <div className="lg:w-80">
+                      <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">
+                        Newsletter Sign Up
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="relative">
+                          <input
+                            className="w-full rounded-[10px] border border-[rgb(0,94,255)] bg-transparent py-2 pl-4 pr-24 font-[family-name:var(--font-family-body)] text-sm text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
+                            placeholder="Enter your email"
+                            type="email"
+                          />
+                          <button
+                            className="absolute right-1 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-[8px] bg-[#F92F7B] px-3 py-1.5 font-[family-name:var(--font-family-body)] text-sm font-semibold text-white transition-colors hover:bg-pink-600"
+                            type="button"
+                          >
+                            Sign Up
+                          </button>
+                        </div>
+                        <p className="font-[family-name:var(--font-family-body)] text-xs font-medium text-[rgb(0,94,255)]">
+                          Receive our weekly newsletter <br /> with new product releases,
+                          <br /> discounts, promotions, trade- <br />
+                          in deals, service tips, and <br />
+                          much more.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 );
               }
             }}
           </Stream>
-        </div>
 
-        {copyright}
+          {/* Copyright Section */}
+          {copyright}
+        </div>
       </div>
     </footer>
   );
 };
 
-function SocialMediaLinksSkeleton() {
+// Keeping for potential future use
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-underscore-dangle
+function _SocialMediaLinksSkeleton() {
   return (
     <Skeleton.Root className="group-has-[[data-pending]]/footer:animate-pulse" pending>
       <div className="flex items-center gap-3" data-pending>

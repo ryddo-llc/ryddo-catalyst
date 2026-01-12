@@ -4,7 +4,7 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import { Search, ShoppingBag, User } from 'lucide-react';
-import { forwardRef, Ref, useCallback, useEffect, useMemo, useState } from 'react';
+import { forwardRef, Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Logo } from '@/vibes/soul/primitives/logo';
@@ -16,7 +16,65 @@ import { CurrencyForm, LocaleSwitcher } from './locale-currency';
 import { MobileMenuButton } from './mobile-navigation';
 import { NavigationItem } from './navigation-item';
 import { SearchForm } from './search';
-import type { NavigationProps, SearchResult } from './types';
+import type { Link as NavigationLink, NavigationProps, SearchResult } from './types';
+
+// Extracted component to avoid useEffect inside callback
+interface NavigationLinksProps {
+  links: NavigationLink[];
+  getIsActive: (href: string) => boolean;
+  isFloating: boolean;
+  navItemsRef: React.RefObject<Array<HTMLElement | null>>;
+  setActivePillStyle: React.Dispatch<React.SetStateAction<{ left: number; width: number; opacity: number }>>;
+}
+
+function NavigationLinks({ links, getIsActive, isFloating, navItemsRef, setActivePillStyle }: NavigationLinksProps) {
+  const pathname = usePathname();
+
+  // Update active pill position when links or pathname changes
+  useEffect(() => {
+    const activeIndex = links.findIndex((link) => getIsActive(link.href));
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (activeIndex !== -1 && navItemsRef.current?.[activeIndex]) {
+      const activeElement = navItemsRef.current[activeIndex];
+
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (activeElement != null) {
+        const containerLeft = activeElement.offsetParent?.getBoundingClientRect().left ?? 0;
+        const elementRect = activeElement.getBoundingClientRect();
+
+        setActivePillStyle({
+          left: elementRect.left - containerLeft,
+          width: activeElement.offsetWidth,
+          opacity: 1,
+        });
+      }
+    } else {
+      setActivePillStyle((prev) => ({ ...prev, opacity: 0 }));
+    }
+  }, [links, pathname, getIsActive, navItemsRef, setActivePillStyle]);
+
+  return (
+    <>
+      {links.map((item, i) => {
+        const isActive = getIsActive(item.href);
+
+        return (
+          <NavigationItem
+            index={i}
+            isActive={isActive}
+            isFloating={isFloating}
+            item={item}
+            key={i}
+            ref={(el: HTMLElement | null) => {
+              navItemsRef.current[i] = el;
+            }}
+          />
+        );
+      })}
+    </>
+  );
+}
 
 const navButtonClassName =
   'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
@@ -101,11 +159,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     logo: streamableLogo,
     logoHref = '/',
     logoLabel = 'Home',
-    logoWidth = 200,
-    logoHeight = 40,
+    logoWidth = 190,
+    logoHeight = 38,
     mobileLogo: streamableMobileLogo,
-    mobileLogoWidth = 100,
-    mobileLogoHeight = 40,
+    mobileLogoWidth = 95,
+    mobileLogoHeight = 38,
     linksPosition = 'center',
     activeLocaleId,
     locales,
@@ -130,6 +188,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const { isSearchOpen, setIsSearchOpen } = useSearch();
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
   const [expandedSubSections, setExpandedSubSections] = useState<Set<string>>(new Set());
+  const [activePillStyle, setActivePillStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const navItemsRef = useRef<Array<HTMLElement | null>>([]);
 
   const pathname = usePathname();
 
@@ -227,14 +287,14 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   return (
     <NavigationMenu.Root
-      className={clsx('relative mx-auto w-full max-w-screen-2xl @container', className)}
+      className={clsx('relative mx-auto w-full max-w-[1400px] @container', className)}
       delayDuration={0}
       onValueChange={() => setIsSearchOpen(false)}
       ref={ref}
     >
       <div
         className={clsx(
-          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-1.5 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-5 @4xl:pr-2',
+          'flex items-center justify-between gap-4 bg-[var(--nav-background,hsl(var(--background)))] py-1.5 pl-16 pr-4 transition-shadow @4xl:rounded-2xl',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
@@ -514,7 +574,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Top Level Nav Links */}
         <ul
           className={clsx(
-            'hidden gap-1 @4xl:flex @4xl:flex-1',
+            'hidden gap-1 rounded-full bg-gray-200 p-1.5 @4xl:flex @4xl:flex-1 relative',
             {
               left: '@4xl:justify-start',
               center: '@4xl:justify-center',
@@ -522,6 +582,18 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             }[linksPosition],
           )}
         >
+          {/* Animated sliding background pill */}
+          <div
+            className="absolute bg-white shadow-md rounded-full transition-all duration-300 ease-out pointer-events-none"
+            style={{
+              left: `${activePillStyle.left}px`,
+              width: `${activePillStyle.width}px`,
+              height: 'calc(100% - 12px)',
+              top: '6px',
+              opacity: activePillStyle.opacity,
+            }}
+          />
+
           <Stream
             fallback={
               <ul className="flex min-h-[41px] animate-pulse flex-row items-center @4xl:gap-6 @4xl:p-2.5">
@@ -541,22 +613,15 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             }
             value={streamableLinks}
           >
-            {(links) => {
-              return links.map((item, i) => {
-                // Use memoized active state calculation
-                const isActive = getIsActive(item.href);
-                
-                return (
-                  <NavigationItem
-                    index={i}
-                    isActive={isActive}
-                    isFloating={isFloating}
-                    item={item}
-                    key={i}
-                  />
-                );
-              });
-            }}
+{(links) => (
+              <NavigationLinks
+                getIsActive={getIsActive}
+                isFloating={isFloating}
+                links={links}
+                navItemsRef={navItemsRef}
+                setActivePillStyle={setActivePillStyle}
+              />
+            )}
           </Stream>
         </ul>
 

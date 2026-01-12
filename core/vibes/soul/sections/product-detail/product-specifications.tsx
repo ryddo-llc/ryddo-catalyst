@@ -133,7 +133,7 @@ export function ProductSpecifications({
 
   return (
     <section className="w-full">
-      <div className="mx-auto max-w-screen-2xl px-4 py-10 @md:px-10 @md:py-20 @xl:px-6 @4xl:px-8">
+      <div className="mx-auto max-w-[1400px] px-4 py-10 @md:px-10 @md:py-20 @xl:px-6 @4xl:px-8">
         {/* Mobile Layout - Stacked */}
         <div className="space-y-4 @md:hidden">
           {/* Variant sections for mobile */}
