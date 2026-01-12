@@ -119,6 +119,7 @@ export const Footer = ({ sections: streamableSections, copyright, className }: F
                       <div className="space-y-4">
                         <div className="relative">
                           <input
+                            aria-label="Email address for newsletter signup"
                             className="w-full rounded-[10px] border border-[rgb(0,94,255)] bg-transparent py-2 pl-4 pr-24 font-[family-name:var(--font-family-body)] text-sm text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
                             placeholder="Enter your email"
                             type="email"
