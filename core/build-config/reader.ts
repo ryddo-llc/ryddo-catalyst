@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved -- Generated at build time
 import rawBuildConfig from './build-config.json';
 import { buildConfigSchema, BuildConfigSchema } from './schema';
 

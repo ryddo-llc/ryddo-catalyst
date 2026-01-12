@@ -200,7 +200,7 @@ export function ProductShowcase({
                             className="h-full w-full object-cover"
                             fill
                             loading={imageConfig.loading}
-                            placeholder="blur"
+                            placeholder={imageConfig.priority ? 'empty' : 'blur'}
                             preload={imageConfig.priority}
                             quality={imageConfig.quality}
                             sizes="100vw"

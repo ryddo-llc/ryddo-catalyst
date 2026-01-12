@@ -7,7 +7,7 @@ export function SlideItem({ slide, index, selectedIndex }: SlideItemProps) {
   const { image } = slide;
 
   const defaultPosition = index % 2 === 0 ? 'sm:justify-end' : 'sm:justify-start';
-  
+
   let desktopPosition = defaultPosition;
 
   if (slide.contentPosition === 'left') {
@@ -23,6 +23,10 @@ export function SlideItem({ slide, index, selectedIndex }: SlideItemProps) {
     desktopPosition = 'sm:justify-center';
   }
 
+  const shouldPreload = index === 0;
+  const hasBlurData = image?.blurDataUrl != null && image.blurDataUrl !== '';
+  const placeholderValue = shouldPreload || !hasBlurData ? 'empty' : 'blur';
+
   return (
     <div className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full">
       <div className="absolute inset-0 h-full w-full opacity-80">
@@ -32,9 +36,9 @@ export function SlideItem({ slide, index, selectedIndex }: SlideItemProps) {
             blurDataURL={image.blurDataUrl}
             className="object-cover"
             fill
-            loading={index === 0 ? 'eager' : 'lazy'}
-            placeholder={image.blurDataUrl != null && image.blurDataUrl !== '' ? 'blur' : 'empty'}
-            preload={index === 0}
+            loading={shouldPreload ? 'eager' : 'lazy'}
+            placeholder={placeholderValue}
+            preload={shouldPreload}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1920px"
             src={image.src}
             style={{
