@@ -92,7 +92,7 @@ export function PerformanceComparison({
             height={mergedImageConfig.height}
             loading={desktopImageConfig.loading}
             placeholder="blur"
-            priority={desktopImageConfig.priority}
+            preload={desktopImageConfig.priority}
             quality={desktopImageConfig.quality}
             src={productImage.src || mergedImageConfig.src}
             style={{

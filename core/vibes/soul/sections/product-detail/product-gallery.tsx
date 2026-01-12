@@ -11,7 +11,7 @@ export interface ProductGalleryProps {
   className?: string;
   thumbnailLabel?: string;
   productTitle?: string;
-  priority?: boolean;
+  preload?: boolean;
   aspectRatio?:
     | '1:1'
     | '4:5'
@@ -46,7 +46,7 @@ export function ProductGallery({
   className,
   thumbnailLabel = 'View image number',
   productTitle,
-  priority = false,
+  preload = false,
   aspectRatio = '4:5',
   fit = 'contain',
 }: ProductGalleryProps) {
@@ -134,7 +134,7 @@ export function ProductGallery({
                     )}
                     fill
                     loading={idx === 0 ? "eager" : "lazy"}
-                    priority={priority && idx === 0}
+                    preload={preload && idx === 0}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                     src={image.src}
                   />

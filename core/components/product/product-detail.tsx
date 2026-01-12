@@ -208,7 +208,7 @@ export function ProductDetail<F extends Field>({
                                           className="h-full w-full -translate-y-2 scale-[1.0725] object-contain sm:-translate-y-3 sm:scale-[1.1213] md:-translate-y-4 md:scale-[1.2188] lg:-translate-y-6 lg:scale-[1.2188] xl:-translate-y-8 xl:scale-[1.2188]"
                                           height={1500}
                                           key={heroImage.src}
-                                          priority
+                                          preload
                                           sizes="(max-width: 640px) 384px, (max-width: 768px) 480px, (max-width: 1024px) 608px, (max-width: 1280px) 736px, 864px"
                                           src={heroImage.src}
                                           width={1500}
