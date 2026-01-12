@@ -1,12 +1,13 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { extractFeatureFields } from '~/lib/extract-feature-fields';
 
 import { getProduct } from '../page-data';
 
-// Type alias for translation function
-type TranslationFunction = (key: string) => string;
+// Type alias for translation function - matches the 'Product' namespace
+type TranslationFunction = Awaited<ReturnType<typeof getTranslations<'Product'>>>;
 
 interface ProcessedCustomFields {
   features: ReturnType<typeof extractFeatureFields>;
