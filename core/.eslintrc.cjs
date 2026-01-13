@@ -92,6 +92,7 @@ const config = {
     'test-results/**',
     '.tests/**',
     '**/google_analytics4.js',
+    'next-env.d.ts',
   ],
 };
 
