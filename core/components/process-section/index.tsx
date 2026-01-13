@@ -71,7 +71,7 @@ export function ProcessSection({
             className="object-cover"
             fill
             loading="lazy"
-            priority={false}
+            preload={false}
             quality={60}
             sizes="100vw"
             src={imageUrl}
