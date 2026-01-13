@@ -36,7 +36,7 @@ export function Subscribe({
             className="object-cover motion-reduce:bg-scroll"
             fill
             loading="lazy"
-            priority={false}
+            preload={false}
             quality={75}
             sizes="100vw"
             src={image.src}
@@ -57,7 +57,7 @@ export function Subscribe({
             className="object-cover"
             fill
             loading="lazy"
-            priority={false}
+            preload={false}
             sizes="(max-width: 768px) 100vw, 768px"
             src="/images/backgrounds/newsletter-form.webp"
             style={{
