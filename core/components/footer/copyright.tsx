@@ -26,7 +26,7 @@ export default function Copyright({ logo }: CopyrightProps) {
               alt={logo.alt}
               className="max-h-10 w-auto"
               height={40}
-              priority
+              preload
               src={logo.src}
               width={155}
             />
