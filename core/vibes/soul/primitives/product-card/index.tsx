@@ -44,7 +44,7 @@ export interface ProductCardProps {
   colorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';
   showCompare?: boolean;
-  imagePriority?: boolean;
+  imagePreload?: boolean;
   imageSizes?: string;
   compareLabel?: string;
   compareParamName?: string;
@@ -73,7 +73,7 @@ export interface ProductCardProps {
  */
 export function ProductCard({
   product: { id, title, price, image, href, onSale, outOfStock, name },
-  imagePriority = false,
+  imagePreload = false,
   imageSizes,
   showCompare = false,
   compareLabel,
@@ -106,7 +106,7 @@ export function ProductCard({
               className="object-cover"
               fill
               loading="lazy"
-              priority={imagePriority}
+              preload={imagePreload}
               sizes={imageSizes ?? '(max-width: 640px) 40vw, (max-width: 1024px) 25vw, 180px'}
               src={imageUrl}
             />
