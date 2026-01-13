@@ -114,7 +114,7 @@ export function ProductDetail<F extends Field>({
                             <ProductGallery
                               aspectRatio="4:5"
                               images={images}
-                              priority={true}
+                              preload={true}
                               productTitle={product.title}
                               thumbnailLabel={thumbnailLabel}
                             />
