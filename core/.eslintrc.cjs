@@ -85,6 +85,13 @@ const config = {
         ],
       },
     },
+    {
+      // build-config.json is generated at build time and may not exist during lint
+      files: ['build-config/reader.ts'],
+      rules: {
+        'import/no-unresolved': 'off',
+      },
+    },
   ],
   ignorePatterns: [
     'client/generated/**/*.ts',
