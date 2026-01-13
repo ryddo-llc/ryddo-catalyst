@@ -59,7 +59,7 @@ export function LegitBrands({
             className="object-cover"
             fill
             loading="lazy"
-            priority={false}
+            preload={false}
             quality={60}
             sizes="100vw"
             src={backgroundImageUrl}
@@ -110,7 +110,7 @@ export function LegitBrands({
                     className="object-cover"
                     fill
                     loading="lazy"
-                    priority={false}
+                    preload={false}
                     sizes="(max-width: 1024px) 100vw, 60vw"
                     src={imageUrl}
                   />
