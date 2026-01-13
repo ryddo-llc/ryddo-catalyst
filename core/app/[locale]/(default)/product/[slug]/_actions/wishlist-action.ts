@@ -241,7 +241,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
       }
     }
 
-    revalidateTag(TAGS.customer);
+    revalidateTag(TAGS.customer, { expire: 0 });
   } catch (error) {
     if (error instanceof BigCommerceGQLError) {
       if (error.message.includes('Please sign in')) {
