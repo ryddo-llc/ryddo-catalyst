@@ -35,7 +35,7 @@ function MarketplaceCard({
   return (
     <Link
       className={clsx(
-        'group block w-full min-w-[110px] max-w-[180px] overflow-hidden rounded-[24px] bg-white p-1 transition-all hover:shadow-lg',
+        'group block w-full min-w-[110px] max-w-[180px] shrink-0 snap-start overflow-hidden rounded-[24px] bg-white p-1 transition-all hover:shadow-lg',
         className,
       )}
       href={product.path}
@@ -131,35 +131,39 @@ export async function MarketplaceShowcase({
           radius={30}
         >
           {/* Header Section */}
-          <header className="mb-16 pl-8 text-left font-[family-name:var(--font-family-body)] md:pl-12">
+          <header className="mb-10 pl-8 text-left font-[family-name:var(--font-family-body)] sm:pl-12 md:mb-16 md:pl-16">
             <h1 className="leading-[0.8]">
-              <span className="mb-2 block font-[family-name:var(--font-family-kanit)] text-[2.34rem] font-semibold italic text-[rgb(255,237,0)]">
+              <span className="mb-2 block font-[family-name:var(--font-family-kanit)] text-xl font-semibold italic text-[rgb(255,237,0)] md:text-[2.34rem]">
                 {t('title.line1')}
               </span>
-              <span className="-ml-2 block font-[family-name:var(--font-family-kanit)] text-[4.68rem] font-black italic text-white">
+              <span className="-ml-1 block font-[family-name:var(--font-family-kanit)] text-4xl font-black italic text-white md:-ml-2 md:text-[4.68rem]">
                 {t('title.line2')}
               </span>
             </h1>
-            <p className="mt-3 font-[family-name:var(--font-family-body)] text-[2.26rem] font-medium italic leading-[28px] text-[rgb(164,206,246)]">
+            <p className="mt-3 font-[family-name:var(--font-family-body)] text-xl font-medium italic leading-tight text-[rgb(164,206,246)] md:text-[2.26rem] md:leading-[28px]">
               {t('subtitle')}
             </p>
-            <p className="mt-10 font-[family-name:var(--font-family-body)] text-3xl font-black italic leading-[28px] text-[rgb(255,255,0)]">
+            <p className="mt-6 font-[family-name:var(--font-family-body)] text-lg font-black italic leading-tight text-[rgb(255,255,0)] md:mt-10 md:text-3xl md:leading-[28px]">
               {t('guarantee.line1')}
               <br />
               {t('guarantee.line2')}
             </p>
           </header>
 
-          {/* Products Grid - Always 6 columns */}
-          <div className="flex justify-start gap-4 overflow-x-auto pl-8 md:pl-12">
-            {displayProducts.map((product, index) => (
-              <MarketplaceCard
-                badgeText={PLACEHOLDER_BADGES[index]}
-                bgColor={cardColors[index % cardColors.length]}
-                key={product.entityId}
-                product={product}
-              />
-            ))}
+          {/* Products Grid - Horizontally scrollable with fade hint */}
+          <div className="relative">
+            <div className="flex snap-x snap-mandatory justify-start gap-3 overflow-x-auto pl-8 pr-4 scrollbar-none sm:pl-12 md:gap-4 md:pl-16 md:pr-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              {displayProducts.map((product, index) => (
+                <MarketplaceCard
+                  badgeText={PLACEHOLDER_BADGES[index]}
+                  bgColor={cardColors[index % cardColors.length]}
+                  key={product.entityId}
+                  product={product}
+                />
+              ))}
+            </div>
+            {/* Fade hint on right edge - mobile only */}
+            <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-blue-100/80 to-transparent md:hidden" />
           </div>
 
           {/* Empty State */}
