@@ -7,7 +7,7 @@ export interface ImageOptimizationConfig {
   format?: 'webp' | 'avif' | 'jpeg' | 'png';
   width?: number;
   height?: number;
-  priority?: boolean;
+  preload?: boolean;
   loading?: 'eager' | 'lazy';
 }
 
@@ -153,7 +153,7 @@ export function getImageConfig(
       return {
         quality: 90,
         format: 'webp',
-        priority: isAboveFold,
+        preload: isAboveFold,
         loading: isAboveFold ? 'eager' : 'lazy',
       };
 
@@ -161,7 +161,7 @@ export function getImageConfig(
       return {
         quality: 85,
         format: 'webp',
-        priority: false,
+        preload: false,
         loading: 'lazy',
       };
 
@@ -171,7 +171,7 @@ export function getImageConfig(
         format: 'webp',
         width: 300,
         height: 300,
-        priority: false,
+        preload: false,
         loading: 'lazy',
       };
 
@@ -179,7 +179,7 @@ export function getImageConfig(
       return {
         quality: 85,
         format: 'webp',
-        priority: false,
+        preload: false,
         loading: 'lazy',
       };
   }

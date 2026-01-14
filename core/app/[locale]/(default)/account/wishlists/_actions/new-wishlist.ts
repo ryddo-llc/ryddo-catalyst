@@ -72,7 +72,7 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
       };
     }
 
-    revalidateTag(TAGS.customer);
+    revalidateTag(TAGS.customer, { expire: 0 });
 
     return {
       lastResult: submission.reply(),

@@ -34,7 +34,7 @@ export const PageHeader = ({ title, backgroundImage, className, locale }: PageHe
               className="object-cover"
               fill
               loading="lazy"
-              priority={false}
+              preload={false}
               quality={75}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1920px"
               src={placeholderImage.src}
@@ -50,7 +50,7 @@ export const PageHeader = ({ title, backgroundImage, className, locale }: PageHe
               className="object-cover"
               fill
               loading="lazy"
-              priority={false}
+              preload={false}
               quality={75}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1920px"
               src={image?.src || placeholderImage.src}

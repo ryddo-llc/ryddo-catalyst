@@ -70,24 +70,7 @@ export default async (): Promise<NextConfig> => {
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
     },
-    eslint: {
-      ignoreDuringBuilds: !!process.env.CI,
-      dirs: [
-        'app',
-        'auth',
-        'build-config',
-        'client',
-        'components',
-        'data-transformers',
-        'i18n',
-        'lib',
-        'middlewares',
-        'scripts',
-        'tests',
-        'vibes',
-      ],
-    },
-    
+
     images: {
       formats: ['image/webp', 'image/avif'],
       minimumCacheTTL: 60 * 60 * 24, // 1 day

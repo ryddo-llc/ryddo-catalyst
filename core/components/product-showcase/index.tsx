@@ -201,7 +201,7 @@ export function ProductShowcase({
                             fill
                             loading={imageConfig.loading}
                             placeholder="blur"
-                            priority={imageConfig.priority}
+                            preload={imageConfig.preload}
                             quality={imageConfig.quality}
                             sizes="100vw"
                             src={image.src}

@@ -34,7 +34,7 @@ export function SlideItem({ slide, index, selectedIndex }: SlideItemProps) {
             fill
             loading={index === 0 ? 'eager' : 'lazy'}
             placeholder={image.blurDataUrl != null && image.blurDataUrl !== '' ? 'blur' : 'empty'}
-            priority={index === 0}
+            preload={index === 0}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1920px"
             src={image.src}
             style={{

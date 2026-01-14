@@ -98,7 +98,7 @@ export default async function Home({ params }: Props) {
           aria-hidden="true"
           className="object-cover object-center"
           fill
-          priority
+          preload
           src={imageManagerImageUrl('home-page-bg.png')}
         />
       </div>

@@ -47,7 +47,7 @@ export function Logo({ className, logo: streamableLogo, href, width, height, lab
               alt={logo.alt}
               className="h-auto w-full object-contain object-left"
               height={height}
-              priority
+              preload
               sizes="(max-width: 768px) 120px, 200px"
               src={logo.src}
               width={width}
