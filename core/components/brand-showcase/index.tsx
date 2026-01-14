@@ -31,6 +31,8 @@ interface BrandCardProps {
   iconUrl?: string;
   className?: string;
   bottomPadding?: string;
+  imagePosition?: string;
+  imageOverflow?: string;
 }
 
 function BrandCard({
@@ -43,30 +45,42 @@ function BrandCard({
   iconUrl,
   className,
   bottomPadding = 'pb-12',
+  imagePosition = 'center',
+  imageOverflow,
 }: BrandCardProps) {
   return (
     <div
       className={clsx(
-        'group relative block overflow-hidden rounded-[30px] bg-white p-1.5 transition-all hover:shadow-lg',
+        'group relative block rounded-[30px] bg-white p-1.5 transition-all hover:shadow-lg',
+        imageOverflow ? 'overflow-visible' : 'overflow-hidden',
         className,
       )}
     >
       <div
         className={clsx(
-          `relative flex flex-col items-center justify-end overflow-hidden rounded-[28px] text-center ${bottomPadding}`,
+          `relative flex flex-col items-center justify-end rounded-[28px] text-center ${bottomPadding}`,
           height,
           bgColor,
         )}
+        style={
+          imageOverflow
+            ? { clipPath: 'inset(-100% 0 0 0 round 0 0 28px 28px)' }
+            : { overflow: 'hidden' }
+        }
       >
         {/* Overlay Image - positioned above background color */}
         {overlayImageUrl ? (
-          <div className="absolute inset-0 z-0">
+          <div
+            className="absolute inset-0 z-0"
+            style={imageOverflow ? { top: imageOverflow } : undefined}
+          >
             <Image
               alt={title}
               className="object-cover"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
               src={overlayImageUrl}
+              style={imagePosition ? { objectPosition: imagePosition } : undefined}
             />
           </div>
         ) : null}
@@ -180,10 +194,11 @@ export function BrandShowcase({
               </div>
               <div className="lg:col-span-3">
                 <BrandCard
-                  bgColor="bg-yellow-400"
                   description={adventureGuarantee.description}
                   height="h-64 md:h-80 lg:h-96"
-                  overlayImageUrl={imageManagerImageUrl('adventure-guarantee-v1.png', '{:size}')}
+                  imageOverflow="-12%"
+                  imagePosition="center"
+                  overlayImageUrl={imageManagerImageUrl('adventure-guarantee-v2.png', '{:size}')}
                   title={adventureGuarantee.title}
                 />
               </div>
