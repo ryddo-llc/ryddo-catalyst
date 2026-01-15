@@ -33,7 +33,7 @@ interface CategoryItemProps {
 }
 
 function CategoryItem({ category, className, layout = 'default', index = 0 }: CategoryItemProps) {
-  const backgroundImage = imageManagerImageUrl(`${category.name.toLowerCase()}.png`, '{:size}');
+  const backgroundImage = imageManagerImageUrl(`${category.name.toLowerCase()}.png`);
 
   return (
     <Link

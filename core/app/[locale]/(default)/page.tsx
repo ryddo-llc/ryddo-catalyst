@@ -140,7 +140,7 @@ export default async function Home({ params }: Props) {
           line3: t('LegitBrands.description.line3'),
         }}
         imageAlt={t('LegitBrands.imageAlt')}
-        imageUrl={imageManagerImageUrl('legit-brands-image.png', 'original')}
+        imageUrl={imageManagerImageUrl('legit-brands-image1.png', 'original')}
         linkText={{
           highlight: t('LegitBrands.linkText.highlight'),
           rest: t('LegitBrands.linkText.rest'),

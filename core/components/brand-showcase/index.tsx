@@ -188,7 +188,7 @@ export function BrandShowcase({
                   bgColor="bg-blue-500"
                   description={sameDayDelivery.description}
                   height="h-64 md:h-80 lg:h-96"
-                  overlayImageUrl={imageManagerImageUrl('same-day-delivery-v1.png', '{:size}')}
+                  overlayImageUrl={imageManagerImageUrl('same-day-delivery-v1.png')}
                   title={sameDayDelivery.title}
                 />
               </div>
@@ -198,7 +198,7 @@ export function BrandShowcase({
                   height="h-64 md:h-80 lg:h-96"
                   imageOverflow="-12%"
                   imagePosition="center"
-                  overlayImageUrl={imageManagerImageUrl('adventure-guarantee-v2.png', '{:size}')}
+                  overlayImageUrl={imageManagerImageUrl('adventure-guarantee-v2.png')}
                   title={adventureGuarantee.title}
                 />
               </div>
@@ -207,7 +207,7 @@ export function BrandShowcase({
                   bgColor="bg-[rgb(255,229,252)]"
                   description={tradeInUp.description}
                   height="h-64 md:h-80 lg:h-96"
-                  overlayImageUrl={imageManagerImageUrl('trade-in-v1.png', '{:size}')}
+                  overlayImageUrl={imageManagerImageUrl('trade-in-v1.png')}
                   title={tradeInUp.title}
                 />
               </div>
@@ -219,15 +219,15 @@ export function BrandShowcase({
                 bgColor="bg-[rgb(226,226,226)]"
                 bottomPadding="pb-8"
                 height="h-36 md:h-44 lg:h-52"
-                overlayImageUrl={imageManagerImageUrl('certified-pre-owned.png', '{:size}')}
+                overlayImageUrl={imageManagerImageUrl('certified-pre-owned.png')}
                 title={certifiedPreOwned.title}
               />
               <BrandCard
                 bgColor="bg-[rgb(226,226,226)]"
                 bottomPadding="pb-8"
                 height="h-36 md:h-44 lg:h-52"
-                iconUrl={imageManagerImageUrl('cert-service-bg-badge.png', '{:size}')}
-                overlayImageUrl={imageManagerImageUrl('cert-service-bg.png', '{:size}')}
+                iconUrl={imageManagerImageUrl('cert-service-bg-badge.png')}
+                overlayImageUrl={imageManagerImageUrl('cert-service-bg.png')}
                 title={certifiedService.title}
               />
             </div>
