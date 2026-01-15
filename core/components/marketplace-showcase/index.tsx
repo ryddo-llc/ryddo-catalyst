@@ -123,11 +123,17 @@ export async function MarketplaceShowcase({
 
   return (
     <SectionContainer>
-      <SectionContainer.Outer innerPadding="px-1 @xl:px-1 @4xl:px-2" padding="pb-5 md:pb-8 lg:pb-12" radius={30} rounded="bottom">
+      <SectionContainer.Outer
+        innerPadding="px-1 @xl:px-1 @4xl:px-2"
+        padding="pb-5 md:pb-8 lg:pb-12"
+        radius={30}
+        rounded="bottom"
+      >
         <SectionContainer.Inner
           bgColor="bg-blue-100"
           bgImage={imageUrl}
-          padding="px-1 pb-2 pt-16 md:px-8 md:pb-3 md:pt-20 lg:pb-4"
+          bgImagePosition="55% 15%"
+          padding="px-1 pb-2 pt-20 md:px-8 md:pb-3 md:pt-24 lg:pb-4"
           radius={30}
         >
           {/* Header Section */}
@@ -152,7 +158,7 @@ export async function MarketplaceShowcase({
 
           {/* Products Grid - Horizontally scrollable with fade hint */}
           <div className="relative">
-            <div className="flex snap-x snap-mandatory justify-start gap-3 overflow-x-auto pl-8 pr-4 sm:pl-12 md:gap-4 md:pl-16 md:pr-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex snap-x snap-mandatory justify-start gap-3 overflow-x-auto pl-8 pr-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:pl-12 md:gap-4 md:pl-16 md:pr-12 [&::-webkit-scrollbar]:hidden">
               {displayProducts.map((product, index) => (
                 <MarketplaceCard
                   badgeText={PLACEHOLDER_BADGES[index]}

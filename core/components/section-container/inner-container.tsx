@@ -1,5 +1,7 @@
 import { clsx } from 'clsx';
 
+import { Image } from '~/components/image';
+
 import type { InnerContainerProps, RoundedStyle } from './types';
 
 function getRadiusStyle(radius: number, rounded: RoundedStyle): React.CSSProperties {
@@ -27,6 +29,7 @@ export function InnerContainer({
   bgColor,
   bgImage,
   bgImageOpacity = 100,
+  bgImagePosition = 'center',
   minHeight,
   maxHeight,
   padding,
@@ -52,13 +55,22 @@ export function InnerContainer({
     >
       {bgImage ? (
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 overflow-hidden"
           style={{
-            backgroundImage: `url(${bgImage})`,
             opacity: bgImageOpacity / 100,
             borderRadius: 'inherit',
           }}
-        />
+        >
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="object-cover"
+            fill
+            sizes="100vw"
+            src={bgImage}
+            style={{ objectPosition: bgImagePosition }}
+          />
+        </div>
       ) : null}
       <div className="relative">{children}</div>
     </div>

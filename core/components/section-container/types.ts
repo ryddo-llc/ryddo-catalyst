@@ -51,6 +51,9 @@ export interface InnerContainerProps {
   /** Background image opacity (0-100, default: 100) */
   bgImageOpacity?: number;
 
+  /** Background image position (CSS object-position value, default: 'center') */
+  bgImagePosition?: string;
+
   /** Minimum height constraint */
   minHeight?: string;
 

@@ -574,7 +574,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Top Level Nav Links */}
         <ul
           className={clsx(
-            'hidden gap-1 rounded-full bg-gray-200 p-1.5 @4xl:flex @4xl:flex-1 relative',
+            'hidden gap-1 rounded-full bg-gray-200 px-2 py-0.5 @4xl:flex @4xl:flex-[0.9] relative',
             {
               left: '@4xl:justify-start',
               center: '@4xl:justify-center',
@@ -586,10 +586,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           <div
             className="absolute bg-white shadow-md rounded-full transition-all duration-300 ease-out pointer-events-none"
             style={{
-              left: `${activePillStyle.left}px`,
-              width: `${activePillStyle.width}px`,
-              height: 'calc(100% - 12px)',
-              top: '6px',
+              left: `${activePillStyle.left - 6}px`,
+              width: `${activePillStyle.width + 12}px`,
+              height: 'calc(100% - 4px)',
+              top: '2px',
               opacity: activePillStyle.opacity,
             }}
           />
