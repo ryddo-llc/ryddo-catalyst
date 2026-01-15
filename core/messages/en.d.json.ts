@@ -626,6 +626,10 @@ declare const messages: {
   "Contact": {
     "title": "Contact Us"
   },
+  "Dealers": {
+    "title": "Find a Dealer",
+    "subtitle": "Visit one of our authorized Ryddo dealers for expert advice, test rides, and premium service."
+  },
   "Terms": {
     "title": "Terms & Conditions"
   },
