@@ -71,7 +71,7 @@ function BrandCard({
         {/* Overlay Image - positioned above background color */}
         {overlayImageUrl ? (
           <div
-            className="absolute inset-0 z-0"
+            className="absolute inset-0 z-0 overflow-hidden rounded-[28px]"
             style={imageOverflow ? { top: imageOverflow } : undefined}
           >
             <Image
