@@ -152,7 +152,7 @@ export async function MarketplaceShowcase({
 
           {/* Products Grid - Horizontally scrollable with fade hint */}
           <div className="relative">
-            <div className="flex snap-x snap-mandatory justify-start gap-3 overflow-x-auto pl-8 pr-4 scrollbar-none sm:pl-12 md:gap-4 md:pl-16 md:pr-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex snap-x snap-mandatory justify-start gap-3 overflow-x-auto pl-8 pr-4 sm:pl-12 md:gap-4 md:pl-16 md:pr-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {displayProducts.map((product, index) => (
                 <MarketplaceCard
                   badgeText={PLACEHOLDER_BADGES[index]}
