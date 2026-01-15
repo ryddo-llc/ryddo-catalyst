@@ -66,6 +66,7 @@ export function InnerContainer({
             aria-hidden="true"
             className="object-cover"
             fill
+            preload
             sizes="100vw"
             src={bgImage}
             style={{ objectPosition: bgImagePosition }}

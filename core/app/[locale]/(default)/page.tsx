@@ -96,7 +96,7 @@ export default async function Home({ params }: Props) {
         <Image
           alt=""
           aria-hidden="true"
-          className="object-cover object-center"
+          className="object-cover object-top"
           fill
           preload
           src={imageManagerImageUrl('home-page-bg.png')}
