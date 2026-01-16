@@ -11,7 +11,7 @@ export function Slideshow() {
       title: t('Slide01.title'),
       subtitle: 'starting at $1,499',
       image: {
-        src: imageManagerImageUrl('slide-bg-01.jpeg', '{:size}'),
+        src: imageManagerImageUrl('slide-bg-01.jpeg'),
         alt: t('Slide01.alt'),
       },
       description: t('Slide01.description'),
@@ -24,7 +24,7 @@ export function Slideshow() {
       title: t('Slide02.title'),
       subtitle: 'starting at $1,499',
       image: {
-        src: imageManagerImageUrl('slide-bg-02.jpeg', '{:size}'),
+        src: imageManagerImageUrl('slide-bg-02.jpeg'),
         alt: t('Slide02.alt'),
       },
       description: t('Slide02.description'),
@@ -37,7 +37,7 @@ export function Slideshow() {
       title: t('Slide03.title'),
       subtitle: 'starting at $1,499',
       image: {
-        src: imageManagerImageUrl('slide-bg-03.jpeg', '{:size}'),
+        src: imageManagerImageUrl('slide-bg-03.jpeg'),
         alt: t('Slide03.alt'),
       },
       description: t('Slide03.description'),

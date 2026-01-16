@@ -94,14 +94,10 @@ declare const messages: {
         "line4": "Ride",
         "line5": "Together"
       },
-      "description": {
-        "line1": "Ryddo's curated selection of premium",
-        "line2": "e-rides with industry-leading",
-        "line3": "build quality."
-      },
+      "description": "Ryddo's curated selection\nof premium e-rides with\nindustry-leading build\nquality.",
       "linkText": {
         "highlight": "Learn more",
-        "rest": "about becoming a Ryddo brand or dealer partner."
+        "rest": "about becoming a Ryddo\nbrand or dealer partner."
       },
       "imageAlt": "Premium e-ride brands partnership"
     },
@@ -625,6 +621,10 @@ declare const messages: {
   },
   "Contact": {
     "title": "Contact Us"
+  },
+  "Dealers": {
+    "title": "Find a Dealer",
+    "subtitle": "Visit one of our authorized Ryddo dealers for expert advice, test rides, and premium service."
   },
   "Terms": {
     "title": "Terms & Conditions"

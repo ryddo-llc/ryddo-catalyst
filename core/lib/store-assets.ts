@@ -62,26 +62,25 @@ export const imageManagerImageUrl = (filename: string, sizeParam?: string, lossy
   // return a urlTemplate that can be used with the <Image> component
   let url = cdnImageUrlBuilder(sizeParam || '{:size}', 'image-manager', filename);
 
-  // Determine if we should add query parameters
-  const shouldAddParams = sizeParam !== '{:size}';
+  const isTemplate = !sizeParam || sizeParam === '{:size}';
   let hasParams = false;
 
   // Add compression parameter for better performance unless explicitly disabled
-  // Don't add query params to URL templates as it breaks CDN loader template replacement
-  if (lossy && sizeParam !== 'original' && shouldAddParams) {
+  // Skip for 'original' size as it shouldn't be compressed, and for templates (handled by CDN loader)
+  if (lossy && sizeParam !== 'original' && !isTemplate) {
     url = `${url}?compression=lossy`;
     hasParams = true;
 
-    // Add quality parameter if specified and not a template
+    // Add quality parameter if specified
     if (quality) {
       url = `${url}&quality=${quality}`;
     }
   }
 
   // Add cache-busting parameter to force fresh image fetches when content changes
-  // Uses build time or deployment ID as cache key to invalidate on each deploy
-  if (bustCache && shouldAddParams) {
-    // Use NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA for Vercel deployments, or build time for local dev
+  // Uses commit SHA or BUILD_ID as cache key to invalidate on each deploy
+  // This now works for ALL URLs including templates - the CDN loader preserves query params
+  if (bustCache) {
     const cacheKey = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || process.env.BUILD_ID || 'dev';
     const separator = hasParams ? '&' : '?';
 
