@@ -134,11 +134,7 @@ export default async function Home({ params }: Props) {
 
       <LegitBrands
         className="mb-12"
-        description={{
-          line1: t('LegitBrands.description.line1'),
-          line2: t('LegitBrands.description.line2'),
-          line3: t('LegitBrands.description.line3'),
-        }}
+        description={t('LegitBrands.description')}
         imageAlt={t('LegitBrands.imageAlt')}
         imageUrl={imageManagerImageUrl('legit-brands-image1.png', 'original')}
         linkText={{
