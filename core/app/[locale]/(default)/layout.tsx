@@ -53,7 +53,7 @@ export default async function DefaultLayout({ params, children }: Props) {
             <div className="mx-auto max-w-[1400px]">{children}</div>
           </div>
 
-          <Footer />
+          <Footer backgroundExtensionHeight="400px" backgroundPositionY="-10%" />
         </main>
 
         {/* Partners Contact Bar - Fixed at bottom of viewport */}

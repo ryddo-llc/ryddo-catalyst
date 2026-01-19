@@ -1,9 +1,12 @@
 import { clsx } from 'clsx';
 import { ReactNode } from 'react';
 
+import { Image } from '~/components/image';
+
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Link } from '~/components/link';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface Link {
   href: string;
@@ -26,6 +29,8 @@ export interface FooterProps {
   sections: Streamable<Section[]>;
   copyright?: ReactNode;
   className?: string;
+  backgroundExtensionHeight?: string;
+  backgroundPositionY?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -50,10 +55,32 @@ export interface FooterProps {
  * }
  * ```
  */
-export const Footer = ({ sections: streamableSections, copyright, className }: FooterProps) => {
+export const Footer = ({
+  sections: streamableSections,
+  copyright,
+  className,
+  backgroundExtensionHeight = '0px',
+  backgroundPositionY = 'bottom',
+}: FooterProps) => {
+  const footerBgUrl = imageManagerImageUrl('footer-bg.png', 'original');
+
   return (
-    <footer className={clsx('group/footer bg-[rgb(0,12,31)] text-white @container', className)}>
-      <div className="mx-auto max-w-[1400px] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+    <footer className={clsx('group/footer relative text-white @container', className)}>
+      {/* Background image - extends above the footer content */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0"
+        style={{ top: `-${backgroundExtensionHeight}` }}
+      >
+        <Image
+          alt=""
+          className="object-cover"
+          fill
+          sizes="100vw"
+          src={footerBgUrl}
+          style={{ objectPosition: `center ${backgroundPositionY}` }}
+        />
+      </div>
+      <div className="relative z-10 mx-auto max-w-[1400px] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
         <div className="rounded-[30px] border-[rgb(0,12,31)] bg-[rgb(0,16,43)] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
           {/* Footer Columns with Newsletter */}
           <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>
