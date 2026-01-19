@@ -1,10 +1,12 @@
 import { clsx } from 'clsx';
 import { getTranslations } from 'next-intl/server';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { SectionContainer } from '~/components/section-container';
+
+import { MarketplaceShowcaseSkeleton } from './marketplace-showcase-skeleton';
 
 interface MarketplaceProduct {
   entityId: number;
@@ -111,15 +113,41 @@ const cardColors = [
 // Placeholder badge texts (will be replaced with real logic later)
 const PLACEHOLDER_BADGES = ['New!', 'Sale!', 'Top Seller', 'Pre-Order', null, null];
 
+function ProductsGrid({ products }: { products: MarketplaceProduct[] }) {
+  // Limit to max 6 products
+  const displayProducts = products.slice(0, 6);
+
+  if (displayProducts.length === 0) {
+    return (
+      <div className="py-12 text-center text-gray-500">
+        <p>No products available at this time.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <div className="flex snap-x snap-mandatory justify-start gap-3 overflow-x-auto pl-8 pr-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:pl-12 md:gap-4 md:pl-16 md:pr-12 [&::-webkit-scrollbar]:hidden">
+        {displayProducts.map((product, index) => (
+          <MarketplaceCard
+            badgeText={PLACEHOLDER_BADGES[index]}
+            bgColor={cardColors[index % cardColors.length]}
+            key={product.entityId}
+            product={product}
+          />
+        ))}
+      </div>
+      {/* Fade hint on right edge - mobile only */}
+      <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-blue-100/80 to-transparent md:hidden" />
+    </div>
+  );
+}
+
 export async function MarketplaceShowcase({
   products: streamableProducts,
   imageUrl,
 }: MarketplaceShowcaseProps) {
   const t = await getTranslations('Home.MarketplaceShowcase');
-  const products = await streamableProducts;
-
-  // Limit to max 6 products
-  const displayProducts = products.slice(0, 6);
 
   return (
     <SectionContainer>
@@ -136,7 +164,7 @@ export async function MarketplaceShowcase({
           padding="px-1 pb-2 pt-20 md:px-8 md:pb-3 md:pt-24 lg:pb-4"
           radius={30}
         >
-          {/* Header Section */}
+          {/* Header Section - renders immediately */}
           <header className="mb-10 pl-8 text-left font-[family-name:var(--font-family-body)] sm:pl-12 md:mb-16 md:pl-16">
             <h1 className="leading-[0.8]">
               <span className="mb-2 block font-[family-name:var(--font-family-kanit)] text-xl font-semibold italic text-[rgb(255,237,0)] md:text-[2.34rem]">
@@ -156,28 +184,10 @@ export async function MarketplaceShowcase({
             </p>
           </header>
 
-          {/* Products Grid - Horizontally scrollable with fade hint */}
-          <div className="relative">
-            <div className="flex snap-x snap-mandatory justify-start gap-3 overflow-x-auto pl-8 pr-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:pl-12 md:gap-4 md:pl-16 md:pr-12 [&::-webkit-scrollbar]:hidden">
-              {displayProducts.map((product, index) => (
-                <MarketplaceCard
-                  badgeText={PLACEHOLDER_BADGES[index]}
-                  bgColor={cardColors[index % cardColors.length]}
-                  key={product.entityId}
-                  product={product}
-                />
-              ))}
-            </div>
-            {/* Fade hint on right edge - mobile only */}
-            <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-blue-100/80 to-transparent md:hidden" />
-          </div>
-
-          {/* Empty State */}
-          {displayProducts.length === 0 && (
-            <div className="py-12 text-center text-gray-500">
-              <p>No products available at this time.</p>
-            </div>
-          )}
+          {/* Products Grid - streams with skeleton fallback */}
+          <Stream fallback={<MarketplaceShowcaseSkeleton />} value={streamableProducts}>
+            {(products) => <ProductsGrid products={products} />}
+          </Stream>
         </SectionContainer.Inner>
       </SectionContainer.Outer>
     </SectionContainer>
