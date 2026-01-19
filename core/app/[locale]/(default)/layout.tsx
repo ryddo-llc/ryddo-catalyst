@@ -40,7 +40,7 @@ export default async function DefaultLayout({ params, children }: Props) {
 
   return (
     <InventoryProvider>
-      <div className="flex flex-col">
+      <div className="flex min-h-screen flex-col">
         {/* Header wrapper */}
         <div className="w-full pt-2">
           <div className="mx-auto max-w-[1400px] rounded-t-[30px] bg-white">
@@ -53,7 +53,9 @@ export default async function DefaultLayout({ params, children }: Props) {
             <div className="mx-auto max-w-[1400px]">{children}</div>
           </div>
 
-          <Footer backgroundExtensionHeight="400px" backgroundPositionY="-10%" />
+          <div className="mt-20">
+            <Footer backgroundExtensionHeight="400px" backgroundPositionY="0%" />
+          </div>
         </main>
 
         {/* Partners Contact Bar - Fixed at bottom of viewport */}
