@@ -52,7 +52,15 @@ const getFooterData = cache(async () => {
   return readFragment(FooterFragment, response).site;
 });
 
-export const Footer = async () => {
+interface FooterComponentProps {
+  backgroundExtensionHeight?: string;
+  backgroundPositionY?: string;
+}
+
+export const Footer = async ({
+  backgroundExtensionHeight,
+  backgroundPositionY,
+}: FooterComponentProps = {}) => {
   const t = await getTranslations('Components.Footer');
 
   const data = await getFooterData();
@@ -123,6 +131,8 @@ export const Footer = async () => {
 
   return (
     <FooterSection
+      backgroundExtensionHeight={backgroundExtensionHeight}
+      backgroundPositionY={backgroundPositionY}
       copyright={<Copyright logo={logo} />}
       sections={streamableSections}
     />

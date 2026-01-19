@@ -3,7 +3,9 @@ import { ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface Link {
   href: string;
@@ -26,6 +28,8 @@ export interface FooterProps {
   sections: Streamable<Section[]>;
   copyright?: ReactNode;
   className?: string;
+  backgroundExtensionHeight?: string;
+  backgroundPositionY?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -50,11 +54,35 @@ export interface FooterProps {
  * }
  * ```
  */
-export const Footer = ({ sections: streamableSections, copyright, className }: FooterProps) => {
+export const Footer = ({
+  sections: streamableSections,
+  copyright,
+  className,
+  backgroundExtensionHeight = '0px',
+  backgroundPositionY = 'bottom',
+}: FooterProps) => {
+  const footerBgUrl = imageManagerImageUrl('footer-bg.png', 'original');
+
   return (
-    <footer className={clsx('group/footer bg-[rgb(0,12,31)] text-white @container', className)}>
-      <div className="mx-auto max-w-[1400px] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
-        <div className="rounded-[30px] border-[rgb(0,12,31)] bg-[rgb(0,16,43)] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+    <footer
+      className={clsx('group/footer relative bg-[rgb(0,12,31)] text-white @container', className)}
+    >
+      {/* Background image - extends above the footer content */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0"
+        style={{ top: `-${backgroundExtensionHeight}` }}
+      >
+        <Image
+          alt=""
+          className="object-cover"
+          fill
+          sizes="100vw"
+          src={footerBgUrl}
+          style={{ objectPosition: `center ${backgroundPositionY}` }}
+        />
+      </div>
+      <div className="relative z-10 mx-auto max-w-[1400px] px-6 py-12 @xl:px-10 @xl:py-16 @4xl:px-16 @4xl:py-20">
+        <div className="rounded-[30px] border-[rgb(0,12,31)] bg-[rgb(0,16,43)] px-6 pb-4 pt-8 @xl:px-10 @xl:pb-6 @xl:pt-10 @4xl:px-16 @4xl:pb-8 @4xl:pt-12">
           {/* Footer Columns with Newsletter */}
           <Stream fallback={<FooterColumnsSkeleton />} value={streamableSections}>
             {(sections) => {
@@ -71,11 +99,11 @@ export const Footer = ({ sections: streamableSections, copyright, className }: F
                             </h3>
                           )}
 
-                          <ul className="space-y-1">
+                          <ul className="space-y-0.5">
                             {links.map((link, idx) => (
                               <li key={idx}>
                                 <Link
-                                  className="block font-[family-name:var(--font-family-body)] text-sm font-medium text-[rgb(0,94,255)] transition-colors hover:text-white"
+                                  className="block font-[family-name:var(--font-family-body)] text-sm font-medium text-[rgb(0,94,255)] transition-colors hover:text-[#F92F7B]"
                                   href={link.href}
                                 >
                                   {link.label}
@@ -91,15 +119,27 @@ export const Footer = ({ sections: streamableSections, copyright, className }: F
                                 Contact Us
                               </p>
                               <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
-                                p. {contact.phone}
+                                p.{' '}
+                                <a
+                                  className="transition-colors hover:text-[#F92F7B]"
+                                  href={`tel:${contact.phone.replace(/[^0-9+]/g, '')}`}
+                                >
+                                  {contact.phone}
+                                </a>
                               </p>
                               <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
-                                e. {contact.email}
+                                e.{' '}
+                                <a
+                                  className="transition-colors hover:text-[#F92F7B]"
+                                  href={`mailto:${contact.email}`}
+                                >
+                                  {contact.email}
+                                </a>
                               </p>
                               <p className="font-[family-name:var(--font-family-body)] font-medium text-[rgb(0,94,255)]">
                                 ig.{' '}
                                 <Link
-                                  className="text-pink-500 underline hover:text-pink-400"
+                                  className="transition-colors hover:text-[#F92F7B]"
                                   href={contact.instagram}
                                 >
                                   RyddoUSA
@@ -113,18 +153,18 @@ export const Footer = ({ sections: streamableSections, copyright, className }: F
 
                     {/* Newsletter Section */}
                     <div className="lg:w-80">
-                      <h3 className="mb-4 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">
+                      <h3 className="mb-6 font-[family-name:var(--font-family-body)] font-semibold text-[rgb(174,170,170)]">
                         Newsletter Sign Up
                       </h3>
                       <div className="space-y-4">
                         <div className="relative">
                           <input
-                            className="w-full rounded-[10px] border border-[rgb(0,94,255)] bg-transparent py-2 pl-4 pr-24 font-[family-name:var(--font-family-body)] text-sm text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
+                            className="w-full rounded-[10px] border border-[rgb(0,94,255)] bg-transparent py-2.5 pl-4 pr-24 font-[family-name:var(--font-family-body)] text-[15px] text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
                             placeholder="Enter your email"
                             type="email"
                           />
                           <button
-                            className="absolute right-1 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-[8px] bg-[#F92F7B] px-3 py-1.5 font-[family-name:var(--font-family-body)] text-sm font-semibold text-white transition-colors hover:bg-pink-600"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-[8px] bg-[#F92F7B] px-5 py-1.5 font-[family-name:var(--font-family-body)] text-[15px] font-semibold text-white transition-colors hover:bg-pink-600"
                             type="button"
                           >
                             Sign Up
