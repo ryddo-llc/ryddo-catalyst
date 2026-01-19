@@ -1,10 +1,9 @@
 import { clsx } from 'clsx';
 import { ReactNode } from 'react';
 
-import { Image } from '~/components/image';
-
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
@@ -160,7 +159,7 @@ export const Footer = ({
                       <div className="space-y-4">
                         <div className="relative">
                           <input
-                            className="w-full rounded-[10px] border border-[rgb(0,94,255)] bg-transparent py-2.5 pl-4 pr-26 font-[family-name:var(--font-family-body)] text-[15px] text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
+                            className="pr-26 w-full rounded-[10px] border border-[rgb(0,94,255)] bg-transparent py-2.5 pl-4 font-[family-name:var(--font-family-body)] text-[15px] text-white placeholder-[rgb(0,94,255)] focus:border-white focus:outline-none"
                             placeholder="Enter your email"
                             type="email"
                           />
