@@ -7,11 +7,15 @@ import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-
 export function PaymentOptions() {
   return (
     <section
-      className="relative w-full h-screen h-[min(100dvh,800px)] min-h-[600px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] md:bg-fixed motion-reduce:bg-scroll bg-neutral-100"
-      style={{
-        backgroundImage: `url('${imageManagerImageUrl('payment-options.jpg', '1920w')}')`
-      }}
+      className="relative w-full h-screen h-[min(100dvh,800px)] min-h-[600px] overflow-hidden py-20 font-['Nunito'] bg-neutral-100"
     >
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="object-cover object-center -z-10 md:fixed md:inset-0 motion-reduce:relative"
+        fill
+        src={imageManagerImageUrl('payment-options.jpg', '1920w')}
+      />
       <div
         className="relative mx-auto lg:ml-[16vw] lg:mr-0
           w-[90vw] max-w-[500px] min-w-[320px]

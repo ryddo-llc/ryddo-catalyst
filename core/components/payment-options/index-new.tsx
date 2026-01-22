@@ -8,8 +8,15 @@ import { PaymentOptionsAccordion, PaymentOptionsAccordionItem } from './payment-
 export function PaymentOptions() {
   return (
     <section
-      className="relative w-full h-screen max-h-[800px] overflow-hidden bg-cover bg-center py-20 font-['Nunito'] bg-[url(/images/backgrounds/payment-options-background.webp)] md:bg-fixed"
+      className="relative w-full h-screen max-h-[800px] overflow-hidden py-20 font-['Nunito']"
     >
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="object-cover object-center -z-10 md:fixed md:inset-0 motion-reduce:relative"
+        fill
+        src="/images/backgrounds/payment-options-background.webp"
+      />
       <div
         className="relative mx-auto lg:ml-[16vw] lg:mr-0
           w-[90vw] max-w-[500px] min-w-0 md:min-w-[320px]

@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import { Image } from '~/components/image';
+
 import { CountUpOnVisible } from './count-up-on-visible';
 
 const BACKGROUND_IMAGE = '/images/backgrounds/los-angeles-background.webp';
@@ -15,9 +17,15 @@ const stats = [
 export const AboutStats: React.FC = () => {
   return (
     <section
-      className="w-full py-16 md:py-32 flex justify-center items-center bg-cover bg-center"
-      style={{ backgroundImage: `url('${BACKGROUND_IMAGE}')` }}
+      className="relative w-full py-16 md:py-32 flex justify-center items-center"
     >
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="object-cover -z-10"
+        fill
+        src={BACKGROUND_IMAGE}
+      />
       <div className="flex flex-col md:flex-row gap-8 md:gap-16 justify-center items-center w-full max-w-4xl">
         {stats.map((stat) => (
           <div

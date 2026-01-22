@@ -107,16 +107,16 @@ export function ProductShowcase({
         {/* Retro Orange Stripe Background */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 left-0 z-10 h-8 w-full bg-cover bg-center bg-no-repeat"
+          className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-8 w-[100dvw] -translate-x-1/2"
           role="presentation"
-          style={{
-            backgroundImage: 'url("/images/backgrounds/orange_retro_stripe.png")',
-            backgroundSize: '100% 100%',
-            width: '100dvw',
-            left: '50%',
-            transform: 'translateX(-50%)',
-          }}
-        />
+        >
+          <Image
+            alt=""
+            className="object-fill"
+            fill
+            src="/images/backgrounds/orange_retro_stripe.png"
+          />
+        </div>
 
         {/* Main carousel content */}
         {showcaseDescription ? (
