@@ -40,7 +40,38 @@ export function PerformanceComparison({
   const desktopImageConfig = getImageConfig('showcase', 0);
 
   return (
-      <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0, borderRadius: '35px' }}>
+    <div className="relative w-full" style={{ margin: 0, padding: 0, height: '800px' }}>
+      {/* Bike product image - positioned outside rounded container to pop out (desktop only) */}
+      <div
+        className="hidden xl:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center pointer-events-none"
+        style={{
+          width: '100%',
+          height: '100%',
+          transform: `translate(-50%, -50%) scale(${mergedImageConfig.containerScale})`,
+          transformOrigin: 'center center',
+          zIndex: 15,
+        }}
+      >
+        <Image
+          alt={productImage.alt || mergedImageConfig.alt || ""}
+          blurDataURL={generateClientBlurPlaceholder()}
+          className="object-contain w-auto h-auto relative"
+          height={mergedImageConfig.height}
+          loading={desktopImageConfig.loading}
+          placeholder="blur"
+          preload={desktopImageConfig.preload}
+          quality={desktopImageConfig.quality}
+          src={productImage.src || mergedImageConfig.src}
+          style={{
+            maxWidth: `${mergedImageConfig.maxWidth || performanceConfig.image.maxWidth}px`,
+            maxHeight: `${mergedImageConfig.maxHeight || performanceConfig.image.maxHeight}px`,
+            transform: `translate(${mergedImageConfig.offsetX || performanceConfig.image.offsetX}px, ${mergedImageConfig.offsetY || performanceConfig.image.offsetY}px)`,
+          }}
+          width={mergedImageConfig.width}
+        />
+      </div>
+
+      <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0, paddingBottom: '60px', borderRadius: '35px' }}>
         <div aria-hidden="true" className="absolute inset-0 z-0">
           {/* Dots background pattern */}
           <div className="absolute inset-0 pointer-events-none">
@@ -52,7 +83,7 @@ export function PerformanceComparison({
               width={1200}
             />
           </div>
-        
+
         <Image
           alt=""
           className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 w-auto object-contain"
@@ -85,23 +116,7 @@ export function PerformanceComparison({
             transformOrigin: 'center center',
           }}
         >
-          <Image
-            alt={productImage.alt || mergedImageConfig.alt || ""}
-            blurDataURL={generateClientBlurPlaceholder()}
-            className="object-contain w-auto h-auto relative z-10"
-            height={mergedImageConfig.height}
-            loading={desktopImageConfig.loading}
-            placeholder="blur"
-            preload={desktopImageConfig.preload}
-            quality={desktopImageConfig.quality}
-            src={productImage.src || mergedImageConfig.src}
-            style={{
-              maxWidth: `${mergedImageConfig.maxWidth || performanceConfig.image.maxWidth}px`,
-              maxHeight: `${mergedImageConfig.maxHeight || performanceConfig.image.maxHeight}px`,
-              transform: `translate(${mergedImageConfig.offsetX || performanceConfig.image.offsetX}px, ${mergedImageConfig.offsetY || performanceConfig.image.offsetY}px)`,
-            }}
-            width={mergedImageConfig.width}
-          />
+          {/* Bike image moved outside rounded container - see lines 54-82 */}
 
           {/* Compare Performance text overlay - positioned absolutely to not interfere with image */}
           <div className="absolute top-32 right-8 z-20 pointer-events-none">
@@ -119,6 +134,7 @@ export function PerformanceComparison({
               left: '50%',
               top: '50%',
               transform: `translate(-50%, -50%) translate(${mergedWheelConfig.centerX - mergedImageConfig.width / 2}px, ${mergedWheelConfig.centerY - mergedImageConfig.height / 2}px)`,
+              zIndex: 20,
             }}
           >
 
@@ -139,6 +155,7 @@ export function PerformanceComparison({
               left: '50%',
               top: '50%',
               transform: `translate(-50%, -50%) translate(${mergedWheelConfig.centerX - mergedImageConfig.width / 2 + mergedWheelConfig.radius * 1.2 + mergedMetricsConfig.gapFromWheel}px, ${mergedWheelConfig.centerY - mergedImageConfig.height / 2}px)`,
+              zIndex: 25,
             }}
           >
             <PerformanceMetrics
@@ -276,5 +293,6 @@ export function PerformanceComparison({
         </div>
       </div>
     </div>
+  </div>
   );
 }
