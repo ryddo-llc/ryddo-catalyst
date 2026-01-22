@@ -39,13 +39,22 @@ export function TestimonialQuote({
           className="font-[family-name:var(--font-family-body)] text-2xl font-extrabold italic text-white md:text-3xl lg:text-4xl"
           id={ariaLabelledBy}
         >
-          <span className="bg-[rgb(219,64,117)] px-2 py-1">&ldquo;Ryddo is</span>
+          <span className="relative inline-block">
+            <span className="absolute bottom-[20%] left-[5%] right-[-2%] top-[20%] bg-[rgb(219,64,117)]" />
+            <span className="relative px-1">&ldquo;Ryddo is</span>
+          </span>
           {' doing what the '}
-          <span className="bg-[rgb(219,64,117)] px-2 py-1">industry</span>
+          <span className="relative inline-block">
+            <span className="absolute bottom-[20%] left-[1%] right-[-2%] top-[20%] bg-[rgb(219,64,117)]" />
+            <span className="relative px-1">industry</span>
+          </span>
           {' has'}
           <br />
           {'needed '}
-          <span className="bg-[rgb(219,64,117)] px-2 py-1">for years.&rdquo;</span>
+          <span className="relative inline-block">
+            <span className="absolute bottom-[20%] left-[1%] right-[-2%] top-[20%] bg-[rgb(219,64,117)]" />
+            <span className="relative px-1">for years.&rdquo;</span>
+          </span>
         </p>
         <footer className="mt-3">
           <cite className="font-[family-name:var(--font-family-body)] text-3xl font-light italic text-white/80 md:text-2xl">
