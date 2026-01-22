@@ -154,9 +154,18 @@ export function BrandShowcase({
     <div className="relative">
       {/* Background extension that extends downward */}
       <div
-        className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-[calc(100%+3rem)] bg-gray-100 bg-cover bg-center md:h-[calc(100%+4rem)] lg:h-[calc(100%+5rem)]"
-        style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
-      />
+        className="pointer-events-none absolute left-0 right-0 top-0 z-10 h-[calc(100%+3rem)] bg-gray-100 md:h-[calc(100%+4rem)] lg:h-[calc(100%+5rem)]"
+      >
+        {imageUrl ? (
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="object-cover"
+            fill
+            src={imageUrl}
+          />
+        ) : null}
+      </div>
 
       <section
         aria-labelledby={ariaLabelledBy}

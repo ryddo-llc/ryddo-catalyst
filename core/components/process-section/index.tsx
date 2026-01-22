@@ -72,7 +72,7 @@ export function ProcessSection({
             fill
             loading="lazy"
             preload={false}
-            quality={60}
+            quality={90}
             sizes="100vw"
             src={imageUrl}
           />

@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ContactForm } from '@/vibes/soul/sections/contact-form';
 import { PageHeader } from '@/vibes/soul/sections/page-header';
+import { Image } from '~/components/image';
 
 // Mock action, will replace with actual server action later
 async function contactAction(_state: unknown, _formData: unknown) {
@@ -52,13 +53,15 @@ export default async function ContactPage({ params }: Props) {
         title={t('title')}
       />
       
-      <div 
-        className="relative py-16 bg-cover bg-top"
-        style={{
-          backgroundImage: 'url(/images/backgrounds/map-background.webp)',
-        }}
-      >
-        <div className="absolute inset-0 bg-blue-50 bg-opacity-70"/>
+      <div className="relative py-16">
+        <Image
+          alt=""
+          aria-hidden="true"
+          className="object-cover object-top -z-20"
+          fill
+          src="/images/backgrounds/map-background.webp"
+        />
+        <div className="absolute inset-0 bg-blue-50 bg-opacity-70 -z-10"/>
         <div className="relative container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
             <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-lg">

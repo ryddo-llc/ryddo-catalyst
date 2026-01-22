@@ -1,5 +1,7 @@
 import { clsx } from 'clsx';
 
+import { Image } from '~/components/image';
+
 export interface RolloutCard {
   badge: string;
   imageUrl?: string;
@@ -42,11 +44,14 @@ function RolloutCardComponent({
     >
       <div className="relative flex h-[30rem] flex-col overflow-hidden rounded-[40px] md:h-[30rem] lg:h-[30rem]">
         {/* Image Area - takes up 65% of card height */}
-        <div className="relative h-[55%] w-full overflow-hidden rounded-[40px]">
+        <div className="relative h-[60%] w-full overflow-hidden rounded-[40px]">
           {imageUrl ? (
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${imageUrl})` }}
+            <Image
+              alt=""
+              className="object-cover object-center"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              src={imageUrl}
             />
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-400" />
@@ -54,16 +59,18 @@ function RolloutCardComponent({
 
           {/* Badge - Ryddo pink */}
           <div className="absolute left-4 top-4 z-10">
-            <span className="rounded-full bg-[rgb(219,64,117)] px-5 py-2 text-sm font-black uppercase text-white md:px-6 md:py-2.5">
+            <span className="rounded-full bg-[rgb(219,64,117)] px-3 py-1 text-sm font-black uppercase text-white md:px-4 md:py-1.5">
               {badge}
             </span>
           </div>
         </div>
 
-        {/* Content - takes up 35% of card height */}
-        <div className="relative h-[35%] w-full rounded-b-[40px] bg-white px-6 py-6 font-body">
-          <h3 className="text-3xl font-black uppercase italic text-black @lg:text-4xl">{title}</h3>
-          <p className="mt-1 text-lg font-bold italic text-black @lg:text-lg">{subtitle}</p>
+        {/* Content - takes up 40% of card height */}
+        <div className="relative h-[40%] w-full rounded-b-[40px] bg-white px-6 pb-10 pt-6 font-[family-name:var(--font-family-body)]">
+          <h3 className="-mb-1 text-3xl font-black uppercase italic text-black @lg:text-4xl">
+            {title}
+          </h3>
+          <p className="text-md @lg:text-md truncate font-bold italic text-black">{subtitle}</p>
           <p className="mt-2 text-base font-medium italic text-gray-600">{description}</p>
         </div>
       </div>
@@ -101,12 +108,12 @@ export function TheRollout({
     >
       <header className="mb-8 text-center md:mb-12">
         <h2
-          className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold text-[var(--process-section-title,hsl(var(--foreground)))] text-white md:text-6xl lg:text-7xl"
+          className="-mb-4 font-[family-name:var(--font-family-body)] text-5xl font-extrabold text-[var(--process-section-title,hsl(var(--foreground)))] text-white md:-mb-5 md:text-6xl lg:-mb-6 lg:text-7xl"
           id={ariaLabelledBy}
         >
           {title}
         </h2>
-        <p className="-mt-3 font-[family-name:var(--font-family-body)] text-2xl font-light text-white md:text-2xl">
+        <p className="font-[family-name:var(--font-family-body)] text-2xl font-light text-white md:text-2xl">
           {subtitle}
         </p>
       </header>
