@@ -56,7 +56,7 @@ export function TestimonialQuote({
             <span className="relative px-1">for years.&rdquo;</span>
           </span>
         </p>
-        <footer className="mt-3">
+        <footer>
           <cite className="font-[family-name:var(--font-family-body)] text-3xl font-light italic text-white/80 md:text-2xl">
             Cargocycle
           </cite>
