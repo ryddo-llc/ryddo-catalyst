@@ -123,7 +123,7 @@ export function ProductDetail<F extends Field>({
                       radius={30}
                     >
                       {/* Background Image - Loaded immediately */}
-                      <div className="absolute inset-0 h-full w-full overflow-hidden rounded-[30px] opacity-55">
+                      <div className="absolute inset-0 h-full w-full overflow-hidden rounded-[30px] opacity-90">
                         <Image
                           alt="detail page background"
                           blurDataURL={getBase64BlurDataURL()}
@@ -190,7 +190,7 @@ export function ProductDetail<F extends Field>({
                             }}
                           >
                             {/* Product Image Display */}
-                            <div className="relative flex h-[14.14rem] w-[23.4rem] translate-y-7 items-center justify-center sm:h-[17.55rem] sm:w-[29.25rem] md:h-[19.99rem] md:w-[37.05rem] lg:h-[22.91rem] lg:w-[44.85rem] xl:h-[24.86rem] xl:w-[52.65rem]">
+                            <div className="relative flex h-[13.15rem] w-[21.75rem] translate-y-7 items-center justify-center sm:h-[16.32rem] sm:w-[27.2rem] md:h-[18.6rem] md:w-[34.45rem] lg:h-[21.3rem] lg:w-[41.7rem] xl:h-[23.1rem] xl:w-[48.95rem]">
                               <Stream
                                 fallback={
                                   <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />

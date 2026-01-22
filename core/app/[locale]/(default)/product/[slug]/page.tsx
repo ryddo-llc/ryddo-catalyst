@@ -418,7 +418,7 @@ export default async function Product({ params, searchParams }: Props) {
           className="object-cover object-center"
           fill
           preload
-          src={imageManagerImageUrl('home-page-bg.png')}
+          src={imageManagerImageUrl('product-page-bg.png')}
         />
       </div>
       <ProductInventoryProvider streamableInventoryStatus={streamableInventoryStatus} />
