@@ -40,7 +40,7 @@ export function PerformanceComparison({
   const desktopImageConfig = getImageConfig('showcase', 0);
 
   return (
-      <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0 }}>
+      <div className={`w-full relative flex flex-col overflow-hidden ${className}`} style={{ backgroundColor: 'rgb(244, 244, 244)', margin: 0, padding: 0, borderRadius: '35px' }}>
         <div aria-hidden="true" className="absolute inset-0 z-0">
           {/* Dots background pattern */}
           <div className="absolute inset-0 pointer-events-none">

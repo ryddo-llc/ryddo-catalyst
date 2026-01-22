@@ -148,7 +148,7 @@ export function ProductShowcase({
           return (
             <div
               className={clsx(
-                'mx-auto flex max-w-[1600px] items-center justify-center gap-2 px-2 py-6 md:gap-4 md:px-4 md:py-10 lg:py-14',
+                'mx-auto flex max-w-[20000px] items-center justify-center gap-2 px-2 py-6 md:gap-4 md:px-4 md:py-10 lg:py-14',
                 className,
               )}
             >
@@ -181,6 +181,7 @@ export function ProductShowcase({
                   bgColor="bg-[rgb(255,205,82)]"
                   className="flex-1"
                   innerPadding="px-1 @xl:px-1 @4xl:px-2"
+                  maxWidth="max-w-none"
                   padding="pt-3 pb-8 md:pt-4 md:pb-12 lg:pt-5 lg:pb-16"
                   radius={30}
                   rounded="all"
@@ -231,7 +232,9 @@ export function ProductShowcase({
                               <div className="relative aspect-[16/10] w-full">
                                 {/\.(mp4|webm|ogg)$/i.test(image.src) ? (
                                   <video
-                                    aria-label={productName ? `${productName} video` : 'Product video'}
+                                    aria-label={
+                                      productName ? `${productName} video` : 'Product video'
+                                    }
                                     className="h-full w-full object-cover"
                                     controls
                                     muted
