@@ -8,18 +8,19 @@ import { NumberedPagination, NumberedPaginationInfo } from '@/vibes/soul/primiti
 import { Product } from '@/vibes/soul/primitives/product-card';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
 import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
-import { ProductList } from '@/vibes/soul/sections/product-list';
 import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
   Sorting,
   SortingSkeleton,
   Option as SortOption,
 } from '@/vibes/soul/sections/products-list-section/sorting';
+import type { GalleryProduct } from '~/components/gallery-product-card';
+import { GalleryProductList } from '~/components/gallery-product-list';
 
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   totalCount: Streamable<string>;
-  products: Streamable<Product[]>;
+  products: Streamable<GalleryProduct[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
   compareProducts?: Streamable<Product[]>;
@@ -44,6 +45,8 @@ interface Props {
   removeLabel?: Streamable<string>;
   maxItems?: number;
   maxCompareLimitMessage?: Streamable<string>;
+  addToCartLabel?: string;
+  preorderLabel?: string;
 }
 
 export function ProductsListSection({
@@ -70,10 +73,12 @@ export function ProductsListSection({
   compareParamName,
   emptyStateSubtitle,
   emptyStateTitle,
-  placeholderCount = 8,
+  placeholderCount = 6,
   removeLabel,
   maxItems,
   maxCompareLimitMessage,
+  addToCartLabel,
+  preorderLabel,
 }: Props) {
   return (
     <div className="group/products-list-section @container bg-gray-100">
@@ -204,7 +209,8 @@ export function ProductsListSection({
           </aside>
 
           <div className="group-has-data-pending/products-list-section:animate-pulse flex-1">
-            <ProductList
+            <GalleryProductList
+              addToCartLabel={addToCartLabel}
               compareHref={compareHref}
               compareLabel={compareLabel}
               compareParamName={compareParamName}
@@ -214,6 +220,7 @@ export function ProductsListSection({
               maxCompareLimitMessage={maxCompareLimitMessage}
               maxItems={maxItems}
               placeholderCount={placeholderCount}
+              preorderLabel={preorderLabel}
               products={products}
               removeLabel={removeLabel}
               showCompare={showCompare}
