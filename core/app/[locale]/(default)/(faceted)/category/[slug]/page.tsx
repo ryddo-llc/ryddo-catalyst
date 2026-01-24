@@ -173,6 +173,7 @@ export default async function Category(props: Props) {
       {
         ...parsedSearchParams,
         ...paginationParams,
+        sort: typeof searchParams.sort === 'string' ? searchParams.sort : undefined,
         category: categoryId,
       },
       currencyCode,

@@ -128,7 +128,7 @@ export function FiltersPanelInner({
   return (
     <div
       className={clsx(
-        'h-fit w-full space-y-6 rounded-lg bg-white p-5 shadow-sm md:w-[220px]',
+        'h-fit w-full space-y-6 rounded-lg bg-white p-5',
         className,
       )}
       data-pending={isPending ? true : null}
@@ -415,7 +415,7 @@ export function FiltersPanelInner({
 
 export function FiltersSkeleton() {
   return (
-    <div className="h-fit w-full space-y-6 rounded-lg bg-white p-5 shadow-sm md:w-[220px]">
+    <div className="h-fit w-full space-y-6 rounded-lg bg-white p-5">
       <div className="space-y-4">
         <div className="h-6 w-[15ch] animate-pulse rounded bg-gray-200" />
         <div className="space-y-2">
