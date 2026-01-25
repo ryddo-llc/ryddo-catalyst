@@ -79,6 +79,8 @@ export function PerformanceComparison({
               alt=""
               className="absolute inset-0 w-full h-full object-cover opacity-30"
               height={800}
+              loading="lazy"
+              quality={60}
               src="/images/backgrounds/performance_bg_dots.png"
               width={1200}
             />
@@ -88,6 +90,8 @@ export function PerformanceComparison({
           alt=""
           className="absolute left-0 top-1/2 -translate-y-1/2 opacity-70 w-auto object-contain"
           height={550}
+          loading="lazy"
+          quality={70}
           src="/images/backgrounds/PERFORM.webp"
           style={{ maxHeight: '100%', height: 'auto' }}
           width={200}
