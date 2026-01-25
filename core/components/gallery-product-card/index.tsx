@@ -1,6 +1,7 @@
 'use client';
 
 import { clsx } from 'clsx';
+import { useState } from 'react';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
 import {
@@ -43,6 +44,7 @@ export function GalleryProductCard({
 }: GalleryProductCardProps) {
   const { id, title, name, href, image, price, onSale, outOfStock, disabled, isPreorder } = product;
   const productName = name || title;
+  const [isFavorite, setIsFavorite] = useState(false);
 
   return (
     <article
@@ -144,7 +146,12 @@ export function GalleryProductCard({
             )}
 
             {/* Wishlist Heart - using existing Favorite component */}
-            <Favorite label="Add to wishlist" variant="simple" />
+            <Favorite
+              checked={isFavorite}
+              label="Add to wishlist"
+              setChecked={setIsFavorite}
+              variant="simple"
+            />
           </div>
         </div>
       </div>
