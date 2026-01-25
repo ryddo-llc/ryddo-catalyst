@@ -1,7 +1,7 @@
 'use client';
 
 import { parseAsString, useQueryState } from 'nuqs';
-import { useOptimistic, useTransition } from 'react';
+import { useEffect, useOptimistic, useState, useTransition } from 'react';
 
 import { SelectField } from '@/vibes/soul/form/select-field';
 import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
@@ -24,6 +24,7 @@ export function Sorting({
   defaultValue?: string;
   placeholder?: Streamable<string | null>;
 }) {
+  const [isMounted, setIsMounted] = useState(false);
   const [param, setParam] = useQueryState(
     paramName,
     parseAsString.withDefault(defaultValue).withOptions({ shallow: false, history: 'push' }),
@@ -33,6 +34,14 @@ export function Sorting({
   const options = useStreamable(streamableOptions);
   const label = useStreamable(streamableLabel) ?? 'Sort';
   const placeholder = useStreamable(streamablePlaceholder) ?? 'Sort by';
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <SortingSkeleton />;
+  }
 
   return (
     <SelectField
@@ -49,11 +58,11 @@ export function Sorting({
       pending={isPending}
       placeholder={placeholder}
       value={optimisticParam}
-      variant="round"
+      variant="finder"
     />
   );
 }
 
 export function SortingSkeleton() {
-  return <div className="h-[50px] w-[12ch] animate-pulse rounded-full bg-contrast-100" />;
+  return <div className="h-[50px] w-[12ch] animate-pulse rounded-full border border-contrast-200 bg-white" />;
 }

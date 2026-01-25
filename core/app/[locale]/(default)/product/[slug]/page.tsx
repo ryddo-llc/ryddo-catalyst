@@ -418,6 +418,8 @@ export default async function Product({ params, searchParams }: Props) {
           className="object-cover object-center"
           fill
           preload
+          quality={70}
+          sizes="100vw"
           src={imageManagerImageUrl('product-page-bg.png')}
         />
       </div>
@@ -473,14 +475,16 @@ export default async function Product({ params, searchParams }: Props) {
       )}
 
       {/* Related Products section with same styling as popular products */}
-      <RelatedProducts
-        compareLabel="Compare"
-        compareProducts={streamableCompareProducts}
-        maxCompareLimitMessage="You've reached the maximum number of products for comparison."
-        maxItems={3}
-        products={streamableRelatedProducts}
-        showCompare={true}
-      />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100" />}>
+        <RelatedProducts
+          compareLabel="Compare"
+          compareProducts={streamableCompareProducts}
+          maxCompareLimitMessage="You've reached the maximum number of products for comparison."
+          maxItems={3}
+          products={streamableRelatedProducts}
+          showCompare={true}
+        />
+      </Suspense>
 
       {/* Defer reviews rendering - below the fold */}
       <Suspense fallback={<div className="h-96 animate-pulse bg-gray-100" />}>

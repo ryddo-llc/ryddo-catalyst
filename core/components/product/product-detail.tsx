@@ -131,6 +131,7 @@ export function ProductDetail<F extends Field>({
                           fill
                           placeholder="blur"
                           quality={60}
+                          sizes="100vw"
                           src={
                             product.backgroundImage ||
                             imageManagerImageUrl('default-ebike-background.png', 'original')

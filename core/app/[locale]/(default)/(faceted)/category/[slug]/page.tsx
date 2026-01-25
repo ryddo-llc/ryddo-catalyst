@@ -173,6 +173,7 @@ export default async function Category(props: Props) {
       {
         ...parsedSearchParams,
         ...paginationParams,
+        sort: typeof searchParams.sort === 'string' ? searchParams.sort : undefined,
         category: categoryId,
       },
       currencyCode,
@@ -203,16 +204,24 @@ export default async function Category(props: Props) {
       }
     }
 
-    return products.map((product) => ({
-      id: product.entityId.toString(),
-      title: product.name,
-      href: product.path,
-      image: product.defaultImage
-        ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
-        : undefined,
-      price: pricesTransformer(product.prices, format),
-      subtitle: product.brand?.name ?? undefined,
-    }));
+    return products.map((product) => {
+      const price = pricesTransformer(product.prices, format);
+      const onSale = typeof price === 'object' && price.type === 'sale';
+      const outOfStock = !product.inventory.isInStock;
+
+      return {
+        id: product.entityId.toString(),
+        title: product.name,
+        href: product.path,
+        image: product.defaultImage
+          ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+          : undefined,
+        price,
+        subtitle: product.brand?.name ?? undefined,
+        onSale,
+        outOfStock,
+      };
+    });
   });
 
   const streamableTotalCount = Streamable.from(async () => {

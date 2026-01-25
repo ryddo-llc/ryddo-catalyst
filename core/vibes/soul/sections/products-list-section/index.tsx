@@ -1,25 +1,25 @@
-import { Sliders } from 'lucide-react';
 import { Suspense } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+import { FinderTrigger } from '@/vibes/soul/primitives/finder-trigger';
 import { NumberedPagination, NumberedPaginationInfo } from '@/vibes/soul/primitives/numbered-pagination';
 import { Product } from '@/vibes/soul/primitives/product-card';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
 import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
-import { ProductList } from '@/vibes/soul/sections/product-list';
 import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
   Sorting,
   SortingSkeleton,
   Option as SortOption,
 } from '@/vibes/soul/sections/products-list-section/sorting';
+import type { GalleryProduct } from '~/components/gallery-product-card';
+import { GalleryProductList } from '~/components/gallery-product-list';
 
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   totalCount: Streamable<string>;
-  products: Streamable<Product[]>;
+  products: Streamable<GalleryProduct[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
   compareProducts?: Streamable<Product[]>;
@@ -44,6 +44,8 @@ interface Props {
   removeLabel?: Streamable<string>;
   maxItems?: number;
   maxCompareLimitMessage?: Streamable<string>;
+  addToCartLabel?: string;
+  preorderLabel?: string;
 }
 
 export function ProductsListSection({
@@ -70,10 +72,12 @@ export function ProductsListSection({
   compareParamName,
   emptyStateSubtitle,
   emptyStateTitle,
-  placeholderCount = 8,
+  placeholderCount = 6,
   removeLabel,
   maxItems,
   maxCompareLimitMessage,
+  addToCartLabel,
+  preorderLabel,
 }: Props) {
   return (
     <div className="group/products-list-section @container bg-gray-100">
@@ -87,7 +91,7 @@ export function ProductsListSection({
           <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
             <Suspense
               fallback={
-                <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                <div className="text-sm text-gray-600">
                   <span className="inline-flex h-4 w-32 animate-pulse rounded bg-contrast-100" />
                 </div>
               }
@@ -109,7 +113,7 @@ export function ProductsListSection({
                         {(numberedPaginationData) => {
                           if (totalResults === 0) {
                             return (
-                              <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
+                              <div className="text-sm text-gray-600">
                                 Showing 0 of 0 results
                               </div>
                             );
@@ -120,8 +124,8 @@ export function ProductsListSection({
                           const calculatedEndResult = Math.min(currentPage * itemsPerPage, totalResults);
                           
                           return (
-                            <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
-                              {calculatedStartResult === calculatedEndResult 
+                            <div className="text-sm text-gray-600">
+                              {calculatedStartResult === calculatedEndResult
                                 ? `Showing ${calculatedStartResult} of ${totalResults} results`
                                 : `Showing ${calculatedStartResult}-${calculatedEndResult} of ${totalResults} results`
                               }
@@ -133,8 +137,8 @@ export function ProductsListSection({
                   }
 
                   return (
-                    <div className="text-sm text-gray-600 @3xl:ml-64 @4xl:ml-72">
-                      {startResult === endResult 
+                    <div className="text-sm text-gray-600">
+                      {startResult === endResult
                         ? `Showing ${startResult} of ${totalResults} results`
                         : `Showing ${startResult}-${endResult} of ${totalResults} results`
                       }
@@ -162,49 +166,30 @@ export function ProductsListSection({
                   />
                 )}
               </Stream>
-              <div className="block @3xl:hidden">
-                <SidePanel.Root>
-                  <SidePanel.Trigger asChild>
-                    <Button size="medium" variant="secondary">
-                      {filterLabel}
-                      <span className="hidden @xl:block">
-                        <Sliders size={20} />
-                      </span>
-                    </Button>
-                  </SidePanel.Trigger>
-                  <Stream value={streamableFiltersPanelTitle}>
-                    {(filtersPanelTitle) => (
-                      <SidePanel.Content title={filtersPanelTitle}>
-                        <FiltersPanel
-                          filters={filters}
-                          paginationInfo={paginationInfo}
-                          rangeFilterApplyLabel={rangeFilterApplyLabel}
-                          resetFiltersLabel={resetFiltersLabel}
-                        />
-                      </SidePanel.Content>
-                    )}
-                  </Stream>
-                </SidePanel.Root>
-              </div>
+              <SidePanel.Root>
+                <SidePanel.Trigger asChild>
+                  <FinderTrigger label={filterLabel} />
+                </SidePanel.Trigger>
+                <Stream value={streamableFiltersPanelTitle}>
+                  {(filtersPanelTitle) => (
+                    <SidePanel.Content title={filtersPanelTitle}>
+                      <FiltersPanel
+                        filters={filters}
+                        paginationInfo={paginationInfo}
+                        rangeFilterApplyLabel={rangeFilterApplyLabel}
+                        resetFiltersLabel={resetFiltersLabel}
+                      />
+                    </SidePanel.Content>
+                  )}
+                </Stream>
+              </SidePanel.Root>
             </div>
           </div>
         </div>
-        <div className="flex items-start gap-8 @4xl:gap-10">
-          <aside className="hidden w-52 @3xl:block @4xl:w-60">
-            <Stream value={streamableFiltersPanelTitle}>
-              {(filtersPanelTitle) => <h2 className="sr-only">{filtersPanelTitle}</h2>}
-            </Stream>
-            <FiltersPanel
-              className="sticky top-4"
-              filters={filters}
-              paginationInfo={paginationInfo}
-              rangeFilterApplyLabel={rangeFilterApplyLabel}
-              resetFiltersLabel={resetFiltersLabel}
-            />
-          </aside>
-
-          <div className="group-has-data-pending/products-list-section:animate-pulse flex-1">
-            <ProductList
+        <div>
+          <div className="group-has-data-pending/products-list-section:animate-pulse">
+            <GalleryProductList
+              addToCartLabel={addToCartLabel}
               compareHref={compareHref}
               compareLabel={compareLabel}
               compareParamName={compareParamName}
@@ -214,6 +199,7 @@ export function ProductsListSection({
               maxCompareLimitMessage={maxCompareLimitMessage}
               maxItems={maxItems}
               placeholderCount={placeholderCount}
+              preorderLabel={preorderLabel}
               products={products}
               removeLabel={removeLabel}
               showCompare={showCompare}

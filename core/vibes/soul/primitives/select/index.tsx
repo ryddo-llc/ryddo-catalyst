@@ -12,7 +12,7 @@ export type SelectProps = ComponentPropsWithoutRef<typeof SelectPrimitive.Root> 
     pending?: boolean;
     placeholder?: string;
     label?: string;
-    variant?: 'round' | 'rectangle';
+    variant?: 'round' | 'rectangle' | 'finder';
     options: Array<{ label: string; value: string }>;
     onFocus?: (e: React.FocusEvent<HTMLButtonElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLButtonElement>) => void;
@@ -90,23 +90,34 @@ export function Select({
       <SelectPrimitive.Trigger
         aria-label={label}
         className={clsx(
-          'flex h-fit w-full select-none items-center justify-between gap-3 border p-2 px-5 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 will-change-transform',
+          'flex h-fit w-full select-none items-center justify-between gap-3 border p-2 px-5 py-3 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 will-change-transform',
           variant === 'rectangle' ? 'rounded-lg' : 'rounded-full',
-          {
-            light:
-              'bg-[var(--select-light-trigger-background,hsl(var(--white)))] text-[var(--select-light-trigger-text,hsl(var(--foreground)))] hover:border-[var(--select-light-trigger-border-hover,hsl(var(--contrast-300)))] hover:bg-[var(--select-light-trigger-background-hover,hsl(var(--contrast-100)))] focus-visible:ring-[var(--select-light-trigger-focus,hsl(var(--primary)))]',
-            dark: 'bg-[var(--select-dark-trigger-background,hsl(var(--black)))] text-[var(--select-dark-trigger-text,hsl(var(--background)))] hover:border-[var(--select-dark-trigger-border-hover,hsl(var(--contrast-300)))] hover:bg-[var(--select-dark-trigger-background-hover,hsl(var(--contrast-500)))] focus-visible:ring-[var(--select-dark-trigger-focus,hsl(var(--primary)))]',
-          }[colorScheme],
-          {
-            light:
-              errors && errors.length > 0
-                ? 'border-[var(--select-light-trigger-border-error,hsl(var(--error)))]'
-                : 'border-[var(--select-light-trigger-border,hsl(var(--contrast-100)))]',
-            dark:
-              errors && errors.length > 0
-                ? 'border-[var(--select-dark-trigger-border-error,hsl(var(--error)))]'
-                : 'border-[var(--select-dark-trigger-border,hsl(var(--contrast-500)))]',
-          }[colorScheme],
+          variant === 'finder'
+            ? [
+                'bg-white text-foreground border-contrast-200 transition-all duration-200',
+                'hover:border-[#F92F7B] hover:shadow-[0_4px_12px_rgba(249,47,123,0.15)]',
+                'focus-visible:ring-[#F92F7B] focus-visible:ring-offset-2',
+                'active:scale-[0.98]',
+                errors && errors.length > 0 && 'border-[hsl(var(--error))]',
+              ]
+            : [
+                'transition-colors',
+                {
+                  light:
+                    'bg-[var(--select-light-trigger-background,hsl(var(--white)))] text-[var(--select-light-trigger-text,hsl(var(--foreground)))] hover:border-[var(--select-light-trigger-border-hover,hsl(var(--contrast-300)))] hover:bg-[var(--select-light-trigger-background-hover,hsl(var(--contrast-100)))] focus-visible:ring-[var(--select-light-trigger-focus,hsl(var(--primary)))]',
+                  dark: 'bg-[var(--select-dark-trigger-background,hsl(var(--black)))] text-[var(--select-dark-trigger-text,hsl(var(--background)))] hover:border-[var(--select-dark-trigger-border-hover,hsl(var(--contrast-300)))] hover:bg-[var(--select-dark-trigger-background-hover,hsl(var(--contrast-500)))] focus-visible:ring-[var(--select-dark-trigger-focus,hsl(var(--primary)))]',
+                }[colorScheme],
+                {
+                  light:
+                    errors && errors.length > 0
+                      ? 'border-[var(--select-light-trigger-border-error,hsl(var(--error)))]'
+                      : 'border-[var(--select-light-trigger-border,hsl(var(--contrast-100)))]',
+                  dark:
+                    errors && errors.length > 0
+                      ? 'border-[var(--select-dark-trigger-border-error,hsl(var(--error)))]'
+                      : 'border-[var(--select-dark-trigger-border,hsl(var(--contrast-500)))]',
+                }[colorScheme],
+              ],
         )}
         data-pending={pending ? true : null}
         id={id}
