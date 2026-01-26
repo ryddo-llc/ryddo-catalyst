@@ -22,19 +22,23 @@ function Content({ title, children }: Props) {
           )}
           forceMount
         >
-          <div className="h-1 w-full bg-[#F92F7B]" />
-          <div className="flex items-center justify-between gap-2 bg-background px-6 pb-4 pt-5 @md:px-8 @md:pt-6">
+          <div className="flex items-center justify-between gap-2 border-b border-contrast-100 bg-background px-6 py-5 @md:px-8">
             <Dialog.Title asChild>
-              <div className="text-2xl font-semibold @lg:text-3xl">{title}</div>
+              <div className="text-lg font-semibold">{title}</div>
             </Dialog.Title>
             <Dialog.Close asChild>
-              <Button className="translate-x-3" shape="circle" size="small" variant="tertiary">
-                <X size={20} strokeWidth={1} />
+              <Button
+                className="h-8 w-8 rounded-full"
+                shape="circle"
+                size="small"
+                variant="tertiary"
+              >
+                <X size={18} strokeWidth={1.5} />
               </Button>
             </Dialog.Close>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-6 pb-6 @md:px-8 @md:pb-8">{children}</div>
+          <div className="flex-1 overflow-y-auto">{children}</div>
         </Dialog.Content>
       </Dialog.Overlay>
     </Dialog.Portal>
