@@ -123,7 +123,7 @@ export function RangeInput({
         value={state.max}
       />
       <Button
-        className="shrink-0"
+        className="shrink-0 bg-[#F92F7B] hover:bg-[#E91E63] active:bg-[#C2185B]"
         disabled={disabled || (state.min === state.max && state.min !== '' && state.max !== '')}
         onClick={() =>
           onChange?.({
@@ -133,7 +133,7 @@ export function RangeInput({
         }
         shape="circle"
         size="small"
-        variant="secondary"
+        variant="primary"
       >
         <span className="sr-only">{applyLabel}</span>
         <ArrowRight size={20} strokeWidth={1} />

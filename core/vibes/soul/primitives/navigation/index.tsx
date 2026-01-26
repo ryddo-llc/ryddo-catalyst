@@ -24,10 +24,18 @@ interface NavigationLinksProps {
   getIsActive: (href: string) => boolean;
   isFloating: boolean;
   navItemsRef: React.RefObject<Array<HTMLElement | null>>;
-  setActivePillStyle: React.Dispatch<React.SetStateAction<{ left: number; width: number; opacity: number }>>;
+  setActivePillStyle: React.Dispatch<
+    React.SetStateAction<{ left: number; width: number; opacity: number }>
+  >;
 }
 
-function NavigationLinks({ links, getIsActive, isFloating, navItemsRef, setActivePillStyle }: NavigationLinksProps) {
+function NavigationLinks({
+  links,
+  getIsActive,
+  isFloating,
+  navItemsRef,
+  setActivePillStyle,
+}: NavigationLinksProps) {
   const pathname = usePathname();
 
   // Update active pill position when links or pathname changes
@@ -194,17 +202,23 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const pathname = usePathname();
 
   // Memoize path normalization to prevent repeated calculations
-  const normalizedPathname = useMemo(() =>
-    pathname.endsWith('/') ? pathname : `${pathname}/`, [pathname]
+  const normalizedPathname = useMemo(
+    () => (pathname.endsWith('/') ? pathname : `${pathname}/`),
+    [pathname],
   );
 
   // Memoize active state calculation to prevent repeated string operations
-  const getIsActive = useMemo(() => (href: string) => {
-    const normalizedHref = href.endsWith('/') ? href : `${href}/`;
+  const getIsActive = useMemo(
+    () => (href: string) => {
+      const normalizedHref = href.endsWith('/') ? href : `${href}/`;
 
-    return normalizedPathname === normalizedHref ||
-      (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref));
-  }, [normalizedPathname]);
+      return (
+        normalizedPathname === normalizedHref ||
+        (normalizedHref !== '/' && normalizedPathname.startsWith(normalizedHref))
+      );
+    },
+    [normalizedPathname],
+  );
 
   const handlePathChange = useCallback(() => {
     // Only close search, keep mobile menu open for better UX
@@ -217,14 +231,17 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   }, [setIsSearchOpen]);
 
   // Add keyboard shortcut for search (Cmd/Ctrl + K) - memoized for efficiency
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      setIsSearchOpen((prev) => !prev);
-    } else if (e.key === 'Escape' && isSearchOpen) {
-      setIsSearchOpen(false);
-    }
-  }, [isSearchOpen, setIsSearchOpen]);
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      } else if (e.key === 'Escape' && isSearchOpen) {
+        setIsSearchOpen(false);
+      }
+    },
+    [isSearchOpen, setIsSearchOpen],
+  );
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -245,7 +262,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   }, [isMobileMenuOpen]);
 
   const toggleSection = useCallback((index: number) => {
-    setExpandedSections(prev => {
+    setExpandedSections((prev) => {
       const newSet = new Set(prev);
 
       if (newSet.has(index)) {
@@ -261,7 +278,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const toggleSubSection = useCallback((sectionIndex: number, groupIndex: number) => {
     const key = `${sectionIndex}-${groupIndex}`;
 
-    setExpandedSubSections(prev => {
+    setExpandedSubSections((prev) => {
       const newSet = new Set(prev);
 
       if (newSet.has(key)) {
@@ -314,7 +331,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           <Popover.Portal>
             <Popover.Content
               align="start"
-              className="w-72 max-w-[75vw] max-h-[70vh] z-[200] overflow-y-auto overscroll-contain @container bg-background/50 backdrop-blur-2xl backdrop-saturate-200 shadow-2xl ring-1 ring-contrast-100/15 border border-contrast-100/20 rounded-2xl data-[state=open]:animate-menu-slide-down data-[state=closed]:animate-menu-slide-up relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none"
+              className="relative z-[200] max-h-[70vh] w-72 max-w-[75vw] overflow-y-auto overscroll-contain rounded-2xl border border-contrast-100/20 bg-background/50 shadow-2xl ring-1 ring-contrast-100/15 backdrop-blur-2xl backdrop-saturate-200 @container before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent data-[state=closed]:animate-menu-slide-up data-[state=open]:animate-menu-slide-down"
               sideOffset={4}
             >
               <div className="relative divide-y divide-contrast-100/15">
@@ -344,9 +361,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                       const hasSubcategories = item.groups && item.groups.length > 0;
                       const hasLabel = item.label.trim() !== '';
                       const isExpanded = hasLabel ? expandedSections.has(i) : true;
-                      
+
                       return (
-                        <div className="border-b border-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] last:border-b-0" key={item.href}>
+                        <div
+                          className="border-b border-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] last:border-b-0"
+                          key={item.href}
+                        >
                           {/* Main Category Link */}
                           {hasLabel && (
                             <div className="p-1.5 @4xl:p-3">
@@ -354,63 +374,74 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                 <Link
                                   aria-current={isActive ? 'page' : undefined}
                                   className={clsx(
-                                    "flex-1 block rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-medium text-lg ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-300 focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3",
-                                    "text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]",
-                                    "border border-transparent bg-transparent hover:bg-primary/10 hover:backdrop-blur-sm hover:border-primary/20",
-                                    isActive && "text-primary bg-primary/15 backdrop-blur-sm border-primary/25"
+                                    'block flex-1 rounded-lg px-2.5 py-2.5 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] text-lg font-medium ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-300 focus-visible:outline-0 focus-visible:ring-2 @4xl:py-3',
+                                    'text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))]',
+                                    'border border-transparent bg-transparent hover:border-primary/20 hover:bg-primary/10 hover:backdrop-blur-sm',
+                                    isActive &&
+                                      'border-primary/25 bg-primary/15 text-primary backdrop-blur-sm',
                                   )}
                                   href={item.href}
                                   onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                   {item.label}
                                 </Link>
-                                
+
                                 {/* Expand/Collapse Button for categories with subcategories */}
                                 {hasSubcategories && (
                                   <button
                                     aria-controls={`section-panel-${i}`}
                                     aria-expanded={isExpanded}
-                                    aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
-                                    className="ml-1.5 p-1.5 rounded-lg hover:bg-primary/5 hover:backdrop-blur-md transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary"
+                                    aria-label={
+                                      isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`
+                                    }
+                                    className="ml-1.5 rounded-lg p-1.5 transition-all duration-200 hover:bg-primary/5 hover:backdrop-blur-md focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-primary"
                                     onClick={() => toggleSection(i)}
                                     type="button"
                                   >
                                     <svg
                                       className={clsx(
-                                        "w-4 h-4 transition-transform duration-300 ease-out",
-                                        isExpanded ? "rotate-180" : "rotate-0"
+                                        'h-4 w-4 transition-transform duration-300 ease-out',
+                                        isExpanded ? 'rotate-180' : 'rotate-0',
                                       )}
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
                                     >
-                                      <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+                                      <path
+                                        d="M19 9l-7 7-7-7"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                      />
                                     </svg>
                                   </button>
                                 )}
                               </div>
                             </div>
                           )}
-                          
+
                           {/* Sub-categories with accordion behavior */}
                           {hasSubcategories && (
-                            <div 
+                            <div
                               aria-hidden={!isExpanded}
                               className={clsx(
-                                "overflow-hidden transition-all duration-300 ease-out",
-                                isExpanded ? "max-h-[65vh] opacity-100" : "max-h-0 opacity-0"
+                                'overflow-hidden transition-all duration-300 ease-out',
+                                isExpanded ? 'max-h-[65vh] opacity-100' : 'max-h-0 opacity-0',
                               )}
                               id={`section-panel-${i}`}
                             >
                               <div className="px-1.5 pb-1.5 @4xl:px-3 @4xl:pb-3">
                                 {item.groups?.map((group, groupIndex) => (
-                                  <div className="mb-2 last:mb-0" key={`${item.href}-${group.label ?? groupIndex}`}>
+                                  <div
+                                    className="mb-2 last:mb-0"
+                                    key={`${item.href}-${group.label ?? groupIndex}`}
+                                  >
                                     {/* Group Header */}
                                     {group.label ? (
                                       <div className="flex items-center justify-between px-2 py-1.5">
                                         {group.href ? (
                                           <Link
-                                            className="flex-1 text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] transition-all duration-200"
+                                            className="flex-1 text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] transition-all duration-200 hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))]"
                                             href={group.href}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                           >
@@ -421,52 +452,69 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                             {group.label}
                                           </div>
                                         )}
-                                        
+
                                         {/* Expand/Collapse Button for sub-subcategories */}
                                         {group.links.length > 0 && (
                                           <button
                                             aria-controls={`subsection-panel-${i}-${groupIndex}`}
-                                            aria-expanded={expandedSubSections.has(`${i}-${groupIndex}`)}
-                                            aria-label={expandedSubSections.has(`${i}-${groupIndex}`) ? `Collapse ${group.label}` : `Expand ${group.label}`}
-                                            className="p-1 rounded hover:bg-primary/5 hover:backdrop-blur-md transition-all duration-200 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
+                                            aria-expanded={expandedSubSections.has(
+                                              `${i}-${groupIndex}`,
+                                            )}
+                                            aria-label={
+                                              expandedSubSections.has(`${i}-${groupIndex}`)
+                                                ? `Collapse ${group.label}`
+                                                : `Expand ${group.label}`
+                                            }
+                                            className="rounded p-1 transition-all duration-200 hover:bg-primary/5 hover:backdrop-blur-md focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--nav-focus,hsl(var(--primary)))]"
                                             onClick={() => toggleSubSection(i, groupIndex)}
                                             type="button"
                                           >
                                             <svg
                                               className={clsx(
-                                                "w-4 h-4 transition-transform duration-200",
-                                                expandedSubSections.has(`${i}-${groupIndex}`) ? "rotate-180" : "rotate-0"
+                                                'h-4 w-4 transition-transform duration-200',
+                                                expandedSubSections.has(`${i}-${groupIndex}`)
+                                                  ? 'rotate-180'
+                                                  : 'rotate-0',
                                               )}
                                               fill="none"
                                               stroke="currentColor"
                                               viewBox="0 0 24 24"
                                             >
-                                              <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+                                              <path
+                                                d="M19 9l-7 7-7-7"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                              />
                                             </svg>
                                           </button>
                                         )}
                                       </div>
                                     ) : null}
-                                    
+
                                     {/* Group Links with nested accordion */}
-                                    {group.links.length > 0 && (
-                                      group.label ? (
-                                        <div 
-                                          aria-hidden={!expandedSubSections.has(`${i}-${groupIndex}`)}
+                                    {group.links.length > 0 &&
+                                      (group.label ? (
+                                        <div
+                                          aria-hidden={
+                                            !expandedSubSections.has(`${i}-${groupIndex}`)
+                                          }
                                           className={clsx(
-                                            "overflow-hidden transition-all duration-200 ease-in-out",
-                                            expandedSubSections.has(`${i}-${groupIndex}`) ? "max-h-[50vh] opacity-100" : "max-h-0 opacity-0"
+                                            'overflow-hidden transition-all duration-200 ease-in-out',
+                                            expandedSubSections.has(`${i}-${groupIndex}`)
+                                              ? 'max-h-[50vh] opacity-100'
+                                              : 'max-h-0 opacity-0',
                                           )}
                                           id={`subsection-panel-${i}-${groupIndex}`}
                                         >
                                           <div className="ml-2 space-y-0.5">
                                             {group.links.map((link) => {
                                               const isLinkActive = getIsActive(link.href);
-                                              
+
                                               return (
                                                 <Link
                                                   aria-current={isLinkActive ? 'page' : undefined}
-                                                  className="block rounded-lg bg-transparent px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-contrast-500 ring-primary transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:backdrop-blur-sm hover:text-foreground focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                  className="block rounded-lg bg-transparent px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-contrast-500 ring-primary transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:text-foreground hover:backdrop-blur-sm focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                                   href={link.href}
                                                   key={link.href}
                                                   onClick={() => setIsMobileMenuOpen(false)}
@@ -481,11 +529,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                         <div className="ml-2 space-y-0.5">
                                           {group.links.map((link) => {
                                             const isLinkActive = getIsActive(link.href);
-                                            
+
                                             return (
                                               <Link
                                                 aria-current={isLinkActive ? 'page' : undefined}
-                                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:backdrop-blur-sm hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
+                                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-2 py-1.5 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-base font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] hover:backdrop-blur-sm focus-visible:outline-0 focus-visible:ring-2 @4xl:py-2"
                                                 href={link.href}
                                                 key={link.href}
                                                 onClick={() => setIsMobileMenuOpen(false)}
@@ -495,8 +543,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                             );
                                           })}
                                         </div>
-                                      )
-                                    )}
+                                      ))}
                                   </div>
                                 ))}
                               </div>
@@ -516,7 +563,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                         <LocaleSwitcher
                           activeLocaleId={activeLocaleId}
                           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                          locales={locales as [typeof locales[0], typeof locales[0], ...typeof locales]}
+                          locales={
+                            locales as [(typeof locales)[0], (typeof locales)[0], ...typeof locales]
+                          }
                         />
                       ) : null}
 
@@ -531,7 +580,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                               action={currencyAction}
                               activeCurrencyId={activeCurrencyId}
                               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                              currencies={currencies as [typeof currencies[0], ...typeof currencies]}
+                              currencies={
+                                currencies as [(typeof currencies)[0], ...typeof currencies]
+                              }
                             />
                           ) : null
                         }
@@ -574,7 +625,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Top Level Nav Links */}
         <ul
           className={clsx(
-            'hidden gap-1 rounded-full bg-gray-200 px-2 py-0.5 @4xl:flex @4xl:flex-[0.9] relative',
+            'relative hidden gap-1 rounded-full bg-[rgb(240,240,240)] px-2 py-0.5 @4xl:flex @4xl:flex-[0.9]',
             {
               left: '@4xl:justify-start',
               center: '@4xl:justify-center',
@@ -584,7 +635,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           {/* Animated sliding background pill */}
           <div
-            className="absolute bg-white shadow-md rounded-full transition-all duration-300 ease-out pointer-events-none"
+            className="pointer-events-none absolute rounded-full bg-white shadow-md transition-all duration-300 ease-out"
             style={{
               left: `${activePillStyle.left - 6}px`,
               width: `${activePillStyle.width + 12}px`,
@@ -613,7 +664,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             }
             value={streamableLinks}
           >
-{(links) => (
+            {(links) => (
               <NavigationLinks
                 getIsActive={getIsActive}
                 isFloating={isFloating}
@@ -647,8 +698,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 </button>
               </Popover.Trigger>
               <Popover.Portal>
-                <Popover.Content className="z-[200] max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-dropdown-show data-[state=closed]:animate-dropdown-hide">
-                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-background/50 backdrop-blur-2xl backdrop-saturate-200 shadow-2xl ring-1 ring-contrast-100/15 border border-contrast-100/20 transition-all duration-200 ease-in-out @4xl:inset-x-0 relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none">
+                <Popover.Content className="z-[200] max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=closed]:animate-dropdown-hide data-[state=open]:animate-dropdown-show">
+                  <div className="relative flex max-h-[inherit] flex-col rounded-2xl border border-contrast-100/20 bg-background/50 shadow-2xl ring-1 ring-contrast-100/15 backdrop-blur-2xl backdrop-saturate-200 transition-all duration-200 ease-in-out before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent @4xl:inset-x-0">
                     <SearchForm
                       searchAction={searchAction}
                       searchHref={searchHref}
@@ -705,7 +756,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               activeLocaleId={activeLocaleId}
               className="hidden @4xl:block"
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              locales={locales as [typeof locales[0], typeof locales[0], ...typeof locales]}
+              locales={locales as [(typeof locales)[0], (typeof locales)[0], ...typeof locales]}
             />
           ) : null}
 
@@ -721,7 +772,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   activeCurrencyId={activeCurrencyId}
                   className="hidden @4xl:block"
                   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                  currencies={currencies as [typeof currencies[0], ...typeof currencies]}
+                  currencies={currencies as [(typeof currencies)[0], ...typeof currencies]}
                   switchCurrencyLabel={switchCurrencyLabel}
                 />
               ) : null
@@ -731,7 +782,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       </div>
 
       <div className="perspective-[2000px] absolute left-0 right-0 top-full z-[110] flex w-full justify-center">
-        <NavigationMenu.Viewport className="relative mt-2 w-full max-w-4xl mx-auto data-[state=open]:animate-dropdown-show data-[state=closed]:animate-dropdown-hide" />
+        <NavigationMenu.Viewport className="relative mx-auto mt-2 w-full max-w-4xl data-[state=closed]:animate-dropdown-hide data-[state=open]:animate-dropdown-show" />
       </div>
     </NavigationMenu.Root>
   );

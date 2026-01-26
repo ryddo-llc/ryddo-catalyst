@@ -123,6 +123,10 @@ export const facetsTransformer = async ({
         label: facet.name,
         min: facet.selected?.minPrice ?? undefined,
         max: facet.selected?.maxPrice ?? undefined,
+        minPrepend: '$',
+        maxPrepend: '$',
+        minPlaceholder: 'Min',
+        maxPlaceholder: 'Max',
         disabled: refinedPriceSearchFilter == null && !isSelected,
       };
     }

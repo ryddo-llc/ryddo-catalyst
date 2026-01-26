@@ -122,7 +122,7 @@ export default async function Category(props: Props) {
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
   // Items-per-page is consistent across fetch, slice, and pagination
-  const ITEMS_PER_PAGE = 9;
+  const ITEMS_PER_PAGE = 10;
   // Cap the maximum limit to prevent API stress on very large page numbers
   const MAX_LIMIT = 100;
 
