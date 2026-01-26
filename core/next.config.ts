@@ -74,6 +74,7 @@ export default async (): Promise<NextConfig> => {
     images: {
       formats: ['image/webp', 'image/avif'],
       minimumCacheTTL: 60 * 60 * 24, // 1 day
+      qualities: [60, 70, 75, 90],
     },
 
     // default URL generation in BigCommerce uses trailing slash
