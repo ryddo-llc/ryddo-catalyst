@@ -18,6 +18,8 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
+import { createPriceFilter } from '../../create-price-filter';
+import { fetchBrands } from '../../fetch-brands';
 import { getCompareProducts } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
@@ -36,9 +38,7 @@ const createCategorySearchParamsLoader = cache(
   async (categoryId: number, customerAccessToken?: string) => {
     const cachedCategory = getCachedCategory(categoryId);
     const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
-    const categoryFacets = categorySearch.facets.items.filter(
-      (facet) => facet.__typename !== 'CategorySearchFilter',
-    );
+    const categoryFacets = categorySearch.facets.items;
     const transformedCategoryFacets = await facetsTransformer({
       refinedFacets: categoryFacets,
       allFacets: categoryFacets,
@@ -283,12 +283,8 @@ export default async function Category(props: Props) {
     const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
     const refinedSearch = await streamableFacetedSearch;
 
-    const allFacets = categorySearch.facets.items.filter(
-      (facet) => facet.__typename !== 'CategorySearchFilter',
-    );
-    const refinedFacets = refinedSearch.facets.items.filter(
-      (facet) => facet.__typename !== 'CategorySearchFilter',
-    );
+    const allFacets = categorySearch.facets.items;
+    const refinedFacets = refinedSearch.facets.items;
 
     const transformedFacets = await facetsTransformer({
       refinedFacets,
@@ -298,22 +294,39 @@ export default async function Category(props: Props) {
 
     const filters = transformedFacets.filter((facet) => facet != null);
 
+    // Fetch all brands and create brand filter
+    const brands = await fetchBrands();
+    const brandFilter = {
+      type: 'toggle-group' as const,
+      paramName: 'brand',
+      label: 'Brand',
+      options: brands.map((b) => ({
+        label: b.name,
+        value: b.entityId.toString(),
+      })),
+    };
+
+    // Create price filter
+    const priceFilter = createPriceFilter();
+
+    // Build subcategories as checkboxes from categoryTree
     const tree = categoryTree[0];
-    const subCategoriesFilters =
+    const subCategoriesFilter =
       tree == null || tree.children.length === 0
         ? []
         : [
             {
-              type: 'link-group' as const,
+              type: 'toggle-group' as const,
+              paramName: 'categoryIn',
               label: t('Category.subCategories'),
-              links: tree.children.map((child) => ({
+              options: tree.children.map((child) => ({
                 label: child.name,
-                href: child.path,
+                value: child.entityId.toString(),
               })),
             },
           ];
 
-    return [...subCategoriesFilters, ...filters];
+    return [...subCategoriesFilter, brandFilter, priceFilter, ...filters];
   });
 
   const streamableCompareProducts = Streamable.from(async () => {

@@ -92,7 +92,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <>
-      <div className="absolute left-1/2 top-0 -z-10 h-[250vh] w-screen -translate-x-1/2">
+      <div className="absolute left-1/2 top-0 -z-10 h-[270vh] w-screen -translate-x-1/2">
         <Image
           alt=""
           aria-hidden="true"
