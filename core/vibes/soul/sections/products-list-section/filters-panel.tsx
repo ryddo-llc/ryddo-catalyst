@@ -225,10 +225,10 @@ export function FiltersPanelInner({
       </div>
 
       {/* Sticky footer */}
-      <div className="sticky bottom-0 border-t border-gray-200 bg-white pb-2 pt-4">
+      <div className="z-10 sticky bottom-0 border-t border-gray-200 bg-white pb-6 pt-4 shadow-[0_-4px_12px_rgba(255,255,255,0.95)]">
         <div className="space-y-3">
           <button
-            className="flex w-full items-center justify-center gap-2 rounded-sm border border-gray-300 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-gray-400 hover:bg-gray-50"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-gray-300 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-gray-400 hover:bg-gray-50"
             onClick={handleReset}
             type="button"
           >
@@ -237,7 +237,7 @@ export function FiltersPanelInner({
           </button>
           <Dialog.Close asChild>
             <button
-              className="w-full rounded-sm bg-[#F92F7B] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#E91E63] active:bg-[#C2185B]"
+              className="w-full rounded-2xl bg-[#F92F7B] px-4 py-3 text-sm font-semibold text-white shadow-[0px_12px_18px_-6px_rgba(0,0,0,0.12)] transition-colors hover:bg-[#E91E63] active:bg-[#C2185B]"
               type="button"
             >
               Show {totalCount} Results
@@ -439,7 +439,7 @@ function FilterCheckbox({
     <div className="flex items-center">
       <input
         checked={checked}
-        className="relative mr-3 h-[18px] w-[18px] cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white transition-all checked:border-[#F92F7B] checked:bg-[#F92F7B] focus:outline-none focus:ring-2 focus:ring-[#F92F7B] focus:ring-opacity-25 disabled:cursor-not-allowed disabled:opacity-40"
+        className="relative mr-3 h-[18px] w-[18px] cursor-pointer appearance-none rounded border border-gray-300 bg-white transition-all checked:border-[#F92F7B] checked:bg-[#F92F7B] focus:outline-none focus:ring-2 focus:ring-[#F92F7B] focus:ring-opacity-25 disabled:cursor-not-allowed disabled:opacity-40"
         disabled={disabled}
         id={id}
         onChange={(e) => onChange(e.target.checked)}
@@ -492,7 +492,7 @@ function DropdownFilter({
   return (
     <div className="relative">
       <select
-        className="w-full cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm text-foreground transition-colors focus:border-[#F92F7B] focus:outline-none focus:ring-1 focus:ring-[#F92F7B]"
+        className="w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm text-foreground transition-colors focus:border-[#F92F7B] focus:outline-none focus:ring-1 focus:ring-[#F92F7B]"
         onChange={(e) => onChange(e.target.value)}
         value={value}
       >
@@ -533,8 +533,8 @@ export function FiltersSkeleton() {
       {/* Footer skeleton */}
       <div className="border-t border-gray-200 pb-2 pt-4">
         <div className="space-y-3">
-          <div className="h-[46px] w-full animate-pulse rounded-sm bg-gray-100" />
-          <div className="h-[46px] w-full animate-pulse rounded-sm bg-gray-200" />
+          <div className="h-[46px] w-full animate-pulse rounded-2xl bg-gray-100" />
+          <div className="h-[46px] w-full animate-pulse rounded-2xl bg-gray-200" />
         </div>
       </div>
     </div>
@@ -561,7 +561,7 @@ function ToggleGroupSkeleton({ options, seed = 0 }: { options: number; seed?: nu
 
         return (
           <div className="flex items-center" key={i}>
-            <div className="mr-3 h-[18px] w-[18px] animate-pulse rounded-sm bg-gray-200" />
+            <div className="mr-3 h-[18px] w-[18px] animate-pulse rounded bg-gray-200" />
             <div
               className="h-4 w-[var(--width)] animate-pulse rounded bg-gray-200"
               style={{ '--width': `${width}ch` } as React.CSSProperties}
