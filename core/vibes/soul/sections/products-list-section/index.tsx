@@ -178,6 +178,7 @@ export function ProductsListSection({
                         paginationInfo={paginationInfo}
                         rangeFilterApplyLabel={rangeFilterApplyLabel}
                         resetFiltersLabel={resetFiltersLabel}
+                        totalCount={totalCount}
                       />
                     </SidePanel.Content>
                   )}

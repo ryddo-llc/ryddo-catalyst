@@ -16,6 +16,11 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
     const [bannerElement, setBannerElement] = useState<HTMLElement | null>(null);
     const [bannerHeight, setBannerHeight] = useState(0);
     const [isFloating, setIsFloating] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+      setMounted(true);
+    }, []);
 
     useEffect(() => {
       if (!bannerElement) return;
@@ -33,6 +38,20 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
         resizeObserver.disconnect();
       };
     }, [bannerElement]);
+
+    // Render static header on server and during initial hydration to avoid mismatch
+    if (!mounted) {
+      return (
+        <div ref={ref}>
+          {banner && <Banner ref={setBannerElement} {...banner} />}
+          <div style={{ zIndex: 100 }}>
+            <div className="p-2">
+              <Navigation {...navigation} isFloating={false} />
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div ref={ref}>
