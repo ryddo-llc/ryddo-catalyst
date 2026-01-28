@@ -199,14 +199,22 @@ export default async function Search(props: Props) {
       searchParams: { ...searchParams, ...parsedSearchParams },
     });
 
-    const filters = transformedFacets.filter((facet) => facet != null);
+    // Filter out nulls and API-provided brand/price facets to avoid duplicates with manual ones below
+    const filters = transformedFacets
+      .filter((facet) => facet != null)
+      .filter((facet) => {
+        if ('paramName' in facet && facet.paramName === 'brand') return false;
+        if (facet.type === 'range' && facet.minParamName === 'minPrice') return false;
+
+        return true;
+      });
 
     // Fetch all brands and create brand filter
     const brands = await fetchBrands();
     const brandFilter = {
       type: 'toggle-group' as const,
       paramName: 'brand',
-      label: 'Brand',
+      label: t('FacetedSearch.brand'),
       options: brands.map((b) => ({
         label: b.name,
         value: b.entityId.toString(),
@@ -214,7 +222,7 @@ export default async function Search(props: Props) {
     };
 
     // Create price filter
-    const priceFilter = createPriceFilter();
+    const priceFilter = createPriceFilter(t('FacetedSearch.price'));
 
     return [brandFilter, priceFilter, ...filters];
   });

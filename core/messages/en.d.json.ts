@@ -232,6 +232,8 @@ declare const messages: {
     "FacetedSearch": {
       "filters": "Filters",
       "resetFilters": "Reset filters",
+      "brand": "Brand",
+      "price": "Price",
       "Range": {
         "apply": "Apply"
       },
