@@ -151,11 +151,9 @@ export function FiltersPanelInner({
 
   const handleReset = () => {
     startTransition(async () => {
-      const nextParams = {
-        ...Object.fromEntries(Object.entries(optimisticParams).map(([key]) => [key, null])),
-        [startCursorParamName]: optimisticParams[startCursorParamName],
-        [endCursorParamName]: optimisticParams[endCursorParamName],
-      };
+      const nextParams = Object.fromEntries(
+        Object.entries(optimisticParams).map(([key]) => [key, null]),
+      );
 
       setOptimisticParams(nextParams);
       await setParams(nextParams);
@@ -296,7 +294,7 @@ function renderFilterContent(
                 option.value,
               )}
               disabled={option.disabled}
-              id={option.value}
+              id={`${filter.paramName}-${option.value}`}
               key={option.value}
               label={option.label}
               onChange={(checked) => {
@@ -382,9 +380,11 @@ function renderFilterContent(
                   if (checked) ratings.add(rating.toString());
                   else ratings.delete(rating.toString());
 
+                  const ratingsArray = Array.from(ratings);
+
                   const nextParams = {
                     ...optimisticParams,
-                    [filter.paramName]: Array.from(ratings),
+                    [filter.paramName]: ratingsArray.length === 0 ? null : ratingsArray,
                     [startCursorParamName]: null,
                     [endCursorParamName]: null,
                   };
