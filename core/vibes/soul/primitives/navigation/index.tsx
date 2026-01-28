@@ -562,8 +562,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                       {locales.length > 1 ? (
                         <LocaleSwitcher
                           activeLocaleId={activeLocaleId}
-                          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                           locales={
+                            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                             locales as [(typeof locales)[0], (typeof locales)[0], ...typeof locales]
                           }
                         />
@@ -579,8 +579,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                             <CurrencyForm
                               action={currencyAction}
                               activeCurrencyId={activeCurrencyId}
-                              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                               currencies={
+                                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                                 currencies as [(typeof currencies)[0], ...typeof currencies]
                               }
                             />
