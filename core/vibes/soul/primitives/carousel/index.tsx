@@ -100,6 +100,7 @@ function Carousel({
 
     return () => {
       api.off('select', onSelect);
+      api.off('reInit', onSelect);
     };
   }, [api, onSelect]);
 
@@ -329,6 +330,72 @@ function CarouselScrollbar({
   );
 }
 
+function CarouselDots({
+  className,
+  colorScheme = 'light',
+}: ComponentPropsWithoutRef<'div'> & { colorScheme?: 'light' | 'dark' }) {
+  const { api } = useCarousel();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!api) return;
+
+    setScrollSnaps(api.scrollSnapList());
+
+    const onSelect = () => {
+      setSelectedIndex(api.selectedScrollSnap());
+    };
+
+    const onReInit = () => {
+      setScrollSnaps(api.scrollSnapList());
+      onSelect();
+    };
+
+    api.on('select', onSelect);
+    api.on('reInit', onReInit);
+
+    return () => {
+      api.off('select', onSelect);
+      api.off('reInit', onReInit);
+    };
+  }, [api]);
+
+  if (scrollSnaps.length <= 1) return null;
+
+  return (
+    <div className={clsx('flex items-center justify-center gap-2', className)}>
+      {scrollSnaps.map((_, index) => (
+        <button
+          aria-label={`Go to slide ${index + 1}`}
+          className={clsx(
+            'h-2.5 rounded-full transition-all duration-300',
+            'ring-(--carousel-focus,var(--primary)) focus-visible:ring-2 focus-visible:outline-0',
+            index === selectedIndex
+              ? clsx(
+                  'w-6',
+                  {
+                    light: 'bg-(--carousel-light-button,var(--foreground))',
+                    dark: 'bg-(--carousel-dark-button,var(--background))',
+                  }[colorScheme],
+                )
+              : clsx(
+                  'w-2.5',
+                  {
+                    light: 'bg-[hsl(var(--contrast-200))]',
+                    dark: 'bg-[hsl(var(--contrast-300))]',
+                  }[colorScheme],
+                ),
+          )}
+          key={index}
+          onClick={() => api?.scrollTo(index)}
+          type="button"
+        />
+      ))}
+    </div>
+  );
+}
+
 export {
   type CarouselApi,
   Carousel,
@@ -336,4 +403,5 @@ export {
   CarouselItem,
   CarouselButtons,
   CarouselScrollbar,
+  CarouselDots,
 };
