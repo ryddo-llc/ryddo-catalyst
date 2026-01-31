@@ -91,7 +91,7 @@ export default async function Home({ params }: Props) {
   });
 
   return (
-    <>
+    <div className="pb-20">
       <div className="absolute left-1/2 top-0 -z-10 h-[270vh] w-screen -translate-x-1/2">
         <Image
           alt=""
@@ -206,6 +206,6 @@ export default async function Home({ params }: Props) {
           },
         ]}
       />
-    </>
+    </div>
   );
 }

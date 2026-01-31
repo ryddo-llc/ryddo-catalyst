@@ -410,7 +410,7 @@ export default async function Product({ params, searchParams }: Props) {
   };
 
   return (
-    <>
+    <div className="pb-80">
       <div className="fixed inset-0 left-1/2 -z-10 w-screen -translate-x-1/2">
         <Image
           alt=""
@@ -501,6 +501,6 @@ export default async function Product({ params, searchParams }: Props) {
         productSku={streamableProductSku}
         searchParams={searchParams}
       />
-    </>
+    </div>
   );
 }
