@@ -100,6 +100,7 @@ function Carousel({
 
     return () => {
       api.off('select', onSelect);
+      api.off('reInit', onSelect);
     };
   }, [api, onSelect]);
 
@@ -346,14 +347,17 @@ function CarouselDots({
       setSelectedIndex(api.selectedScrollSnap());
     };
 
-    api.on('select', onSelect);
-    api.on('reInit', () => {
+    const onReInit = () => {
       setScrollSnaps(api.scrollSnapList());
       onSelect();
-    });
+    };
+
+    api.on('select', onSelect);
+    api.on('reInit', onReInit);
 
     return () => {
       api.off('select', onSelect);
+      api.off('reInit', onReInit);
     };
   }, [api]);
 

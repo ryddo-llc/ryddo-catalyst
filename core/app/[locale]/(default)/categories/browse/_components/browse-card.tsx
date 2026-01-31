@@ -52,11 +52,11 @@ export function BrowseCard({
       )}
 
       <div className="absolute inset-x-0 bottom-0 p-5">
-        <h3 className="font-[family-name:var(--font-family-heading)] text-lg font-bold text-white drop-shadow-sm">
+        <h3 className="font-heading text-lg font-bold text-white drop-shadow-sm">
           {title}
         </h3>
         {subtitle ? (
-          <p className="mt-1 font-[family-name:var(--font-family-body)] text-sm text-white/80">
+          <p className="mt-1 font-body text-sm text-white/80">
             {subtitle}
           </p>
         ) : null}
