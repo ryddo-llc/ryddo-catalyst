@@ -58,13 +58,11 @@ export function CategoryBrowseClient({
   }
 
   function handleBrandSelect(brand: BrowseBrand) {
-    if (!selectedCategory) return;
-
     setSelectedBrand(brand);
     productsUpdatedByUser.current = true;
 
     startProductsTransition(async () => {
-      const result = await fetchProductsForBrand(selectedCategory.entityId, brand.entityId);
+      const result = await fetchProductsForBrand(brand.entityId, selectedCategory?.entityId);
 
       setProducts(result);
     });
