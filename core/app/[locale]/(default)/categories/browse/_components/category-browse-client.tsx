@@ -4,14 +4,8 @@ import { useEffect, useRef, useState, useTransition } from 'react';
 
 import { CarouselItem } from '@/vibes/soul/primitives/carousel';
 
-import {
-  type BrowseBrand,
-  fetchBrandsForCategory,
-} from '../_actions/fetch-brands-for-category';
-import {
-  type BrowseProduct,
-  fetchProductsForBrand,
-} from '../_actions/fetch-products-for-brand';
+import { type BrowseBrand, fetchBrandsForCategory } from '../_actions/fetch-brands-for-category';
+import { type BrowseProduct, fetchProductsForBrand } from '../_actions/fetch-products-for-brand';
 
 import { BrowseCard } from './browse-card';
 import { BrowseSection } from './browse-section';
@@ -70,10 +64,7 @@ export function CategoryBrowseClient({
     productsUpdatedByUser.current = true;
 
     startProductsTransition(async () => {
-      const result = await fetchProductsForBrand(
-        selectedCategory.entityId,
-        brand.entityId,
-      );
+      const result = await fetchProductsForBrand(selectedCategory.entityId, brand.entityId);
 
       setProducts(result);
     });
@@ -101,11 +92,14 @@ export function CategoryBrowseClient({
     }
   }, [products]);
 
+  const seeAllHref = selectedCategory?.path ?? initialCategories[0]?.path;
+
   return (
-    <div className="pb-80 @container">
+    <div className="bg-white pb-80 @container">
       {/* Level 1: Categories */}
       <BrowseSection
         highlightWord="e-Ride"
+        seeAllHref={seeAllHref}
         subtitle="Not just bikes, scooters, ATV's, mopeds & more."
         title="Premium"
       >
@@ -116,9 +110,7 @@ export function CategoryBrowseClient({
           >
             <BrowseCard
               image={
-                category.image
-                  ? { src: category.image.url, alt: category.image.altText }
-                  : null
+                category.image ? { src: category.image.url, alt: category.image.altText } : null
               }
               isSelected={selectedCategory?.entityId === category.entityId}
               onClick={() => handleCategorySelect(category)}
@@ -135,10 +127,11 @@ export function CategoryBrowseClient({
           key={`brands-${selectedCategory?.entityId ?? 'all'}`}
           loading={isPendingBrands}
           ref={brandsSectionRef}
+          seeAllHref={seeAllHref}
           subtitle={
             selectedCategory
               ? `Brands in ${selectedCategory.name}`
-              : 'Not just bikes, scooters, ATV\'s, mopeds & more.'
+              : "Not just bikes, scooters, ATV's, mopeds & more."
           }
           title="Premium"
         >
@@ -168,10 +161,11 @@ export function CategoryBrowseClient({
         key={`products-${selectedBrand?.entityId ?? 'all'}`}
         loading={isPendingProducts}
         ref={productsSectionRef}
+        seeAllHref={seeAllHref}
         subtitle={
           selectedBrand
             ? `${selectedBrand.name} products`
-            : 'Not just bikes, scooters, ATV\'s, mopeds & more.'
+            : "Not just bikes, scooters, ATV's, mopeds & more."
         }
         title="Premium"
       >

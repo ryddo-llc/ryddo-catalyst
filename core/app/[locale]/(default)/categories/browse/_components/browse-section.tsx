@@ -1,7 +1,9 @@
 'use client';
 
 import { clsx } from 'clsx';
-import { forwardRef, type ReactNode } from 'react';
+import { type CSSProperties, forwardRef, type ReactNode } from 'react';
+
+import { ArrowRight } from 'lucide-react';
 
 import {
   Carousel,
@@ -9,6 +11,8 @@ import {
   CarouselContent,
   CarouselDots,
 } from '@/vibes/soul/primitives/carousel';
+
+import { Link } from '~/components/link';
 
 import { BrowseCardSkeleton } from './browse-card';
 
@@ -19,26 +23,28 @@ export interface BrowseSectionProps {
   loading?: boolean;
   children: ReactNode;
   className?: string;
+  seeAllHref?: string;
 }
 
 export const BrowseSection = forwardRef<HTMLDivElement, BrowseSectionProps>(
   function BrowseSection(
-    { title, highlightWord, subtitle, loading = false, children, className },
+    { title, highlightWord, subtitle, loading = false, children, className, seeAllHref },
     ref,
   ) {
     return (
       <section
         className={clsx('scroll-mt-24 py-8 md:py-12', className)}
         ref={ref}
+        style={{ '--carousel-light-button': 'hsl(337 94% 58%)' } as CSSProperties}
       >
         <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="mb-6 text-center">
-            <h2 className="font-[family-name:var(--font-family-heading)] text-3xl font-bold md:text-4xl">
+            <h2 className="font-body text-[2.3rem] font-extrabold text-black md:text-[3rem]">
               {highlightWord ? (
                 <>
                   {title}{' '}
-                  <span className="italic text-[hsl(var(--primary))]">
+                  <span className="text-[hsl(var(--primary))]">
                     {highlightWord}
                   </span>
                 </>
@@ -46,7 +52,7 @@ export const BrowseSection = forwardRef<HTMLDivElement, BrowseSectionProps>(
                 title
               )}
             </h2>
-            <p className="mt-2 font-[family-name:var(--font-family-body)] text-base text-[hsl(var(--contrast-400))] md:text-lg">
+            <p className="mt-2 font-body text-base font-normal text-black md:text-lg">
               {subtitle}
             </p>
           </div>
@@ -81,8 +87,17 @@ export const BrowseSection = forwardRef<HTMLDivElement, BrowseSectionProps>(
             </div>
           ) : (
             <Carousel>
-              <div className="flex justify-end pb-3">
+              <div className="flex items-center justify-between pb-3">
                 <CarouselButtons />
+                {seeAllHref ? (
+                  <Link
+                    className="group inline-flex items-center gap-1.5 font-body text-sm font-semibold text-[hsl(var(--primary))] transition-colors hover:underline"
+                    href={seeAllHref}
+                  >
+                    See All
+                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </Link>
+                ) : null}
               </div>
               <CarouselContent>
                 {children}
