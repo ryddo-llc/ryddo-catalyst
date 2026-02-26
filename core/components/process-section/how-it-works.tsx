@@ -100,7 +100,7 @@ export function HowItWorks({
                 <StepCard
                   description={step.description}
                   isActive={globalIndex === selectedStepIndex}
-                  key={`${step.number}-${index}`}
+                  key={step.number}
                   number={step.number}
                 />
               );
@@ -112,6 +112,8 @@ export function HowItWorks({
             {steps.map((step, index) => (
               <div className="flex items-center gap-2 md:gap-3" key={index}>
                 <button
+                  aria-current={index === selectedStepIndex ? 'step' : undefined}
+                  aria-label={`Go to step ${step.number}`}
                   className={clsx(
                     'rounded-full px-2 py-0.5 font-[family-name:var(--font-family-kanit)] text-base font-black italic transition-all md:px-3 md:py-1 md:text-lg',
                     index === selectedStepIndex

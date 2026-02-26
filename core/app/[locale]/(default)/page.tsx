@@ -50,11 +50,20 @@ export async function generateMetadata({
       description: pageDescription,
       siteName: 'Ryddo',
       url: '/',
+      images: [
+        {
+          url: imageManagerImageUrl('og-home.png', 'original'),
+          width: 1200,
+          height: 630,
+          alt: 'Ryddo - Premium Electric Bikes',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: t('title'),
       description: pageDescription,
+      images: [imageManagerImageUrl('og-home.png', 'original')],
     },
     alternates: {
       canonical: '/',
@@ -69,19 +78,14 @@ export default async function Home({ params }: Props) {
 
   const t = await getTranslations('Home');
 
-  // Fetch products once and share the data
-  const streamableProductsData = Streamable.from(async () => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const currencyCode = await getPreferredCurrencyCode();
+  const streamableMarketplaceProducts = Streamable.from(async () => {
+    const [customerAccessToken, currencyCode] = await Promise.all([
+      getSessionCustomerAccessToken(),
+      getPreferredCurrencyCode(),
+    ]);
     const data = await getPopularProductsData(currencyCode, customerAccessToken);
 
-    return removeEdgesAndNodes(data.site.search.searchProducts.products);
-  });
-
-  const streamableMarketplaceProducts = Streamable.from(async () => {
-    const products = await streamableProductsData;
-
-    return products.map((product) => ({
+    return removeEdgesAndNodes(data.site.search.searchProducts.products).map((product) => ({
       entityId: product.entityId,
       name: product.name,
       path: product.path,
@@ -99,7 +103,8 @@ export default async function Home({ params }: Props) {
           className="object-cover object-top"
           fill
           preload
-          src={imageManagerImageUrl('home-page-bg.png')}
+          sizes="100vw"
+          src={imageManagerImageUrl('home-page-bg.png', 'original')}
         />
       </div>
       <OrganizationSchema />
@@ -120,12 +125,19 @@ export default async function Home({ params }: Props) {
           title: t('BrandShowcase.certifiedService.title'),
           description: t('BrandShowcase.certifiedService.description'),
         }}
+        heading={{
+          prefix: t('BrandShowcase.heading.prefix'),
+          highlight: t('BrandShowcase.heading.highlight'),
+        }}
         imageUrl={imageManagerImageUrl('rethink-the-ride-bg.png', 'original')}
         sameDayDelivery={{
           title: t('BrandShowcase.sameDayDelivery.title'),
           description: t('BrandShowcase.sameDayDelivery.description'),
         }}
-        subtitle={t('BrandShowcase.subtitle')}
+        subtitle={{
+          highlight: t('BrandShowcase.subtitle.highlight'),
+          rest: t('BrandShowcase.subtitle.rest'),
+        }}
         tradeInUp={{
           title: t('BrandShowcase.tradeInUp.title'),
           description: t('BrandShowcase.tradeInUp.description'),
@@ -154,6 +166,10 @@ export default async function Home({ params }: Props) {
       <ProcessSection
         howItWorksTitle={t('ProcessSection.howItWorks.title')}
         imageUrl={imageManagerImageUrl('process-bg.png', 'original')}
+        quote={{
+          text: t('ProcessSection.quote.text'),
+          author: t('ProcessSection.quote.author'),
+        }}
         rolloutCards={[
           {
             badge: t('ProcessSection.rollout.cards.online.badge'),

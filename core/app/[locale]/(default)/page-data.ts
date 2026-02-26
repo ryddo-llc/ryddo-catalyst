@@ -3,8 +3,6 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
-import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { FooterFragment, FooterSectionsFragment } from '~/components/footer/fragment';
 import { CurrencyCode, HeaderFragment, HeaderLinksFragment } from '~/components/header/fragment';
 import { ProductCardFragment } from '~/components/product-card/fragment';
@@ -33,30 +31,6 @@ export const GetLinksAndSectionsQuery = graphql(
   [HeaderLinksFragment, FooterSectionsFragment],
 );
 
-const HomePageQuery = graphql(
-  `
-    query HomePageQuery($currencyCode: currencyCode) {
-      site {
-        featuredProducts(first: 12) {
-          edges {
-            node {
-              ...FeaturedProductsListFragment
-            }
-          }
-        }
-        newestProducts(first: 12) {
-          edges {
-            node {
-              ...FeaturedProductsCarouselFragment
-            }
-          }
-        }
-      }
-    }
-  `,
-  [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
-);
-
 const PopularProductsQuery = graphql(
   `
     query PopularProductsQuery($currencyCode: currencyCode) {
@@ -69,7 +43,7 @@ const PopularProductsQuery = graphql(
             }
             sort: FEATURED
           ) {
-            products(first: 12) {
+            products(first: 6) {
               edges {
                 node {
                   ...ProductCardFragment
@@ -82,19 +56,6 @@ const PopularProductsQuery = graphql(
     }
   `,
   [ProductCardFragment],
-);
-
-export const getPageData = cache(
-  async (currencyCode?: CurrencyCode, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: HomePageQuery,
-      customerAccessToken,
-      variables: { currencyCode },
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
-
-    return data;
-  },
 );
 
 export const getPopularProductsData = cache(

@@ -1,13 +1,17 @@
 import { Organization, WithContext } from 'schema-dts';
 
+import { buildConfig } from '~/build-config/reader';
+
 export const OrganizationSchema = () => {
+  const baseUrl = buildConfig.get('urls').vanityUrl;
+
   const organizationSchema: WithContext<Organization> = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Ryddo',
     description: 'Premium electric bikes and sustainable transportation solutions. From commuter e-bikes to mountain e-bikes, find the perfect electric bicycle for your lifestyle.',
-    url: '/',
-    logo: '/images/logo.png',
+    url: baseUrl,
+    logo: `${baseUrl}/images/logo.png`,
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',

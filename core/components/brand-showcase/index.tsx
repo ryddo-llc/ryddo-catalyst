@@ -10,7 +10,8 @@ interface CardContent {
 }
 
 export interface BrandShowcaseProps {
-  subtitle: string;
+  heading: { prefix: string; highlight: string };
+  subtitle: { highlight: string; rest: string };
   sameDayDelivery: CardContent;
   adventureGuarantee: CardContent;
   tradeInUp: CardContent;
@@ -78,6 +79,7 @@ function BrandCard({
               alt={title}
               className="object-cover"
               fill
+              loading="lazy"
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
               src={overlayImageUrl}
               style={imagePosition ? { objectPosition: imagePosition } : undefined}
@@ -87,7 +89,7 @@ function BrandCard({
 
         {/* Info Icon */}
         <div className="absolute right-4 top-4 z-10">
-          <Info className="h-10 w-10 text-white opacity-80 transition-opacity hover:opacity-100" />
+          <Info aria-hidden="true" className="h-10 w-10 text-white opacity-80 transition-opacity hover:opacity-100" />
         </div>
 
         {/* Text content with opaque background - z-10 */}
@@ -141,6 +143,7 @@ function BrandCard({
  */
 export function BrandShowcase({
   'aria-labelledby': ariaLabelledBy = 'brand-showcase',
+  heading,
   subtitle,
   sameDayDelivery,
   adventureGuarantee,
@@ -162,6 +165,8 @@ export function BrandShowcase({
             aria-hidden="true"
             className="object-cover"
             fill
+            loading="lazy"
+            sizes="100vw"
             src={imageUrl}
           />
         ) : null}
@@ -181,11 +186,11 @@ export function BrandShowcase({
               className="font-[family-name:var(--font-family-body)] text-5xl font-extrabold leading-tight text-black md:text-7xl lg:text-7xl xl:text-7xl"
               id={ariaLabelledBy}
             >
-              Rethinking the <span className="text-white">Ride</span>
+              {heading.prefix} <span className="text-white">{heading.highlight}</span>
             </h2>
             <p className="-mt-2 font-[family-name:var(--font-family-body)] text-3xl font-normal text-white">
-              <span className="bg-blue-500 px-2 py-1">Not just selling</span>{' '}
-              {subtitle.replace('Not just selling', '').trim()}
+              <span className="bg-blue-500 px-2 py-1">{subtitle.highlight}</span>{' '}
+              {subtitle.rest}
             </p>
           </header>
 

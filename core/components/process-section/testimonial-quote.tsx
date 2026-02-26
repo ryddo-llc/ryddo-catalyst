@@ -6,6 +6,7 @@ export interface Quote {
 }
 
 export interface TestimonialQuoteProps {
+  quote: Quote;
   className?: string;
   'aria-labelledby'?: string;
 }
@@ -25,6 +26,7 @@ export interface TestimonialQuoteProps {
  */
 export function TestimonialQuote({
   'aria-labelledby': ariaLabelledBy = 'testimonial-quote',
+  quote,
   className,
 }: TestimonialQuoteProps) {
   return (
@@ -39,26 +41,11 @@ export function TestimonialQuote({
           className="font-[family-name:var(--font-family-body)] text-2xl font-extrabold italic text-white md:text-3xl lg:text-4xl"
           id={ariaLabelledBy}
         >
-          <span className="relative inline-block">
-            <span className="absolute bottom-[20%] left-[5%] right-[-2%] top-[20%] bg-[rgb(219,64,117)]" />
-            <span className="relative px-1">&ldquo;Ryddo is</span>
-          </span>
-          {' doing what the '}
-          <span className="relative inline-block">
-            <span className="absolute bottom-[20%] left-[1%] right-[-2%] top-[20%] bg-[rgb(219,64,117)]" />
-            <span className="relative px-1">industry</span>
-          </span>
-          {' has'}
-          <br />
-          {'needed '}
-          <span className="relative inline-block">
-            <span className="absolute bottom-[20%] left-[1%] right-[-2%] top-[20%] bg-[rgb(219,64,117)]" />
-            <span className="relative px-1">for years.&rdquo;</span>
-          </span>
+          &ldquo;{quote.text}&rdquo;
         </p>
         <footer>
           <cite className="font-[family-name:var(--font-family-body)] text-3xl font-light italic text-white/80 md:text-2xl">
-            Cargocycle
+            {quote.author}
           </cite>
         </footer>
       </blockquote>
