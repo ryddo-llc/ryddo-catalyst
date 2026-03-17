@@ -1,9 +1,8 @@
 'use client';
 
 import { clsx } from 'clsx';
-import { type CSSProperties, forwardRef, type ReactNode } from 'react';
-
 import { ArrowRight } from 'lucide-react';
+import { type CSSProperties, forwardRef, type ReactNode } from 'react';
 
 import {
   Carousel,
@@ -11,7 +10,6 @@ import {
   CarouselContent,
   CarouselDots,
 } from '@/vibes/soul/primitives/carousel';
-
 import { Link } from '~/components/link';
 
 import { BrowseCardSkeleton } from './browse-card';
@@ -26,6 +24,10 @@ export interface BrowseSectionProps {
   seeAllHref?: string;
 }
 
+const sectionStyle: CSSProperties & { '--carousel-light-button'?: string } = {
+  '--carousel-light-button': 'hsl(337 94% 58%)',
+};
+
 export const BrowseSection = forwardRef<HTMLDivElement, BrowseSectionProps>(
   function BrowseSection(
     { title, highlightWord, subtitle, loading = false, children, className, seeAllHref },
@@ -35,7 +37,7 @@ export const BrowseSection = forwardRef<HTMLDivElement, BrowseSectionProps>(
       <section
         className={clsx('scroll-mt-24 py-8 md:py-12', className)}
         ref={ref}
-        style={{ '--carousel-light-button': 'hsl(337 94% 58%)' } as CSSProperties}
+        style={sectionStyle}
       >
         <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
