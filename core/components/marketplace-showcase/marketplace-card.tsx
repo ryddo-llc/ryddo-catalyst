@@ -74,14 +74,14 @@ export function MarketplaceCard({
               <Plus className="h-[15px] w-[15px] text-black" strokeWidth={3} />
             </button>
 
-            {/* Brand & Product Names - Centered Vertically */}
+            {/* Brand & Product Names */}
             <div className="flex h-full flex-col items-start justify-end px-1 pb-2">
               {product.brand?.name != null && product.brand.name !== '' ? (
-                <p className="font-[family-name:var(--font-family-body)] text-lg font-extrabold text-black">
+                <p className="font-[family-name:var(--font-family-body)] text-lg font-extrabold leading-tight text-black">
                   {product.brand.name}
                 </p>
               ) : null}
-              <h3 className="w-full truncate font-[family-name:var(--font-family-body)] text-sm font-light italic text-black">
+              <h3 className="w-full truncate font-[family-name:var(--font-family-body)] text-sm font-light italic leading-tight text-black">
                 {product.name}
               </h3>
             </div>

@@ -35,7 +35,7 @@ const SHOWCASE_PRODUCTS = [
     brand: 'Onyx',
     name: 'RCR 2025',
     badge: '2025 Models',
-    bgColor: 'bg-[#EDAB6C]',
+    bgColor: 'bg-[#A4CEF6]',
     image: imageManagerImageUrl('onyx-card.png'),
   },
   {
