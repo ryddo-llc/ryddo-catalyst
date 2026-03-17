@@ -279,7 +279,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       lastResult: null,
     });
   const isPending = isSearching || isDebouncing;
+  const debouncedRef = useRef<ReturnType<typeof debounce> | null>(null);
+
   const debouncedOnChange = useMemo(() => {
+    debouncedRef.current?.cancel();
+
     const debounced = debounce((q: string) => {
       setIsDebouncing(false);
 
@@ -291,11 +295,19 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       });
     }, 300);
 
+    debouncedRef.current = debounced;
+
     return (q: string) => {
       setIsDebouncing(true);
       debounced(q);
     };
   }, [formAction, searchParamName]);
+
+  useEffect(() => {
+    return () => {
+      debouncedRef.current?.cancel();
+    };
+  }, []);
 
   const pathname = usePathname();
 

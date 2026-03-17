@@ -114,7 +114,7 @@ export function HowItWorks({
                   )}
                   key={index}
                   onClick={() => handleStepClick(index)}
-                  style={{ top: `${(index / (steps.length - 1)) * 100}%` }}
+                  style={{ top: `${steps.length > 1 ? (index / (steps.length - 1)) * 100 : 0}%` }}
                   type="button"
                 />
               ))}
@@ -122,7 +122,7 @@ export function HowItWorks({
               {/* Active ball */}
               <div
                 className="pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out"
-                style={{ top: `${(selectedStepIndex / (steps.length - 1)) * 100}%` }}
+                style={{ top: `${steps.length > 1 ? (selectedStepIndex / (steps.length - 1)) * 100 : 0}%` }}
               >
                 <div className="h-4 w-4 animate-pulse-glow rounded-full bg-white shadow-[0_0_8px_2px_rgba(255,255,255,0.4)] md:h-5 md:w-5" />
               </div>
