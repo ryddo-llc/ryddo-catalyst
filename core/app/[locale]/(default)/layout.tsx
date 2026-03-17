@@ -43,14 +43,14 @@ export default async function DefaultLayout({ params, children }: Props) {
       <div className="flex min-h-screen flex-col">
         {/* Header wrapper */}
         <div className="w-full pt-2">
-          <div className="mx-auto max-w-[1400px] rounded-t-[30px] bg-white">
+          <div className="mx-auto max-w-[1360px] rounded-t-[30px] bg-white">
             <Header banners={streamableBanners} />
           </div>
         </div>
 
         <main className="flex-grow">
           <div className="w-full">
-            <div className="mx-auto max-w-[1400px]">{children}</div>
+            <div className="mx-auto max-w-[1360px]">{children}</div>
           </div>
 
           <div className="mt-20">

@@ -51,8 +51,14 @@ declare const messages: {
       "emptyStateSubtitle": "Try browsing our complete catalog of products."
     },
     "BrandShowcase": {
-      "title": "Rethinking the ride",
-      "subtitle": "Not just selling e-rides-redefining the industry",
+      "heading": {
+        "prefix": "Rethinking the",
+        "highlight": "Ride"
+      },
+      "subtitle": {
+        "highlight": "Not just selling",
+        "rest": "e-rides—redefining the industry"
+      },
       "sameDayDelivery": {
         "title": "Same day delivery",
         "description": "Available in select US Cities."

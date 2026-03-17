@@ -26,18 +26,11 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
 
-const getCachedCategory = cache((categoryId: number) => {
-  return {
-    category: categoryId,
-  };
-});
-
 const compareLoader = createCompareLoader();
 
 const createCategorySearchParamsLoader = cache(
   async (categoryId: number, customerAccessToken?: string) => {
-    const cachedCategory = getCachedCategory(categoryId);
-    const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
+    const categorySearch = await fetchFacetedSearch({ category: categoryId }, undefined, customerAccessToken);
     const categoryFacets = categorySearch.facets.items;
     const transformedCategoryFacets = await facetsTransformer({
       refinedFacets: categoryFacets,
@@ -121,10 +114,7 @@ export default async function Category(props: Props) {
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
-  // Items-per-page is consistent across fetch, slice, and pagination
   const ITEMS_PER_PAGE = 10;
-  // Cap the maximum limit to prevent API stress on very large page numbers
-  const MAX_LIMIT = 100;
 
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
@@ -136,43 +126,18 @@ export default async function Category(props: Props) {
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
-    // Convert page parameter to cursor-based pagination for data fetching
-    let paginationParams = {};
-    const { page, before, after } = searchParams;
-    
-    if (typeof page === 'string') {
-      const pageNum = parseInt(page, 10);
-      
-      if (!Number.isNaN(pageNum) && pageNum > 1) {
-        // For page-based navigation, we need to calculate the appropriate cursor
-        // Since we can't jump directly to arbitrary pages with cursors,
-        // we use a different approach: fetch more products and slice them
-        const offset = (pageNum - 1) * ITEMS_PER_PAGE;
-        
-        // Use a larger limit to get enough products for the desired page
-        const limit = Math.min(offset + ITEMS_PER_PAGE, MAX_LIMIT);
-        
-        paginationParams = {
-          // Start from the beginning; do not include before/after
-          limit,
-        };
-      } else {
-        // For page 1, use normal cursor-based pagination
-        paginationParams = { before, after };
-      }
-    } else {
-      // Use existing cursor parameters if no page parameter
-      const next: Record<string, string> = {};
-      
-      if (typeof before === 'string') next.before = before;
-      if (typeof after === 'string') next.after = after;
-      paginationParams = next;
-    }
+    // Parse page number, default to 1
+    const pageNum = typeof searchParams.page === 'string'
+      ? Math.max(1, parseInt(searchParams.page, 10) || 1)
+      : 1;
+
+    // Over-fetch enough products to cover the requested page, then slice in streamableProducts
+    const limit = pageNum * ITEMS_PER_PAGE;
 
     const search = await fetchFacetedSearch(
       {
         ...parsedSearchParams,
-        ...paginationParams,
+        limit,
         sort: typeof searchParams.sort === 'string' ? searchParams.sort : undefined,
         category: categoryId,
       },
@@ -188,21 +153,15 @@ export default async function Category(props: Props) {
     const searchParams = await props.searchParams;
 
     const search = await streamableFacetedSearch;
-    let products = search.products.items;
 
-    // If we're using page-based navigation, slice the products to show only the current page
-    const { page } = searchParams;
+    // Parse page number consistently with streamableFacetedSearch
+    const pageNum = typeof searchParams.page === 'string'
+      ? Math.max(1, parseInt(searchParams.page, 10) || 1)
+      : 1;
 
-    if (typeof page === 'string') {
-      const pageNum = parseInt(page, 10);
-
-      if (!Number.isNaN(pageNum) && pageNum > 1) {
-        const startIndex = (pageNum - 1) * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
-
-        products = products.slice(startIndex, endIndex);
-      }
-    }
+    // Slice to the current page's products
+    const startIndex = (pageNum - 1) * ITEMS_PER_PAGE;
+    const products = search.products.items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
     return products.map((product) => {
       const price = pricesTransformer(product.prices, format);
@@ -241,27 +200,13 @@ export default async function Category(props: Props) {
     const search = await streamableFacetedSearch;
     const searchParams = await props.searchParams;
     const totalItems = search.products.collectionInfo?.totalItems ?? 0;
-    
-    // Get current page from URL parameter or calculate from cursor
-    let currentPage = 1;
-    const { before, after, page } = searchParams;
-    
-    // If we have a page parameter, use it
-    if (typeof page === 'string') {
-      const pageNum = parseInt(page, 10);
-      
-      if (!Number.isNaN(pageNum) && pageNum > 0) {
-        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-        
-        // Clamp to [1, totalPages] (when totalPages is 0, clamp to 1 and let UI handle 0 results)
-        currentPage = Math.min(Math.max(1, pageNum), Math.max(1, totalPages));
-      }
-    } else if (before || after) {
-      // If we have cursors but no page parameter, we can't accurately determine the page
-      // This is a limitation of cursor-based pagination - we don't know which page we're on
-      // For now, we'll default to page 1 and let the UI handle it gracefully
-      currentPage = 1;
-    }
+
+    const pageNum = typeof searchParams.page === 'string'
+      ? Math.max(1, parseInt(searchParams.page, 10) || 1)
+      : 1;
+
+    const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+    const currentPage = Math.min(pageNum, totalPages);
 
     return numberedPaginationTransformer(search.products.pageInfo, {
       totalItems,
@@ -279,8 +224,7 @@ export default async function Category(props: Props) {
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
-    const cachedCategory = getCachedCategory(categoryId);
-    const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
+    const categorySearch = await fetchFacetedSearch({ category: categoryId }, undefined, customerAccessToken);
     const refinedSearch = await streamableFacetedSearch;
 
     const allFacets = categorySearch.facets.items;

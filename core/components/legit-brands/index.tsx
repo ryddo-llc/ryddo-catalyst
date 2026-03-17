@@ -77,13 +77,13 @@ export function LegitBrands({
         {/* Background color layer */}
         <div className="absolute inset-1 rounded-[26px] bg-[#EAF0FD]" />
 
-        <div className="relative mx-auto w-full max-w-[1400px] px-4 @xl:px-6 @4xl:px-8">
+        <div className="relative mx-auto w-full max-w-[1360px] px-4 @xl:px-6 @4xl:px-8">
           <div className="overflow-hidden rounded-[30px]">
             <div className="flex flex-col lg:flex-row">
               {/* Left Side - Text Content (35%) */}
-              <div className="flex flex-col justify-start pb-8 pl-8 pr-4 pt-8 md:pb-12 md:pl-12 md:pr-6 md:pt-12 lg:w-[35%] lg:pb-16 lg:pl-10 lg:pr-6 lg:pt-16">
+              <div className="flex flex-col justify-start pb-8 pl-8 pr-4 pt-8 md:pb-12 md:pl-12 md:pr-6 md:pt-12 lg:w-[35%] lg:pb-16 lg:pl-14 lg:pr-2 lg:pt-16">
                 <h2
-                  className="mb-6 font-[family-name:var(--font-family-body)] text-7xl font-extrabold leading-tight text-[var(--legit-brands-title,hsl(var(--foreground)))]"
+                  className="mb-3 font-[family-name:var(--font-family-body)] text-7xl font-extrabold leading-[1.05] text-[var(--legit-brands-title,hsl(var(--foreground)))]"
                   id={ariaLabelledBy}
                 >
                   <span className="block text-[rgb(128,128,128)]">{title.line1}</span>
@@ -95,11 +95,11 @@ export function LegitBrands({
                   <span className="block text-[rgb(223,7,91)]">{title.line4}</span>
                   <span className="block text-[rgb(223,7,91)]">{title.line5}</span>
                 </h2>
-                <p className="mb-6 whitespace-pre-line font-body text-2xl font-semibold text-gray-600">
+                <p className="mb-5 mt-5 whitespace-pre-line font-body text-[24px] font-semibold leading-[1.15] text-[rgb(117,117,117)]">
                   {description}
                 </p>
-                <p className="whitespace-pre-line font-[family-name:var(--font-family-body)] text-base italic text-gray-600 md:text-base">
-                  <span className="font-bold text-[rgb(219,64,117)] underline">
+                <p className="whitespace-pre-line font-[family-name:var(--font-family-body)] text-base font-normal italic leading-tight text-[rgb(70,70,70)]">
+                  <span className="font-bold text-[rgb(223,7,91)] underline">
                     {linkText.highlight}
                   </span>{' '}
                   {linkText.rest}

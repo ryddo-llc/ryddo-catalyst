@@ -20,15 +20,15 @@ export interface BrowseProduct {
 }
 
 export async function fetchProductsForBrand(
-  categoryEntityId: number,
   brandEntityId: number,
+  categoryEntityId?: number,
 ): Promise<BrowseProduct[]> {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
 
   const searchResult = await fetchFacetedSearch(
     {
-      category: categoryEntityId,
+      ...(categoryEntityId != null && { category: categoryEntityId }),
       brand: [String(brandEntityId)],
       limit: 12,
     },

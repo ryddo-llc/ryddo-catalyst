@@ -3,13 +3,16 @@ import { clsx } from 'clsx';
 import { Image } from '~/components/image';
 
 import { HowItWorks, type Step } from './how-it-works';
-import { TestimonialQuote } from './testimonial-quote';
+import { type Quote, TestimonialQuote } from './testimonial-quote';
 import { type RolloutCard, TheRollout } from './the-rollout';
 
 export interface ProcessSectionProps {
   // How It Works
   howItWorksTitle: string;
   steps: Step[];
+
+  // Quote
+  quote: Quote;
 
   // The Rollout
   rolloutTitle: string;
@@ -49,6 +52,7 @@ export function ProcessSection({
   'aria-labelledby': ariaLabelledBy = 'process-section',
   howItWorksTitle,
   steps,
+  quote,
   rolloutTitle,
   rolloutSubtitle,
   rolloutCards,
@@ -79,12 +83,12 @@ export function ProcessSection({
         </div>
       ) : null}
 
-      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-8 @xl:px-12 @4xl:px-16">
+      <div className="relative z-10 mx-auto w-full max-w-[1360px] px-8 @xl:px-12 @4xl:px-16">
         {/* HOW IT WORKS SECTION */}
         <HowItWorks aria-labelledby={ariaLabelledBy} steps={steps} title={howItWorksTitle} />
 
         {/* QUOTE SECTION */}
-        <TestimonialQuote />
+        <TestimonialQuote quote={quote} />
 
         {/* THE ROLLOUT SECTION */}
         <TheRollout cards={rolloutCards} subtitle={rolloutSubtitle} title={rolloutTitle} />
