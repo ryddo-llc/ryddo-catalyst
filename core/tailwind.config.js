@@ -274,6 +274,10 @@ const config = {
           '0%': { transform: 'scale(0.95)' },
           '100%': { transform: 'scale(1)' },
         },
+        'pulse-glow': {
+          '0%, 100%': { boxShadow: '0 0 8px 2px rgba(255,255,255,0.4)' },
+          '50%': { boxShadow: '0 0 14px 4px rgba(255,255,255,0.6)' },
+        },
       },
       animation: {
         'dropdown-show': 'dropdown-show 300ms cubic-bezier(0.16, 1, 0.3, 1)',
@@ -291,6 +295,7 @@ const config = {
         shake: 'shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both',
         slideIn: 'slideIn 800ms cubic-bezier(0.25, 1, 0, 1)',
         swing: 'swing 5s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 1.5s ease-in-out infinite',
       },
     },
   },
