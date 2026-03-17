@@ -22,37 +22,57 @@ Redesign the Quick Shop modal to match Ryddo's default light theme while preserv
 
 ### 1. Modal container & overlay
 
-- **Overlay:** `bg-foreground/50` (codebase standard), `fixed inset-0 z-30 flex items-center justify-center @container`
-- **Panel:** `bg-background` (white), `rounded-2xl`, `max-w-[560px]`, `mx-3`, `overflow-hidden`
-- **Animation:** `slide-in-from-bottom-16 duration-200 ease-out` — matches `vibes/soul/primitives/modal`
-- `Dialog.Content` nested inside `Dialog.Overlay` (centered flex pattern)
+- **Overlay:** `fixed inset-0 z-30 flex items-center justify-center bg-[hsl(var(--foreground)/50%)] @container`
+  - `bg-foreground/50` Tailwind shorthand does NOT work here because `foreground` is registered as `hsl(var(...))` (full wrapper), not raw channels, so the opacity modifier cannot compose correctly; use the inline CSS-variable form instead
+- **Panel:** `bg-background rounded-2xl mx-3 w-full max-w-[560px] overflow-hidden`
+  - z-index is inherited from the overlay (`z-30`); do not add a separate z-index to `Dialog.Content`
+- **Animation** (full set, applied to `Dialog.Content`):
+  ```
+  transition ease-out
+  data-[state=open]:animate-in data-[state=closed]:animate-out
+  data-[state=open]:slide-in-from-bottom-16 data-[state=closed]:slide-out-to-bottom-16
+  data-[state=open]:duration-200 data-[state=closed]:duration-200
+  focus:outline-none
+  ```
+- `Dialog.Content` nested **inside** `Dialog.Overlay` (centered flex pattern from `modal/index.tsx`)
 - Remove `style={{ left: '50%', transform: 'translateX(-50%)' }}` hack
+- Remove `fixed bottom-0 left-0 right-0 md:bottom-8 md:w-[560px]` from `Dialog.Content`
 
 ### 2. Accent bar & image panel
 
-- **Accent bar:** `h-1 bg-primary` — hot pink, matches side-panel convention
+- **Accent bar:** `h-1 bg-primary` — hot pink (`--primary`), matches side-panel convention (`h-1` = 4px, intentionally changed from `h-[3px]`)
 - **Image panel (left 42%):** `bg-contrast-100` (`#EEEEEE`, light gray) — replaces dark `#1A1A1A`
 - **"No Image" fallback text:** `text-contrast-400`
 - Image component unchanged (`fill`, `object-cover`, `sizes="240px"`)
 
 ### 3. Typography & close button
 
-- **Close button:** `Button` primitive from `@/vibes/soul/primitives/button`, `shape="circle" size="x-small" variant="ghost"` — no color override needed on white background
+- **Close button:** Keep the existing `<Dialog.Close>` pattern directly (the `Button` primitive does not use `forwardRef`, so `Dialog.Close asChild` + `Button` is unreliable). Update styling for light theme:
+  ```tsx
+  <Dialog.Close className="flex h-7 w-7 items-center justify-center rounded-full text-contrast-400 transition-colors hover:text-foreground">
+    <X className="h-4 w-4" strokeWidth={2} />
+    <span className="sr-only">Close</span>
+  </Dialog.Close>
+  ```
+  - `text-contrast-400` (medium gray) on white background replaces `text-white/40` on dark
 - **Brand label:** `text-primary` (pink CSS variable) — replaces hardcoded `#E00000`; keep `text-[10px] uppercase tracking-widest font-semibold`
 - **Product title:** `font-heading` (Nunito), `text-xl font-bold text-foreground` — drop Kanit italic black weight (Porsche-specific); use `Dialog.Title` as before
 - **Divider:** `bg-contrast-100` — replaces `bg-white/10`
 
 ### 4. CTA button
 
-- Replace custom-styled `<Link>` with `Button` primitive using `asChild`:
+- The `Button` primitive does not support `asChild` — apply primary button Tailwind classes directly to the `<Link>`:
   ```tsx
-  <Button asChild variant="primary" size="medium" className="w-full">
-    <Link href={product.path} onClick={() => onOpenChange(false)}>
-      Shop Now
-    </Link>
-  </Button>
+  <Link
+    className="flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90"
+    href={product.path}
+    onClick={() => onOpenChange(false)}
+  >
+    Shop Now
+  </Link>
   ```
-- `variant="primary"` renders pink background with white text — matches Ryddo primary buttons
+- `bg-primary` = hot pink (`--primary`); `text-white` is explicit and safe — `--background` resolves to pure white (`0 0% 100%`)
+- `rounded-full` matches Ryddo's pill-shaped primary button convention (replaces `rounded-md`)
 
 ---
 
