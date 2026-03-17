@@ -143,7 +143,14 @@ export default async function Home({ params }: Props) {
         howItWorksTitle={t('ProcessSection.howItWorks.title')}
         imageUrl={imageManagerImageUrl('process-bg.png', 'original')}
         quote={{
-          text: t('ProcessSection.quote.text'),
+          segments: [
+            { text: '\u201CRyddo is', highlight: true },
+            { text: ' doing what the ' },
+            { text: 'industry', highlight: true },
+            { text: ' has', lineBreakAfter: true },
+            { text: 'needed ' },
+            { text: 'for years.\u201D', highlight: true },
+          ],
           author: t('ProcessSection.quote.author'),
         }}
         rolloutCards={[
