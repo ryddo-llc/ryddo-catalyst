@@ -6,18 +6,18 @@ import React from 'react';
 const KEYFRAMES_CSS = `
   @keyframes apulser-fade-1 {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(0.95);
+      transform: translate(-50%, -50%) scale(0.85);
       opacity: 1;
     }
     50% {
-      transform: translate(-50%, -50%) scale(1.08);
+      transform: translate(-50%, -50%) scale(1.15);
       opacity: 0.7;
     }
   }
-  
+
   @keyframes apulser-fade-2 {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(0.95);
+      transform: translate(-50%, -50%) scale(0.92);
       opacity: 1;
     }
     50% {
@@ -25,32 +25,32 @@ const KEYFRAMES_CSS = `
       opacity: 0.5;
     }
   }
-  
+
   @keyframes apulser-fade-3 {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(0.95);
+      transform: translate(-50%, -50%) scale(0.96);
       opacity: 1;
     }
     50% {
-      transform: translate(-50%, -50%) scale(1.08);
+      transform: translate(-50%, -50%) scale(1.04);
       opacity: 0.2;
     }
   }
-  
+
   @keyframes apulser-white-1 {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(0.95);
+      transform: translate(-50%, -50%) scale(0.85);
       opacity: var(--white-1-start, 0.3);
     }
     50% {
-      transform: translate(-50%, -50%) scale(1.08);
+      transform: translate(-50%, -50%) scale(1.15);
       opacity: var(--white-1-mid, 0.1);
     }
   }
-  
+
   @keyframes apulser-white-2 {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(0.95);
+      transform: translate(-50%, -50%) scale(0.92);
       opacity: var(--white-2-start, 0.2);
     }
     50% {
@@ -58,14 +58,14 @@ const KEYFRAMES_CSS = `
       opacity: var(--white-2-mid, 0.05);
     }
   }
-  
+
   @keyframes apulser-white-3 {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(0.95);
+      transform: translate(-50%, -50%) scale(0.96);
       opacity: var(--white-3-start, 0.1);
     }
     50% {
-      transform: translate(-50%, -50%) scale(1.08);
+      transform: translate(-50%, -50%) scale(1.04);
       opacity: var(--white-3-mid, 0.02);
     }
   }
@@ -85,6 +85,9 @@ interface PulseRingsProps {
   showWhiteRings?: boolean;
   whiteRingOpacity?: number;
 }
+
+// Start scales per ring: 100% effect (inner), 50% (middle), 20% (outer)
+const START_SCALE: Record<number, number> = { 1: 0.85, 2: 0.92, 3: 0.96 };
 
 // Create a separate styles object for better maintainability
 const createRingStyles = (
@@ -107,7 +110,7 @@ const createRingStyles = (
   borderRadius: '50%',
   background: `radial-gradient(circle, ${baseColor} 60%, ${edgeColor} 100%)`,
   opacity,
-  transform: 'translate(-50%, -50%) scale(0.95)',
+  transform: `translate(-50%, -50%) scale(${START_SCALE[multiplier] ?? 0.95})`,
   animation: `apulser-fade-${multiplier} ${pulseSpeed}ms ease-in-out infinite`,
   WebkitMaskImage: `radial-gradient(circle, black calc(100% - ${maskInner}px), rgba(0,0,0,0.8) calc(100% - ${maskMiddle}px), transparent calc(100% - ${maskOuter}px))`,
   WebkitMaskRepeat: 'no-repeat',
@@ -188,7 +191,7 @@ export function PulseRings({
               borderRadius: '50%',
               border: `2px solid rgba(255, 255, 255, ${whiteRingOpacity})`,
               opacity: whiteRingOpacity,
-              transform: 'translate(-50%, -50%) scale(0.95)',
+              transform: 'translate(-50%, -50%) scale(0.85)',
               animation: `apulser-white-1 ${pulseSpeed}ms ease-in-out infinite`,
             }}
           />
@@ -202,7 +205,7 @@ export function PulseRings({
               borderRadius: '50%',
               border: `2px solid rgba(255, 255, 255, ${whiteRingOpacity})`,
               opacity: whiteRingOpacity * 0.7,
-              transform: 'translate(-50%, -50%) scale(0.95)',
+              transform: 'translate(-50%, -50%) scale(0.92)',
               animation: `apulser-white-2 ${pulseSpeed}ms ease-in-out infinite`,
             }}
           />
@@ -216,7 +219,7 @@ export function PulseRings({
               borderRadius: '50%',
               border: `2px solid rgba(255, 255, 255, ${whiteRingOpacity})`,
               opacity: whiteRingOpacity * 0.5,
-              transform: 'translate(-50%, -50%) scale(0.95)',
+              transform: 'translate(-50%, -50%) scale(0.96)',
               animation: `apulser-white-3 ${pulseSpeed}ms ease-in-out infinite`,
             }}
           />
