@@ -77,23 +77,7 @@ const getHeaderData = cache(async () => {
   return readFragment(HeaderFragment, response).site;
 });
 
-interface Banner {
-  entityId: number;
-  name: string;
-  content: string;
-  location: 'TOP' | 'BOTTOM';
-}
-
-interface BannersData {
-  topBanners: Banner[];
-  bottomBanners: Banner[];
-}
-
-interface HeaderProps {
-  banners?: Streamable<BannersData>;
-}
-
-export const Header = async ({ banners }: HeaderProps = {}) => {
+export const Header = async () => {
   const t = await getTranslations('Components.Header');
   const locale = await getLocale();
 
@@ -199,10 +183,6 @@ export const Header = async ({ banners }: HeaderProps = {}) => {
 
     return customerAccessToken ? '/account' : '/login';
   });
-
-  // Get the first TOP banner for display
-  const bannersData = banners ? await banners : null;
-  const topBanner = bannersData?.topBanners[0] || null;
 
   return (
     <HeaderSection
