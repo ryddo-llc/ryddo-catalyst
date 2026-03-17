@@ -206,15 +206,6 @@ export const Header = async ({ banners }: HeaderProps = {}) => {
 
   return (
     <HeaderSection
-      banner={topBanner ? {
-        id: `Banner-${topBanner.entityId}`,
-        className: 'compact-banner',
-        children: topBanner.name,
-      } : {
-        id: 'Banner',
-        className: 'compact-banner',
-        children: 'Get free gear with an E-Bike or Scooter purchase + free shipping on orders over $150 *',
-      }}
       navigation={{
         accountHref: streamableAccountHref,
         accountLabel: t('Icons.account'),
