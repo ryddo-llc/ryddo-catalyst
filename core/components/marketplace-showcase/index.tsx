@@ -102,16 +102,16 @@ export interface MarketplaceShowcaseProps {
 }
 
 const cardColors = [
-  'bg-blue-500',
-  'bg-yellow-400',
-  'bg-pink-500',
-  'bg-purple-500',
-  'bg-green-500',
-  'bg-orange-500',
+  'bg-[#C44531]',
+  'bg-[#E37D4F]',
+  'bg-[#EDAB6C]',
+  'bg-[#EDAB6C]',
+  'bg-[#6EA3DF]',
+  'bg-[#3B69AC]',
 ];
 
 // Placeholder badge texts (will be replaced with real logic later)
-const PLACEHOLDER_BADGES = ['New!', 'Sale!', 'Top Seller', 'Pre-Order', null, null];
+const PLACEHOLDER_BADGES = ['New!', 'Sale!', 'Top Seller', '2025 Models', 'Pre-Order', 'U.S. Exclusive'];
 
 function ProductsGrid({ products }: { products: MarketplaceProduct[] }) {
   // Limit to max 6 products
