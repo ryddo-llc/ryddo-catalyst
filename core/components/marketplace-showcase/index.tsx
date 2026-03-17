@@ -75,6 +75,7 @@ export async function MarketplaceShowcase({ imageUrl }: MarketplaceShowcaseProps
           bgColor="bg-blue-100"
           bgImage={imageUrl}
           bgImagePosition="55% 15%"
+          bgOverlay="bg-gradient-to-r from-black/40 via-black/20 to-transparent"
           padding="px-1 pb-2 pt-20 md:px-8 md:pb-3 md:pt-24 lg:pb-4"
           radius={30}
         >

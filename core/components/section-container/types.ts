@@ -54,6 +54,9 @@ export interface InnerContainerProps {
   /** Background image position (CSS object-position value, default: 'center') */
   bgImagePosition?: string;
 
+  /** Overlay className rendered between bg image and content (e.g. gradient) */
+  bgOverlay?: string;
+
   /** Minimum height constraint */
   minHeight?: string;
 
