@@ -1,19 +1,14 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import { getSessionCustomerAccessToken } from '~/auth';
 import { BrandShowcase } from '~/components/brand-showcase';
 import { Image } from '~/components/image';
 import { LegitBrands } from '~/components/legit-brands';
 import { MarketplaceShowcase } from '~/components/marketplace-showcase';
 import { ProcessSection } from '~/components/process-section';
-import { getPreferredCurrencyCode } from '~/lib/currency';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { OrganizationSchema } from './_components/organization-schema';
-import { getPopularProductsData } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -78,22 +73,6 @@ export default async function Home({ params }: Props) {
 
   const t = await getTranslations('Home');
 
-  const streamableMarketplaceProducts = Streamable.from(async () => {
-    const [customerAccessToken, currencyCode] = await Promise.all([
-      getSessionCustomerAccessToken(),
-      getPreferredCurrencyCode(),
-    ]);
-    const data = await getPopularProductsData(currencyCode, customerAccessToken);
-
-    return removeEdgesAndNodes(data.site.search.searchProducts.products).map((product) => ({
-      entityId: product.entityId,
-      name: product.name,
-      path: product.path,
-      defaultImage: product.defaultImage,
-      brand: product.brand,
-    }));
-  });
-
   return (
     <div className="pb-20">
       <div className="absolute left-1/2 top-0 -z-10 h-[270vh] w-screen -translate-x-1/2">
@@ -108,10 +87,7 @@ export default async function Home({ params }: Props) {
         />
       </div>
       <OrganizationSchema />
-      <MarketplaceShowcase
-        imageUrl={imageManagerImageUrl('hero-bg-v2.png', 'original')}
-        products={streamableMarketplaceProducts}
-      />
+      <MarketplaceShowcase imageUrl={imageManagerImageUrl('hero-bg-v2.png', 'original')} />
       <BrandShowcase
         adventureGuarantee={{
           title: t('BrandShowcase.adventureGuarantee.title'),
@@ -167,7 +143,14 @@ export default async function Home({ params }: Props) {
         howItWorksTitle={t('ProcessSection.howItWorks.title')}
         imageUrl={imageManagerImageUrl('process-bg.png', 'original')}
         quote={{
-          text: t('ProcessSection.quote.text'),
+          segments: [
+            { text: '\u201CRyddo is', highlight: true },
+            { text: ' doing what the ' },
+            { text: 'industry', highlight: true },
+            { text: ' has', lineBreakAfter: true },
+            { text: 'needed ' },
+            { text: 'for years.\u201D', highlight: true },
+          ],
           author: t('ProcessSection.quote.author'),
         }}
         rolloutCards={[

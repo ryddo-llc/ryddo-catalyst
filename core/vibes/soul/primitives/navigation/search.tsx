@@ -207,7 +207,7 @@ function SubmitButton({ loading, submitLabel }: SubmitButtonProps) {
   );
 }
 
-interface SearchResultsProps {
+export interface SearchResultsProps {
   query: string;
   searchHref: string;
   emptySearchTitle?: string;
@@ -217,7 +217,7 @@ interface SearchResultsProps {
   errors?: string[];
 }
 
-function SearchResults({
+export function SearchResults({
   query,
   searchHref,
   searchResults,

@@ -3,8 +3,19 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
-import { Search, ShoppingBag, User } from 'lucide-react';
-import { forwardRef, Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import debounce from 'lodash.debounce';
+import { Search, ShoppingBag, User, X } from 'lucide-react';
+import {
+  forwardRef,
+  Ref,
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Logo } from '@/vibes/soul/primitives/logo';
@@ -15,8 +26,8 @@ import { useSearch } from '~/lib/search';
 import { CurrencyForm, LocaleSwitcher } from './locale-currency';
 import { MobileMenuButton } from './mobile-navigation';
 import { NavigationItem } from './navigation-item';
-import { SearchForm } from './search';
-import type { Link as NavigationLink, NavigationProps, SearchResult } from './types';
+import { SearchResults } from './search';
+import type { Link as NavigationLink, NavigationProps, SearchAction, SearchResult } from './types';
 
 // Extracted component to avoid useEffect inside callback
 interface NavigationLinksProps {
@@ -81,6 +92,65 @@ function NavigationLinks({
         );
       })}
     </>
+  );
+}
+
+// Stable no-op used when searchAction is undefined so hooks remain unconditional
+const noopSearchAction: SearchAction<SearchResult> = () =>
+  Promise.resolve({ searchResults: null, lastResult: null });
+
+interface InlineSearchInputProps {
+  query: string;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  debouncedOnChange: (q: string) => void;
+  onClose: () => void;
+  searchHref: string;
+  searchParamName: string;
+  searchInputPlaceholder?: string;
+}
+
+function InlineSearchInput({
+  query,
+  setQuery,
+  debouncedOnChange,
+  onClose,
+  searchHref,
+  searchParamName,
+  searchInputPlaceholder,
+}: InlineSearchInputProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  return (
+    <form
+      action={searchHref}
+      className="flex animate-in fade-in slide-in-from-right-2 items-center gap-2 rounded-full bg-[rgb(240,240,240)] px-3 py-1 duration-150"
+    >
+      <Search className="shrink-0 text-primary" size={15} strokeWidth={2} />
+      <input
+        className="w-36 bg-transparent text-sm font-medium text-primary outline-none placeholder:text-contrast-400 @4xl:w-52"
+        name={searchParamName}
+        onChange={(e) => {
+          setQuery(e.currentTarget.value);
+          debouncedOnChange(e.currentTarget.value);
+        }}
+        placeholder={searchInputPlaceholder ?? 'Search Products'}
+        ref={inputRef}
+        type="text"
+        value={query}
+      />
+      <button
+        aria-label="Close search"
+        className="shrink-0 rounded-full p-0.5 text-contrast-400 hover:text-foreground"
+        onClick={onClose}
+        type="button"
+      >
+        <X size={14} strokeWidth={2} />
+      </button>
+    </form>
   );
 }
 
@@ -182,7 +252,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     searchParamName = 'query',
     searchAction,
     searchInputPlaceholder,
-    searchSubmitLabel,
     cartLabel = 'Cart',
     accountLabel = 'Profile',
     openSearchPopupLabel = 'Open search popup',
@@ -198,6 +267,47 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const [expandedSubSections, setExpandedSubSections] = useState<Set<string>>(new Set());
   const [activePillStyle, setActivePillStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const navItemsRef = useRef<Array<HTMLElement | null>>([]);
+
+  // Lifted search state — shared by inline search bar and results panel
+  const [query, setQuery] = useState('');
+  const [isSearching, startSearching] = useTransition();
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const [{ searchResults, emptyStateTitle, emptyStateSubtitle }, formAction] =
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    useActionState((searchAction ?? noopSearchAction) as SearchAction<S>, {
+      searchResults: null,
+      lastResult: null,
+    });
+  const isPending = isSearching || isDebouncing;
+  const debouncedRef = useRef<ReturnType<typeof debounce> | null>(null);
+
+  const debouncedOnChange = useMemo(() => {
+    debouncedRef.current?.cancel();
+
+    const debounced = debounce((q: string) => {
+      setIsDebouncing(false);
+
+      const formData = new FormData();
+
+      formData.append(searchParamName, q);
+      startSearching(() => {
+        formAction(formData);
+      });
+    }, 300);
+
+    debouncedRef.current = debounced;
+
+    return (q: string) => {
+      setIsDebouncing(true);
+      debounced(q);
+    };
+  }, [formAction, searchParamName]);
+
+  useEffect(() => {
+    return () => {
+      debouncedRef.current?.cancel();
+    };
+  }, []);
 
   const pathname = usePathname();
 
@@ -295,6 +405,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     handlePathChange();
   }, [pathname, handlePathChange]);
 
+  // Reset query when search panel closes
+  useEffect(() => {
+    if (!isSearchOpen) setQuery('');
+  }, [isSearchOpen]);
+
   useEffect(() => {
     // Use passive listener for better scroll performance
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -302,9 +417,39 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
+  let searchControl: React.ReactNode;
+
+  if (searchAction) {
+    searchControl = isSearchOpen ? (
+      <InlineSearchInput
+        debouncedOnChange={debouncedOnChange}
+        onClose={() => setIsSearchOpen(false)}
+        query={query}
+        searchHref={searchHref}
+        searchInputPlaceholder={searchInputPlaceholder}
+        searchParamName={searchParamName}
+        setQuery={setQuery}
+      />
+    ) : (
+      <button
+        aria-label={openSearchPopupLabel}
+        className={navButtonClassName}
+        onClick={() => setIsSearchOpen(true)}
+      >
+        <Search size={20} strokeWidth={2} />
+      </button>
+    );
+  } else {
+    searchControl = (
+      <Link aria-label={searchLabel} className={navButtonClassName} href={searchHref}>
+        <Search size={30} strokeWidth={2} />
+      </Link>
+    );
+  }
+
   return (
     <NavigationMenu.Root
-      className={clsx('relative mx-auto w-full max-w-[1400px] @container', className)}
+      className={clsx('relative mx-auto w-full max-w-[1360px] @container', className)}
       delayDuration={0}
       onValueChange={() => setIsSearchOpen(false)}
       ref={ref}
@@ -683,39 +828,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             linksPosition === 'center' ? 'flex-1' : 'flex-1 @4xl:flex-none',
           )}
         >
-          {searchAction ? (
-            <Popover.Root onOpenChange={setIsSearchOpen} open={isSearchOpen}>
-              <Popover.Anchor className="absolute left-0 right-0 top-full" />
-              <Popover.Trigger asChild>
-                <button
-                  aria-label={openSearchPopupLabel}
-                  className={navButtonClassName}
-                  onPointerEnter={(e) => e.preventDefault()}
-                  onPointerLeave={(e) => e.preventDefault()}
-                  onPointerMove={(e) => e.preventDefault()}
-                >
-                  <Search size={20} strokeWidth={2} />
-                </button>
-              </Popover.Trigger>
-              <Popover.Portal>
-                <Popover.Content className="z-[200] max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=closed]:animate-dropdown-hide data-[state=open]:animate-dropdown-show">
-                  <div className="relative flex max-h-[inherit] flex-col rounded-2xl border border-contrast-100/20 bg-background/50 shadow-2xl ring-1 ring-contrast-100/15 backdrop-blur-2xl backdrop-saturate-200 transition-all duration-200 ease-in-out before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent @4xl:inset-x-0">
-                    <SearchForm
-                      searchAction={searchAction}
-                      searchHref={searchHref}
-                      searchInputPlaceholder={searchInputPlaceholder}
-                      searchParamName={searchParamName}
-                      searchSubmitLabel={searchSubmitLabel}
-                    />
-                  </div>
-                </Popover.Content>
-              </Popover.Portal>
-            </Popover.Root>
-          ) : (
-            <Link aria-label={searchLabel} className={navButtonClassName} href={searchHref}>
-              <Search size={30} strokeWidth={2} />
-            </Link>
-          )}
+          {searchControl}
 
           <Stream
             fallback={
@@ -780,6 +893,22 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           </Stream>
         </div>
       </div>
+
+      {/* Full-width results panel — desktop only, anchored below the nav bar */}
+      {isSearchOpen && searchAction && query.length >= 3 && (
+        <div className="absolute left-0 right-0 top-full z-[200] hidden px-4 pb-4 pt-2 @4xl:block">
+          <div className="relative flex flex-col overflow-hidden rounded-2xl border border-contrast-100/20 bg-background/80 shadow-2xl backdrop-blur-2xl backdrop-saturate-200 before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-b before:from-white/5 before:to-transparent">
+            <SearchResults
+              emptySearchSubtitle={emptyStateSubtitle}
+              emptySearchTitle={emptyStateTitle}
+              query={query}
+              searchHref={searchHref}
+              searchResults={searchResults}
+              stale={isPending}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="perspective-[2000px] absolute left-0 right-0 top-full z-[110] flex w-full justify-center">
         <NavigationMenu.Viewport className="relative mx-auto mt-2 w-full max-w-4xl data-[state=closed]:animate-dropdown-hide data-[state=open]:animate-dropdown-show" />

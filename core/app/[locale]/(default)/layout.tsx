@@ -44,7 +44,7 @@ export default async function DefaultLayout({ params, children }: Props) {
         {/* Header wrapper */}
         <div className="w-full pt-2">
           <div className="mx-auto max-w-[1360px] rounded-t-[30px] bg-white">
-            <Header banners={streamableBanners} />
+            <Header />
           </div>
         </div>
 

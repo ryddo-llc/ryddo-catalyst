@@ -30,6 +30,7 @@ export function InnerContainer({
   bgImage,
   bgImageOpacity = 100,
   bgImagePosition = 'center',
+  bgOverlay,
   minHeight,
   maxHeight,
   padding,
@@ -73,6 +74,9 @@ export function InnerContainer({
           />
         </div>
       ) : null}
+      {bgOverlay != null && (
+        <div className={`absolute inset-0 ${bgOverlay}`} style={{ borderRadius: 'inherit' }} />
+      )}
       <div className="relative">{children}</div>
     </div>
   );

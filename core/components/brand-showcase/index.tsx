@@ -89,7 +89,7 @@ function BrandCard({
 
         {/* Info Icon */}
         <div className="absolute right-4 top-4 z-10">
-          <Info aria-hidden="true" className="h-10 w-10 text-white opacity-80 transition-opacity hover:opacity-100" />
+          <Info aria-hidden="true" className="h-10 w-10 text-white opacity-80 transition-opacity hover:opacity-100" strokeWidth={2.5} />
         </div>
 
         {/* Text content with opaque background - z-10 */}
