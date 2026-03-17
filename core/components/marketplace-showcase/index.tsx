@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import { Plus } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -52,14 +53,14 @@ function MarketplaceCard({
         <div className="relative h-[45%] p-3">
           {/* Badge Text - Top Left */}
           {badgeText != null && badgeText !== '' ? (
-            <span className="absolute left-4 top-3 font-[family-name:var(--font-family-body)] text-sm font-extralight italic text-white">
+            <span className="absolute left-4 top-3 font-[family-name:var(--font-family-body)] text-[13px] font-normal italic text-white">
               {badgeText}
             </span>
           ) : null}
 
           {/* Circle Button - Top Right */}
-          <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white">
-            <span className="relative -top-[3px] text-xl font-bold leading-none text-black">+</span>
+          <div className="absolute right-2 top-2 flex h-[27px] w-[27px] items-center justify-center rounded-full bg-white">
+            <Plus className="h-[15px] w-[15px] text-black" strokeWidth={3} />
           </div>
 
           {/* Brand & Product Names - Centered Vertically */}
