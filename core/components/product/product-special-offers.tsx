@@ -19,8 +19,6 @@ const isVariantField = (field: Field): boolean => {
   );
 };
 
-// Note: Selected value display removed for performance - variants now use pure state coordination
-
 // Unified helper function to render variant fields (size and color)
 const RenderVariantField = (field: Field, isColorField = false) => {
   // Use URL query states for this field
@@ -34,6 +32,29 @@ const RenderVariantField = (field: Field, isColorField = false) => {
     },
     [setParams, field.name],
   );
+
+  // Derive the selected option's label for inline display
+  const selectedLabel = useMemo(() => {
+    const selectedValue = params[field.name] || field.defaultValue || '';
+
+    if ('options' in field) {
+      const label = field.options.find((opt) => opt.value === selectedValue)?.label ?? '';
+
+      // Expand common size abbreviations to full names
+      const sizeMap: Record<string, string> = {
+        XS: 'X-Small',
+        S: 'Small',
+        M: 'Medium',
+        L: 'Large',
+        XL: 'X-Large',
+        XXL: 'XX-Large',
+      };
+
+      return sizeMap[label.toUpperCase()] || label;
+    }
+
+    return '';
+  }, [params, field]);
 
   // Memoize options calculation to avoid recreation on every render
   const options = useMemo(() => {
@@ -74,11 +95,12 @@ const RenderVariantField = (field: Field, isColorField = false) => {
 
   return (
     <div className="w-full">
-      <div className="mb-3 flex items-center gap-2 font-['Inter'] text-xs font-black uppercase tracking-wider text-black">
-        <span>{isColorField ? 'Color' : 'Size'}:</span>
+      <div className="mb-3 flex items-center gap-2 font-['Inter'] text-xs uppercase tracking-wider text-black">
+        <span className="font-black">{isColorField ? 'Color' : 'Size'}:</span>
+        {selectedLabel ? <span className="font-medium">{selectedLabel}</span> : null}
       </div>
       <SwatchRadioGroup
-        className="justify-start gap-2 [&_.swatch-text-option]:text-lg [&_.swatch-text-option]:font-extrabold [&_button[data-state=checked]]:border-4 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:p-0 [&_button[data-state=checked]>span]:border-0 [&_button>span]:border-black [&_button>span]:border [&_button]:h-10 [&_button]:w-10"
+        className="justify-start gap-2 [&_.swatch-text-option]:font-kanit [&_.swatch-text-option]:text-xl [&_.swatch-text-option]:font-bold [&_button>span]:border [&_button>span]:border-black [&_button[data-state=checked]>span]:border-0 [&_button[data-state=checked]]:border-4 [&_button[data-state=checked]]:border-[#F92F7B] [&_button[data-state=checked]]:p-0 [&_button]:h-8 [&_button]:w-8"
         name={field.name}
         onValueChange={handleVariantChange}
         options={options}
@@ -125,7 +147,12 @@ export function ProductLeftSidebarContent({
     let hasUpdates = false;
 
     // Auto-select size if not already selected
-    if (sizeField && !params[sizeField.name] && 'options' in sizeField && sizeField.options.length > 0) {
+    if (
+      sizeField &&
+      !params[sizeField.name] &&
+      'options' in sizeField &&
+      sizeField.options.length > 0
+    ) {
       const defaultValue = sizeField.defaultValue || sizeField.options[0]?.value;
 
       if (defaultValue) {
@@ -135,7 +162,12 @@ export function ProductLeftSidebarContent({
     }
 
     // Auto-select color if not already selected
-    if (colorField && !params[colorField.name] && 'options' in colorField && colorField.options.length > 0) {
+    if (
+      colorField &&
+      !params[colorField.name] &&
+      'options' in colorField &&
+      colorField.options.length > 0
+    ) {
       const defaultValue = colorField.defaultValue || colorField.options[0]?.value;
 
       if (defaultValue) {
@@ -162,18 +194,20 @@ export function ProductLeftSidebarContent({
         ) : null}
 
         {description ? (
-          <div className="-mt-10 max-w-[14rem] font-['Inter'] text-base font-normal uppercase text-black pl-3 [&>div>*:first-child]:font-kanit [&>div>*:first-child]:text-xl [&>div>*:first-child]:font-medium [&>div>*:first-child]:mb-0 [&>div>*:first-child]:leading-none">{description}</div>
+          <div className="-mt-10 max-w-[14rem] pl-3 font-['Inter'] text-base font-normal uppercase leading-tight text-black [&>div>*:first-child]:mb-0 [&>div>*:first-child]:font-kanit [&>div>*:first-child]:text-xl [&>div>*:first-child]:font-medium [&>div>*:first-child]:leading-none">
+            {description}
+          </div>
         ) : null}
 
         {/* Size Options - Interactive - Circular swatches with text */}
-        {sizeField && 'options' in sizeField && sizeField.options.length
-          ? <div className="pl-3">{RenderVariantField(sizeField, false)}</div>
-          : null}
+        {sizeField && 'options' in sizeField && sizeField.options.length ? (
+          <div className="mt-6 pl-3">{RenderVariantField(sizeField, false)}</div>
+        ) : null}
 
         {/* Color Options - Interactive - Circular swatches */}
-        {colorField && 'options' in colorField && colorField.options.length
-          ? <div className="pl-3">{RenderVariantField(colorField, true)}</div>
-          : null}
+        {colorField && 'options' in colorField && colorField.options.length ? (
+          <div className="pl-3">{RenderVariantField(colorField, true)}</div>
+        ) : null}
       </div>
     </div>
   );
