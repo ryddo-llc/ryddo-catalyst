@@ -39,7 +39,7 @@ export function ProductRightSidebar<F extends Field>({
   additionalActions,
 }: ProductRightSidebarProps<F>) {
   return (
-    <div className="absolute right-0 top-[-10px] z-10 -mr-2 hidden min-h-[400px] w-60 sm:-mr-4 md:top-[-15px] md:-mr-6 md:block md:w-72 lg:top-[-20px] lg:-mr-8 lg:w-72 xl:right-1 xl:-mr-12 xl:w-80">
+    <div className="absolute right-0 top-[-26px] z-10 -mr-2 hidden min-h-[400px] w-52 sm:-mr-4 md:top-[-31px] md:-mr-6 md:block md:w-60 lg:top-[-36px] lg:-mr-8 lg:w-60 xl:right-1 xl:-mr-12 xl:w-72">
       <Stream
         fallback={<ProductDetailFormSkeleton />}
         value={Streamable.all([

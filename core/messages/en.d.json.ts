@@ -464,7 +464,7 @@ declare const messages: {
   },
   "Compare": {
     "title": "Compare products",
-    "addToCart": "Add to cart",
+    "addToCart": "Add to Cart",
     "next": "Next products",
     "previous": "Previous products",
     "noProductsToCompare": "No products to compare",
@@ -496,7 +496,7 @@ declare const messages: {
       "thumbnail": "View image number",
       "additionalInformation": "Additional information",
       "Submit": {
-        "addToCart": "Add to cart",
+        "addToCart": "Add to Cart",
         "outOfStock": "Out of stock",
         "preorder": "Preorder",
         "unavailable": "Unavailable"

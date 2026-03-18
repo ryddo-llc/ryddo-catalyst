@@ -17,7 +17,7 @@ const VARIANTS: Record<
 > = {
   'product-detail': {
     outer: { radius: 30, rounded: 'bottom', padding: 'pb-4 md:pb-6' },
-    inner: { radius: 30, minHeight: 'min-h-[70vh]' },
+    inner: { radius: 30, minHeight: 'min-h-[600px]' },
   },
   'marketplace-showcase': {
     outer: { radius: 30, rounded: 'bottom', padding: 'pb-6 md:pb-10 lg:pb-14' },

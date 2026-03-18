@@ -85,7 +85,7 @@ export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
   return (
     <div
       aria-label="Product specifications"
-      className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8"
+      className="flex flex-wrap justify-center gap-0 md:gap-0.5 lg:gap-1"
       role="region"
     >
       {specs.slice(0, 6).map((spec) => {
@@ -94,15 +94,15 @@ export function ProductSpecsIcons({ specs }: ProductSpecsIconsProps) {
         return (
           <div
             aria-label={`${spec.name}: ${spec.value}`}
-            className="flex flex-col items-center"
+            className="flex flex-col items-center gap-0"
             key={spec.name}
             role="img"
           >
-            <div className="mb-2">
+            <div className="mb-0.5">
               <Image alt={alt} height={44} src={iconSrc} width={44} />
             </div>
-            <span className="text-xs font-bold text-gray-800">{spec.name}</span>
-            <span className="text-xs font-medium text-gray-600">{spec.value}</span>
+            <span className="text-xs font-bold leading-tight text-gray-800">{spec.name}</span>
+            <span className="text-xs font-medium leading-tight text-gray-600">{spec.value}</span>
           </div>
         );
       })}

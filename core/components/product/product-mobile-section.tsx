@@ -50,7 +50,7 @@ export function ProductMobileSection<F extends Field>({
       <div className="mx-auto max-w-2xl space-y-4 sm:space-y-6">
         <div className="group/product-rating text-center">
           <Stream fallback={<RatingSkeleton />} value={product.rating}>
-            {(rating) => <Rating rating={rating ?? 0} />}
+            {(rating) => <Rating rating={rating || 5} />}
           </Stream>
         </div>
 
@@ -130,7 +130,7 @@ export function ProductMobileSection<F extends Field>({
                     href: product.href,
                     image: images[0],
                   }}
-                  ctaLabel={streamedCtaLabel || 'Add to cart'}
+                  ctaLabel={streamedCtaLabel || 'Add to Cart'}
                   disabled={streamedCtaDisabled || false}
                   fields={streamedFields}
                   productId={product.id}

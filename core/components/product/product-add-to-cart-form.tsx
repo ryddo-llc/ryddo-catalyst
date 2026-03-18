@@ -46,7 +46,7 @@ export function ProductAddToCartForm<F extends Field>({
   action,
   fields,
   compareProduct,
-  ctaLabel = 'Add to cart',
+  ctaLabel = 'Add to Cart',
   disabled = false,
   additionalActions,
 }: ProductAddToCartFormProps<F>) {

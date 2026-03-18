@@ -101,9 +101,9 @@ export function AuthorizedDealerCard<F extends Field = Field>({
   product: ProductWithSideCardData<F>;
 }) {
   return (
-    <div className="max-w-sm rounded-2xl bg-white/75 p-6 text-right md:p-7 lg:p-8">
+    <div className="max-w-sm rounded-2xl bg-white/75 p-6 pb-3 text-right md:p-7 md:pb-4 lg:p-8 lg:pb-4">
       {/* Price Section */}
-      <div className="mb-6">
+      <div className="mb-3">
         <Stream fallback={<Skeleton.Box className="ml-auto h-12 w-32" />} value={product.price}>
           {(price) => {
             const displayPrice =
@@ -112,18 +112,23 @@ export function AuthorizedDealerCard<F extends Field = Field>({
 
             return (
               <>
-                <div className="mb-0 pt-2 text-6xl font-black leading-none text-zinc-800">
+                <div className="mb-0 flex justify-end pr-4">
+                  <span className="rounded-md bg-[#F48DB4] px-5 py-px font-['Inter'] text-sm font-semibold uppercase tracking-wide text-white">
+                    SAVE $300
+                  </span>
+                </div>
+                <div className="mb-0 pt-0 text-6xl font-black leading-none text-zinc-800">
                   <span className="font-kanit">{displayPrice}</span>
                   <span aria-hidden="true" className="text-[#F92F7B]">
                     .
                   </span>
                 </div>
-                <div className="font-kanit text-sm font-medium leading-snug text-stone-400 mt-1">
-                  <span className="font-['Inter'] font-semibold text-black text-lg">
+                <div className="font-kanit text-sm font-medium leading-snug text-stone-400 mt-2">
+                  <span className="font-['Inter'] font-semibold text-black text-base">
                     {klarnaPayment}/mo. with Klarna
                   </span>
                   <br />
-                  <span className="cursor-pointer font-['Inter'] font-semibold text-black underline">
+                  <span className="cursor-pointer font-['Inter'] font-semibold text-[#5A5A5A] underline">
                     Check your purchase power
                   </span>
                 </div>
@@ -138,7 +143,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
             <div className="flex items-center justify-end gap-2">
               <span className="font-['Inter'] text-lg font-semibold text-black">({product.reviewCount ?? 0})</span>
               <div className="flex items-center">
-                <Rating rating={product.rating ?? 0} showRating={false} />
+                <Rating rating={product.rating || 5} showRating={false} />
               </div>
             </div>
           </div>
@@ -147,7 +152,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
         {/* Warranty Information - Bikes Only */}
         {product.productType === 'bike' && product.warranty ? (
           <div className="mt-2 pt-2">
-            <div className="mb-2 font-kanit text-lg font-semibold text-black">
+            <div className="mb-0 font-kanit text-base font-medium text-black">
               {product.warranty}
             </div>
           </div>
@@ -155,7 +160,7 @@ export function AuthorizedDealerCard<F extends Field = Field>({
       </div>
 
       {/* Action Buttons - Side by Side */}
-      <div className="mb-6">
+      <div className="mb-4">
         {product.action && product.fields && (product.productType === 'bike' || product.productType === 'scooter') && (
           <ProductAddToCartForm
             action={product.action}
@@ -176,13 +181,13 @@ export function AuthorizedDealerCard<F extends Field = Field>({
         {(!product.action || !product.fields) && (
           <div className="flex flex-col items-stretch gap-3">
             <button
-              className="min-h-[43px] rounded-full bg-[#F92F7B] px-4 py-2.5 text-base font-bold text-white transition-colors hover:bg-pink-600 disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[43px] rounded-[41%] bg-[#F92F7B] px-4 py-2.5 text-base font-bold text-white transition-colors hover:bg-pink-600 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={product.ctaDisabled}
             >
               {product.ctaLabel || 'Add to Cart'}
             </button>
             <Compare
-              className="min-h-[43px] rounded-full bg-black/[.62] px-4 py-2.5 text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[43px] rounded-[41%] bg-[#CCCCCC] px-4 py-2.5 text-base font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
               label="Compare"
               product={{
                 id: product.id,

@@ -188,13 +188,13 @@ export function ProductLeftSidebarContent({
     <div className="w-full">
       <div className="flex w-full flex-col items-start justify-start gap-4 rounded-2xl pb-4">
         {brandName ? (
-          <h1 className="w-full pt-4 text-center font-kanit text-6xl font-black leading-normal text-black">
+          <h1 className="w-full pt-4 pl-3 pr-3 text-left font-kanit text-5xl font-black leading-normal text-black">
             {brandName.toUpperCase()}
           </h1>
         ) : null}
 
         {description ? (
-          <div className="-mt-10 max-w-[14rem] pl-3 font-['Inter'] text-base font-normal uppercase leading-tight text-black [&>div>*:first-child]:mb-0 [&>div>*:first-child]:font-kanit [&>div>*:first-child]:text-xl [&>div>*:first-child]:font-medium [&>div>*:first-child]:leading-none">
+          <div className="-mt-7 max-w-[14rem] pl-3 font-['Inter'] text-sm font-normal uppercase leading-tight text-black [&>div>*:first-child]:mb-0 [&>div>*:first-child]:font-kanit [&>div>*:first-child]:text-lg [&>div>*:first-child]:font-medium [&>div>*:first-child]:leading-none">
             {description}
           </div>
         ) : null}
