@@ -46,8 +46,8 @@ export function ProductMobileSection<F extends Field>({
   defaultPrice = '$0',
 }: ProductMobileSectionProps<F>) {
   return (
-    <div className="relative z-20 bg-white p-4 md:hidden">
-      <div className="mx-auto max-w-2xl space-y-6">
+    <div className="relative z-20 bg-white p-3 sm:p-4 md:hidden">
+      <div className="mx-auto max-w-2xl space-y-4 sm:space-y-6">
         <div className="group/product-rating text-center">
           <Stream fallback={<RatingSkeleton />} value={product.rating}>
             {(rating) => <Rating rating={rating ?? 0} />}
@@ -111,7 +111,7 @@ export function ProductMobileSection<F extends Field>({
                       }
 
                       return (
-                        <div className="text-4xl font-black text-gray-900 md:text-3xl">
+                        <div className="text-3xl font-black text-gray-900 sm:text-4xl md:text-3xl">
                           <span className="font-kanit">{displayPrice}</span>
                           <span aria-hidden="true" className="text-[#F92F7B]">.</span>
                         </div>

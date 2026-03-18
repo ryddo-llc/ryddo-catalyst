@@ -118,7 +118,7 @@ export function ProductDetail<F extends Field>({
                   return (
                     <SectionContainer.Inner
                       className="relative"
-                      minHeight="min-h-[70vh]"
+                      minHeight="min-h-0 md:min-h-[70vh]"
                       overflow="hidden"
                       radius={30}
                     >
