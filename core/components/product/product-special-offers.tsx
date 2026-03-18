@@ -162,7 +162,7 @@ export function ProductLeftSidebarContent({
         ) : null}
 
         {description ? (
-          <div className="text-large -mt-10 font-extrabold text-black pl-3">{description}</div>
+          <div className="-mt-10 max-w-[14rem] font-['Inter'] text-base font-normal uppercase text-black pl-3 [&>div>*:first-child]:font-kanit [&>div>*:first-child]:text-xl [&>div>*:first-child]:font-medium [&>div>*:first-child]:mb-0 [&>div>*:first-child]:leading-none">{description}</div>
         ) : null}
 
         {/* Size Options - Interactive - Circular swatches with text */}
