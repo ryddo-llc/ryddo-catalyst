@@ -41,6 +41,11 @@ export default async function DefaultLayout({ params, children }: Props) {
   return (
     <InventoryProvider>
       <div className="flex min-h-screen flex-col">
+        {/* OpenClaw Test Badge */}
+        <div className="bg-green-500 text-white text-center py-2 px-4 font-semibold">
+          🤖 OpenClaw is LIVE! - Test Badge Working ✅ - {new Date().toLocaleString()}
+        </div>
+        
         {/* Header wrapper */}
         <div className="w-full pt-2">
           <div className="mx-auto max-w-[1360px] rounded-t-[30px] bg-white">
