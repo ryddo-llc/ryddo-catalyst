@@ -75,10 +75,6 @@ export default async function Home({ params }: Props) {
 
   return (
     <div className="pb-20">
-      {/* OpenClaw Integration Test Badge */}
-      <div className="relative z-10 bg-gradient-to-r from-green-600 to-blue-600 text-white text-center py-3 px-4 text-lg font-bold shadow-lg">
-        🤖 OpenClaw is LIVE! - Test Badge Working ✅
-      </div>
       <div className="absolute left-1/2 top-0 -z-10 h-[270vh] w-screen -translate-x-1/2">
         <Image
           alt=""
