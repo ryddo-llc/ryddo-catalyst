@@ -75,6 +75,14 @@ export default async function Home({ params }: Props) {
 
   return (
     <div className="pb-20">
+      {/* Gray Banner */}
+      <div className="relative z-10 w-full bg-gray-600 py-3">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-white font-medium">
+            🚴‍♀️ New Spring Collection Now Available - Free Shipping on Orders Over $1,000 🚴‍♂️
+          </p>
+        </div>
+      </div>
       <div className="absolute left-1/2 top-0 -z-10 h-[270vh] w-screen -translate-x-1/2">
         <Image
           alt=""
